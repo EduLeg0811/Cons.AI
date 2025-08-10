@@ -1,0 +1,5 @@
+Vector Store: DAC
+ID: DAC
+Criado em: 2025-06-03 16:37:46
+Arquivos incluídos:
+- 12 - DAC (2014).md
