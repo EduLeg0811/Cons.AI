@@ -121,7 +121,7 @@ api = Api(app)
 
 # Restrinja origens em produção; inclua localhost para dev
 FRONTEND_ORIGINS = [
-    "https://cons-ai-edu.onrender.com",
+    "https://cons-ai-backend.onrender.com",
     "http://localhost:5173",  # se usar Vite/Dev server
     "http://127.0.0.1:5500",  # se usar Live Server
     "http://localhost:5500",  # se usar Live Server

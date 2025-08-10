@@ -641,7 +641,7 @@ button:active {
     background: linear-gradient(135deg, #f2c94c, #f59e0b, #d97706);
     color: #ffffff;
     width: 100%;
-    max-width: 420px;           /* slightly wider */
+    max-width: 100px;           /* slightly wider */
     align-self: center;
     justify-content: center;
     text-align: center;
