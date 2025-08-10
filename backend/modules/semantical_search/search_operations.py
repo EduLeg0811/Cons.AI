@@ -33,7 +33,7 @@ from utils.response_llm import generate_llm_answer
 
 logger = logging.getLogger(__name__)
 
-# Initialize embeddings
+# Initialize embeddings eagerly
 embeddings = OpenAIEmbeddings()
 
 # _________________________________________________________________________________________
