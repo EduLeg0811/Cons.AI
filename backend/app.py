@@ -130,6 +130,7 @@ CORS(app, resources={r"/*": {
     "origins": FRONTEND_ORIGINS,
     "methods": ["GET", "POST", "OPTIONS"],
     "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True,
 }})
 
 # Loga um banner de inicialização
