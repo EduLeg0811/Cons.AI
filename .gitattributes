@@ -1,3 +1,0 @@
-backend/faiss_index/DAC/index.faiss filter=lfs diff=lfs merge=lfs -text
-backend/faiss_index/LO/index.faiss filter=lfs diff=lfs merge=lfs -text
-backend/faiss_index/MANUAIS/index.faiss filter=lfs diff=lfs merge=lfs -text
