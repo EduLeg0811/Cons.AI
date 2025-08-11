@@ -102,13 +102,17 @@ from utils.search_utils import (
     handle_search_error,
 )
 
-## Logging básico
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL, logging.INFO),
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s"
-)
+
 logger = logging.getLogger("cons-ai")
+logging.basicConfig(level=logging.INFO)
+
+# Checagem de sanidade do FAISS_INDEX_DIR
+try:
+    contents = os.listdir(config.FAISS_INDEX_DIR)
+    sizes = {f: os.path.getsize(os.path.join(config.FAISS_INDEX_DIR, f)) for f in contents}
+    logger.info(f"[SANITY CHECK] FAISS_DIR={config.FAISS_INDEX_DIR} | files={list(sizes.keys())} | sizes={sizes}")
+except Exception as e:
+    logger.error(f"[SANITY CHECK] Falha ao acessar FAISS_DIR={config.FAISS_INDEX_DIR} | err={e}")
 
 
 

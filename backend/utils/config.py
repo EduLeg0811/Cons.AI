@@ -33,14 +33,8 @@ OPENAI_ID_ALLCONS="vs_6870595f39dc8191b364854cf46ffc74"
 # Base directory = .../backend  (2 níveis acima do arquivo utils/config.py)
 BASE_DIR = Path(__file__).parent.parent.resolve()
 
-# Pastas relativas a backend/
-FILES_SEARCH_DIR = (BASE_DIR / "files").resolve()
-
-# Se a variável de ambiente INDEX_DIR existir, use-a (ex.: no Render)
-# Senão, use a pasta local padrão
-FAISS_INDEX_DIR = Path(
-    os.getenv("INDEX_DIR", BASE_DIR / "faiss_index")
-).resolve()
+FILES_SEARCH_DIR = Path(os.getenv("FILES_SEARCH_DIR", BASE_DIR / "files")).resolve()
+FAISS_INDEX_DIR  = Path(os.getenv("FAISS_INDEX_DIR",  BASE_DIR / "faiss_index")).resolve()
 
 
 
