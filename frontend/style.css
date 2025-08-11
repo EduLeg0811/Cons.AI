@@ -686,3 +686,17 @@ button:active {
 #pensataButton:hover::after, .pensata-button:hover::after {
     left: 120%;
 }
+
+/* === Global Typography Override: force 8pt across modules === */
+html { font-size: 8pt !important; }
+body { font-size: 1rem !important; }
+
+/* Ensure all elements inherit the 8pt base regardless of earlier rules */
+*:not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad) {
+  font-size: inherit !important;
+}
+
+/* Keep icon fonts consistent (relative to parent) */
+.fa, .fas, .far, .fab, .fal, .fad {
+  font-size: 1em !important;
+}

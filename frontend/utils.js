@@ -5,8 +5,9 @@ let currentSearchTerm = '';
 
 // Elements assumed to be in the global scope
 const searchInput  = document.getElementById('searchInput');
-const downloadMd   = document.getElementById('downloadMd');
+const downloadPDF   = document.getElementById('downloadPDF');
 const downloadDocx = document.getElementById('downloadDocx');
+
 
 
 
@@ -27,6 +28,8 @@ const TOP_K=20;
 // ]
 const LOCAL_BASE = 'http://localhost:5000';              // backend local
 const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
+
+
 
 function resolveApiBaseUrl() {
   // Permite forçar via ?api=https://... ou via localStorage.apiBaseUrl
@@ -62,18 +65,22 @@ try {
     'font:12px/1.2 monospace','background:#0007','color:#fff',
     'border-radius:4px','z-index:9999','letter-spacing:0.5px'
   ].join(';');
-  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
+  //document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
 } catch {}
+
+
+
 
 // (Opcional) “ping” para acordar backend no Render; em DEV apenas valida CORS
 window.addEventListener('load', () => {
   fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
 });
 
+
+
+
 // Exporta para debug no console
 window.__API_BASE = apiBaseUrl;
-
-
 
 
 

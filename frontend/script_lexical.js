@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadPDF   = document.getElementById('downloadPDF');
     const downloadDocx = document.getElementById('downloadDocx');
     const downloadButtons = document.querySelector('.download-buttons');
+
    
     let lastResults = [];
     
@@ -85,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function lexical_search() {
         const term = searchInput.value.trim();
+
+        resultsDiv.innerHTML = '';
         
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';

@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function verbetopedia() {
         const term = searchInput.value.trim();
+
+        resultsDiv.innerHTML = '';
         
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term or paragraph</p>';
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             paramSemantical = {
                 term: newTerm,
-                book: "LO",
+                book: "ECWV",
                 top_k: 50,
                 temperature: 0.0
             }

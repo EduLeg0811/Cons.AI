@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function ragbot() {
         const term = searchInput.value.trim();
+
+        resultsDiv.innerHTML = '';
         
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a term</p>';

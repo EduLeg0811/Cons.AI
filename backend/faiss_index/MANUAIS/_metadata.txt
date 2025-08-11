@@ -1,9 +1,0 @@
-Vector Store: MANUAIS
-ID: MANUAIS
-Criado em: 2025-06-03 16:40:20
-Arquivos incluídos:
-- 03 - TNP (1995).md
-- 05 - PROEXIS (1997).md
-- 06 - DUPLA (1997).md
-- 07 - TEMAS (1997).md
-- 08 - 200TEAT (1997).md

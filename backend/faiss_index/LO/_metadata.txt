@@ -1,6 +1,0 @@
-Vector Store: LO
-ID: LO
-Criado em: 2025-06-03 16:35:12
-Arquivos incluídos:
-- 13 - LO (2019) - I.md
-- 13 - LO (2019) - II.md

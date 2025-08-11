@@ -36,8 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
   
 
-
-
 // ====================== Functions ======================
 
     /**
@@ -67,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     async function semantical_search() {
         const term = searchInput.value.trim();
+
+        resultsDiv.innerHTML = '';
         
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
               };
               
 
-            console.log('Sending RAGbot request for term:', paramRAGbot);
+            console.log('Sending RAGbot request for term:', term);
 
             const responseDef = await fetch(apiBaseUrl + '/ragbot', {
                 method: 'POST',
@@ -185,12 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Tratamento para vazio (sem assert que “quebra a UX”)
             if (semJson.results.length === 0) {
-            console.warn('SemanticalSearch: nenhum resultado para:', newTerm);
+            console.warn('SemanticalSearch: nenhum resultado para:', term);
             removeLoading(resultsDiv);
             displayResults(resultsDiv, { text: "Semantical Search" }, 'title');
             resultsDiv.insertAdjacentHTML('beforeend', `
                 <div class="empty-state">
-                <p><strong>Nenhum resultado semântico encontrado</strong> para: <em>${newTerm}</em>.</p>
+                <p><strong>Nenhum resultado semântico encontrado</strong> para: <em>${term}</em>.</p>
                 <p>Tente variar o termo, usar sinônimos ou ampliar o contexto.</p>
                 </div>`);
             if (downloadButtons) downloadButtons.style.display = 'none';
