@@ -126,12 +126,15 @@ FRONTEND_ORIGINS = [
     "http://127.0.0.1:5500",  # se usar Live Server
     "http://localhost:5500",  # se usar Live Server
 ]
-CORS(app, resources={r"/*": {
-    "origins": FRONTEND_ORIGINS,
-    "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"],
-    "supports_credentials": True,
-}})
+CORS(
+    app,
+    origins=FRONTEND_ORIGINS,
+    supports_credentials=True,
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
+
+
 
 # Loga um banner de inicialização
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
@@ -144,12 +147,11 @@ logger.info(
     FILES_SEARCH_DIR, FAISS_INDEX_DIR
 )
 
-@app.get("/health")
+
+@app.route("/health")
+@cross_origin(origins=FRONTEND_ORIGINS)
 def health():
-    return {"ok": True}, 200
-
-
-
+    return "OK", 200
 
 
 

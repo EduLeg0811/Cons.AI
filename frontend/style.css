@@ -607,7 +607,7 @@ button:active {
     cursor: pointer;
     transform: translateY(0);
     transition: background-position 400ms ease, transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
-    width: 200px; /* fixed width to match .search-button */
+    width: 180px; /* fixed width to match .search-button */
     text-align: center;
   }
   #searchButton.search-button:hover {
