@@ -246,6 +246,7 @@ button:active {
     transition: all 0.2s ease;
     white-space: nowrap;
     height: 52px;
+    width: 250px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -595,18 +596,18 @@ button:active {
     justify-content: center;
     gap: 10px;
     color: #fff;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8, #3b82f6);
+    background: linear-gradient(135deg, #28cca0, #1b896c, #0d382c);
     background-size: 200% 200%;
     border: none;
     border-radius: 14px;
     padding: 16px 28px;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
     box-shadow: 0 10px 20px rgba(37,99,235,0.30), 0 6px 10px rgba(0,0,0,0.10);
     cursor: pointer;
     transform: translateY(0);
     transition: background-position 400ms ease, transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
-    min-width: clamp(240px, 50%, 420px);
+    width: 200px; /* fixed width to match .search-button */
     text-align: center;
   }
   #searchButton.search-button:hover {
@@ -632,16 +633,13 @@ button:active {
   }
 
 
-
-
-
   #pensataButton, .pensata-button {
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, #f2c94c, #f59e0b, #d97706);
     color: #ffffff;
     width: 100%;
-    max-width: 100px;           /* slightly wider */
+    max-width: 400px;           /* slightly wider */
     align-self: center;
     justify-content: center;
     text-align: center;
@@ -649,7 +647,7 @@ button:active {
     align-items: center;
     gap: 10px;
     padding: 16px 28px;          /* larger click target */
-    font-size: 1.25rem;          /* larger text */
+    font-size: 1.5rem;          /* larger text */
     font-weight: 700;            /* bolder */
     margin: 0 auto;              /* center when width < container */
     height: 56px;                /* correct accidental large height */
