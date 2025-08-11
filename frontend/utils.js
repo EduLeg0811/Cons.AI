@@ -20,13 +20,13 @@ const TOP_K=20;
 // ====================================================================
 // # Restrinja origens em produção; inclua localhost para dev
 // FRONTEND_ORIGINS = [
-//     "https://cons-ai-backend.onrender.com",
+//     "https://cons-ai-server.onrender.com",
 //     "http://localhost:5173",  # se usar Vite/Dev server
 //     "http://127.0.0.1:5500",  # se usar Live Server
 //     "http://localhost:5500",  # se usar Live Server
 // ]
 const LOCAL_BASE = 'http://localhost:5000';              // backend local
-const PROD_BASE  = 'https://cons-ai-backend.onrender.com';       // backend Render
+const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
 
 function resolveApiBaseUrl() {
   // Permite forçar via ?api=https://... ou via localStorage.apiBaseUrl
