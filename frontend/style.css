@@ -16,6 +16,8 @@
     --terciary-hover: var(--lilac-hover);
     --quaternary: var(--dark-yellow);
     --quaternary-hover: var(--dark-yellow-hover);
+    --action-btn-w: 250px;
+    --action-btn-h: 52px;
 }
 
 /* Reset & Base Styles */
@@ -147,16 +149,18 @@ h1 {
 
 /* Individual download buttons - USED */
 .download-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
+    width: 100%;
+    max-width: 800px;
+    padding: 14px 18px;
+    font-size: 1.05rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    display: block;
+    box-sizing: border-box;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
-    border: 1px solid transparent;
 }
 
 /* PDF download button - USED */
@@ -205,6 +209,10 @@ button:active {
     margin: 0 auto;
     display: block;
     box-sizing: border-box;
+    justify-content: left;
+    align-items: left;
+    background-color: #37c96a;
+    color: white;
 }
 
 /* Search container - USED */
@@ -231,23 +239,19 @@ button:active {
 
 /* Search button - USED */
 .search-button {
-    padding: 14px 24px;
-    background-color: #6ca672;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 500;
+    width: 52px;
+    padding: 14px 18px;
     font-size: 1.05rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    height: 52px;
-    width: 250px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    display: block;
+    box-sizing: border-box;
+    justify-content: right;
+    align-items: right;
+    background-color: #3772c9;
+    color: white;
 }
 
 .search-button:hover {
@@ -259,6 +263,30 @@ button:active {
 .search-button:active {
     transform: translateY(1px);
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Chatbot-style send button - used on Search buttons */
+.chat-send-btn {
+    /* Keep existing .search-button base look, but make it circular and icon-only */
+    width: 20px;
+    height: 52px;
+    border-radius: 50%;
+    padding: 0;
+    gap: 0;
+}
+
+.chat-send-btn i {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.chat-send-btn:hover {
+    background: #26682d; /* match .search-button:hover color */
+}
+
+.chat-send-btn:focus-visible {
+    outline: 3px solid rgba(76, 175, 80, 0.35);
+    outline-offset: 2px;
 }
 
 /* Results container - USED */
@@ -395,7 +423,7 @@ button:active {
 
 /* ===== Display Box Components ===== */
 .displaybox-container {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -420,7 +448,7 @@ button:active {
 }
 
 .displaybox-group {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     border: 1px solid #e9ecef;
     border-radius: 8px;
     overflow: hidden;
@@ -453,16 +481,16 @@ button:active {
 
 .displaybox-summary {
     color: #6c757d;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     padding: 0.5rem 0;
-    font-size: 0.9em;
+    font-size: 0.6em;
     text-align: center;
 }
 
 /* Paragraph and Score Styles */
 .paragraph-marker {
     color: #6c757d;
-    font-size: 0.9em;
+    font-size: 0.6em;
     margin-right: 0.5rem;
     font-family: monospace;
     opacity: 0.8;
@@ -475,7 +503,7 @@ button:active {
     color: #495057;
     padding: 0.25em 0.6em;
     border-radius: 12px;
-    font-size: 0.8em;
+    font-size: 0.6em;
     margin-left: 0.5rem;
     font-weight: 500;
     white-space: nowrap;
@@ -498,23 +526,39 @@ button:active {
     width: 100%;
 }
 
-/* Remove old/unused styles */
-.text-content,
-.meta-info,
-.displaybox-results,
-.result-item {
-    all: unset;
+/* === Search layout overrides === */
+/* Make search input occupy full container width */
+.search-input-group { max-width: 100% !important; width: 100% !important; }
+.search-input { max-width: 100% !important; width: 100% !important; }
+
+/* Row below input: [empty] [DOCX centered] [Search right] */
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.action-row .center { justify-self: center; }
+.action-row .right { justify-self: end; }
+
+/* Ensure both action buttons have the same fixed size */
+#downloadDocx.download-btn {
+  width: var(--action-btn-w) !important;
+  height: var(--action-btn-h) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-
-
+/* Optional: prevent .download-buttons container from stretching height */
+.action-row .download-buttons { margin: 0; padding: 0; }
 
 /* Markdown basics */
 .markdown-content h1, .markdown-content h2, .markdown-content h3,
 .markdown-content h4, .markdown-content h5, .markdown-content h6 {
   margin: 0.6em 0 0.4em;
-  line-height: 1.25;
+  line-height: 1;
 }
 
 
@@ -525,7 +569,7 @@ button:active {
 /* Se em algum lugar você tiver white-space: pre-wrap; remova para o bloco markdown */
 .markdown-content { white-space: normal; }
 .markdown-content ul, .markdown-content ol {
-  margin: 0.2em 1.25em;
+  margin: 0.2em 1em;
   padding-left: 1em;
 }
 
@@ -533,7 +577,7 @@ button:active {
 
 .markdown-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 0.95em;
+  font-size: 0.6em;
   background: #f6f8fa;
   padding: 0.15em 0.35em;
   border-radius: 4px;
@@ -557,7 +601,7 @@ button:active {
   /* Índice fixo, não estica */
   .displaybox-item .paragraph-marker {
     flex: 0 0 auto;
-    line-height: 1.4;
+    line-height: 1;
   }
     
   /* O texto ocupa o restante da linha; não forçar quebras por \n */
@@ -699,4 +743,24 @@ body { font-size: 1rem !important; }
 /* Keep icon fonts consistent (relative to parent) */
 .fa, .fas, .far, .fab, .fal, .fad {
   font-size: 1em !important;
+}
+
+/* === Global Line-Height Override: tighter spacing === */
+html { line-height: 1.2 !important; }
+body { line-height: inherit !important; }
+
+/* Make elements inherit the compact line-height, overriding previous rules */
+*, *::before, *::after { line-height: inherit !important; }
+
+/* Ensure common text areas follow the compact rhythm */
+.text-content,
+.text-content p,
+.displaybox-content,
+.displaybox-item,
+.displaybox-text,
+.paragraph-marker,
+.markdown-content,
+.markdown-content p,
+.markdown-content li {
+  line-height: inherit !important;
 }

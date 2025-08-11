@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function ragbot() {
         const term = searchInput.value.trim();
-
+        // Clear input for next insertion
+        searchInput.value = '';
+        try { searchInput.focus(); } catch {}
+        
         resultsDiv.innerHTML = '';
         
         if (!term) {

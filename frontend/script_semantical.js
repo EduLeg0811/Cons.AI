@@ -65,7 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     async function semantical_search() {
         const term = searchInput.value.trim();
-
+        // Clear input for next insertion
+        searchInput.value = '';
+        try { searchInput.focus(); } catch {}
+ 
         resultsDiv.innerHTML = '';
         
         if (!term) {
@@ -190,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, { text: "Semantical Search" }, 'title');
             resultsDiv.insertAdjacentHTML('beforeend', `
                 <div class="empty-state">
-                <p><strong>Nenhum resultado semântico encontrado</strong> para: <em>${term}</em>.</p>
+                <p><strong>Nenhum resultado semântico encontrado para</strong>: <em>${term}</em>.</p>
                 <p>Tente variar o termo, usar sinônimos ou ampliar o contexto.</p>
                 </div>`);
             if (downloadButtons) downloadButtons.style.display = 'none';
@@ -221,6 +224,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 });
-
-
-

@@ -86,7 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function lexical_search() {
         const term = searchInput.value.trim();
-
+        // Clear input for next insertion
+        searchInput.value = '';
+        // Optionally focus for immediate typing
+        try { searchInput.focus(); } catch {}
+        
         resultsDiv.innerHTML = '';
         
         if (!term) {
@@ -137,4 +141,3 @@ async function lexical_search() {
         }
     }
 });
-
