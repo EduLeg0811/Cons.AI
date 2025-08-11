@@ -149,7 +149,6 @@ logger.info(
 
 
 @app.route("/health")
-@cross_origin(origins=FRONTEND_ORIGINS)
 def health():
     return "OK", 200
 
