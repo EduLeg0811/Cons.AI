@@ -212,7 +212,7 @@ button:active {
     justify-content: left;
     align-items: left;
     background-color: #ffffff;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 /* Search container - USED */
@@ -237,32 +237,32 @@ button:active {
     align-items: center;
 }
 
-/* Search button - USED */
 .search-button {
-    width: 52px;
-    padding: 14px 18px;
-    font-size: 1.05rem;
-    border: 2px solid #e5e7eb;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 1rem;
+    border: 2px solid #c6d9ff;
     border-radius: 10px;
     transition: all 0.3s ease;
-    margin: 0 auto;
-    display: block;
-    box-sizing: border-box;
-    justify-content: right;
-    align-items: right;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #3772c9;
     color: white;
+    flex-shrink: 0;
 }
 
 .search-button:hover {
     background-color: #48b148;
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Chatbot-style send button - used on Search buttons */
