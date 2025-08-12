@@ -1,5 +1,7 @@
 // script_lexical.js
 
+let controller = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('searchButton');
     const searchInput  = document.getElementById('searchInput');
@@ -85,6 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
  * }
  */
 async function lexical_search() {
+    // Get the search button element
+    const searchButton = document.getElementById('searchButton');
+    
+    // Disable the search button and show loading state
+    const originalButtonHTML = searchButton.innerHTML;
+    searchButton.disabled = true;
+    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+    searchButton.style.opacity = '0.7';
+    searchButton.style.cursor = 'not-allowed';
+
+    // Cancel any in-progress requests
+    if (controller) {
+        controller.abort();
+    }
+    controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
         const term = searchInput.value.trim();
         // Clear input for next insertion
         searchInput.value = '';
@@ -114,7 +133,8 @@ async function lexical_search() {
             const response = await fetch(apiBaseUrl + '/lexical_search', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(parameters)
+                body: JSON.stringify(parameters),
+                signal: controller.signal
             });
             const responseData = await response.json();
     
@@ -132,12 +152,18 @@ async function lexical_search() {
         
         } catch (error) {
             console.error('Search error:', error);
-            resultsDiv.innerHTML = `
-                <div class="error">
-                    <p>Error performing search.</p>
-                    <p>${error.message || 'Unknown error occurred'}</p>
-                </div>`;
-                if (downloadButtons) downloadButtons.style.display = 'none';
+            resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'Error occurred during search'}</p></div>`;
+            if (downloadButtons) downloadButtons.style.display = 'none';
+        } finally {
+            // Re-enable the search button and restore original state
+            if (searchButton) {
+                searchButton.disabled = false;
+                searchButton.innerHTML = originalButtonHTML;
+                searchButton.style.opacity = '1';
+                searchButton.style.cursor = 'pointer';
+            }
+            clearTimeout(timeoutId);
+            controller = null;
         }
     }
 });

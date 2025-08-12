@@ -493,7 +493,7 @@ class DownloadResource(Resource):
             # 2) Basic validations
             if not search_term:
                 return {"error": "Search term is required"}, 400
-            if fmt not in ("markdown", "docx"):
+            if fmt not in ("pdf", "docx"):
                 return {"error": "Invalid format type"}, 400
             if not isinstance(items, list):
                 return {"error": "Results must be a list"}, 400
@@ -520,7 +520,7 @@ class DownloadResource(Resource):
                 clean_src = sanitize_filename(source)
                 grouped.setdefault(clean_src, []).append(text)
 
-            if fmt == "markdown":
+            if fmt == "pdf":
                 # 5a) Generate Markdown content
                 content = f"# Resultados da busca: {search_term}\n\n"
                 for src, texts in grouped.items():

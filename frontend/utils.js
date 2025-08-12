@@ -108,67 +108,97 @@ window.__API_BASE = apiBaseUrl;
 
 /**
  * Sends the processed results to the backend and triggers a download.
- * @param {'markdown'|'docx'} format 
- * @param {Array} resultsArray 
+ * @param {'pdf'|'docx'} format - The desired download format
+ * @param {Object|Array} resultsData - The search results to download
+ * @param {string} searchTerm - The original search term
  */
-async function downloadResults(format, resultsData) {
-    const term = searchInput.value.trim();
-    
+async function downloadResults(format, resultsData, searchTerm = '') {
     // Handle different result structures - could be direct array or object with results array
+
+    const term = String(searchTerm || '').trim();
+
     const resultsArray = Array.isArray(resultsData) ? resultsData : 
                         (resultsData?.results || []);
     
-    if (!term || resultsArray.length === 0) {
-      alert("Nada para baixar.");
-      return;
+    if (resultsArray.length === 0) {
+        alert("No results to download.");
+        return;
     }
-  
-    const button       = format === "markdown" ? downloadMd : downloadDocx;
-    const originalHtml = button.innerHTML;
-    button.innerHTML   = '<i class="fas fa-spinner fa-spin"></i> Preparando...';
-    button.disabled    = true;
 
-    currentTerm = String(term || '').trim();
-    if (currentTerm.length > 25) currentTerm = currentTerm.substring(0, 25);
-    
-  
-    try {
-      const resp = await fetch(apiBaseUrl + "/download", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          format,
-          term: currentTerm,
-          results: resultsArray
-        })
-      });
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  
-      const blob = await resp.blob();
-  
-      // tenta extrair filename do header; senão usa fallback
-      let filename = `${currentTerm}.${format === "markdown" ? "md" : "docx"}`;
-      const cd = resp.headers.get("Content-Disposition") || "";
-      const m  = cd.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
-      if (m && m[1]) filename = m[1];
-  
-      const url = URL.createObjectURL(blob);
-      const a   = document.createElement("a");
-      a.href    = url;
-      a.download= filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-  
-    } catch (e) {
-      console.error("Download falhou:", e);
-      alert("Erro ao baixar o arquivo.");
-    } finally {
-      button.innerHTML = originalHtml;
-      button.disabled  = false;
+    // Get the appropriate button based on format
+    const button = document.getElementById(format === 'markdown' ? 'downloadMd' : 'downloadDocx');
+    if (!button) {
+        console.error('Download button not found');
+        return;
     }
-  }
+
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+    button.disabled = true;
+    
+    // Sanitize and trim the search term for the filename
+    let safeTerm = (searchTerm || 'results')
+        .trim()
+        .replace(/[^\w\s-]/g, '')  // Remove special characters
+        .replace(/\s+/g, '-')        // Replace spaces with dashes
+        .toLowerCase()
+        .substring(0, 50);           // Limit length
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/download`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                format,
+                term: safeTerm,
+                results: resultsArray,
+                metadata: {
+                    searchType: 'semantical',
+                    timestamp: new Date().toISOString()
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Get the blob data
+        const blob = await response.blob();
+        
+        // Try to get filename from Content-Disposition header, fallback to generated name
+        let filename = `${safeTerm}.${format}`;
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1].replace(/['"]/g, '');
+            }
+        }
+
+        // Create and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+    } catch (error) {
+        console.error('Download failed:', error);
+        alert('Failed to download file. Please try again.');
+    } finally {
+        // Restore button state
+        if (button) {
+            button.innerHTML = originalHtml;
+            button.disabled = false;
+        }
+    }
+}
 //   Flexibilidade: se no futuro você adicionar metadados (scores, citações), basta incluí-los no JSON que o frontend envia.
 
 //   {

@@ -14,13 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Garante que nunca dispare submit se for parar dentro de <form>
     searchButton.setAttribute('type', 'button');
 
+    let controller = null;
+
     async function mancia() {
+        // Disable the search button and show loading state
+        const originalButtonHTML = searchButton.innerHTML;
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        searchButton.style.opacity = '0.7';
+        searchButton.style.cursor = 'not-allowed';
 
-        //Clear conatiner at first
-        resultsDiv.innerHTML = '';
-        
+        // Cancel any in-progress requests
+        if (controller) {
+            controller.abort();
+        }
+        controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
         try {
-
+            //Clear container at first
+            resultsDiv.innerHTML = '';
+            
             // _________________________________________________________________________________
             // 1. Random Pensata
             // _________________________________________________________________________________           
@@ -34,8 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const pensataResp = await fetch(apiBaseUrl + '/random_pensata', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(paramPensata)
-              });        
+                body: JSON.stringify(paramPensata),
+                signal: controller.signal
+            });        
             const data = await pensataResp.json();
 
             pensataText = data.text;
@@ -45,8 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, {text: "Pensata"}, 'title');
             displayResults(resultsDiv, data, 'simple');
             
-
-
             // _________________________________________________________________________________
             // 2. Commentary   
             // _________________________________________________________________________________            
@@ -92,11 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, {text: "Commentary"}, 'title');
             displayResults(resultsDiv, formattedData, 'ragbot');
 
-
-
         } catch (error) {
             console.error('Search error:', error);
-            resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'Error occurred'}</p></div>`;
+            resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'Error occurred while loading'}</p></div>`;
+        } finally {
+            // Re-enable the search button and restore original state
+            if (searchButton) {
+                searchButton.disabled = false;
+                searchButton.innerHTML = originalButtonHTML;
+                searchButton.style.opacity = '1';
+                searchButton.style.cursor = 'pointer';
+            }
+            clearTimeout(timeoutId);
+            controller = null;
         }
     }
 });

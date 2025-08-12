@@ -268,10 +268,18 @@ function showSearch(container, responseData) {
         
             return `
               <div class="displaybox-item">
-                  <span class="paragraph-marker">[${paraNumber}]</span>
-                  <div class="displaybox-text markdown-content">${mdHtml}</div>
-                  ${scoreHtml} ${originalParaHtml}
+                  <span class="paragraph-marker">[${paraNumber}]  </span>
+                  <span class="displaybox-text markdown-content">${mdHtml}</span>
+                  <span>${scoreHtml} ${originalParaHtml}</span>
               </div>`;
+
+            //   <div class="displaybox-item">
+            //       <span class="paragraph-marker">[${paraNumber}]</span>
+            //       <div class="displaybox-text markdown-content">${mdHtml}</div>
+            //       ${scoreHtml} ${originalParaHtml}
+            //   </div>`;
+
+
         }).join('');
         
         return `

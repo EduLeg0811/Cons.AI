@@ -23,6 +23,8 @@
 /* Reset & Base Styles */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     min-height: 100vh;
@@ -30,6 +32,7 @@ body {
     color: var(--dark);
     line-height: 1.6;
     padding: 20px;
+    font-size: 6px;
 }
 
 /* Layout */
@@ -61,6 +64,15 @@ header.header-container {
     margin: 0 auto;
     padding: 0 1rem;
 }
+/* No seu CSS */
+.results-container {
+    font-size: 6px; /* Tamanho base para esta área */
+}
+
+/* Então os 0.9em serão relativos a este tamanho */
+.displaybox-text.markdown-content {
+    font-size: 0.6em; /* 90% do tamanho base definido acima */
+}
 
 
 /* Logo - USED in header */
@@ -74,7 +86,7 @@ header.header-container {
     justify-content: center;
     margin: 0 auto 1.5rem;
     color: white; 
-    font-size: 1.75rem; 
+    font-size: 1rem; 
     font-weight: 700;
     box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
 }
@@ -94,7 +106,7 @@ h1 {
     display: inline-flex; 
     align-items: center; 
     justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 1.5rem;    
     font-size: 1rem; 
     font-weight: 500;
     border-radius: 8px;
@@ -152,7 +164,7 @@ h1 {
     width: 100%;
     max-width: 800px;
     padding: 14px 18px;
-    font-size: 1.05rem;
+    font-size: 1rem;
     border: 2px solid #e5e7eb;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -202,7 +214,7 @@ button:active {
     width: 100%;
     max-width: 800px;
     padding: 14px 18px;
-    font-size: 1.05rem;
+    font-size: 1rem;
     border: 2px solid #c6d9ff;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -479,7 +491,7 @@ button:active {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px dashed #e9ecef;
-    font-size: 0.85em;
+    font-size: 0.8em;
     color: #6c757d;
     display: flex;
     flex-wrap: wrap;
@@ -490,7 +502,7 @@ button:active {
     color: #6c757d;
     margin-bottom: 1rem;
     padding: 0.5rem 0;
-    font-size: 0.6em;
+    font-size: 0.2em;
     text-align: center;
 }
 
@@ -506,11 +518,11 @@ button:active {
 .score-badge {
     display: inline-flex;
     align-items: center;
-    background-color: #f1f3f5;
+    background-color: #cefcd5;
     color: #495057;
     padding: 0.25em 0.6em;
     border-radius: 12px;
-    font-size: 0.6em;
+    font-size: 0.3em;
     margin-left: 0.5rem;
     font-weight: 500;
     white-space: nowrap;
@@ -707,16 +719,22 @@ button:active {
     background-size: 200% 200%;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-position 0.4s ease;
     box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.25), 0 4px 6px -2px rgba(217, 119, 6, 0.15);
+    cursor: pointer;
+    transform: translateY(0);
+    transition: background-position 400ms ease, transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
 }
+
 #pensataButton:hover, .pensata-button:hover {
     background-position: 100% 0;
     transform: translateY(-2px);
     box-shadow: 0 15px 25px -5px rgba(217, 119, 6, 0.35), 0 8px 10px -6px rgba(217, 119, 6, 0.25);
 }
+
 #pensataButton:active, .pensata-button:active {
     transform: translateY(0);
     box-shadow: 0 6px 10px -4px rgba(217, 119, 6, 0.25), 0 3px 6px -4px rgba(217, 119, 6, 0.20);
 }
+
 #pensataButton:focus-visible, .pensata-button:focus-visible {
     outline: none;
     box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.35), 0 10px 15px -3px rgba(217, 119, 6, 0.25);
@@ -740,7 +758,7 @@ button:active {
 
 /* === Global Typography Override: force 8pt across modules === */
 html { font-size: 8pt !important; }
-body { font-size: 1rem !important; }
+body { font-size: 0.8rem !important; }
 
 /* Ensure all elements inherit the 8pt base regardless of earlier rules */
 *:not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.fad) {
@@ -770,4 +788,44 @@ body { line-height: inherit !important; }
 .markdown-content p,
 .markdown-content li {
   line-height: inherit !important;
+}
+
+/* Loading Spinner */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--dark);
+    font-weight: 500;
+}
+
+.loading::before {
+    content: '';
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Ensure Font Awesome spinner is properly aligned */
+.fa-spinner, .fa-spin {
+    margin-right: 0.5rem;
 }
