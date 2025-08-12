@@ -226,20 +226,17 @@ button:active {
     justify-content: center;
     gap: 10px;
 }
-
-/* Search input group - USED */
 .search-input-group {
     width: 100%;
     max-width: 800px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin: 0 auto;
     align-items: center;
 }
-
 .search-button {
-    width: 40px;
-    height: 40px;
+    width: 10px;
+    height: 20px;
     padding: 0;
     font-size: 1rem;
     border: 2px solid #c6d9ff;
@@ -265,23 +262,33 @@ button:active {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Chatbot-style send button - used on Search buttons */
 .chat-send-btn {
-    /* Keep existing .search-button base look, but make it circular and icon-only */
-    width: 20px;
-    height: 52px;
-    border-radius: 50%;
+    width: 10px;
+    height: 20px;
     padding: 0;
-    gap: 0;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: #3772c9;
+    color: white;
+    border: 2px solid #c6d9ff;
+    transition: all 0.3s ease;
 }
 
 .chat-send-btn i {
-    font-size: 1.15rem;
+    font-size: 1rem;
     line-height: 1;
 }
 
 .chat-send-btn:hover {
-    background: #48b148; /* match .search-button:hover color */
+    background-color: #48b148;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-send-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chat-send-btn:focus-visible {
