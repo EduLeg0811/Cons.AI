@@ -92,6 +92,7 @@ from utils.config import (
     OPENAI_ID_ALLWV,
     TEMPERATURE,
     TOP_K,
+    BASE_DIR,
 )
 from utils.docx_utils import create_document, sanitize_filename
 from utils.response_llm import reset_conversation_memory
@@ -108,11 +109,11 @@ logging.basicConfig(level=logging.INFO)
 
 # Checagem de sanidade do FAISS_INDEX_DIR
 try:
-    contents = os.listdir(config.FAISS_INDEX_DIR)
-    sizes = {f: os.path.getsize(os.path.join(config.FAISS_INDEX_DIR, f)) for f in contents}
-    logger.info(f"[SANITY CHECK] FAISS_DIR={config.FAISS_INDEX_DIR} | files={list(sizes.keys())} | sizes={sizes}")
+    contents = os.listdir(FAISS_INDEX_DIR)
+    sizes = {f: os.path.getsize(os.path.join(FAISS_INDEX_DIR, f)) for f in contents}
+    logger.info(f"[SANITY CHECK] FAISS_DIR={FAISS_INDEX_DIR} | files={list(sizes.keys())} | sizes={sizes}")
 except Exception as e:
-    logger.error(f"[SANITY CHECK] Falha ao acessar FAISS_DIR={config.FAISS_INDEX_DIR} | err={e}")
+    logger.error(f"[SANITY CHECK] Falha ao acessar FAISS_DIR={FAISS_INDEX_DIR} | err={e}")
 
 
 

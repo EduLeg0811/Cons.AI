@@ -203,7 +203,7 @@ button:active {
     max-width: 800px;
     padding: 14px 18px;
     font-size: 1.05rem;
-    border: 2px solid #e5e7eb;
+    border: 2px solid #c6d9ff;
     border-radius: 10px;
     transition: all 0.3s ease;
     margin: 0 auto;
@@ -211,7 +211,7 @@ button:active {
     box-sizing: border-box;
     justify-content: left;
     align-items: left;
-    background-color: #37c96a;
+    background-color: #ffffff;
     color: white;
 }
 
@@ -255,7 +255,7 @@ button:active {
 }
 
 .search-button:hover {
-    background-color: #26682d;
+    background-color: #48b148;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
@@ -281,7 +281,7 @@ button:active {
 }
 
 .chat-send-btn:hover {
-    background: #26682d; /* match .search-button:hover color */
+    background: #48b148; /* match .search-button:hover color */
 }
 
 .chat-send-btn:focus-visible {
