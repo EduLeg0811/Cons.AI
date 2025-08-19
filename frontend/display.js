@@ -801,7 +801,7 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   <div class="displaybox-item">
     <div class="displaybox-header">
       <span class="header-text">
-        ${markerHtml} ${titleHtml}
+      ${markerHtml} ${titleHtml}
       </span>
     </div>
     <div class="displaybox-text">
