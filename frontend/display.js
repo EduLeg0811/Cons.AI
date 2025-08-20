@@ -468,7 +468,7 @@ function showLexical(container, responseData) {
 
       // Badge do número absoluto do parágrafo no arquivo (se presente)
       const paraBadge = (item?.paragraph_number != null)
-        ? `<span class="score-badge small-green">#${String(item.paragraph_number)}</span>`
+        ? `<span class="score-badge small-green" style="font-size: 4px; color: #7c7c7c; background-color: #f5f5f5;">#${String(item.paragraph_number)}</span>`
         : '';
 
       // return `
@@ -577,9 +577,9 @@ function showTitle(container, text) {
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
         <div class="displaybox-item">
-          <span class="rag-badge">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations || 'N/A'}</span>
-          <span class="rag-badge">Tokens: ${data.total_tokens_used || 'N/A'}</span>
-          <span class="rag-badge">Model: ${data.model || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Tokens: ${data.total_tokens_used || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Model: ${data.model || 'N/A'}</span>
         </div>
       </div>
     </div>
@@ -707,7 +707,7 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
     </div>
     <div class="displaybox-text">
       <span class="displaybox-text markdown-content">${textHtml}</span>
-      <span class="displaybox-meta">${scoreHtml} ${numberHtml}</span>
+      <span class="displaybox-meta" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">${scoreHtml} ${numberHtml}</span>
     </div>
   </div>
 `;
@@ -737,8 +737,8 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   const html = `
     <div class="displaybox-group">
       <div class="displaybox-header">
-        <span>${headerHtml}</span>
-        <span class="badge">${totalResults} resultado${totalResults !== 1 ? 's' : ''}</span>
+        <span style="font-size: 1.2em; font-weight: bold; color:rgb(98, 1, 83);">Enciclopédia da Conscienciologia</span>
+        <span class="badge small-green">${totalResults} resultado${totalResults !== 1 ? 's' : ''}</span>
       </div>
       <div class="displaybox-content">${contentHtml}</div>
     </div>
