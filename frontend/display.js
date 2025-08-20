@@ -391,12 +391,6 @@ container.insertAdjacentHTML('beforeend', summaryHtml);
 
 
 
-
-
-
-
-
-
 // ________________________________________________________________________________________
 // showLexical(container, responseData): consome resposta "flattened" da API
 // Estrutura esperada:
@@ -582,7 +576,7 @@ function showTitle(container, text) {
     <div class="displaybox-container">
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
-        <div class="meta-info-row">
+        <div class="displaybox-item">
           <span class="badges-group small-green">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations}</span>
           <span class="badges-group small-green">Tokens: ${data.total_tokens_used}</span>
           <span class="badges-group small-green">Model: ${data.model}</span>
@@ -592,8 +586,6 @@ function showTitle(container, text) {
   `;
   container.insertAdjacentHTML('beforeend', html);
 }
-
-
 
 
 
@@ -740,3 +732,5 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 
   container.insertAdjacentHTML('beforeend', html);
 }
+
+

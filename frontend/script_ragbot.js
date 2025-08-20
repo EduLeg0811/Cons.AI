@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
           // Render
           removeLoading(resultsDiv);
-          displayResults(resultsDiv, { text: "Cons.AI Oracle" }, 'title');
+          displayResults(resultsDiv, "Cons.AI Oracle", 'title');
           displayResults(resultsDiv, formattedData, "ragbot");
       
         } catch (error) {

@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, {text: "Pensata"}, 'title');
+        displayResults(resultsDiv, "Pensata Sortada", 'title');
         displayResults(resultsDiv, data, 'simple');
         
         // _________________________________________________________________________________
