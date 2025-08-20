@@ -703,7 +703,7 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   return `
   <div class="displaybox-item">
     <div class="displaybox-header" style="text-align: left; padding-left: 0;">
-      <span class="header-text" style="font-weight: bold;">${titleHtml}</span>
+      <span class="header-text">${titleHtml}</span>
     </div>
     <div class="displaybox-text">
       <span class="displaybox-text markdown-content">${textHtml}</span>
