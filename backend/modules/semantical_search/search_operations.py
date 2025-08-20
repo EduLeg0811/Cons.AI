@@ -96,8 +96,6 @@ def simple_semantical_search(query, source, index_dir, top_k):
           
             all_results.extend(results_with_scores)
 
-            logger.info("\n\n")
-            logger.info("[Search_operations.py  -- Simple_semantical_search]: all_results=%s", all_results)
 
         # ------------------------------------------------------
         # Processa resultados (ordena por menor distância

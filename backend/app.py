@@ -26,11 +26,7 @@ from utils.config import (
 )
 from utils.docx_export import build_grouped_markdown, markdown_to_docx_bytes
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
-from utils.search_utils import (
-    format_search_response,
-    get_search_headers,
-    handle_search_error,
-)
+from utils.search_utils import get_search_headers, handle_search_error
 
 
 logger = logging.getLogger("cons-ai")
@@ -94,6 +90,7 @@ def safe_str(value):
 
 
 
+
 #____________________________________________________________________
 # 1. Lexical Search
 #____________________________________________________________________
@@ -104,54 +101,57 @@ class LexicalSearchResource(Resource):
             
             # Parse input parameters with defaults
             term = safe_str(data.get("term", ""))
-            source = data.get("source", ["LO"])  # lista
-            top_k = int(data.get("top_k", TOP_K))
+            source = data.get("source", [])  # lista
             
             if not term:
                 raise ValueError("Search term is required")
 
             # Process search
-            raw_results = lexical_search_in_files(term, source)
-            
-            # Transform results
-            results = []
-            for file_path, paragraphs in raw_results.items():
-                source = os.path.basename(file_path)
-                for paragraph in paragraphs[:top_k]:
-                    paragraph_number = None
-                    paragraph_text = paragraph
-                    
-                    if ': ' in paragraph:
-                        try:
-                            paragraph_number = int(paragraph.split(':', 1)[0])
-                            paragraph_text = paragraph.split(':', 1)[1].strip()
-                        except (ValueError, IndexError):
-                            pass
-                    
-                    result_data = {
-                        'text': paragraph_text,
-                        'source': source
-                    }
-                    if paragraph_number is not None:
-                        result_data['paragraph_number'] = paragraph_number
-                    
-                    results.append(result_data)
+            results = lexical_search_in_files(term, source)
             
             # Sort by source for consistent ordering
-            results.sort(key=lambda x: x['source'])
+            results.sort(key=lambda x: x['book'])
+
+            #Limitar a TOP_K resultados
+            results = results[:TOP_K]
             
-            # Format and return response
-            response = format_search_response(
-                results=results,
-                search_type='lexical',
-                term=term,
-                source=source,
-            )
+             # Monta a resposta diretamente
+            response = {
+                "term": term,
+                "search_type": "lexical",
+                "results": results or [],
+                "count": len(results) if results else 0
+            }
+
+
+            logger.info("\n\n")
+            logger.info("[App.py][LexicalSearch] <<< response = >>>%s", response)
+            logger.info("\n\n")
+
             return response, 200, get_search_headers('lexical')
-            
+
+                        
         except Exception as e:
             error_response, status_code, headers = handle_search_error(e, "lexical search")
             return error_response, status_code, headers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -164,8 +164,13 @@ class SemanticalSearchResource(Resource):
         try:
             payload = request.get_json(force=True)
             term = safe_str(payload.get("term", ""))
-            source = safe_str(payload.get("source", "LO"))
             top_k = int(payload.get("top_k", TOP_K))
+
+            raw_source = payload.get("source", [])
+            if isinstance(raw_source, list):
+                source = ",".join(str(s).upper() for s in raw_source)
+            else:
+                source = safe_str(raw_source).upper()
             
             if not term:
                 raise ValueError("Search term is required")
@@ -184,6 +189,8 @@ class SemanticalSearchResource(Resource):
             #logger.info("\n\n")
             #logger.info("[App.py][SemanticalSearch] <<< processed_results = >>>%s", processed_results)
 
+            #Limitar a TOP_K resultados
+            processed_results = processed_results[:top_k]
            
             #logger.info("[App.py][SemanticalSearch] response=%s", response)
             return processed_results, 200, get_search_headers('semantical')
@@ -404,3 +411,76 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#____________________________________________________________________
+# 1. Lexical Search
+#____________________________________________________________________
+class LexicalSearchResource_old(Resource):
+    def post(self):
+        try:
+            data = request.get_json(force=True)
+            
+            # Parse input parameters with defaults
+            term = safe_str(data.get("term", ""))
+            source = data.get("source", ["LO"])  # lista
+            top_k = int(data.get("top_k", TOP_K))
+            
+            if not term:
+                raise ValueError("Search term is required")
+
+            # Process search
+            raw_results = lexical_search_in_files(term, source)
+            
+            # Transform results
+            results = []
+            for file_path, paragraphs in raw_results.items():
+                source = os.path.basename(file_path)
+                for paragraph in paragraphs[:top_k]:
+                    paragraph_number = None
+                    paragraph_text = paragraph
+                    
+                    if ': ' in paragraph:
+                        try:
+                            paragraph_number = int(paragraph.split(':', 1)[0])
+                            paragraph_text = paragraph.split(':', 1)[1].strip()
+                        except (ValueError, IndexError):
+                            pass
+                    
+                    result_data = {
+                        'text': paragraph_text,
+                        'source': source
+                    }
+                    if paragraph_number is not None:
+                        result_data['paragraph_number'] = paragraph_number
+                    
+                    results.append(result_data)
+            
+            # Sort by source for consistent ordering
+            results.sort(key=lambda x: x['source'])
+            
+            # Format and return response
+            response = format_search_response(
+                results=results,
+                search_type='lexical',
+                term=term,
+                source=source,
+            )
+            return response, 200, get_search_headers('lexical')
+            
+        except Exception as e:
+            error_response, status_code, headers = handle_search_error(e, "lexical search")
+            return error_response, status_code, headers

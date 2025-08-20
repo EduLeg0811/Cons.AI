@@ -186,24 +186,23 @@ document.addEventListener('DOMContentLoaded', () => {
             //call_semantical
             //*****************************************************************************************
             semJson = await call_semantical(paramSem);
-            console.log(`********Script_semantical.js - semantical_search*** [semJson]:`, semJson);
                 
+            // título com termo + contagem (array “flattened”)
+            // const titleCount =  `Semantical Search — ${term} (${Array.isArray(semJson) ? semJson.length : 0})`;
+            const newTitle =  `Semantical Search    ●    ${term}`;
 
-            // Prepara para o Display
-            // ======================
-            const dictData = dictionarize_semantical(semJson);
-
-            console.log(`********Script_semantical.js - semantical_search*** [dictData]:`, dictData);
             removeLoading(resultsDiv);
-            displayResults(resultsDiv,"Semantical Search", 'title');
-            displayResults(resultsDiv, dictData, "semantical");
+            displayResults(resultsDiv, newTitle, 'title');
+            displayResults(resultsDiv, semJson, "semantical");
+
+            console.log(`********Script_semantical.js - semantical_search*** [semJson]:`, semJson);
 
             // Estado para download
-            lastResults = storeResults(dictData, term, 'semantical');
+            lastResults = storeResults(semJson, term, 'semantical');
             if (downloadButtons) {
-                const hasResults = !!(semJson.results && semJson.results.length > 0);
+                const hasResults = Array.isArray(semJson) && semJson.length > 0;
                 downloadButtons.style.display = hasResults ? 'block' : 'none';
-            }
+              }
         
         // _________________________________________________________________________________
         // Error handling
@@ -231,35 +230,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// ________________________________________________________________________________________
-// NOVAS FUNCOS DE FORMATAÇÃO DOS DADOS PARA O DISPLAY
-// ________________________________________________________________________________________
-
-/**
- * Transforma o JSON vindo do backend (lista de dicts)
- * em uma lista de objetos JS padronizados.
- *
- * @param {Array} semJson - resposta JSON do backend (array de dicts planos)
- * @returns {Array} - lista de objetos prontos para uso
- *
- * Exemplo de uso:
- *   const dictData = dictionarize(semJson);
- *   dictData.forEach(item => console.log(item.id, item.title, item.score));
- */
-function dictionarize_semantical(semJson, source) {
-    if (!Array.isArray(semJson)) return [];
-  
-    return semJson.map(entry => {
-      const obj = {};
-  
-      // copia todos os campos existentes (mesmo que variem)
-      for (const [key, value] of Object.entries(entry)) {
-        obj[key] = value ?? null; // garante null para valores ausentes
-      }
-  
-      obj.source = source;
-  
-      return obj;
-    });
-  }
-  

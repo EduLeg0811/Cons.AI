@@ -102,16 +102,14 @@ if (downloadDocx) {
             //*****************************************************************************************
             const responseData = await call_lexical (parameters);
 
-            // Prepara para o Display
-            // ======================
-            const dictData = dictionarize_lexical(responseData);
+            const newTitle =  `Lexical Search    ●    ${term}`;
 
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Lexical Search", 'title');
-            displayResults(resultsDiv, dictData, "lexical");
+            displayResults(resultsDiv, newTitle, 'title');
+            displayResults(resultsDiv, responseData, "lexical");
     
             // Estado para download
-            lastResults = storeResults(dictData, term, 'lexical');
+            lastResults = storeResults(responseData, term, 'lexical');
             if (downloadButtons) {
                 const hasResults = !!(responseData.results && responseData.results.length > 0);
                 downloadButtons.style.display = hasResults ? 'block' : 'none';
@@ -156,7 +154,8 @@ function _numOrUndef(v) {
 function _pickKnownMeta(it, fallbackSrc) {
   // Campos “conhecidos”
   const base = {
-    source: it.source || it.file || fallbackSrc || 'Results',
+    source: it.book || it.source || it.file || fallbackSrc || 'Results',
+    book: it.book,
     paragraph_number: it.paragraph_number,
     autor: it.autor,
     title: it.title,

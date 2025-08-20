@@ -76,8 +76,7 @@ function renderMarkdown(mdText) {
 const renderers = {
     ragbot: showRagbot,
     lexical: showLexical,
-    //semantical: showSemanticalSingleSource,
-    semantical: showFlattened,
+    semantical: showSem,
     title: showTitle,
     simple: showSimple,
     verbetopedia: showVerbetopedia,
@@ -113,12 +112,12 @@ function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
-function formatMetaInfo(items) {
-    return items
-        .filter(item => item.value)
-        .map(item => `<span class="score-badge">${escapeHtml(item.label)}: ${escapeHtml(String(item.value ?? ''))}</span>`)
-        .join(' ');
-}
+
+
+
+
+
+
 
 // ====================== Renderer implementations ==========================
 
@@ -139,16 +138,50 @@ function removeLoading(container) {
 
 
 
+
 // ________________________________________________________________________________________
-// 2) showLexical(container, dict): renderiza HTML (append)
+// showSem(container, results)
+// - Recebe diretamente o array "flattened" vindo do backend (semJson).
+// - Exibe no mesmo estilo do showLexical, mas com TODOS os metadados como badges.
+// - Agrupa por fonte/livro (source/file/book), normaliza nome de exibição.
+// - Ordena por paragraph_number quando disponível.
+// - Renderiza markdown sanitizado (DOMPurify, se presente).
+//
+// Estrutura típica de cada item (campos possíveis):
+//   - Conteúdo:      display_md | markdown | page_content | text
+//   - Fonte/Livro:   book | source | file
+//   - Numeração:     paragraph_number | number
+//   - Título:        title
+//   - Autor:         author | autor
+//   - Score:         score (número)
+//   - Datas:         date | data
+//   - Taxonomias:    especialidade | specialty | tematologia
+//   - Navegação:     link_wv | url | link
+//   - Outros campos arbitrários de metadados podem aparecer e serão renderizados.
+//
+// Dependências esperadas no projeto:
+//   - renderMarkdown(htmlString)
+//   - escapeHtml(text)
+//   - window.DOMPurify (opcional, para sanitização)
+//   - window.normSourceName (opcional; se não houver, usamos fallback local)
+//
+// Campos de metadados esperados no projeto:
+//
+// LO:  Content_Text	Markdown	Title	  Number	Source						
+// DAC: Content_Text	Markdown	Title	  Number  Source		Division   Argumento	  			
+// CCG: Content_Text	Markdown	Title	  Number  Source		Folha	      	    			
+// EC:  Content_Text	Markdown	Title	  Number	Source    Date  Area  Theme	 Author	 Sigla 	Link	
+//
 // ________________________________________________________________________________________
-function showLexical(container, dict) {
+function showSem(container, results) {''
   if (!container) {
     console.error('Results container not found');
     return;
   }
-  const { sourceNames = [], resultsBySource = {} } = dict || {};
-  if (!sourceNames.length) {
+
+  // 0) Garantir array de entrada
+  const arr = Array.isArray(results) ? results : (Array.isArray(results?.results) ? results.results : []);
+  if (!arr.length) {
     container.insertAdjacentHTML(
       'beforeend',
       '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
@@ -156,17 +189,255 @@ function showLexical(container, dict) {
     return;
   }
 
-  // ======= SÍNTESE (BOX) =======
-  const totalCount = sourceNames.reduce((acc, src) => {
-    const n = (resultsBySource[src] || []).length;
-    return acc + n;
-  }, 0);
+  // 1) Normalizador de fonte/livro para exibição (remove diretórios e .md)
+  const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
+    ? window.normSourceName
+    : function _fallbackNormSourceName(src) {
+        if (!src) return 'Results';
+        let s = String(src);
+        s = s.split(/[\\/]/).pop();           // tira diretórios
+        s = s.replace(/\.(md|markdown)$/i, ''); // tira extensão
+        return s;
+      };
 
+  // 2) Configuração dos metadados (fácil de incluir/retirar)
+  //    - "keyPaths" aceita alternativas; o primeiro valor existente será usado.
+  //    - "label" aparece na badge; "className" permite variações de estilo.
+  const META_FIELDS = [
+    { id: 'source',   label: 'Source',   keyPaths: ['book', 'source', 'file'], className: 'badge small-green' },
+    { id: 'number',   label: 'Number',   keyPaths: ['paragraph_number', 'number'], className: 'badge small-green'   },
+    { id: 'title',    label: 'Title',    keyPaths: ['title'],          className: 'badge small-green' },
+    { id: 'argumento',label: 'Argumento',keyPaths: ['argumento'],      className: 'badge small-green' },
+    { id: 'division', label: 'Division', keyPaths: ['division'],       className: 'badge small-green' },
+    { id: 'folha',    label: 'Folha',    keyPaths: ['folha'],          className: 'badge small-green' },
+    { id: 'author',   label: 'Author',   keyPaths: ['author', 'autor'],className: 'badge small-green' },
+    { id: 'theme',     label: 'Tematologia', keyPaths: ['tematologia'], className: 'badge small-green' },
+    { id: 'area',     label: 'Especialidade', keyPaths: ['especialidade'], className: 'badge small-green' },
+    { id: 'date',     label: 'Date',     keyPaths: ['date', 'data'],   className: 'badge small-green' },
+    { id: 'score',    label: 'Score',    keyPaths: ['score'],          className: 'badge small-green' },
+    { id: 'link',     label: 'Link',     keyPaths: ['link', 'url'], className: 'badge small-green' },
+  ];
+
+  // Campos a ignorar no "varre-tudo" dinâmico (para não duplicar)
+  const IGNORE_FOR_DYNAMIC = new Set(
+    ['markdown','page_content','text','type','display_md','id','_origIndex','_srcRaw','_src']
+    .concat(META_FIELDS.flatMap(f => f.keyPaths))
+  );
+
+  // 3) Agrupar por fonte normalizada
+  const groups = arr.reduce((acc, it, idx) => {
+    const raw = it?.book || it?.source || it?.file || 'Results';
+    const key = normSourceName(raw);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
+    return acc;
+  }, {});
+  const groupNames = Object.keys(groups);
+
+
+
+  // 4) Resumo superior
+  const totalCount = arr.length;
+  const perSourceLines = groupNames.map(name => {
+    const n = groups[name].length;
+    return `<div><strong>${escapeHtml(name)}</strong>: ${n} resultado${n !== 1 ? 's' : ''}</div>`;
+  }).join('');
+
+  const summaryHtml = `
+  <div style="
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 8px 0 14px 0;
+  ">
+    <div style="font-weight: bold; margin-bottom: 6px;">
+      Total de parágrafos encontrados: ${totalCount}
+    </div>
+    ${perSourceLines}
+  </div>
+`;
+container.insertAdjacentHTML('beforeend', summaryHtml);
+
+
+
+  // 5) Render por grupo
+  groupNames.forEach(groupName => {
+    // Ordena por paragraph_number quando houver (senão mantém ordem original)
+    const items = groups[groupName].slice().sort((a, b) => {
+      const na = Number.isFinite(a?.paragraph_number) ? a.paragraph_number : Infinity;
+      const nb = Number.isFinite(b?.paragraph_number) ? b.paragraph_number : Infinity;
+      return na - nb;
+    });
+
+    // Gera linhas
+    const contentHtml = items.map((item, idx) => {
+
+      // 5.1) Conteúdo de parágrafo (markdown)
+      let content = (
+        (typeof item.markdown   === 'string' && item.markdown)   ||
+        (typeof item.page_content === 'string' && item.page_content) ||
+        ''  
+      );
+      
+      // If source is "LO" and there's a title, prepend it in bold
+      if ((item.book === 'LO' || item.source === 'LO' || item.file === 'LO') && item.title) {
+        content = `**${item.title}**. ${content}`;
+      }
+      
+      const rawHtml  = renderMarkdown(content);
+      const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+      // 5.2) Marcador sequencial [n] (posição dentro do grupo)
+      const markerHtml = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
+
+      // 5.3) Construção das badges de metadados
+      const badges = [];
+
+      // Helper: pega o primeiro valor válido de uma lista de chaves
+      const getFirst = (obj, keys) => {
+        for (const k of keys) {
+          const v = obj?.[k];
+          if (v !== undefined && v !== null && String(v).trim() !== '') return v;
+        }
+        return undefined;
+      };
+
+      // Campos declarados em META_FIELDS, em ordem
+      META_FIELDS.forEach(field => {
+        let val = getFirst(item, field.keyPaths);
+        if (val === undefined) return;
+
+        // Normaliza 'source' para exibição
+        if (field.id === 'source') {
+          val = normSourceName(val);
+        }
+
+        // Formatação específica
+        if (field.id === 'score' && typeof val === 'number' && !Number.isNaN(val)) {
+          val = val.toFixed(2);
+        }
+
+        // Link clicável quando for 'link'
+        if (field.id === 'link' && typeof val === 'string') {
+          const url = val;
+          const esc = escapeHtml(url);
+          badges.push(`<a class="${field.className}" href="${esc}" target="_blank" rel="noopener noreferrer">${escapeHtml(field.label)}</a>`);
+        } else {
+          badges.push(`<span class="${field.className}">${escapeHtml(field.label)}: ${escapeHtml(String(val))}</span>`);
+        }
+      });
+
+      // 5.4) Badges dinâmicas (para qualquer outro metadado "simples")
+      for (const [k, v] of Object.entries(item)) {
+        if (IGNORE_FOR_DYNAMIC.has(k)) continue;
+        if (v === undefined || v === null) continue;
+        const t = typeof v;
+        if (t === 'string' || t === 'number' || t === 'boolean') {
+          // evita duplicar se já foi contemplado pelos campos declarados
+          const alreadyCovered = META_FIELDS.some(f => f.keyPaths.includes(k));
+          if (alreadyCovered) continue;
+          badges.push(`<span class="badge small-green">${escapeHtml(k)}: ${escapeHtml(String(v))}</span>`);
+        }
+      }
+
+    //   // 5.5) Render final do item
+    //   return `
+    //     <div class="displaybox-item" data-orig-index="${item._origIndex ?? ''}" data-paragraph-number="${item.paragraph_number ?? ''}">
+    //       ${markerHtml}
+    //       <span class="displaybox-text">
+    //         <span class="markdown-inline">${safeHtml}</span>
+    //         <span class="badges-group small-green">${badges.join(' ')}</span>
+    //       </span>
+    //     </div>
+    //   `;
+    // }).join('');
+
+    // 5.5) Render final do item
+    return `
+    <div class="displaybox-item">
+      <span class="displaybox-text">
+        <span class="markdown-inline">${safeHtml}</span>
+        <span class="badges-group small-green">${badges.join(' ')}</span>
+      </span>
+    </div>
+  `;
+}).join('');
+
+
+
+
+
+    // Header do grupo + conteúdo
+    const groupHtml = `
+      <div class="displaybox-group">
+        <div class="displaybox-header">
+          <span style="color: blue; font-weight: bold;">${escapeHtml(groupName)}</span>
+          <span class="score-badge" style="font-size: 10px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="displaybox-content">
+          ${contentHtml}
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', groupHtml);
+  });
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ________________________________________________________________________________________
+// showLexical(container, responseData): consome resposta "flattened" da API
+// Estrutura esperada:
+//   responseData = {
+//     term: string,
+//     search_type: "lexical",
+//     results: [{ paragraph, paragraph_number, book }, ...],
+//     count: number
+//   }
+// ________________________________________________________________________________________
+function showLexical(container, responseData) {
+  if (!container) {
+    console.error('Results container not found');
+    return;
+  }
+
+  // 1) Validação do payload
+  const results = Array.isArray(responseData?.results) ? responseData.results : [];
+  if (!results.length) {
+    container.insertAdjacentHTML(
+      'beforeend',
+      '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
+    );
+    return;
+  }
+
+  // 2) Agrupar por "book" (em sources)
+  //    Se não houver "book", cai para "Results".
+  const groups = results.reduce((acc, item) => {
+    const key = (item && item.book) ? String(item.book) : 'Results';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+  const sourceNames = Object.keys(groups);
+
+  // 3) SÍNTESE (box superior): total + por fonte/livro
+  const totalCount = results.length;
   const perSourceLines = sourceNames.map(src => {
-    const n = (resultsBySource[src] || []).length;
-    // se tiver escapeHtml disponível no seu escopo, use-o; senão, remova a chamada
-    const safeSrc = (typeof escapeHtml === 'function') ? escapeHtml(src) : src;
-    return `<div style="margin: 2px 0;">● ${safeSrc}: ${n}</div>`;
+    const n = (groups[src] || []).length;
+    return `<div><strong>${escapeHtml(src)}</strong>: ${n} resultado${n !== 1 ? 's' : ''}</div>`;
   }).join('');
 
   const summaryHtml = `
@@ -183,71 +454,63 @@ function showLexical(container, dict) {
       ${perSourceLines}
     </div>
   `;
+  container.insertAdjacentHTML('beforeend', summaryHtml);
 
-  // ======= GRUPOS POR FONTE =======
-  const htmlGroups = sourceNames.map(src => {
-    const items = resultsBySource[src] || [];
-    if (!items.length) return '';
+  // 4) Renderização por grupo (mesmo estilo de HTML do anterior)
+  sourceNames.forEach(src => {
+    const items = groups[src].slice();
 
-    // ordena por paragraph_number quando existir
-    const sortedItems = [...items].sort((a, b) => {
-      const A = a.paragraph !== undefined ? a.paragraph : Number.MAX_SAFE_INTEGER;
-      const B = b.paragraph !== undefined ? b.paragraph : Number.MAX_SAFE_INTEGER;
-      return A - B;
+    // Ordena dentro do grupo por paragraph_number (se existir), senão mantém a ordem original
+    items.sort((a, b) => {
+      const na = Number.isFinite(a?.paragraph_number) ? a.paragraph_number : Infinity;
+      const nb = Number.isFinite(b?.paragraph_number) ? b.paragraph_number : Infinity;
+      return na - nb;
     });
 
-    const contentHtml = sortedItems.map((item, index) => {
-      const paraNumber = index + 1;
-      const mdHtml = renderMarkdown(item.content || '');
+    // Conteúdo dos itens do grupo
+    const contentHtml = items.map((item, idx) => {
+      const seqMarker = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold;">[${idx + 1}]</span>`;
+      const mdHtml = renderMarkdown(item?.paragraph || item?.text || '');
 
-      const scoreHtml = (typeof item.score === 'number' && !Number.isNaN(item.score))
-        ? `<span class="score-badge">Score: ${item.score.toFixed(2)}</span>` : '';
+      // Badge do número absoluto do parágrafo no arquivo (se presente)
+      const paraBadge = (item?.paragraph_number != null)
+        ? `<span class="score-badge small-green">#${String(item.paragraph_number)}</span>`
+        : '';
 
-      const originalParaHtml = (item.paragraph !== undefined)
-        ? `<span class="score-badge">#${item.paragraph}</span>` : '';
+      // return `
+      //   <div class="displaybox-item">
+      //     ${seqMarker}
+      //     <span class="displaybox-text markdown-content">${mdHtml}</span>
+      //     ${paraBadge}
+      //   </div>`;
 
-      const m = item.meta || {};
-      const metaBadges = [
-        m.title ? `<span class="score-badge">${escapeHtml(m.title)}</span>` : '',
-        m.autor ? `<span class="score-badge">${escapeHtml(m.autor)}</span>` : '',
-        m.number != null ? `<span class="score-badge">No. ${escapeHtml(String(m.number))}</span>` : '',
-        m.tematologia ? `<span class="score-badge">${escapeHtml(m.tematologia)}</span>` : '',
-        m.especialidade ? `<span class="score-badge">${escapeHtml(m.especialidade)}</span>` : '',
-        m.date ? `<span class="score-badge">${escapeHtml(m.date)}</span>` : '',
-        m.link_wv ? `<a class="score-badge" href="${escapeHtml(m.link_wv)}" target="_blank" rel="noopener">link</a>` : '',
-      ].filter(Boolean).join(' ');
 
-      return `
+        return `
         <div class="displaybox-item">
-          <span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold;">[${paraNumber}]</span>
           <span class="displaybox-text markdown-content">${mdHtml}</span>
-          ${originalParaHtml} ${scoreHtml} ${metaBadges}
+          ${paraBadge}
         </div>`;
+
+
+
+
     }).join('');
 
-    const safeSrc = (typeof escapeHtml === 'function') ? escapeHtml(src) : src;
-
-    return `
+    // Header do grupo + conteúdo
+    const groupHtml = `
       <div class="displaybox-group">
         <div class="displaybox-header">
-          <span style="color: blue; font-weight: bold;">${safeSrc}</span>
+          <span style="color: blue; font-weight: bold;">${escapeHtml(src)}</span>
           <span class="score-badge" style="font-size: 10px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
         </div>
         <div class="displaybox-content">
           ${contentHtml}
         </div>
-      </div>`;
-  }).join('');
-
-  // Insere primeiro a SÍNTESE, depois os grupos
-  container.insertAdjacentHTML('beforeend', summaryHtml + htmlGroups);
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', groupHtml);
+  });
 }
-
-
-
-
-
-
 
 
 
@@ -257,8 +520,7 @@ function showLexical(container, dict) {
 // ________________________________________________________________________________________
 // Show Title
 // ________________________________________________________________________________________
-function showTitle(container, data) {
-    const text = data.text
+function showTitle(container, text) {
     const cleanText = renderMarkdown(text);
     const html = `
             <h3 class="displaybox-header"><strong>${cleanText}</strong></h3>`;
@@ -310,376 +572,26 @@ function showTitle(container, data) {
     const text = data.text || data.results?.[0]?.text || '';
     const mdHtml = renderMarkdown(text); // <<<
 
-    const metaInfo = formatMetaInfo([
-        { label: 'Citations', value: Array.isArray(data.citations) ? data.citations.join(', ') : data.citations },
-        { label: 'Tokens', value: data.total_tokens_used },
-        { label: 'Model', value: data.model }
-    ]);
-    
-    const html = `
-    <div class="displaybox-container">
-        <div class="displaybox-content">
-            <div class="displaybox-text markdown-content">${mdHtml}</div>  <!-- <<< -->
-            ${metaInfo ? `<div class="badges-group small-green">${metaInfo}</div>` : ''}
-        </div>
-    </div>`;
-    container.insertAdjacentHTML('beforeend', html);
-}
-
-
-
-// ________________________________________________________________________________________
-// Show Semantical — multiple sources
-// => Versão adaptada da showSemanticalSingleSource para suportar várias fontes
-// => Mantém a normalização da semantical (SELECTORS) e inclui sumário no início e no fim
-// ________________________________________________________________________________________
-function showSemanticalMultipleSource(container, dict) {
-  if (!container) return;
-
-  // ---------- Mapeamento de campos possíveis ----------
-  // Cada item pode vir de fonte diferente (LO, DAC, CCG, EC etc.),
-  // então definimos "aliases" para capturar os campos equivalentes.
-  const SELECTORS = {
-    source:        ['source', 'book'],
-    clean_text:    ['content_text'],
-    markdown_text: ['markdown'],
-    title:         ['title', 'section'],
-    number:        ['paragraph_number', 'quest_number', 'number'],
-    score:         ['score'],
-    area:          ['area'],
-    argumento:     ['argumento'],
-    section:       ['section'],
-    folha:         ['folha'],
-    theme:         ['theme'],
-    author:        ['author'],
-    sigla:         ['sigla'],
-    date:          ['date'],
-    link:          ['link']
-  };
-
-  // ---------- Helpers ----------
-  // pega o primeiro valor não nulo/indefinido dentro das chaves possíveis
-  const pickFirst = (obj, keys) => {
-    for (const k of keys) {
-      const v = obj?.[k];
-      if (v !== undefined && v !== null) return v;
-    }
-    return null;
-  };
-
-  // escapa caracteres HTML perigosos (<, >, &, etc.)
-  const safeText = (str) => String(str ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-
-  // renderiza markdown inline (usa `marked` se disponível, senão fallback)
-  const renderMdInline = (md) =>
-    (window.marked?.parseInline ? window.marked.parseInline(md || '') : renderMarkdown(md || ''));
-
-  // normaliza um item para formato padronizado
-  const normalizeRow = (d) => ({
-    id:            d?.id ?? null,
-    source:        pickFirst(d, SELECTORS.source)        ?? '',
-    clean_text:    pickFirst(d, SELECTORS.clean_text)    ?? '',
-    markdown_text: pickFirst(d, SELECTORS.markdown_text) ?? '',
-    title:         pickFirst(d, SELECTORS.title)         ?? '',
-    number:        pickFirst(d, SELECTORS.number),
-    score:         pickFirst(d, SELECTORS.score),
-    area:          pickFirst(d, SELECTORS.area)          ?? '',
-    argumento:     pickFirst(d, SELECTORS.argumento)     ?? '',
-    section:       pickFirst(d, SELECTORS.section)       ?? '',
-    folha:         pickFirst(d, SELECTORS.folha)         ?? '',
-    theme:         pickFirst(d, SELECTORS.theme)         ?? '',
-    author:        pickFirst(d, SELECTORS.author)        ?? '',
-    sigla:         pickFirst(d, SELECTORS.sigla)         ?? '',
-    date:          pickFirst(d, SELECTORS.date)          ?? '',
-    link:          pickFirst(d, SELECTORS.link)          ?? ''
-  });
-
-  // ---------- Preparação dos dados ----------
-  // dict pode vir em dois formatos:
-  // 1) array simples de itens [{...}, {...}]
-  // 2) objeto { sourceNames, resultsBySource }
-  let sourceNames = [];
-  let resultsBySource = {};
-
-  if (Array.isArray(dict)) {
-    // caso 1: array plano
-    const rows = dict.map(normalizeRow);
-    for (const r of rows) {
-      const src = r.source || '(sem fonte)';
-      if (!resultsBySource[src]) resultsBySource[src] = [];
-      resultsBySource[src].push(r);
-    }
-    sourceNames = Object.keys(resultsBySource);
-  } else if (dict && (Array.isArray(dict.sourceNames) || dict.resultsBySource)) {
-    // caso 2: objeto estruturado
-    const inNames  = Array.isArray(dict.sourceNames) ? dict.sourceNames : [];
-    const inMap    = dict.resultsBySource || {};
-    const mapOut   = {};
-    const namesOut = [];
-    for (const name of inNames.length ? inNames : Object.keys(inMap)) {
-      const arr = Array.isArray(inMap[name]) ? inMap[name] : [];
-      const rows = arr.map(normalizeRow);
-      if (rows.length) {
-        namesOut.push(name);
-        mapOut[name] = rows;
-      }
-    }
-    sourceNames = namesOut;
-    resultsBySource = mapOut;
-  } else {
-    // formato inválido
-    container.insertAdjacentHTML(
-      'beforeend',
-      '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-    );
-    return;
-  }
-
-  if (!sourceNames.length) {
-    // nenhum resultado válido
-    container.insertAdjacentHTML(
-      'beforeend',
-      '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-    );
-    return;
-  }
-
-  // ---------- Ordena os itens de cada fonte por score (desc) ----------
-  for (const src of sourceNames) {
-    resultsBySource[src].sort((a, b) => {
-      const sA = (typeof a.score === 'number' ? a.score : -Infinity);
-      const sB = (typeof b.score === 'number' ? b.score : -Infinity);
-      return sB - sA;
-    });
-  }
-
-  // ---------- Monta o sumário inicial ----------
-  const totalGlobal = sourceNames.reduce((acc, s) => acc + (resultsBySource[s]?.length || 0), 0);
-  const summaryTop = `
-    <div style="
-      border: 1px solid #ddd;
-      background-color: #f7f7f7;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin: 8px 0 14px 0;
-    ">
-      <div style="font-weight: bold; margin-bottom: 6px;">
-      Total de parágrafos encontrados: ${totalGlobal}
-      </div>
-      ${sourceNames.map(s => {
-        const safe = safeText(s);
-        const n = (resultsBySource[s] || []).length;
-        return `<div style="margin:2px 0;">● ${safe}: ${n}</div>`;
-      }).join('')}
-    </div>
+    const metaInfo = `
+    <div class="badges-group small-green">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations}</div>
+    <div class="badges-group small-green">Tokens: ${data.total_tokens_used}</div>
+    <div class="badges-group small-green">Model: ${data.model}</div>
   `;
-
-  // ---------- Renderiza cada grupo de resultados por fonte ----------
-  const groupsHtml = sourceNames.map((src) => {
-    const items = resultsBySource[src] || [];
-    if (!items.length) return '';
-
-    const headerSource = safeText(src);
-    const totalResults = items.length;
-
-    // lista de parágrafos da fonte
-    const contentHtml = items.map((item, idx) => {
-      const markerHtml = `<span class="paragraph-marker">[${idx + 1}]</span>`;
-      const titleHtml  = item.title ? `<strong>${safeText(item.title)}</strong>. ` : '';
-      const textHtml   = renderMdInline(item.markdown_text);
-
-      const scoreHtml = (typeof item.score === 'number' && !Number.isNaN(item.score))
-        ? `<span class="badge badge-score">Score: ${item.score.toFixed(2)}</span>` : '';
-
-      const numberHtml = (item.number ?? '') !== ''
-        ? `<span class="badge badge-para">#${safeText(item.number)}</span>` : '';
-
-      return `
-        <div class="displaybox-item">
-          ${markerHtml}
-          <span class="displaybox-text">
-            <span class="markdown-inline">${titleHtml}${textHtml}</span>
-            <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
-          </span>
-        </div>
-      `;
-    }).join('');
-
-    // bloco da fonte
-    return `
-      <div class="displaybox-group">
-        <div class="displaybox-header">
-          <span class="header-text"><strong>${headerSource}</strong></span>
-          <span class="badge">${totalResults} resultado${totalResults !== 1 ? 's' : ''}</span>
-        </div>
-        <div class="displaybox-content">${contentHtml}</div>
-      </div>
-    `;
-  }).join('');
-
-
-  // ---------- Insere tudo no container ----------
-  // Ordem: sumário inicial -> grupos por fonte -> sumário final
-  container.insertAdjacentHTML('beforeend', summaryTop + groupsHtml);
-}
-
-
-
-// ________________________________________________________________________________________
-// Show Semantical — single source (versão simplificada e explícita)
-// ________________________________________________________________________________________
-function showSemanticalSingleSource(container, dictData) {
-  if (!container) return;
-  if (!Array.isArray(dictData) || dictData.length === 0) {
-    container.insertAdjacentHTML(
-      'beforeend',
-      '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-    );
-    return;
-  }
-
-  const SHOW_EXTRACTED = false;
-
-  const SELECTORS = {
-    source:        ['source', 'book'],
-    clean_text:    ['content_text'],
-    markdown_text: ['markdown'],
-    title:         ['title', 'section'],
-    number:        ['paragraph_number', 'quest_number', 'number'],
-    score:         ['score'],
-    area:          ['area'],
-    argumento:     ['argumento'],
-    section:       ['section'],
-    folha:         ['folha'],
-    theme:         ['theme'],
-    author:        ['author'],
-    sigla:         ['sigla'],
-    date:          ['date'],
-    link:          ['link']
-  };
-
-  const pickFirst = (obj, keys) => {
-    for (const k of keys) {
-      const v = obj?.[k];
-      if (v !== undefined && v !== null) return v;
-    }
-    return null;
-  };
-
-  const safeText = (str) => String(str ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-
-  const renderMdInline = (md) =>
-    (window.marked?.parseInline ? window.marked.parseInline(md || '') : renderMarkdown(md || ''));
-
-  const rows = dictData.map((d) => {
-    const norm = {
-      id:            d.id ?? null,
-      source:        pickFirst(d, SELECTORS.source)        ?? '',
-      clean_text:    pickFirst(d, SELECTORS.clean_text)    ?? '',
-      markdown_text: pickFirst(d, SELECTORS.markdown_text) ?? '',
-      title:         pickFirst(d, SELECTORS.title)         ?? '',
-      number:        pickFirst(d, SELECTORS.number),
-      score:         pickFirst(d, SELECTORS.score),
-      area:          pickFirst(d, SELECTORS.area)          ?? '',
-      argumento:     pickFirst(d, SELECTORS.argumento)     ?? '',
-      section:       pickFirst(d, SELECTORS.section)       ?? '',
-      folha:         pickFirst(d, SELECTORS.folha)         ?? '',
-      theme:         pickFirst(d, SELECTORS.theme)         ?? '',
-      author:        pickFirst(d, SELECTORS.author)        ?? '',
-      sigla:         pickFirst(d, SELECTORS.sigla)         ?? '',
-      date:          pickFirst(d, SELECTORS.date)          ?? '',
-      link:          pickFirst(d, SELECTORS.link)          ?? ''
-    };
-
-    if (SHOW_EXTRACTED) {
-      norm._debug = Object.entries(norm)
-        .map(([k, v]) => `- ${k} = ${JSON.stringify(v)}`).join('\n');
-    }
-    return norm;
-  });
-
-  // Ordenação por score
-  rows.sort((a, b) => {
-    const sA = (typeof a.score === 'number' ? a.score : -Infinity);
-    const sB = (typeof b.score === 'number' ? b.score : -Infinity);
-    return sB - sA;
-  });
-
-  // Cabeçalho
-  const totalResults = rows.length;
-  const headerSource = safeText(rows[0]?.source || '');
-
-  // =========================
-  // Box de síntese
-  // =========================
-  const summaryHtml = `
-    <div style="
-      border: 1px solid #ddd;
-      background-color: #f7f7f7;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin: 8px 0 14px 0;
-    ">
-      <div style="font-weight: bold; margin-bottom: 6px;">
-        - Total de parágrafos encontrados: ${totalResults}
-      </div>
-      <div>- ${headerSource}: ${totalResults}</div>
-    </div>
-  `;
-
-  // Lista
-  const contentHtml = rows.map((item, idx) => {
-    const markerHtml = `<span class="paragraph-marker">[${idx + 1}]</span>`;
-    const titleHtml  = item.title ? `<strong>${safeText(item.title)}</strong>. ` : '';
-    const textHtml   = renderMdInline(item.markdown_text);
-
-    const scoreHtml = (typeof item.score === 'number' && !Number.isNaN(item.score))
-      ? `<span class="badge badge-score">Score: ${item.score.toFixed(2)}</span>` : '';
-
-    const numberHtml = (item.number ?? '') !== ''
-      ? `<span class="badge badge-para">#${safeText(item.number)}</span>` : '';
-
-    const debugHtml = SHOW_EXTRACTED ? `<pre class="extracted-debug">${safeText(item._debug)}</pre>` : '';
-
-    return `
-      <div class="displaybox-item">
-        ${markerHtml}
-        <span class="displaybox-text">
-          <span class="markdown-inline">${titleHtml}${textHtml}</span>
-          <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
-          ${debugHtml}
-        </span>
-      </div>
-    `;
-  }).join('');
-
-  // Output final (box + grupo)
+  
   const html = `
-    ${summaryHtml}
-    <div class="displaybox-group">
-      <div class="displaybox-header">
-        <span class="header-text"><strong>${headerSource}</strong></span>
-        <span class="badge">${totalResults} resultado${totalResults !== 1 ? 's' : ''}</span>
+    <div class="displaybox-container">
+      <div class="displaybox-content">
+        <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
+        <div class="meta-info-row">
+          <span class="badges-group small-green">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations}</span>
+          <span class="badges-group small-green">Tokens: ${data.total_tokens_used}</span>
+          <span class="badges-group small-green">Model: ${data.model}</span>
+        </div>
       </div>
-      <div class="displaybox-content">${contentHtml}</div>
     </div>
   `;
-
   container.insertAdjacentHTML('beforeend', html);
 }
-
-
-
 
 
 
@@ -783,7 +695,7 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 
   // Lista
   const contentHtml = rows.map((item, idx) => {
-    const markerHtml = `<span class="paragraph-marker">[${idx + 1}]</span>`;
+    const markerHtml = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
     const titleHtml  = item.title
       ? `<strong>${safeText(item.title)}</strong> (${safeText(item.area)})  ●  <em>${safeText(item.author)}</em>  ●  ${safeText(item.number)}  ●  ${safeText(item.date)}`
       : '';
@@ -813,8 +725,6 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 }).join('');
 
 
-
-
 // ==========================================================================
 // Output final
 // ==========================================================================
@@ -829,63 +739,4 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   `;
 
   container.insertAdjacentHTML('beforeend', html);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// ________________________________________________________________
-// Show Flattened Results (agrupados) no mesmo estilo do showLexical
-// ________________________________________________________________
-function showFlattened(container, results) {
-  if (!container) return;
-  if (!Array.isArray(results) || results.length === 0) {
-    container.insertAdjacentHTML(
-      'beforeend',
-      '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-    );
-    return;
-  }
-
-  // Agrupar por "source" se existir, senão por "title"
-  const grouped = results.reduce((acc, item) => {
-    const groupKey = item.source || item.title || "Sem grupo";
-    if (!acc[groupKey]) acc[groupKey] = [];
-    acc[groupKey].push(item);
-    return acc;
-  }, {});
-
-  // Renderizar cada grupo
-  Object.entries(grouped).forEach(([group, items]) => {
-    let html = `
-      <div class="displaybox-container">
-        <div class="displaybox-header">${group}</div>
-        <div class="displaybox-content">
-    `;
-
-    items.forEach((item, idx) => {
-      const mdHtml = renderMarkdown(item.markdown || item.page_content || '');
-      const scoreHtml = item.meta_score ? `<span class="badge small-green">Score: ${item.meta_score.toFixed(2)}</span>` : '';
-      const numberHtml = item.paragraph_number ? `<span class="badge small-blue">#${item.paragraph_number}</span>` : '';
-
-      html += `
-        <div class="displaybox-item">
-          <span class="paragraph-marker">[${idx + 1}]</span>
-          <span class="displaybox-text markdown-content">${mdHtml}</span>
-          <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
-        </div>
-      `;
-    });
-
-    html += `</div></div>`;
-    container.insertAdjacentHTML('beforeend', html);
-  });
 }

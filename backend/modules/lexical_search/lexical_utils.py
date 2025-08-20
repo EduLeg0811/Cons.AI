@@ -1,249 +1,313 @@
+from collections import defaultdict
 import logging
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
+from typing import Any, DefaultDict, Dict, List
+
 from utils.config import FILES_SEARCH_DIR
 
 
+# =============================================================================================
+# Função principal: Lexical Search
+# =============================================================================================
+def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[str, Any]]:
+    """
+    results = [
+    {
+        "paragraph": "Texto do parágrafo encontrado",
+        "paragraph_number": 12,
+        "book": "LivroA.md"
+    },
+    {
+        "paragraph": "Outro parágrafo com o termo buscado",
+        "paragraph_number": 25,
+        "book": "LivroA.md"
+    },
+    {
+        "paragraph": "Mais um exemplo",
+        "paragraph_number": 7,
+        "book": "LivroB.md"
+    }
+    ]
 
-#______________________________________________________________________________________
-# Lexical Search
-#______________________________________________________________________________________
-def lexical_search_in_files(search_term: str, books: List[str]) -> Dict[str, List[str]]:
+    Extrair apenas o texto dos parágrafos
+    paragraphs = [item["paragraph"] for item in results]
+
+    Extrair apenas os números de parágrafo (ignorando None)
+    numbers = [item["paragraph_number"] for item in results if item["paragraph_number"] is not None]
+
+    Extrair todos os livros distintos
+    books = list({item["book"] for item in results})
+
     """
-    Performs a case-insensitive search for a term across specified markdown files in the SOURCE_DIR directory.
-    
-    This function:
-    1. Scans the SOURCE_DIR for markdown files that match the provided book names
-    2. For each matching file, reads its content and searches for the specified term
-    3. Returns a dictionary where:
-       - Keys are file paths
-       - Values are lists of paragraphs containing the search term
-    4. Raises a ValueError if no matching files are found
-    
-    Parameters:
-        search_term (str): The term to search for in the markdown files
-        books (List[str]): List of book names to search in (without .md extension)
-    
-    Returns:
-        Dict[str, List[str]]: A dictionary mapping file paths to lists of matching paragraphs
-    
-    Raises:
-        ValueError: If no matching files are found in the directory
-    
-    Example:
-        >>> lexical_search_in_files("example", ["LO", "DAC"])
-        {
-            "path/to/LO.md": ["This is an example paragraph.", "Another example."],
-            "path/to/DAC.md": ["Yet another example here."]
-        }
-    """
-    results = {}
+    results: List[Dict[str, Any]] = []
     found_books = set()
-    
-    # Get all markdown files in the directory
+
+    # Lista todos os arquivos .md disponíveis
     all_files = _list_markdown_files(FILES_SEARCH_DIR)
-    
-    # Create a mapping of base filenames (without extension) to full paths
     file_map = {os.path.splitext(os.path.basename(f))[0].upper(): f for f in all_files}
-    
-    # Find which requested books exist
+
+    # Seleciona apenas os arquivos pedidos pelo usuário
     matching_files = []
-    for book in books:
+    for book in source:
         book_upper = book.upper()
         if book_upper in file_map:
             matching_files.append(file_map[book_upper])
             found_books.add(book_upper)
-    
-    # Check if any books were found
+
     if not matching_files:
-        missing_books = ", ".join(books)
+        missing_books = ", ".join(source)
         error_msg = f"No matching files found for books: {missing_books}"
         logging.error(error_msg)
         raise ValueError(error_msg)
-    
-    # Log any requested books that weren't found
-    not_found = set(b.upper() for b in books) - found_books
+
+    not_found = set(b.upper() for b in source) - found_books
     if not_found:
         logging.warning(f"Could not find files for books: {', '.join(not_found)}")
-    
-    # Process each matching file
+
+    # Processa cada arquivo
     for file_path in matching_files:
         try:
-            # Read file content
             content = _read_markdown_file(file_path)
-            
-            # Search in content
+            book = os.path.splitext(os.path.basename(file_path))[0]
             matches = _search_in_content(content, search_term)
-            if matches:  # Only add to results if there are matches
-                results[file_path] = matches
-                
+
+            for match in matches or []:
+                results.append({
+                    "paragraph": match.get("paragraph_text"),
+                    "paragraph_number": match.get("paragraph_number"),
+                    "book": book,
+                })
+
         except Exception as e:
             logging.error(f"Error processing file {file_path}: {str(e)}")
-            continue
-    
+
+    logging.info(f"<<<<<lexical_search_in_files>>>>> Found {len(results)} matches for '{search_term}'")
     return results
 
 
-
-
-
-#=============================================================================================
-# --- Função para processar parágrafos encontrados ---
-
-# Esta função processa um parágrafo encontrado para reestruturá-lo
-# com base na presença do caractere "|" e do termo de busca.
-# Se o parágrafo contiver duas ou mais ocorrências de "|":
-# - O parágrafo é dividido usando "|" como separador.
-# - Um novo parágrafo é construído pegando o primeiro subtrecho
-#   e adicionando cada subtrecho que contenha o termo de busca original,
-#   separados por um espaço.
-# Se a condição não for atendida, o parágrafo original é retornado.
+# =============================================================================================
+# Função auxiliar: Processar parágrafos encontrados
+# =============================================================================================
 def process_found_paragraph(paragraph: str, search_term: str) -> str:
     """
     Processa um parágrafo encontrado para reestruturá-lo com base em "|" e no termo de busca.
 
+    Regras:
+    - Se houver 2 ou mais ocorrências de "|":
+      * Mantém o primeiro trecho.
+      * Adiciona apenas os subtrechos que contêm o termo de busca.
+    - Caso contrário, retorna o parágrafo original.
+
     Args:
-        paragraph: O parágrafo encontrado.
-        search_term: O termo que foi buscado.
+        paragraph (str): O parágrafo encontrado.
+        search_term (str): O termo buscado.
 
     Returns:
-        O parágrafo reestruturado ou o parágrafo original se a condição não for atendida.
+        str: O parágrafo processado (ou original se não houver modificação).
     """
     if not search_term:
         return paragraph
-        
-    # Converte o termo de busca para minúsculas uma única vez
+
     search_term_lower = search_term.lower()
-    
-    # Verifica se o parágrafo contém duas ou mais ocorrências de "|"
+
     if paragraph.count("|") >= 2:
         subtrechos = paragraph.split("|")
         if not subtrechos:
-            return paragraph  # Retorna o original se a divisão resultar em lista vazia
+            return paragraph
 
-        # Pega o primeiro subtrecho e remove espaços extras
         novo_paragrafo_partes = [subtrechos[0].strip()]
 
-        # Verifica cada subtrecho (a partir do segundo) para a presença do termo
         for subtrecho in subtrechos[1:]:
             subtrecho_limpo = subtrecho.strip()
-            # Verifica se o termo de busca está presente (ignorando capitalização)
             if search_term_lower in subtrecho_limpo.lower():
-                novo_paragrafo_partes.append(subtrecho_limpo)  # Adiciona o subtrecho se contiver o termo
+                novo_paragrafo_partes.append(subtrecho_limpo)
 
-        # Junta as partes do novo parágrafo com espaço
+        # Se nenhum subtrecho relevante foi encontrado, descarta
+        if len(novo_paragrafo_partes) == 1:
+            return ""
+
         resultado = " ".join(novo_paragrafo_partes)
-        resultado = resultado.replace("|", "")
-        resultado = resultado.replace("\\", "")
-        resultado = resultado.replace("\n", "")
-        resultado = resultado.strip()   
+        resultado = resultado.replace("|", "").replace("\\", "").replace("\n", "").strip()
 
         return resultado
     else:
-        # Se não houver pelo menos dois caracteres "|", retorna o parágrafo original
         return paragraph
 
 
-
-
-
-
-
-
-
-
-#=============================================================================================
+# =============================================================================================
+# Função auxiliar: Listar arquivos .md
+# =============================================================================================
 def _list_markdown_files(source_dir: str = FILES_SEARCH_DIR) -> List[str]:
     """
-    List all markdown files in the specified directory.
-    
+    Lista todos os arquivos .md no diretório especificado.
+
     Args:
-        source_dir (str): Directory path to search for markdown files.
-                         Defaults to SOURCE_DIR.
-    
+        source_dir (str): Caminho da pasta onde procurar arquivos markdown.
+
     Returns:
-        List[str]: List of full file paths to all .md files in the directory.
+        List[str]: Lista com paths completos dos arquivos encontrados.
     """
     try:
-        
-
         md_path = os.path.abspath(source_dir)
-        
-        # List all markdown files
+
         files = [
             os.path.join(md_path, f)
             for f in os.listdir(md_path)
             if f.lower().endswith(".md")
         ]
-        
-        # Debug: List all files in the directory
+
         all_files = os.listdir(md_path)
         logging.info(f"<<<<<_list_markdown_files>>>>> All files in directory ({len(all_files)}): {all_files}")
-        
+
         return files
-        
+
     except Exception as e:
         logging.error(f"Error in _list_markdown_files: {str(e)}")
         raise
 
-#=============================================================================================
+
+# =============================================================================================
+# Função auxiliar: Ler arquivo .md
+# =============================================================================================
 def _read_markdown_file(path: str, encodings: tuple = ("utf-8", "cp1252")) -> str:
     """
-    Read the contents of a markdown file, trying multiple encodings.
-    
+    Lê o conteúdo de um arquivo markdown, testando múltiplos encodings.
+
     Args:
-        path (str): Path to the markdown file.
-        encodings (tuple): Tuple of encodings to try when reading the file.
-                         Defaults to ("utf-8", "cp1252").
-    
+        path (str): Caminho do arquivo.
+        encodings (tuple): Encodings a testar em sequência.
+
     Returns:
-        str: The content of the file as a string.
-        
+        str: Conteúdo do arquivo como string.
+
     Raises:
-        UnicodeDecodeError: If the file cannot be decoded with any of the specified encodings.
+        Exception: Se nenhum encoding funcionar.
     """
     for enc in encodings:
         try:
             with open(path, "r", encoding=enc) as f:
                 return f.read()
-            
         except UnicodeDecodeError:
             logging.error(f"<<<<<_read_markdown_file>>>>> Error decoding {path} with encoding {enc}")
             continue
-    raise UnicodeDecodeError(f"Não foi possível decodificar {path}")
+    raise Exception(f"Não foi possível decodificar {path} com os encodings {encodings}")
 
-#=============================================================================================
-def _search_in_content(content: str, search_term: str) -> List[str]:
+
+# =============================================================================================
+# Função auxiliar: Buscar dentro do conteúdo
+# =============================================================================================
+# topo do arquivo
+import re
+import unicodedata
+from typing import List, Dict, Any
+
+def _strip_accents(s: str) -> str:
+    # remove acentos mantendo apenas letras “base”
+    return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+
+def _normalize_for_match(s: str) -> str:
+    # normaliza para comparação: sem acentos, minúsculo
+    return _strip_accents(s or '').lower()
+
+
+def _search_in_content(content: str, search_term: str, match_mode: str = "word") -> List[Dict[str, Any]]:
     """
-    Search for a term within the content and return matching paragraphs.
-    
-    Args:
-        content: The text content to search within
-        search_term: The term to search for (case-insensitive)
-        
-    Returns:
-        List[str]: A list of processed paragraphs containing the search term
+    Busca termo no conteúdo, retornando parágrafos "reais" por linha não vazia,
+    com número absoluto do parágrafo no arquivo (1..N).
+    - match_mode: "word" (usa limites de palavra) ou "substring" (contém).
+    - acentos são ignorados (normalização NFD).
     """
     if not content or not search_term:
         return []
-        
-    # Split content into paragraphs (separated by single newline)
+
+    # quebra simples: 1 linha = 1 parágrafo visual
     paras = [p.strip() for p in content.split("\n") if p.strip()]
-    
-    # Convert search term to lowercase once for case-insensitive search
-    search_term_lower = search_term.lower()
 
-    logging.info(f"<<<<_search_in_content>>>>> Searching for {search_term_lower} in {len(paras)}  paragraphs")
+    # normalizações
+    term_norm = _normalize_for_match(search_term)
+    if not term_norm:
+        return []
 
-    # Process and filter paragraphs
-    results = []
-    for paragraph in paras:
-        if search_term_lower in paragraph.lower():
+    # padrão para "word" (limites de palavra após normalização)
+    # \b funciona bem em ASCII; após remover acentos é suficiente p/ PT-BR
+    if match_mode == "word":
+        pattern = re.compile(rf"\b{re.escape(term_norm)}\b", flags=re.IGNORECASE)
+        def match_fun(pnorm: str) -> bool:
+            return bool(pattern.search(pnorm))
+    else:  # "substring"
+        def match_fun(pnorm: str) -> bool:
+            return term_norm in pnorm
+
+    results: List[Dict[str, Any]] = []
+    for idx, paragraph in enumerate(paras, start=1):
+        pnorm = _normalize_for_match(paragraph)
+
+        if match_fun(pnorm):
             processed = process_found_paragraph(paragraph, search_term)
             if processed and processed.strip():
-                results.append(processed)
+                results.append({
+                    "paragraph_text": processed,   # mantém original (com acentos)
+                    "paragraph_number": idx,       # número absoluto
+                })
 
     return results
+
+
+
+
+
+
+
+
+
+
+
+def group_lexical(results: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Agrupa os resultados de lexical_search_in_files por livro.
+
+    Args:
+        results (List[Dict[str, Any]]): Saída da função lexical_search_in_files,
+            contendo uma lista de dicionários com as chaves:
+            - paragraph (str)
+            - paragraph_number (int | None)
+            - book (str)
+
+    Returns:
+        Dict[str, List[Dict[str, Any]]]: Dicionário agrupado por livro.
+            Exemplo:
+            {
+                "LivroA.md": [
+                    {"paragraph": "...", "paragraph_number": 12, "book": "LivroA.md"},
+                    {"paragraph": "...", "paragraph_number": 25, "book": "LivroA.md"},
+                ],
+                "LivroB.md": [
+                    {"paragraph": "...", "paragraph_number": 7, "book": "LivroB.md"},
+                ]
+            }
+
+    #USO:
+    # Busca simples (lista plana)
+    results = lexical_search_in_files("consciência", ["LivroA", "LivroB"])
+
+    # Agrupamento por livro
+    grouped = group_lexical(results)
+
+    print(grouped.keys())       # livros encontrados
+    print(grouped["LivroA.md"]) # lista de parágrafos só do LivroA
+
+
+
+    """
+    grouped: DefaultDict[str, List[Dict[str, Any]]] = defaultdict(list)
+
+    for item in results:
+        book = item.get("book", "UNKNOWN")
+        grouped[book].append(item)
+
+    return dict(grouped)
+
 
 
 

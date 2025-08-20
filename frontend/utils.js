@@ -276,25 +276,35 @@ document.getElementById('btn-new-conv')?.addEventListener('click', resetConversa
 //______________________________________________________________________________________________
 // Store results in a consistent format for download
 //______________________________________________________________________________________________
-function storeResults(dictData, term, search_type) {
+function storeResults(data, term, search_type) {
   let allResults = [];
 
-  if (Array.isArray(dictData.results)) {
+  let arr = [];
+  if (Array.isArray(data))               arr = data;
+  else if (Array.isArray(data?.results)) arr = data.results;
+  else if (data?.resultsBySource)        arr = Object.values(data.resultsBySource).flat();
+
+  
+  if (Array.isArray(arr)) {
     // Caso 1: dados já "flattened"
-    allResults = dictData.results.map(item => ({
+    allResults = arr.map(item => ({
       ...item,
-      source: item.source || "Geral",
+      source: (typeof normSourceName === 'function')
+        ? normSourceName(item.source || item.file || 'Results')
+        : _normSrc(item.source || item.file || 'Results'),
       title: item.title || item.meta?.title || "Sem título",
       content: item.content || item.text || "",
       ...item.meta
     }));
-  } else if (dictData.resultsBySource) {
+  } else if (arr?.resultsBySource) {
     // Caso 2: dados agrupados por fonte
-    Object.entries(dictData.resultsBySource).forEach(([source, items]) => {
+    Object.entries(arr.resultsBySource).forEach(([source, items]) => {
       items.forEach(item => {
         allResults.push({
           ...item,
-          source: source,
+          source: (typeof normSourceName === 'function')
+            ? normSourceName(source)
+            : _normSrc(source),
           title: item.meta?.title || `Result from ${source}`,
           content: item.content || item.text || "",
           ...item.meta
@@ -311,4 +321,51 @@ function storeResults(dictData, term, search_type) {
   };
 
   return lastResults;
+}
+
+
+
+
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// mapeia letras para classes que capturam versões acentuadas
+const DIAC_MAP = {
+  'a': '[aàáâãäåAÀÁÂÃÄÅ]',
+  'e': '[eèéêëEÈÉÊË]',
+  'i': '[iìíîïIÌÍÎÏ]',
+  'o': '[oòóôõöOÒÓÔÕÖ]',
+  'u': '[uùúûüUÙÚÛÜ]',
+  'c': '[cçCÇ]',
+  'n': '[nñNÑ]'
+};
+function toDiacriticPattern(term) {
+  return term.split('').map(ch => DIAC_MAP[ch] || DIAC_MAP[ch.toLowerCase()] || escapeRegExp(ch)).join('');
+}
+
+/** Destaque semântico com acento-agnóstico; suporta termos compostos */
+function highlightTerm(html, term) {
+  if (!html || !term) return html;
+  const parts = term.split(/\s+/).filter(Boolean);
+  if (!parts.length) return html;
+
+  const alts = parts.map(p => toDiacriticPattern(p));
+  const rx = new RegExp(`(${alts.join('|')})`, 'gi');
+
+  return html.replace(rx, '<mark>$1</mark>');
+}
+
+
+
+
+
+function normSourceName(src) {
+  if (!src) return 'Results';
+  let s = String(src);
+  // tira diretórios (Windows/Linux)
+  s = s.split(/[\\/]/).pop();
+  // tira extensão .md / .markdown (case-insensitive)
+  s = s.replace(/\.(md|markdown)$/i, '');
+  return s;
 }

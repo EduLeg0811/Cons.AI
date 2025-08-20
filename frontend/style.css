@@ -303,13 +303,11 @@ button:active { background-color: #298e46; }
 .text-content,
 .displaybox-content,
 .displaybox-container {
-    text-align: justify !important;
-    text-justify: inter-word !important;
+    text-align: left !important;
 }
 .displaybox-content *,
 .displaybox-container * {
     text-align: inherit !important;
-    text-justify: inherit !important;
 }
 
 .text-content {
@@ -324,8 +322,7 @@ button:active { background-color: #298e46; }
 .text-content p {
     margin: 0.5em 0;
     white-space: pre-wrap;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
 }
 
 /* Loading animation - USED */
@@ -410,8 +407,7 @@ button:active { background-color: #298e46; }
 }
 .displaybox-content {
     padding: 1.25rem;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
 }
 .displaybox-header {
     background-color: #f6f6f6;
@@ -878,3 +874,12 @@ body { line-height: inherit !important; }
         padding: 0.5rem 0.75rem;
     }
 }
+
+
+
+.meta-info-row {
+    display: flex;
+    gap: 8px; /* espaço entre os badges */
+    flex-wrap: wrap; /* quebra de linha caso a tela seja estreita */
+  }
+  
