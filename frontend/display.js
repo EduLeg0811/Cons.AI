@@ -672,12 +672,12 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 
 
   // ==========================================================================
-  // Ordenação (score desc)
+  // Ordenação (score asc)
   // ==========================================================================
   rows.sort((a, b) => {
     const sA = (typeof a.score === 'number' ? a.score : -Infinity);
     const sB = (typeof b.score === 'number' ? b.score : -Infinity);
-    return sB - sA;
+    return sA - sB;  // Agora ordena do menor para o maior score
   });
 
   // Cabeçalho: fonte única

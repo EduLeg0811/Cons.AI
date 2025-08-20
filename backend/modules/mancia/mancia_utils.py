@@ -78,7 +78,7 @@ def comment_pensata(pensata_text: str) -> dict:
             "model": "gpt-4.1-nano",
             "use_session": False,
             "vector_store_id": "vs_6870595f39dc8191b364854cf46ffc74", #ALLWV
-            "top_k": 50,
+            "top_k": TOP_K,
             "temperature": 0.7,
             "instructions": "Você é um assistente especialista em Conscienciologia, que analisa e faz comentários com base nos documentos fornecidos. Responda de forma direta e objetiva. Se possível, dê exemplos concretos. Utilize marcação markdown para formatação, realçando as partes mais relevantes.",
         }

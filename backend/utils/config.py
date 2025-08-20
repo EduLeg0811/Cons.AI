@@ -7,7 +7,7 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL_LLM="gpt-4.1-nano"
 TEMPERATURE=0.0
-TOP_K=20
+TOP_K=10
 
 # Vector Store ID - FAISS Local
 FAISS_ID_DAC="DAC"

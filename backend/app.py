@@ -215,7 +215,7 @@ class RAGbotResource(Resource):
 
             model = data.get("model", "gpt-4.1-nano")
             temperature = float(data.get("temperature", 0.3))
-            top_k = int(data.get("top_k", 50))
+            top_k = int(data.get("top_k", TOP_K))
             instructions = data.get("instructions", "Você é um assistente especialista em Conscienciologia.")
             vector_store_names = data.get("vector_store_names", "ALLWV")
             use_session = bool(data.get("use_session", True))

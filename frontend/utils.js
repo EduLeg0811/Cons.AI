@@ -14,7 +14,7 @@ const downloadDocx = document.getElementById('downloadDocx');
 // Global Parameters
 const MODEL_LLM='gpt-4.1-nano';
 const TEMPERATURE=0.0;
-const TOP_K=5;
+const TOP_K=10;
 
 // =================== API Configuration (DEV/PROD) ===================
 // LEMBRAR DE MUDAR TAMBÉM EM APP.PY
