@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, "Pensata Sortada", 'title');
+        displayResults(resultsDiv, "Pensata Sorteada", 'title');
         displayResults(resultsDiv, data, 'simple');
         
         // _________________________________________________________________________________
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Formatação para displayResults
         const formattedData = formatBotResponse(commentaryData);
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, {text: "Commentary"}, 'title');
+        displayResults(resultsDiv, "Comentário", 'title');
         displayResults(resultsDiv, formattedData, 'ragbot');
 
 

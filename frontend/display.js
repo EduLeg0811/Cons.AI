@@ -704,16 +704,31 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   return `
   <div class="displaybox-item">
     <div class="displaybox-header">
-      <span class="header-text">
-      ${markerHtml} ${titleHtml}
-      </span>
+      <span class="header-text">${titleHtml}</span>
     </div>
     <div class="displaybox-text">
-      <span class="markdown-inline">${textHtml}</span>
+      <span class="displaybox-text markdown-content">${textHtml}</span>
       <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
     </div>
   </div>
 `;
+
+
+  // return `
+  //   <div class="displaybox-item">
+  //     <div class="displaybox-header">
+  //       <span class="header-text">
+  //       ${markerHtml} ${titleHtml}
+  //       </span>
+  //     </div>
+  //     <div class="displaybox-text">
+  //       <span class="markdown-inline">${textHtml}</span>
+  //       <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
+  //     </div>
+  //   </div>
+  // `;
+
+
 }).join('');
 
 
