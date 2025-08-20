@@ -577,9 +577,9 @@ function showTitle(container, text) {
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
         <div class="displaybox-item">
-          <span class="badges-group small-green">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations}</span>
-          <span class="badges-group small-green">Tokens: ${data.total_tokens_used}</span>
-          <span class="badges-group small-green">Model: ${data.model}</span>
+          <span class="rag-badge">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations || 'N/A'}</span>
+          <span class="rag-badge">Tokens: ${data.total_tokens_used || 'N/A'}</span>
+          <span class="rag-badge">Model: ${data.model || 'N/A'}</span>
         </div>
       </div>
     </div>
@@ -689,26 +689,25 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
   const contentHtml = rows.map((item, idx) => {
     const markerHtml = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold; display: inline-block;">[${idx + 1}]</span>`;
     const titleHtml  = item.title
-      ? `<strong>${safeText(item.title)}</strong> (${safeText(item.area)})  ●  <em>${safeText(item.author)}</em>  ●  ${safeText(item.number)}  ●  ${safeText(item.date)}`
+      ?`<strong>${safeText(item.title)}</strong> (${safeText(item.area)})  ●  <em>${safeText(item.author)}</em>  ●  ${safeText(item.number)}  ●  ${safeText(item.date)}`
       : '';
     const textHtml   = renderMdInline(item.markdown_text);
 
     const scoreHtml = (typeof item.score === 'number' && !Number.isNaN(item.score))
-      ? `<span class="badges-group small-green">Score: ${item.score.toFixed(2)}</span>` : '';
+      ? `<span class="rag-badge">Score: ${item.score.toFixed(2)}</span>` : '';
 
     const numberHtml = (item.number ?? '') !== ''
-      ? `<span class="badges-group small-green">#${safeText(item.number)}</span>` : '';
-
+      ? `<span class="rag-badge">#${safeText(item.number)}</span>` : '';
 
   // 👇 Título acima do texto, agrupando em um único filho do flex
   return `
   <div class="displaybox-item">
-    <div class="displaybox-header">
-      <span class="header-text">${titleHtml}</span>
+    <div class="displaybox-header" style="text-align: left; padding-left: 0;">
+      <span class="header-text" style="font-weight: bold;">${titleHtml}</span>
     </div>
     <div class="displaybox-text">
       <span class="displaybox-text markdown-content">${textHtml}</span>
-      <span class="badges-group small-green">${scoreHtml} ${numberHtml}</span>
+      <span class="displaybox-meta">${scoreHtml} ${numberHtml}</span>
     </div>
   </div>
 `;
@@ -747,5 +746,3 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 
   container.insertAdjacentHTML('beforeend', html);
 }
-
-
