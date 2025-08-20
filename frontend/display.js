@@ -468,7 +468,7 @@ function showLexical(container, responseData) {
 
       // Badge do número absoluto do parágrafo no arquivo (se presente)
       const paraBadge = (item?.paragraph_number != null)
-        ? `<span class="score-badge small-green" style="font-size: 4px; color: #7c7c7c; background-color: #f5f5f5;">#${String(item.paragraph_number)}</span>`
+        ? `<span class="score-badge small-green" style="font-size: 4px; color: #7c7c7c; background-color:rgb(255, 255, 255);">#${String(item.paragraph_number)}</span>`
         : '';
 
       // return `
@@ -577,9 +577,9 @@ function showTitle(container, text) {
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
         <div class="displaybox-item">
-          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations || 'N/A'}</span>
-          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Tokens: ${data.total_tokens_used || 'N/A'}</span>
-          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">Model: ${data.model || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; ">Citations: ${Array.isArray(data.citations) ? data.citations.join(', ') : data.citations || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; ">Tokens: ${data.total_tokens_used || 'N/A'}</span>
+          <span class="rag-badge" style="font-size: 0.1em; color: #7c7c7c; ">Model: ${data.model || 'N/A'}</span>
         </div>
       </div>
     </div>
@@ -707,7 +707,7 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
     </div>
     <div class="displaybox-text">
       <span class="displaybox-text markdown-content">${textHtml}</span>
-      <span class="displaybox-meta" style="font-size: 0.1em; color: #7c7c7c; background-color: #f5f5f5;">${scoreHtml} ${numberHtml}</span>
+      <span class="displaybox-meta" style="font-size: 4px; color: #7c7c7c; ">${scoreHtml} ${numberHtml}</span>
     </div>
   </div>
 `;
