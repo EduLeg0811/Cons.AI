@@ -517,7 +517,7 @@ function showLexical(container, responseData) {
 function showTitle(container, text) {
     const cleanText = renderMarkdown(text);
     const html = `
-            <h3 class="displaybox-header"><strong>${cleanText}</strong></h3>`;
+            <h3 class="displaybox-header" style="color: blue; font-weight: bold; font-size: 16px; margin-bottom: 10px;"><strong>${cleanText}</strong></h3>`;
 
     container.insertAdjacentHTML('beforeend', html);
 }
@@ -687,17 +687,17 @@ console.log(`#########Display.js - showVerbetopedia*** [dictData]:`, dictData);
 
   // Lista
   const contentHtml = rows.map((item, idx) => {
-    const markerHtml = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
+    const markerHtml = `<span class="paragraph-marker" style="font-size: 6px; color: gray; font-weight: bold; display: inline-block;">[${idx + 1}]</span>`;
     const titleHtml  = item.title
       ? `<strong>${safeText(item.title)}</strong> (${safeText(item.area)})  ●  <em>${safeText(item.author)}</em>  ●  ${safeText(item.number)}  ●  ${safeText(item.date)}`
       : '';
     const textHtml   = renderMdInline(item.markdown_text);
 
     const scoreHtml = (typeof item.score === 'number' && !Number.isNaN(item.score))
-      ? `<span class="badge badge-score">Score: ${item.score.toFixed(2)}</span>` : '';
+      ? `<span class="badges-group small-green">Score: ${item.score.toFixed(2)}</span>` : '';
 
     const numberHtml = (item.number ?? '') !== ''
-      ? `<span class="badge badge-para">#${safeText(item.number)}</span>` : '';
+      ? `<span class="badges-group small-green">#${safeText(item.number)}</span>` : '';
 
 
   // 👇 Título acima do texto, agrupando em um único filho do flex
