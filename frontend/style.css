@@ -914,3 +914,29 @@ body { line-height: inherit !important; }
     flex-wrap: wrap; /* quebra de linha caso a tela seja estreita */
   }
   
+/* Search Options */
+.search-options {
+    margin: 10px 0 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.option-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.option-label:hover {
+    color: #0056b3;
+}

@@ -2,34 +2,13 @@
 
 let controller = null;
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const resultsDiv = document.getElementById('results');
-    const downloadPDF = document.getElementById('downloadPDF');
-    const downloadDocx = document.getElementById('downloadDocx');
-    const downloadButtons = document.querySelector('.download-buttons');
     
-    
-    // —————— listeners de download (uma única vez) ——————
-    if (downloadPDF) {
-        downloadPDF.addEventListener('click', () =>
-        downloadResults('pdf', lastResults)
-        );
-    }
-    if (downloadDocx) {
-        downloadDocx.addEventListener('click', () =>
-        downloadResults('docx', lastResults)
-        );
-    }
-    
-     // Initialize download buttons as hidden
-    if (downloadButtons) {
-        downloadButtons.style.display = 'none';
-    }
-    // ————————————————————————————————————————————————
-
+    // Initialize download buttons
+    window.downloadUtils.initDownloadButtons('ragbot');
 
     searchButton.addEventListener('click', ragbot);
     searchInput.addEventListener('keypress', e => {
@@ -43,46 +22,57 @@ document.addEventListener('DOMContentLoaded', () => {
     //______________________________________________________________________________________________
     async function ragbot() {
 
-        // ANTIBOUNCE: evita cliques repetidos enquanto executa
-        const btn = document.getElementById('searchButton');
-        if (btn?.disabled) return;
-      
-        // Desabilita e mostra estado de carregamento
-        const originalHTML = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-        btn.style.opacity = '0.7';
-        btn.style.cursor = 'not-allowed';
-      
-        let timeoutId = null;
-        let lastResults = [];
 
-        
+      // Save original button state for restoration
+      const originalButtonState = {
+        html: searchButton.innerHTML,
+        opacity: searchButton.style.opacity,
+        cursor: searchButton.style.cursor
+      };
+
+        // If already disabled, prevent re-entry by click/Enter
+        if (searchButton?.disabled) return;
+
+        // Disable and show "searching"
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+        searchButton.style.opacity = '0.7';
+        searchButton.style.cursor = 'not-allowed'
+
+        // Cancel previous request if any
+        if (controller) controller.abort();
+        controller = new AbortController();
+        let timeoutId = null;
+        timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
+
+
+
+
         try {
 
-          // Cancela requisição anterior, se houver
-          if (controller) controller.abort();
-          controller = new AbortController();
-          timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
-
-          // Get the search term
+  
+          // Prepare search    
+          // =================
           const term = searchInput.value.trim();
-                     
+          
+            // Validate term - exit early but still go through finally
           if (!term) {
-            resultsDiv.innerHTML = '<p class="error">Please enter a term</p>';
-            return; // vai cair no finally e reabilitar o botão
+              resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
+                return;
           }
 
-          // Clear input for next insertion
-          searchInput.value = '';
-          try { searchInput.focus(); } catch {}
-      
           resultsDiv.innerHTML = '';
+
+          // _______________________________________________
           // Loading
-          insertLoading(resultsDiv, "Waiting for Cons.AI to respond...");
-      
+          // _______________________________________________
+          insertLoading(resultsDiv, "Waiting for The Oracle...");
+
+             
+          //call_ragbot
+          //*****************************************************************************************
+          // 
           const chat_id = getOrCreateChatId();
-      
           const paramRAGbot = {
             query: term,
             model: MODEL_LLM,
@@ -90,47 +80,72 @@ document.addEventListener('DOMContentLoaded', () => {
             top_k: TOP_K,
             vector_store_names: "ALLWV",
             instructions: [
-              "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
+              "Você é um assistente especialista em Conscienciologia. Baseie suas respostas nos documentos fornecidos.",
               "Responda de forma direta e objetiva.",
               "Quando pertinente, organize as informações em forma de listagens numeradas.",
-              "Utilize marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes."
+              "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações."
             ].join("\n"),
             use_session: true,
-            chat_id // <<< mantém sua lógica
+                chat_id
           };
-      
-
-          //call_ragbot
-          //*****************************************************************************************
-          const responseData = await call_ragbot(paramRAGbot);
-        
           
-          // Save chat_id
-          if (responseData.chat_id) localStorage.setItem('cons_chat_id', responseData.chat_id);
+          const response = await call_ragbot(paramRAGbot);
+          // *****************************************************************************************
 
-          // Formatação para displayResults
-          const formattedData = formatBotResponse(responseData);
-      
-          // Render
           removeLoading(resultsDiv);
           displayResults(resultsDiv, "Cons.AI Oracle", 'title');
-          displayResults(resultsDiv, formattedData, "ragbot");
-      
+          displayResults(resultsDiv, response, "ragbot");
+
+
+          const downloadData = prepareDownloadData(response, term);
+          
+          // Update results for download
+          window.downloadUtils.updateResults(downloadData, term, 'ragbot');
+
         } catch (error) {
-          console.error('Search error:', error);
-          resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'Error occurred'}</p></div>`;
+            console.error('Error in ragbot:', error);
+            resultsDiv.innerHTML = `<div class="error"><p>${error.name === 'AbortError' ? 'Request timed out' : error.message || 'An unexpected error occurred'}</p></div>`;
         } finally {
-          // Reabilita SEMPRE
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalHTML;
-            btn.style.opacity = '1';
-            btn.style.cursor = 'pointer';
+          // Re-enable the search button and restore original state
+          if (searchButton) {
+              searchButton.disabled = false;
+              searchButton.innerHTML = originalButtonState.html;
+              searchButton.style.opacity = originalButtonState.opacity;
+              searchButton.style.cursor = originalButtonState.cursor;
           }
-          clearTimeout(timeoutId);
+            if (timeoutId) clearTimeout(timeoutId);
           controller = null;
         }
-        
-      }
-      
+    }
 });
+
+
+
+
+// Prepare results for download
+function prepareDownloadData(response, term) {
+    // Extract the response text - handle both direct text and results array formats
+    const responseText = response?.results?.[0]?.text || response?.text || response || "";
+    
+    return {
+        results: [{
+            text: responseText,
+            source: "ConsBOT",
+            type: "ragbot",
+            metadata: {
+                title: "ConsBOT Response",
+                content: responseText,
+                model: response?.model || MODEL_LLM,
+                temperature: response?.temperature || TEMPERATURE,
+                top_k: response?.top_k || TOP_K
+            },
+            citations: response?.results?.[0]?.citations || []
+        }],
+        search_type: "ragbot",
+        query: term || "",
+        model: response?.model || MODEL_LLM,
+        temperature: response?.temperature || TEMPERATURE,
+        top_k: response?.top_k || TOP_K,
+        term: term || ""
+    };
+}

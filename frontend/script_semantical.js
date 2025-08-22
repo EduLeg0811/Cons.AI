@@ -5,83 +5,64 @@ let controller = null;
 document.addEventListener('DOMContentLoaded', () => {
 
     const searchButton = document.getElementById('searchButton');
-    const searchInput  = document.getElementById('searchInput');
-    const resultsDiv   = document.getElementById('results');
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
 
-    const downloadPDF      = document.getElementById('downloadPDF');
-    const downloadDocx    = document.getElementById('downloadDocx');
-    const downloadButtons = document.querySelector('.download-buttons');
 
-    let lastResults = [];  // estado compartilhado
 
-    // —————— listeners de download (uma única vez) ——————
-    if (downloadPDF) {
-        downloadPDF.addEventListener('click', () => {
-            const searchTerm = searchInput.value.trim();
-            downloadResults('pdf', lastResults);
-        });
-    }
-    if (downloadDocx) {
-        downloadDocx.addEventListener('click', () => {
-            const searchTerm = searchInput.value.trim();
-            downloadResults('docx', lastResults);
-        });
-    }
-
-    // Initialize download buttons as hidden
-    if (downloadButtons) {
-        downloadButtons.style.display = 'none';
-    }
-    // ————————————————————————————————————————————————
-
-    searchButton.addEventListener('click', () => semantical_search());
+    // Initialize download buttons
+    window.downloadUtils.initDownloadButtons('semantical');
+    
+    searchButton.addEventListener('click', semantical_search);
     searchInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') semantical_search();
     });
 
-    const apiBaseUrl = resolveApiBaseUrl().base;
+   
 
     //______________________________________________________________________________________________
     // Semantical Search
     //______________________________________________________________________________________________
     async function semantical_search() {
-        // ANTIBOUNCE: evita que uma busca seja disparada se já estiver em andamento
-        if (searchButton.disabled) return;
-    
-        // Disable the search button and show loading state
-        const originalButtonHTML = searchButton.innerHTML;
+
+        // Save original button state for restoration
+        const originalButtonState = {
+            html: searchButton.innerHTML,
+            opacity: searchButton.style.opacity,
+            cursor: searchButton.style.cursor
+        };
+        
+
+        // Se já estiver desabilitado, evita reentrância por clique/Enter
+        if (searchButton?.disabled) return;
+
+        // Desabilita e mostra "searching"
         searchButton.disabled = true;
         searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
         searchButton.style.opacity = '0.7';
         searchButton.style.cursor = 'not-allowed';
-    
 
-        // Store the original button state for re-enabling
-        const originalButtonState = {
-            html: originalButtonHTML,
-            opacity: '1',
-            cursor: 'pointer'
-        };
 
+        
+
+        // Cancela requisição anterior, se houver
+        if (controller) controller.abort();
+        controller = new AbortController();
         let timeoutId = null;
+        timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
 
         try {
 
-            // Cancela requisição anterior, se houver
-            if (controller) controller.abort();
-            controller = new AbortController();
-            timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
-
-
-            // _________________________________________________________________________________
-            // Prepare search
-            // _________________________________________________________________________________
-
-            // Get the search term
+            
+            // Prepare search    
+            // =================
             const term = searchInput.value.trim();
-            searchInput.value = '';
-            try { searchInput.focus(); } catch {}
-
+            
+            // Validação de termo — sai cedo, mas ainda passa pelo finally
+            if (!term) {
+                resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
+                return;
+            }
             
             // Get selected books
             const selectedBooks = [];
@@ -91,19 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // If no books selected, select LO by default
             const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
-    
-            
-            // Check if the search term is empty
-            if (!term) {
-                resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
-                if (downloadButtons) downloadButtons.style.display = 'none';
-                return;
-            }
 
-            // Clear display container at start
+            // Clear previous results
             resultsDiv.innerHTML = '';
 
-            const flag_definition = false;
+            // Get the checkbox state
+            const flag_definition = document.getElementById('enableDefinition')?.checked ?? true;
             let newTerm = '';
 
             if (flag_definition) {
@@ -113,10 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 insertLoading(resultsDiv, "Formulating a synthesis or definition");
 
-                // Parameters
-                // ==========
-                const chat_id = getOrCreateChatId();
+             
 
+                //call_ragbot
+                //*****************************************************************************************
+                // 
+                const chat_id = getOrCreateChatId();
+                
                 const paramRAGbot = {
                     query: "TEXTO DE ENTRADA: " + term + ".",
                     model: MODEL_LLM,
@@ -124,34 +101,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     top_k: TOP_K,
                     vector_store_id: "OPENAI_ID_ALLWV", // mantém sua lógica
                     instructions: [
-                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
-                        "Sua função é a seguinte:",
-                        "1) Receber um TEXTO DE ENTRADA;",
-                        "2) Entender seu significado na Conscienciologia;",
-                        "3) Formular um parágrafo breve e objetivo explicando o que é o termo ou texto de entrada;",
-                        "4) Este parágrafo vai servir de entrada para a busca semantica em Vector Store;",
-                        "5) Apresente a resposta em um único parágrafo sintético, sem preâmbulos."
+                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.Sua função é receber um TEXTO DE ENTRADA",
+                        "e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia. ",
+                        "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações. ",
+                        "Apresente a resposta em até 3 parágrafos sintéticos e objetivos, sem preâmbulos, na seguinte forma direta: O (TEXTO DE ENTRADA) é ..."  
                     ].join("\n"),
                     use_session: true,
                     chat_id                     // <<< NOVO
                 };
-
                
-                //call_ragbot
-                //*****************************************************************************************
                 const defJson = await call_ragbot(paramRAGbot);
 
-                // Save chat_id
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
-                // Format response output
-                const formatedDef = formatBotResponse(defJson);
+                //*****************************************************************************************
 
                 // Display results
                 // ================
                 removeLoading(resultsDiv);
                 displayResults(resultsDiv, "Synthesis", 'title');
-                displayResults(resultsDiv, formatedDef, 'simple');
+                displayResults(resultsDiv, defJson, 'simple');
 
                 // If the synthesis is empty, we don't proceed to semantic search
                 newTerm = (defJson?.text || '').trim();
@@ -163,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 newTerm = term;
-            }
+            }   
 
 
 
@@ -174,59 +143,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
             insertLoading(resultsDiv, "Searching for semantical similarities...");
 
-            // Parameters
-            const paramSem = {
+            
+            //call_semantical
+            //*****************************************************************************************
+             const paramSem = {
                 term: term + ": " + newTerm + ".",
                 source: source,
                 top_k: TOP_K,
                 model: MODEL_LLM,
             };
+            
+            const semJson = await call_semantical(paramSem);
 
-
-            //call_semantical
             //*****************************************************************************************
-            semJson = await call_semantical(paramSem);
                 
-            // título com termo + contagem (array “flattened”)
-            // const titleCount =  `Semantical Search — ${term} (${Array.isArray(semJson) ? semJson.length : 0})`;
-            const newTitle =  `Semantical Search    ●    ${term}`;
-
+            
+            // Display results
+            const newTitle = `Semantical Search    ●    ${term}`;
             removeLoading(resultsDiv);
             displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "semantical");
 
             console.log(`********Script_semantical.js - semantical_search*** [semJson]:`, semJson);
 
-            // Estado para download
-            lastResults = storeResults(semJson, term, 'semantical');
-            if (downloadButtons) {
-                const hasResults = Array.isArray(semJson) && semJson.length > 0;
-                downloadButtons.style.display = hasResults ? 'block' : 'none';
-              }
-        
-        // _________________________________________________________________________________
-        // Error handling
-        // _________________________________________________________________________________
-        } catch (error) {
-            console.error('Error in semantical_search:', error);
-            resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'An unexpected error occurred'}</p></div>`;
-            if (downloadButtons) downloadButtons.style.display = 'none';
+            // Update results using centralized function
+            if (window.downloadUtils && window.downloadUtils.updateResults) {
+                window.downloadUtils.updateResults(semJson, term, 'semantical');
+            }
 
+        } catch (error) {
+            console.error('Search error:', error);
+            resultsDiv.innerHTML = `<div class="error"><p>${error.name === 'AbortError' ? 'Request timed out' : error.message || 'Error occurred during search'}</p></div>`;
         } finally {
-            // Re-enable the search button and restore original state
+            // Always restore button state
             if (searchButton) {
                 searchButton.disabled = false;
                 searchButton.innerHTML = originalButtonState.html;
                 searchButton.style.opacity = originalButtonState.opacity;
                 searchButton.style.cursor = originalButtonState.cursor;
             }
-            clearTimeout(timeoutId);
+            if (timeoutId) clearTimeout(timeoutId);
             controller = null;
         }
     }
-
-}); // <-- This closes the DOMContentLoaded event listener
-
-
-
-
+});

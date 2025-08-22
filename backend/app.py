@@ -9,7 +9,7 @@ import logging
 import os
 import uuid
 
-from flask import Flask, jsonify, make_response, request, send_file
+from flask import Flask, jsonify, make_response, request, send_file, Response
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
@@ -40,11 +40,8 @@ except Exception as e:
     logger.error(f"[SANITY CHECK] Falha ao acessar FAISS_DIR={FAISS_INDEX_DIR} | err={e}")
 
 
-
-
-
-#SERVER CONFIGURATION
-#========================================================
+# SERVER CONFIGURATION
+# =========================================================
 app = Flask(__name__)
 api = Api(app)
 
@@ -64,7 +61,6 @@ CORS(
 )
 
 
-
 # Loga um banner de inicialização
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
 backend_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:5000")
@@ -82,40 +78,36 @@ def health():
     return "OK", 200
 
 
-
 # Helper to safely strip values
 def safe_str(value):
     return str(value).strip() if value is not None else ""
 
 
-
-
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 1. Lexical Search
-#____________________________________________________________________
+# ______________________________________________________________________
 class LexicalSearchResource(Resource):
     def post(self):
         try:
             data = request.get_json(force=True)
-            
+
             # Parse input parameters with defaults
             term = safe_str(data.get("term", ""))
             source = data.get("source", [])  # lista
-            
+
             if not term:
                 raise ValueError("Search term is required")
 
             # Process search
             results = lexical_search_in_files(term, source)
-            
+
             # Sort by source for consistent ordering
             results.sort(key=lambda x: x['book'])
 
-            #Limitar a TOP_K resultados
+            # Limitar a TOP_K resultados
             results = results[:TOP_K]
-            
-             # Monta a resposta diretamente
+
+            # Monta a resposta diretamente
             response = {
                 "term": term,
                 "search_type": "lexical",
@@ -123,42 +115,20 @@ class LexicalSearchResource(Resource):
                 "count": len(results) if results else 0
             }
 
-
             logger.info("\n\n")
             logger.info("[App.py][LexicalSearch] <<< response = >>>%s", response)
             logger.info("\n\n")
 
             return response, 200, get_search_headers('lexical')
 
-                        
         except Exception as e:
             error_response, status_code, headers = handle_search_error(e, "lexical search")
             return error_response, status_code, headers
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 2. Semantical Search
-#____________________________________________________________________
+# ______________________________________________________________________
 class SemanticalSearchResource(Resource):
     def post(self):
         try:
@@ -171,13 +141,13 @@ class SemanticalSearchResource(Resource):
                 source = ",".join(str(s).upper() for s in raw_source)
             else:
                 source = safe_str(raw_source).upper()
-            
+
             if not term:
                 raise ValueError("Search term is required")
 
-            #logger.info("\n\n")
-            #logger.info(f'[App.py][SemanticalSearch] term={term}, source={source}, top_k={top_k}')
-            
+            # logger.info("\n\n")
+            # logger.info(f'[App.py][SemanticalSearch] term={term}, source={source}, top_k={top_k}')
+
             # Run FAISS-backed search
             processed_results = simple_semantical_search(
                 query=term,
@@ -186,13 +156,13 @@ class SemanticalSearchResource(Resource):
                 top_k=top_k,
             )
 
-            #logger.info("\n\n")
-            #logger.info("[App.py][SemanticalSearch] <<< processed_results = >>>%s", processed_results)
+            # logger.info("\n\n")
+            # logger.info("[App.py][SemanticalSearch] <<< processed_results = >>>%s", processed_results)
 
-            #Limitar a TOP_K resultados
+            # Limitar a TOP_K resultados
             processed_results = processed_results[:top_k]
-           
-            #logger.info("[App.py][SemanticalSearch] response=%s", response)
+
+            # logger.info("[App.py][SemanticalSearch] response=%s", response)
             return processed_results, 200, get_search_headers('semantical')
 
         except Exception as e:
@@ -200,10 +170,9 @@ class SemanticalSearchResource(Resource):
             return error_response, status_code, headers
 
 
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 3. RAGbot
-#____________________________________________________________________
+# ______________________________________________________________________
 class RAGbotResource(Resource):
     def post(self):
         try:
@@ -222,8 +191,8 @@ class RAGbotResource(Resource):
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
             chat_id = safe_str(data.get("chat_id", "")) \
-                   or safe_str(request.headers.get("X-Chat-Id", "")) \
-                   or str(uuid.uuid4())
+                       or safe_str(request.headers.get("X-Chat-Id", "")) \
+                       or str(uuid.uuid4())
 
             if vector_store_names == "ALLWV":
                 vector_store_id = OPENAI_ID_ALLWV
@@ -232,7 +201,7 @@ class RAGbotResource(Resource):
             else:
                 vector_store_id = OPENAI_ID_ALLWV
 
-            #logger.info(f"RAGbot: model={model} temp={temperature} top_k={top_k} vs={vector_store_names} use_session={use_session} chat_id={chat_id[:8]}...")
+            # logger.info(f"RAGbot: model={model} temp={temperature} top_k={top_k} vs={vector_store_names} use_session={use_session} chat_id={chat_id[:8]}...")
 
             # >>> SÓ ISTO: repassar chat_id (o restante do seu fluxo não muda)
             results = generate_llm_answer(
@@ -243,7 +212,7 @@ class RAGbotResource(Resource):
                 temperature=temperature,
                 instructions=instructions,
                 use_session=use_session,
-                chat_id=chat_id,   # <<< NOVO
+                chat_id=chat_id,  # <<< NOVO
             )
 
             if "error" in results:
@@ -272,11 +241,9 @@ class RAGbotResource(Resource):
             return {"error": str(e)}, 500
 
 
-
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 4. Mancia (Random Pensata)
-#____________________________________________________________________
+# ______________________________________________________________________
 class ManciaResource_randomPensata(Resource):
     def post(self):
         data = request.get_json(force=True)
@@ -294,7 +261,6 @@ class ManciaResource_randomPensata(Resource):
                 "type": "mancia"
             }
 
-
             return output_result, 200
 
         except Exception as e:
@@ -302,13 +268,9 @@ class ManciaResource_randomPensata(Resource):
             return {"error": str(e)}, 500
 
 
-
-
-
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 6. Reset Conversation Memory (RAGbot)
-#____________________________________________________________________
+# ______________________________________________________________________
 class RAGbotResetResource(Resource):
     def delete(self):
         try:
@@ -323,42 +285,41 @@ class RAGbotResetResource(Resource):
             return {"error": str(e)}, 500
 
 
-
-#____________________________________________________________________
+# ______________________________________________________________________
 # 7. Download — ponto de entrada enxuto (usa docx_export.py)
-#____________________________________________________________________
+# ______________________________________________________________________
 class DownloadResource(Resource):
     def post(self):
         try:
             data = request.get_json(force=True) or {}
-            format  = (data.get("format") or "docx").lower().strip()
+            format = (data.get("format") or "docx").lower().strip()
             term = safe_str(data.get("term", "") or "")
-            type = safe_str(data.get("type", "") or "lexical") 
-            resultsArray = data.get("results", [])
+            search_type = safe_str(data.get("type", "") or "lexical")  # Changed from 'type' to 'search_type' for consistency
+            results_array = data.get("results", [])
 
             payload = {
                 "term": term,
-                "results": resultsArray,
-                "search_type": type,
+                "results": results_array,
+                "search_type": search_type,  # Ensure consistent key name
+                "type": search_type,  # Keep for backward compatibility
                 "format": format,
             }
 
-            # 1) Markdown agrupado por fonte
+            # 1) Build grouped markdown
             md = build_grouped_markdown(payload)
 
-            # 2a) Se pediram markdown, devolve MD
-            if format in ("md", "markdown"):
-                resp = make_response(md.encode("utf-8"))
-                resp.headers["Content-Type"] = "text/markdown; charset=utf-8"
-                filename = f"{(payload.get('term') or term or 'resultados').strip().replace(' ', '_')}.md"
-                resp.headers["Content-Disposition"] = f'attachment; filename=\"{filename}\"'
-                return resp
+            # 2a) Return markdown if requested
+            if format == "md" or format == "markdown":
+                return Response(
+                    md,
+                    mimetype="text/markdown",
+                    headers={"Content-Disposition": f"attachment; filename=results_{search_type}.md"}
+                )
 
-            # 2b) Caso contrário, DOCX (justificação global = True)
-            # restringe filename to max 10 caracteres
+            # 2b) Otherwise, convert to DOCX
             docx_bytes = markdown_to_docx_bytes(md, justify_globally=True)
-            filename = f"{(payload.get('term') or term or 'resultados').strip().replace(' ', '_')}"
-            filename = filename[:10] + ".docx"
+            filename = f"{term or 'resultados'}_{search_type}.docx"
+            filename = filename.replace(' ', '_')[:50]  # Limit filename length
 
             return send_file(
                 BytesIO(docx_bytes),
@@ -370,27 +331,6 @@ class DownloadResource(Resource):
         except Exception as e:
             logger.error(f"Error in DownloadResource: {str(e)}", exc_info=True)
             return {"error": "Internal server error"}, 500
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # ====================== Routes ======================
@@ -411,76 +351,3 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#____________________________________________________________________
-# 1. Lexical Search
-#____________________________________________________________________
-class LexicalSearchResource_old(Resource):
-    def post(self):
-        try:
-            data = request.get_json(force=True)
-            
-            # Parse input parameters with defaults
-            term = safe_str(data.get("term", ""))
-            source = data.get("source", ["LO"])  # lista
-            top_k = int(data.get("top_k", TOP_K))
-            
-            if not term:
-                raise ValueError("Search term is required")
-
-            # Process search
-            raw_results = lexical_search_in_files(term, source)
-            
-            # Transform results
-            results = []
-            for file_path, paragraphs in raw_results.items():
-                source = os.path.basename(file_path)
-                for paragraph in paragraphs[:top_k]:
-                    paragraph_number = None
-                    paragraph_text = paragraph
-                    
-                    if ': ' in paragraph:
-                        try:
-                            paragraph_number = int(paragraph.split(':', 1)[0])
-                            paragraph_text = paragraph.split(':', 1)[1].strip()
-                        except (ValueError, IndexError):
-                            pass
-                    
-                    result_data = {
-                        'text': paragraph_text,
-                        'source': source
-                    }
-                    if paragraph_number is not None:
-                        result_data['paragraph_number'] = paragraph_number
-                    
-                    results.append(result_data)
-            
-            # Sort by source for consistent ordering
-            results.sort(key=lambda x: x['source'])
-            
-            # Format and return response
-            response = format_search_response(
-                results=results,
-                search_type='lexical',
-                term=term,
-                source=source,
-            )
-            return response, 200, get_search_headers('lexical')
-            
-        except Exception as e:
-            error_response, status_code, headers = handle_search_error(e, "lexical search")
-            return error_response, status_code, headers

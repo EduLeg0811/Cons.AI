@@ -1,104 +1,79 @@
-// script_semantical.js
+// script_verbetopedia.js
 
 let controller = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const searchButton = document.getElementById('searchButton');
-    const searchInput  = document.getElementById('searchInput');
-    const resultsDiv   = document.getElementById('results');
-
-    const downloadPDF      = document.getElementById('downloadPDF');
-    const downloadDocx    = document.getElementById('downloadDocx');
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
     const downloadButtons = document.querySelector('.download-buttons');
-
-    let lastResults = [];  // estado compartilhado
-
-    // —————— listeners de download (uma única vez) ——————
-    if (downloadPDF) {
-        downloadPDF.addEventListener('click', () => {
-            const searchTerm = searchInput.value.trim();
-            downloadResults('pdf', lastResults, searchTerm);
-        });
-    }
-    if (downloadDocx) {
-        downloadDocx.addEventListener('click', () => {
-            const searchTerm = searchInput.value.trim();
-            downloadResults('docx', lastResults, searchTerm);
-        });
-    }
 
     // Initialize download buttons as hidden
     if (downloadButtons) {
         downloadButtons.style.display = 'none';
     }
-    // ————————————————————————————————————————————————
 
-    searchButton.addEventListener('click', () => verbetopedia());
+    searchButton.addEventListener('click', verbetopedia);
     searchInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') verbetopedia();
     });
 
-    const apiBaseUrl = resolveApiBaseUrl().base;
+
+
 
     //______________________________________________________________________________________________
     // Verbetopedia
     //______________________________________________________________________________________________
     async function verbetopedia() {
-        // ANTIBOUNCE: evita que uma busca seja disparada se já estiver em andamento
-        if (searchButton.disabled) return;
-    
-        // Disable the search button and show loading state
-        const originalButtonHTML = searchButton.innerHTML;
+
+
+
+         // Save original button state for restoration
+         const originalButtonState = {
+            html: searchButton.innerHTML,
+            opacity: searchButton.style.opacity,
+            cursor: searchButton.style.cursor
+        };
+        
+
+        // Se já estiver desabilitado, evita reentrância por clique/Enter
+        if (searchButton?.disabled) return;
+
+        // Desabilita e mostra "searching"
         searchButton.disabled = true;
         searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
         searchButton.style.opacity = '0.7';
         searchButton.style.cursor = 'not-allowed';
-    
 
-        // Store the original button state for re-enabling
-        const originalButtonState = {
-            html: originalButtonHTML,
-            opacity: '1',
-            cursor: 'pointer'
-        };
 
-        // Get the Book selected
-        const source = "ECALL_DEF";
+        let timeoutId = null;
+
+        // Cancela requisição anterior, se houver
+        if (controller) controller.abort();
+        controller = new AbortController();
+        timeoutId = setTimeout(() => {
+            if (controller) controller.abort();
+        }, 30000);
 
         try {
 
-            // Cancel any in-progress requests
-            if (controller) {
-                controller.abort();
-            }
-            controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-
-
-
-
-
-            // _________________________________________________________________________________
-            // Prepare search
-            // _________________________________________________________________________________
-
-            // Get the search term
+            
+            // Prepare search    
+            // =================
             const term = searchInput.value.trim();
-            searchInput.value = '';
-            try { searchInput.focus(); } catch {}
-
-            // Check if the search term is empty
+            
+            // Validação de termo — sai cedo, mas ainda passa pelo finally
             if (!term) {
                 resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
                 if (downloadButtons) downloadButtons.style.display = 'none';
                 return;
             }
 
-            // Clear display container at start
+            // Clear previous results
             resultsDiv.innerHTML = '';
 
-            const flag_definition = false;
+            // Get the checkbox state
+            const flag_definition = document.getElementById('enableDefinition')?.checked ?? true;
             let newTerm = '';
 
             if (flag_definition) {
@@ -108,10 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 insertLoading(resultsDiv, "Formulating a synthesis or definition");
 
-                // Parameters
-                // ==========
+             
+                //call_ragbot
+                //*****************************************************************************************
+                // 
                 const chat_id = getOrCreateChatId();
-
+                
                 const paramRAGbot = {
                     query: "TEXTO DE ENTRADA: " + term + ".",
                     model: MODEL_LLM,
@@ -119,45 +96,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     top_k: TOP_K,
                     vector_store_id: "OPENAI_ID_ALLWV", // mantém sua lógica
                     instructions: [
-                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
-                        "Sua função é a seguinte:",
-                        "1) Receber um TEXTO DE ENTRADA;",
-                        "2) Entender seu significado na Conscienciologia;",
-                        "3) Formular um parágrafo breve e objetivo explicando o que é o termo ou texto de entrada;",
-                        "4) Este parágrafo vai servir de entrada para a busca semantica em Vector Store;",
-                        "5) Apresente a resposta em um único parágrafo sintético, sem preâmbulos."
+                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.Sua função é receber um TEXTO DE ENTRADA",
+                        "e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia. ",
+                        "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações. ",
+                        "Apresente a resposta em até 3 parágrafos sintéticos e objetivos, sem preâmbulos, na seguinte forma direta: O (TEXTO DE ENTRADA) é ..."                        
                     ].join("\n"),
                     use_session: true,
-                    chat_id                     // <<< NOVO
+                    chat_id                 
                 };
-
-                //call_ragbot
-                //*****************************************************************************************
+               
                 const defJson = await call_ragbot(paramRAGbot);
 
                 // Save chat_id
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
-                // Format response output
-                const formatedDef = formatBotResponse(defJson);
+                //*****************************************************************************************
 
                 // Display results
                 // ================
                 removeLoading(resultsDiv);
                 displayResults(resultsDiv, "Synthesis", 'title');
-                displayResults(resultsDiv, formatedDef, 'simple');
+                displayResults(resultsDiv, defJson, 'simple');
 
                 // If the synthesis is empty, we don't proceed to semantic search
                 newTerm = (defJson?.text || '').trim();
                 if (!newTerm) {
                     insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
-                    removeLoading(resultsDiv);
                     return;
                 }
 
             } else {
                 newTerm = term;
-            }
+            }   
 
 
 
@@ -168,92 +138,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
             insertLoading(resultsDiv, "Searching for semantical similarities...");
 
-            // Parameters
-            const paramSem = {
-                term: term + ": " + newTerm + ".",
-                source: source,
-                top_k: 10,
-                model: MODEL_LLM,
-            };
-
-
+            
             //call_semantical
             //*****************************************************************************************
-            const semJson = await call_semantical(paramSem);
+             const paramSem = {
+                term: term + ": " + newTerm + ".",
+                source: "ECALL_DEF",
+                top_k: TOP_K,
+                model: MODEL_LLM,
+            };
             
-         
-            // Este estado é útil para os botões de download
-            lastResults = semJson;
+            const semJson = await call_semantical(paramSem);
 
-            // Prepara para o Display
-            // ======================
-            const dictData = dictionarize_verbetopedia(semJson, source);
+            //*****************************************************************************************
+                
+            
+            // Display results
+            const newTitle = `Verbetopedia    ●    ${term}`;
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Verbetopedia", 'title');
-            displayResults(resultsDiv, dictData, "verbetopedia");
+            displayResults(resultsDiv, newTitle, 'title');
+            displayResults(resultsDiv, semJson, "verbetopedia");
 
-            // Estado para download
-            if (downloadButtons) {downloadButtons.style.display = 'block';}
+            console.log(`********Script_verbetopedia.js - verbetopedia*** [semJson]:`, semJson);
 
-        
-        // _________________________________________________________________________________
-        // Error handling
-        // _________________________________________________________________________________
+            // Update results using centralized function
+            if (window.downloadUtils && window.downloadUtils.updateResults) {
+                window.downloadUtils.updateResults(semJson, term, 'semantical');
+            }
+
         } catch (error) {
-            console.error('Error in semantical_search:', error);
-            resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'An unexpected error occurred'}</p></div>`;
+            console.error('Search error:', error);
+            resultsDiv.innerHTML = `<div class="error"><p>${error.name === 'AbortError' ? 'Request timed out' : error.message || 'Error occurred during search'}</p></div>`;
+            const downloadButtons = document.querySelector('.download-buttons');
             if (downloadButtons) downloadButtons.style.display = 'none';
-
         } finally {
-            // Re-enable the search button and restore original state
+            // Always restore button state
             if (searchButton) {
                 searchButton.disabled = false;
                 searchButton.innerHTML = originalButtonState.html;
                 searchButton.style.opacity = originalButtonState.opacity;
                 searchButton.style.cursor = originalButtonState.cursor;
             }
+            if (timeoutId) clearTimeout(timeoutId);
             controller = null;
-            clearTimeout(timeoutId);
         }
     }
-
-}); // <-- This closes the DOMContentLoaded event listener
-
-
-
-
-
-
-
-// ________________________________________________________________________________________
-// NOVAS FUNCOS DE FORMATAÇÃO DOS DADOS PARA O DISPLAY
-// ________________________________________________________________________________________
-
-/**
- * Transforma o JSON vindo do backend (lista de dicts)
- * em uma lista de objetos JS padronizados.
- *
- * @param {Array} semJson - resposta JSON do backend (array de dicts planos)
- * @returns {Array} - lista de objetos prontos para uso
- *
- * Exemplo de uso:
- *   const dictData = dictionarize(semJson);
- *   dictData.forEach(item => console.log(item.id, item.title, item.score));
- */
-function dictionarize_verbetopedia(semJson, source) {
-    if (!Array.isArray(semJson)) return [];
-  
-    return semJson.map(entry => {
-      const obj = {};
-  
-      // copia todos os campos existentes (mesmo que variem)
-      for (const [key, value] of Object.entries(entry)) {
-        obj[key] = value ?? null; // garante null para valores ausentes
-      }
-  
-      obj.source = source;
-  
-      return obj;
-    });
-  }
-  
+});

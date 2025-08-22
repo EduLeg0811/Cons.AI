@@ -69,8 +69,57 @@ def _norm_source(name: str) -> str:
     name, _ = os.path.splitext(base)
     return name or "Geral"
 
-def _pick_text(item: dict) -> str:
-    return (item.get("display_md") or item.get("text") or item.get("content") or "").strip()
+def _pick_text_lexical(item: dict) -> str:
+    """Extract text from lexical search results."""
+    return str(item.get("paragraph") or "").strip()
+
+def _pick_text_mancia(item: dict) -> str:
+    """Extract text from mancia (commentary) results."""
+    return str(item.get("text") or item.get("content") or "").strip()
+
+def _pick_text_ragbot(item: dict) -> str:
+    """Extract text from RAGbot results."""
+    # RAGbot might have either 'text' or 'response' field
+    return str(item.get("text") or item.get("response") or "").strip()
+
+def _pick_text_semantical(item: dict) -> str:
+    """Extract text from semantical/verbetopedia results."""
+    # Try paragraph field first (matches lexical search structure)
+    if "paragraph" in item and item["paragraph"]:
+        return str(item["paragraph"]).strip()
+    # Fall back to other possible fields
+    for key in ["text", "content", "page_content"]:
+        if key in item and item[key]:
+            return str(item[key]).strip()
+    return ""
+
+def _pick_text(item: dict, search_type: str = "") -> str:
+    """
+    Main text extraction function that routes to specific handlers.
+    
+    Args:
+        item: Dictionary containing the result item
+        search_type: Type of search (lexical, mancia, ragbot, semantical, verbetopedia)
+    """
+    if not item or not isinstance(item, dict):
+        return ""
+        
+    # Try specific handlers first
+    if search_type == "lexical":
+        return _pick_text_lexical(item)
+    elif search_type == "mancia":
+        return _pick_text_mancia(item)
+    elif search_type == "ragbot":
+        return _pick_text_ragbot(item)
+    elif search_type in ("semantical", "verbetopedia"):
+        return _pick_text_semantical(item)
+    
+    # Fallback: try common keys
+    for key in ["text", "content", "paragraph", "response"]:
+        if key in item and item[key]:
+            return str(item[key]).strip()
+            
+    return ""
 
 def _extract_meta(item: dict) -> dict:
     """
@@ -143,21 +192,27 @@ def build_grouped_markdown(payload: dict) -> str:
         lines.append("\n\n")
         
         for idx, it in enumerate(by_source[src], start=1):
-            text = _highlight_term_in_md(_pick_text(it), term)
+            text = _highlight_term_in_md(_pick_text(it, search_type), term)
             meta = _extract_meta(it)
 
             lines.append(f"{idx}. {text}")
 
             # >>>>>>>>>>>>>>  PONTO DE CUSTOMIZAÇÃO — METADADOS (EXIBIÇÃO)  <<<<<<<<<<<<<<
             meta_bits = []
-            if meta.get("number") not in (None, ""): meta_bits.append(f"#{meta['number']}")
-            if meta.get("author"):                  meta_bits.append(f"Autor: {meta['author']}")
-            if meta.get("date"):                    meta_bits.append(f"Data: {meta['date']}")
-            if meta.get("theme"):                   meta_bits.append(f"Tema: {meta['theme']}")
-            # (espelhe aqui extras de _extract_meta)
-            # if meta.get("especialidade"):           meta_bits.append(f"Especialidade: {meta['especialidade']}")
-            # if meta.get("area"):                    meta_bits.append(f"Área: {meta['area']}")
-            # if meta.get("sigla"):                   meta_bits.append(f"Sigla: {meta['sigla']}")
+            
+            # Add all metadata fields except the ones we handle specially
+            special_fields = {'number', 'author', 'date', 'theme', 'link', 'source'}
+            for key, value in meta.items():
+                if key not in special_fields and value not in (None, ""):
+                    meta_bits.append(f"{key}: {value}")
+            
+            # Add the special fields in a specific order
+            if meta.get("number") not in (None, ""): meta_bits.insert(0, f"#{meta['number']}")
+            if meta.get("author"): meta_bits.insert(1, f"Autor: {meta['author']}")
+            if meta.get("date"): meta_bits.append(f"Data: {meta['date']}")
+            if meta.get("theme"): meta_bits.append(f"Tema: {meta['theme']}")
+            if meta.get("source"): meta_bits.append(f"Fonte: {meta['source']}")
+            if meta.get("title"): meta_bits.append(f"Título: {meta['title']}")
 
             if meta_bits or meta.get("link"):
                 parts = []

@@ -1,9 +1,9 @@
-
 // escopo de módulo
 let _lexicalController = null;
 let _semanticalController = null;
 let _ragbotController = null;
 let _randomPensataController = null;
+let _downloadController = null;  // Added download controller
 
 
 
@@ -148,9 +148,20 @@ if (!response.ok) {
 
 const responseData = await response.json();
 
-console.log(`********bridge.js - ragbot*** [responseData]:`, responseData);
+// Transform the RAGbot response to match what displayResults expects
+let formattedResponse = {
+    text: responseData.text,
+    citations: responseData.citations,
+    total_tokens_used: responseData.total_tokens_used || 0,
+    type: responseData.type || 'ragbot',
+    model: responseData.model,
+    temperature: responseData.temperature,
+    top_k: responseData.top_k
+  }
 
-return responseData;
+console.log(`********bridge.js - ragbot*** [formattedResponse]:`, formattedResponse);
+
+return formattedResponse;
 }
 
 
@@ -181,4 +192,53 @@ const responseData = await response.json();
 console.log(`********bridge.js - random_pensata*** [responseData]:`, responseData);
 
 return responseData;
+}
+
+
+
+
+
+//_________________________________________________________
+// Download
+//_________________________________________________________
+async function call_download(format, resultsArray, term, type = 'none') {
+    // Abort any existing download
+    if (_downloadController) {
+        _downloadController.abort();
+    }
+    
+    _downloadController = new AbortController();
+    const timeoutId = setTimeout(() => _downloadController?.abort(), 30000); // 30s timeout
+
+    try {
+        const response = await fetch(apiBaseUrl + '/download', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/octet-stream'  // Important for file downloads
+            },
+            body: JSON.stringify({
+                format,
+                results: resultsArray,
+                term,
+                type: type || 'none'  // Include search type, default to 'none' if not provided
+            }),
+            signal: _downloadController.signal
+        });
+
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unknown error');
+            throw new Error(`Download failed: ${response.status} ${response.statusText}\n${errorText}`);
+        }
+        
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        console.error('Download error:', error);
+        throw error;
+    } finally {
+        _downloadController = null;
+    }
 }

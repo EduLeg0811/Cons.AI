@@ -541,7 +541,7 @@ function showTitle(container, text) {
     const mdHtml = renderMarkdown(text); // <<<
 
     const html = `
-    <div class="displaybox-container">
+    <div class="displaybox-container" style="background-color:rgb(255, 253, 226);">
         <div class="displaybox-content">
             <div class="displaybox-text markdown-content">${mdHtml}</div>  <!-- <<< -->
         </div>
