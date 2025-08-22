@@ -74,9 +74,9 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
 
             for match in matches or []:
                 results.append({
-                    "paragraph": match.get("paragraph_text"),
-                    "paragraph_number": match.get("paragraph_number"),
-                    "book": book,
+                    "markdown": match.get("paragraph_text"),
+                    "number": match.get("paragraph_number"),
+                    "source": book,
                 })
 
         except Exception as e:

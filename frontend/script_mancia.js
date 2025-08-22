@@ -108,12 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
          const commentaryData = await call_ragbot(paramRAGbot);
-
         if (commentaryData.chat_id) localStorage.setItem('cons_chat_id', commentaryData.chat_id); // <<< NOVO
         
         //***************************************************************************************** 
        
-
+        
         // Display results
         removeLoading(resultsDiv);
         displayResults(resultsDiv, "Comentário", 'title');

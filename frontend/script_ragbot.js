@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           
           const response = await call_ragbot(paramRAGbot);
+          if (response.chat_id) localStorage.setItem('cons_chat_id', response.chat_id); // <<< NOVO
           // *****************************************************************************************
+
 
           removeLoading(resultsDiv);
           displayResults(resultsDiv, "Cons.AI Oracle", 'title');
@@ -122,6 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+
 // Prepare results for download
 function prepareDownloadData(response, term) {
     // Extract the response text - handle both direct text and results array formats
@@ -149,3 +154,6 @@ function prepareDownloadData(response, term) {
         term: term || ""
     };
 }
+
+
+

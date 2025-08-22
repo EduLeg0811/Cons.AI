@@ -59,7 +59,12 @@ async function call_lexical(parameters) {
           });
       }
 
-      return responseData;
+
+      // Formatt lexical response 
+      const formattedResponse = lexical_formatResponse(responseData);
+      console.log(`********bridge.js - lexical*** [formattedResponse]:`, formattedResponse);
+
+      return formattedResponse;
 
   } catch (error) {
       console.error(' LEXICAL SEARCH EXCEPTION:', error);
@@ -115,7 +120,11 @@ async function call_semantical(parameters) {
             });
         }
 
-        return responseData;
+        // Formatt semantical response 
+        const formattedResponse = semantical_formatResponse(responseData);
+        console.log(`********bridge.js - semantical*** [formattedResponse]:`, formattedResponse);
+
+        return formattedResponse;
 
     } catch (error) {
         console.error(' SEMANTICAL SEARCH EXCEPTION:', error);
@@ -148,16 +157,9 @@ if (!response.ok) {
 
 const responseData = await response.json();
 
+
 // Transform the RAGbot response to match what displayResults expects
-let formattedResponse = {
-    text: responseData.text,
-    citations: responseData.citations,
-    total_tokens_used: responseData.total_tokens_used || 0,
-    type: responseData.type || 'ragbot',
-    model: responseData.model,
-    temperature: responseData.temperature,
-    top_k: responseData.top_k
-  }
+const formattedResponse = ragbot_formatResponse(responseData);
 
 console.log(`********bridge.js - ragbot*** [formattedResponse]:`, formattedResponse);
 

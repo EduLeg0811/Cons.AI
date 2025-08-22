@@ -71,3 +71,57 @@ window.addEventListener('load', () => {
 
 // Exporta para debug no console
 window.__API_BASE = apiBaseUrl;
+
+
+
+
+
+
+// ---------------- Chat ID helpers ----------------
+function createUuid() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+function getOrCreateChatId() {
+  let id = localStorage.getItem('cons_chat_id');
+  if (!id) {
+    id = createUuid();
+    localStorage.setItem('cons_chat_id', id);
+  }
+  return id;
+}
+
+function newConversationId() {
+  const id = createUuid();
+  localStorage.setItem('cons_chat_id', id);
+  return id;
+}
+
+// Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset
+async function resetConversation() {
+  const chat_id = getOrCreateChatId();
+  try {
+    await fetch(apiBaseUrl + '/ragbot_reset', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id })
+    });
+  } catch (e) {
+    console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
+  }
+  newConversationId();
+  // Limpeza básica de UI se existir
+  const container = document.querySelector('#results');
+  if (container) container.innerHTML = '';
+  const input = document.getElementById('searchInput');
+  if (input) input.value = '';
+}
+
+// Se existir um botão com este id, liga automaticamente
+document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
+

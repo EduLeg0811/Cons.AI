@@ -102,7 +102,7 @@ class LexicalSearchResource(Resource):
             results = lexical_search_in_files(term, source)
 
             # Sort by source for consistent ordering
-            results.sort(key=lambda x: x['book'])
+            results.sort(key=lambda x: x['source' or 'book' or 'file'])
 
             # Limitar a TOP_K resultados
             results = results[:TOP_K]

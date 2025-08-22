@@ -111,10 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                
                 const defJson = await call_ragbot(paramRAGbot);
-
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
                 //*****************************************************************************************
+
 
                 // Display results
                 // ================
@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // If the synthesis is empty, we don't proceed to semantic search
                 newTerm = (defJson?.text || '').trim();
                 if (!newTerm) {
-                    insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
                     removeLoading(resultsDiv);
+                    console.error('Definition error:');
                     return;
                 }
 
@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "semantical");
 
-            console.log(`********Script_semantical.js - semantical_search*** [semJson]:`, semJson);
 
             // Update results using centralized function
             if (window.downloadUtils && window.downloadUtils.updateResults) {

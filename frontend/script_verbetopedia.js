@@ -106,11 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                
                 const defJson = await call_ragbot(paramRAGbot);
-
-                // Save chat_id
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
                 //*****************************************************************************************
+
+
 
                 // Display results
                 // ================
@@ -152,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             //*****************************************************************************************
                 
-            
+
+
             // Display results
             const newTitle = `Verbetopedia    ●    ${term}`;
             removeLoading(resultsDiv);

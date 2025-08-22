@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const responseData = await call_lexical (parameters);
         //*****************************************************************************************
-
-
+       
         // Display results
         const newTitle = `Lexical Search    ●    ${term}`;
         removeLoading(resultsDiv);
@@ -99,9 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update results using centralized function
         window.downloadUtils.updateResults(responseData, term, 'lexical');
 
-        console.log("+++++++++++  script_lexical.js: responseData  +++++++++++++", responseData);
-        console.log("+++++++++++  script_lexical.js: term  +++++++++++++", term);
-
+        
     } catch (error) {
         console.error('Search error:', error);
         resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'Error occurred during search'}</p></div>`;
