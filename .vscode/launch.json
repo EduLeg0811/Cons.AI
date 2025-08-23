@@ -1,0 +1,46 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: debug.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:5500/index.html",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": false,
+            "trace": true,
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/frontend/*"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "sourceMapSourceOverrides": {
+                "webpack:///./*": "${webRoot}\\frontend\\*"
+            }
+        },
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Launch Chrome for Debug (PWA)",
+            "url": "http://localhost:5500/index.html",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": false,
+            "trace": true,
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/frontend/*"
+            },
+            "sourceMapSourceOverrides": {
+                "webpack:///./*": "${webRoot}\\frontend\\*"
+            }
+        }
+    ]
+}

@@ -1,7 +1,7 @@
 
 
 //______________________________________________________________________________________________
-// semantical_formatResponse
+// semantical_formatResponse  --- call from [bridge.js] <call_semantical>
 //______________________________________________________________________________________________
 function semantical_formatResponse(responseData, term) {
     
@@ -23,10 +23,8 @@ return formattedResponse;
 
 
 
-
-
 //______________________________________________________________________________________________
-// lexical_formatResponse
+// lexical_formatResponse  --- call from [bridge.js] <call_lexical>
 //______________________________________________________________________________________________
 function lexical_formatResponse(responseData, term) {
     
@@ -39,13 +37,10 @@ return formattedResponse;
 
 
 
-
-
-
 //______________________________________________________________________________________________
-// ragbot_formatResponse
+// llm_formatResponse  --- call from [bridge.js] <call_llm>
 //______________________________________________________________________________________________
-function ragbot_formatResponse(responseData) {
+function llm_formatResponse(responseData) {
     // Group citations by source
     const citationsBySource = responseData.citations
         .replace(/[\[\]]/g, '')  // Remove brackets
@@ -77,7 +72,6 @@ function ragbot_formatResponse(responseData) {
         type: responseData.type || 'ragbot',
         model: responseData.model,
         temperature: responseData.temperature,
-        top_k: responseData.top_k
     };
     
     return formattedResponse;
@@ -88,96 +82,10 @@ function ragbot_formatResponse(responseData) {
 
 
 
-// ========================================= Metadata extraction =========================================
-// Função para extrair todos os metadados existentes em um objeto ou array de objetos
-// Retorna um dicionário com todos os metadados (tudo que não for o texto principal)
 
-// BOOKS FIELDS
-// -----------------
-// LO:	Content_Text	Markdown	Title	Number	Source						
-// DAC:	Content_Text	Markdown	Title	Number	Source	Argumento	Section				
-// CCG:	Content_Text	Markdown	Title	Number	Source	Folha					
-// EC:	Content_Text	Markdown	Title	Number	Source	Area	Theme	Author	Sigla	Date	Link
-
-// RAGBOT FIELDS
-// -------------
-// {
-//   text: "Response text from the AI",
-//   citations: ["source1", "source2", ...], // Array of citation sources
-//   total_tokens_used: 123, // Number
-//   type: 'ragbot',
-//   model: 'model-name', // String
-//   temperature: 0.7, // Number
-//   top_k: 5, // Number
-//   chat_id: 'chat-id' // Optional chat session ID
-// }
-
-// LEXICAL FIELDS
-// -------------
-// {
-//   term: "search term", // String
-//   search_type: "lexical",
-//   results: [{
-//     paragraph: "matching text", // String
-//     paragraph_number: 123, // Number
-//     book: "book name", // String
-//     // Additional metadata fields
-//   }],
-//   count: 5 // Number of results
-// }
-
-// SEMANTICAL FIELDS
-// -----------------
-// {
-//   results: [{
-//     // Content can be in any of these fields
-//     display_md: "formatted markdown", // String (optional)
-//     markdown: "formatted markdown",   // String (optional)
-//     page_content: "raw text",         // String (optional)
-//     text: "raw text",                 // String (optional)
-    
-//     // Standard metadata
-//     title: "document title",         // String
-//     number: 123,                     // Number
-//     source: "document source",       // String
-    
-//     // Additional metadata (varies by source)
-//     area: "area name",               // String (optional)
-//     theme: "theme name",             // String (optional)
-//     author: "author name",           // String (optional)
-//     sigla: "abbreviation",           // String (optional)
-//     date: "date string",             // String (optional)
-//     link: "url",                     // String (optional)
-//     score: 0.95,                     // Number (relevance score)
-    
-//     // Source-specific fields
-//     argumento: "argument text",      // String (DAC only)
-//     section: "section name",         // String (DAC only)
-//     folha: "page number"             // String (CCG only)
-//   }]
-// }
-
-// MANCIA FIELDS
-// ------------
-// {
-//   text: "main content", // String
-//   content: "alternative content", // String (optional)
-//   commentary: "analysis text", // String (optional)
-//   analysis: "detailed analysis", // String (optional)
-//   // Additional metadata fields
-// }
-
-// VERBETOPEDIA FIELDS
-// -------------------
-// {
-//   term: "search term", // String
-//   definition: "term definition", // String
-//   entry: "dictionary entry", // String
-//   // Additional metadata fields
-//   text: "alternative text content" // String (optional)
-// }
-
-
+//______________________________________________________________________________________________
+// extractMetadata
+//______________________________________________________________________________________________
 function extractMetadata(data, type) {
     // Handle case where data is not an array or is null/undefined
     if (!data) {
@@ -196,7 +104,7 @@ function extractMetadata(data, type) {
     // Type-specific field mappings and processing
     const TYPE_CONFIG = {
       ragbot: {
-        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature', 'top_k']
+        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature']
       },
       lexical: {
         metadataFields: [...COMMON_FIELDS]
@@ -205,7 +113,7 @@ function extractMetadata(data, type) {
         metadataFields: [...COMMON_FIELDS, 'area', 'theme', 'author', 'sigla', 'date', 'link', 'score', 'argumento', 'section', 'folha']
       },
       mancia: {
-        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature', 'top_k']
+        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature']
       },
       verbetopedia: {
         metadataFields: [...COMMON_FIELDS, 'area', 'theme', 'author', 'sigla', 'date', 'link', 'score']

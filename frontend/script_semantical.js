@@ -98,8 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     query: "TEXTO DE ENTRADA: " + term + ".",
                     model: MODEL_LLM,
                     temperature: TEMPERATURE,
-                    top_k: TOP_K,
-                    vector_store_id: "OPENAI_ID_ALLWV", // mantém sua lógica
+                    vector_store_id: OPENAI_RAGBOT, 
                     instructions: [
                         "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.Sua função é receber um TEXTO DE ENTRADA",
                         "e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia. ",
@@ -110,11 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     chat_id                     // <<< NOVO
                 };
                
-                const defJson = await call_ragbot(paramRAGbot);
+                const defJson = await call_llm(paramRAGbot);
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
                 //*****************************************************************************************
-
 
                 // Display results
                 // ================
@@ -149,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
              const paramSem = {
                 term: term + ": " + newTerm + ".",
                 source: source,
-                top_k: TOP_K,
                 model: MODEL_LLM,
             };
             
@@ -157,7 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             //*****************************************************************************************
                 
+            // Get max results from input or use default
+            const maxResults = parseInt(document.getElementById('maxResults')?.value) || MAX_RESULTS_DISPLAY;
             
+            // Restrict display to first maxResults if results exist
+            if (semJson.results && Array.isArray(semJson.results)) {
+                semJson.results = semJson.results.slice(0, maxResults);
+            } else {
+                semJson.results = [];
+            }
+
             // Display results
             const newTitle = `Semantical Search    ●    ${term}`;
             removeLoading(resultsDiv);

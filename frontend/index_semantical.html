@@ -21,7 +21,7 @@
             <div class="book-checkboxes">
                 <label><input type="checkbox" name="book" value="LO" checked> LO</label>
                 <label><input type="checkbox" name="book" value="DAC"> DAC</label>
-                <label><input type="checkbox" name="book" value="ECALL_DEF"> ECALL_DEF</label>
+                <label><input type="checkbox" name="book" value="ECALL_DEF"> EC</label>
                 <label><input type="checkbox" name="book" value="CCG"> CCG</label>
             </div>
             <div class="search-options">
@@ -29,6 +29,10 @@
                     <input type="checkbox" id="enableDefinition" checked>
                     <span>Show definition/synthesis</span>
                 </label>
+                <div class="max-results">
+                    <label for="maxResults">Max Results:</label>
+                    <input type="number" id="maxResults" min="1" max="100" value="5">
+                </div>
             </div>
         </div>
        

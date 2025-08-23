@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
         
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Pensata Sorteada", 'title');
+            displayResults(resultsDiv, "Pensata Sorteada:   ●   " + pensJson.metadata.title + "   ●   Léxico de Ortopensatas (2a edição, 2019)", 'title');
             displayResults(resultsDiv, pensJson, 'simple');
             
 
@@ -95,19 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
             query: "Comente a seguinte Pensata: " + pensataText,
             model: MODEL_LLM,
             temperature: TEMPERATURE,
-            top_k: TOP_K,
-            vector_store_names: "ALLWV",
+            vector_store_names: OPENAI_RAGBOT,
             instructions: [
             "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
             "A frase apresentada é uma pensata do livro Léxico de Ortopensatas, do autor Waldo Vieira.",
             "Comente a frase de forma direta e objetiva, com base na Conscienciologia.",
+            "Não responda o óbvio, aprofunde a interpretação com base na Conscienciologia.",
             "Utilize marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes."
         ].join("\n"),
         use_session: true,
         chat_id                     // <<< NOVO
         };
 
-         const commentaryData = await call_ragbot(paramRAGbot);
+         const commentaryData = await call_llm(paramRAGbot);
         if (commentaryData.chat_id) localStorage.setItem('cons_chat_id', commentaryData.chat_id); // <<< NOVO
         
         //***************************************************************************************** 

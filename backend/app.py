@@ -8,8 +8,8 @@ from io import BytesIO
 import logging
 import os
 import uuid
-
-from flask import Flask, jsonify, make_response, request, send_file, Response
+from typing import Tuple, Dict, Any
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
@@ -17,17 +17,21 @@ from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
 from modules.semantical_search.search_operations import simple_semantical_search
 from utils.config import (
+    DEFAULT_VECTOR_STORE_OPENAI,
     FAISS_INDEX_DIR,
     FILES_SEARCH_DIR,
-    OPENAI_ID_ALLCONS,
-    OPENAI_ID_ALLWV,
+    LLM_MAX_RESULTS,
     TEMPERATURE,
-    TOP_K,
+    MODEL_LLM,
+    OPENAI_API_KEY,
+    OPENAI_ID_ALLWV,
+    OPENAI_ID_ALLCONS,
+    INSTRUCTIONS_LLM
 )
+
 from utils.docx_export import build_grouped_markdown, markdown_to_docx_bytes
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
-from utils.search_utils import get_search_headers, handle_search_error
-
+    
 
 logger = logging.getLogger("cons-ai")
 logging.basicConfig(level=logging.INFO)
@@ -104,9 +108,6 @@ class LexicalSearchResource(Resource):
             # Sort by source for consistent ordering
             results.sort(key=lambda x: x['source' or 'book' or 'file'])
 
-            # Limitar a TOP_K resultados
-            results = results[:TOP_K]
-
             # Monta a resposta diretamente
             response = {
                 "term": term,
@@ -114,10 +115,6 @@ class LexicalSearchResource(Resource):
                 "results": results or [],
                 "count": len(results) if results else 0
             }
-
-            logger.info("\n\n")
-            logger.info("[App.py][LexicalSearch] <<< response = >>>%s", response)
-            logger.info("\n\n")
 
             return response, 200, get_search_headers('lexical')
 
@@ -134,7 +131,6 @@ class SemanticalSearchResource(Resource):
         try:
             payload = request.get_json(force=True)
             term = safe_str(payload.get("term", ""))
-            top_k = int(payload.get("top_k", TOP_K))
 
             raw_source = payload.get("source", [])
             if isinstance(raw_source, list):
@@ -145,24 +141,14 @@ class SemanticalSearchResource(Resource):
             if not term:
                 raise ValueError("Search term is required")
 
-            # logger.info("\n\n")
-            # logger.info(f'[App.py][SemanticalSearch] term={term}, source={source}, top_k={top_k}')
-
             # Run FAISS-backed search
             processed_results = simple_semantical_search(
                 query=term,
                 source=source,
                 index_dir=FAISS_INDEX_DIR,
-                top_k=top_k,
             )
 
-            # logger.info("\n\n")
-            # logger.info("[App.py][SemanticalSearch] <<< processed_results = >>>%s", processed_results)
 
-            # Limitar a TOP_K resultados
-            processed_results = processed_results[:top_k]
-
-            # logger.info("[App.py][SemanticalSearch] response=%s", response)
             return processed_results, 200, get_search_headers('semantical')
 
         except Exception as e:
@@ -171,12 +157,14 @@ class SemanticalSearchResource(Resource):
 
 
 # ______________________________________________________________________
-# 3. RAGbot
+# 3. LLM Query
 # ______________________________________________________________________
-class RAGbotResource(Resource):
+class LlmQueryResource(Resource):
     def post(self):
         try:
             data = request.get_json(force=True)
+            # Handle both vector_store_id and vector_store_names for backward compatibility
+            vector_store_names = data.get("vector_store_names")
 
             query = safe_str(data.get("query", ""))
             if not query:
@@ -184,9 +172,7 @@ class RAGbotResource(Resource):
 
             model = data.get("model", "gpt-4.1-nano")
             temperature = float(data.get("temperature", 0.3))
-            top_k = int(data.get("top_k", TOP_K))
-            instructions = data.get("instructions", "Você é um assistente especialista em Conscienciologia.")
-            vector_store_names = data.get("vector_store_names", "ALLWV")
+            instructions = data.get("instructions", INSTRUCTIONS_LLM)
             use_session = bool(data.get("use_session", True))
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
@@ -194,29 +180,25 @@ class RAGbotResource(Resource):
                        or safe_str(request.headers.get("X-Chat-Id", "")) \
                        or str(uuid.uuid4())
 
-            if vector_store_names == "ALLWV":
-                vector_store_id = OPENAI_ID_ALLWV
-            elif vector_store_names == "ALLCONS":
-                vector_store_id = OPENAI_ID_ALLCONS
-            else:
-                vector_store_id = OPENAI_ID_ALLWV
+            parameters = {
+                "query": query,
+                "model": model,
+                "vector_store_names": vector_store_names,
+                "temperature": temperature,
+                "instructions": instructions,
+                "use_session": use_session,
+                "chat_id": chat_id,
+            }
 
-            # logger.info(f"RAGbot: model={model} temp={temperature} top_k={top_k} vs={vector_store_names} use_session={use_session} chat_id={chat_id[:8]}...")
+            #logger.info("\n\n")
+            #logger.info(f"...............[app.py][RAGbotResource] Parameters={parameters}")
 
-            # >>> SÓ ISTO: repassar chat_id (o restante do seu fluxo não muda)
-            results = generate_llm_answer(
-                query=query,
-                model=model,
-                vector_store_id=vector_store_id,
-                top_k=top_k,
-                temperature=temperature,
-                instructions=instructions,
-                use_session=use_session,
-                chat_id=chat_id,  # <<< NOVO
-            )
+            results = generate_llm_answer(**parameters)
 
             if "error" in results:
                 return {"error": results["error"]}, 500
+
+            #logger.info(f"...............[app.py][RAGbotResource] Results={results}")
 
             clean_text = results.get("text", "")
 
@@ -229,10 +211,11 @@ class RAGbotResource(Resource):
                 "type": "ragbot",
                 "model": model,
                 "temperature": temperature,
-                "top_k": top_k,
                 # Retorne o chat_id para o frontend persistir
                 "chat_id": chat_id,
             }
+
+            #logger.info(f"...............[app.py][RAGbotResource] Formatted Response={response}")
 
             return response, 200
 
@@ -244,7 +227,7 @@ class RAGbotResource(Resource):
 # ______________________________________________________________________
 # 4. Mancia (Random Pensata)
 # ______________________________________________________________________
-class ManciaResource_randomPensata(Resource):
+class RandomPensataResource(Resource):
     def post(self):
         data = request.get_json(force=True)
         term = safe_str(data.get("term", ""))
@@ -333,11 +316,94 @@ class DownloadResource(Resource):
             return {"error": "Internal server error"}, 500
 
 
+
+
+
+
+
+# ______________________________________________________________________
+# HELPERS  
+# ______________________________________________________________________
+
+def handle_search_error(error: Exception, context: str = "search") -> Tuple[Dict[str, Any], int, Dict[str, str]]:
+    """
+    Handle search errors consistently.
+    
+    Args:
+        error: The exception that was raised
+        context: Context for the error (e.g., 'lexical search', 'semantical search')
+        
+    Returns:
+        Tuple of (error_response, status_code, headers)
+    """
+    error_type = error.__class__.__name__
+    error_details = str(error)
+    
+    if isinstance(error, ValueError):
+        status_code = 400
+        error_message = f"Invalid request parameters: {error_details}"
+    else:
+        status_code = 500
+        error_message = f"An error occurred during {context}"
+    
+    logger.error(f"{error_message}: {error}", exc_info=True)
+    
+    error_response = {
+        'error': error_message,
+        'error_type': error_type,
+        'details': error_details if status_code == 400 else 'Internal server error'
+    }
+    
+    return error_response, status_code, get_search_headers(error)
+
+
+
+def get_search_headers(search_type: str) -> Dict[str, str]:
+    """
+    Get standard headers for search responses.
+    
+    Args:
+        search_type: Type of search ('lexical' or 'semantical')
+        
+    Returns:
+        Dict with standard response headers
+    """
+    return {
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-Api-Version': '1.0',
+        'X-Search-Type': search_type
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ====================== Routes ======================
-api.add_resource(RAGbotResource, '/ragbot')
+api.add_resource(LlmQueryResource, '/llm_query')
 api.add_resource(LexicalSearchResource, '/lexical_search')
 api.add_resource(SemanticalSearchResource, '/semantical_search')
-api.add_resource(ManciaResource_randomPensata, '/random_pensata')
+api.add_resource(RandomPensataResource, '/random_pensata')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')
 

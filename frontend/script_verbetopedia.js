@@ -93,29 +93,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     query: "TEXTO DE ENTRADA: " + term + ".",
                     model: MODEL_LLM,
                     temperature: TEMPERATURE,
-                    top_k: TOP_K,
-                    vector_store_id: "OPENAI_ID_ALLWV", // mantém sua lógica
+                    vector_store_id: OPENAI_RAGBOT,
                     instructions: [
-                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.Sua função é receber um TEXTO DE ENTRADA",
-                        "e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia. ",
+                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
+                        "Sua função é receber um TEXTO DE ENTRADA e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia.",
+                        "A sua resposta será usada para buscar termos similares em um documento, usando um algoritmo de busca semântica.",
                         "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações. ",
-                        "Apresente a resposta em até 3 parágrafos sintéticos e objetivos, sem preâmbulos, na seguinte forma direta: O (TEXTO DE ENTRADA) é ..."                        
+                        "Apresente a resposta em um único parágrafo sintético e objetivo, sem preâmbulos, na seguinte forma direta: O (TEXTO DE ENTRADA) significa, na Conscienciologia: ..."                        
                     ].join("\n"),
                     use_session: true,
                     chat_id                 
                 };
                
-                const defJson = await call_ragbot(paramRAGbot);
+                const defJson = await call_llm(paramRAGbot);
                 if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
                 //*****************************************************************************************
 
-
+                
 
                 // Display results
                 // ================
                 removeLoading(resultsDiv);
-                displayResults(resultsDiv, "Synthesis", 'title');
+                //displayResults(resultsDiv, "Synthesis", 'title');
                 displayResults(resultsDiv, defJson, 'simple');
 
                 // If the synthesis is empty, we don't proceed to semantic search
@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
              const paramSem = {
                 term: term + ": " + newTerm + ".",
                 source: "ECALL_DEF",
-                top_k: TOP_K,
                 model: MODEL_LLM,
             };
             
@@ -152,12 +151,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             //*****************************************************************************************
                 
+            // Get max results from input or use default
+            const maxResults = parseInt(document.getElementById('maxResults')?.value) || MAX_RESULTS_DISPLAY;
 
+            // Restrict display to first maxResults if results exist
+            if (semJson.results && Array.isArray(semJson.results)) {
+                semJson.results = semJson.results.slice(0, maxResults);
+            } else {
+                semJson.results = [];
+            }
 
             // Display results
             const newTitle = `Verbetopedia    ●    ${term}`;
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, newTitle, 'title');
+            //displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "verbetopedia");
 
             console.log(`********Script_verbetopedia.js - verbetopedia*** [semJson]:`, semJson);

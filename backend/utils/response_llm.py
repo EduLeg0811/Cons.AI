@@ -5,7 +5,16 @@ import re
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from utils.config import MODEL_LLM, OPENAI_API_KEY
+from utils.config import (
+    MODEL_LLM, 
+    OPENAI_API_KEY, 
+    LLM_MAX_RESULTS, 
+    DEFAULT_VECTOR_STORE_OPENAI, 
+    TEMPERATURE, 
+    INSTRUCTIONS_LLM, 
+    OPENAI_ID_ALLWV, 
+    OPENAI_ID_ALLCONS
+)
 
 
 
@@ -49,15 +58,15 @@ def get_llm_session():
 # =============================================================================
 # Função principal para gerar resposta do LLM
 # =============================================================================
-def generate_llm_answer(query, model, vector_store_id, top_k, temperature, instructions, use_session=True, chat_id="default"):
-    """
-    Gera uma resposta do LLM com File Search (RAG) e memória por conversa via previous_response_id.
-    Memória em memória local (um dicionário), válida por processo.
-    """
+def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temperature=TEMPERATURE, instructions=INSTRUCTIONS_LLM, use_session=True, chat_id="default"):
+   
     client = OpenAI(api_key=OPENAI_API_KEY)
 
     if not query:
         return {"error": "Consulta vazia."}
+
+    # Busca o id real do vector_store
+    vector_store_ids = get_vector_store_ids(vector_store_names)
 
     # Recupera o último response.id dessa conversa
     previous_id = _conversation_last_id.get(chat_id) if use_session else None
@@ -66,8 +75,8 @@ def generate_llm_answer(query, model, vector_store_id, top_k, temperature, instr
         "model": model,
         "tools": [{
             "type": "file_search",
-            "vector_store_ids": [vector_store_id],
-            "max_num_results": int(top_k)
+            "vector_store_ids": vector_store_ids,
+            "max_num_results": int(LLM_MAX_RESULTS)
         }],
         "input": query,
         "instructions": instructions,          # reenvie sempre
@@ -79,20 +88,19 @@ def generate_llm_answer(query, model, vector_store_id, top_k, temperature, instr
         llm_str["previous_response_id"] = previous_id
 
     try:
-        # Evite logar conteúdo extenso
-        logger.info(f"LLM call: model={model}, top_k={top_k}, has_prev={bool(previous_id)}, chat_id={chat_id}")
+        
+        logger.info("\n\n")
+        logger.info(f".............................[ResponseLLM.py] [LLM call] :  {llm_str}")
 
         response = client.responses.create(**llm_str)
+
+        logger.info(f".............................[ResponseLLM.py] [LLM response] :  {response}")
 
         # Atualiza o último id desta conversa
         last_id = getattr(response, "id", None)
         if last_id and use_session:
             _conversation_last_id[chat_id] = last_id
 
-        # Log enxuto
-        usage = getattr(response, "usage", None)
-        total_tokens = getattr(usage, "total_tokens", "N/A") if usage else "N/A"
-        logger.info(f"LLM ok: response.id={last_id}, total_tokens={total_tokens}, chat_id={chat_id}")
 
         return format_llm_response(response)
 
@@ -104,11 +112,17 @@ def generate_llm_answer(query, model, vector_store_id, top_k, temperature, instr
 
 
 
+def get_vector_store_ids(vector_store_names):
 
+    vector_store_ids = []
+    if vector_store_names == "ALLWV":
+        vector_store_ids.append(OPENAI_ID_ALLWV)
+    elif vector_store_names == "ALLCONS":
+        vector_store_ids.append(OPENAI_ID_ALLCONS)
+    else:
+        vector_store_ids.append(DEFAULT_VECTOR_STORE_OPENAI)
 
-
-
-
+    return vector_store_ids
 
 
 # =============================================================================

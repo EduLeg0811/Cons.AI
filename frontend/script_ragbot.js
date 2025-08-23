@@ -77,19 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             query: term,
             model: MODEL_LLM,
             temperature: TEMPERATURE,
-            top_k: TOP_K,
-            vector_store_names: "ALLWV",
-            instructions: [
-              "Você é um assistente especialista em Conscienciologia. Baseie suas respostas nos documentos fornecidos.",
-              "Responda de forma direta e objetiva.",
-              "Quando pertinente, organize as informações em forma de listagens numeradas.",
-              "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações."
-            ].join("\n"),
+            vector_store_names: OPENAI_RAGBOT,
+            instructions: INSTRUCTIONS_LLM,
             use_session: true,
-                chat_id
+            chat_id
           };
           
-          const response = await call_ragbot(paramRAGbot);
+          const response = await call_llm(paramRAGbot);
           if (response.chat_id) localStorage.setItem('cons_chat_id', response.chat_id); // <<< NOVO
           // *****************************************************************************************
 
@@ -133,25 +127,12 @@ function prepareDownloadData(response, term) {
     const responseText = response?.results?.[0]?.text || response?.text || response || "";
     
     return {
-        results: [{
-            text: responseText,
-            source: "ConsBOT",
-            type: "ragbot",
-            metadata: {
-                title: "ConsBOT Response",
-                content: responseText,
-                model: response?.model || MODEL_LLM,
-                temperature: response?.temperature || TEMPERATURE,
-                top_k: response?.top_k || TOP_K
-            },
-            citations: response?.results?.[0]?.citations || []
-        }],
-        search_type: "ragbot",
+        text: responseText,
         query: term || "",
         model: response?.model || MODEL_LLM,
         temperature: response?.temperature || TEMPERATURE,
-        top_k: response?.top_k || TOP_K,
-        term: term || ""
+        citations: response?.results?.[0]?.citations || [],
+        search_type: "ragbot",
     };
 }
 

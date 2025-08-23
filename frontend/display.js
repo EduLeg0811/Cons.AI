@@ -139,57 +139,17 @@ function removeLoading(container) {
 }
 
 
-  
+
+
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// ________________________________________________________________________________________
-// showSem(container, results)
-// - Recebe diretamente o array "flattened" vindo do backend (semJson).
-// - Exibe no mesmo estilo do showLexical, mas com TODOS os metadados como badges.
-// - Agrupa por fonte/livro (source/file/book), normaliza nome de exibição.
-// - Ordena por paragraph_number quando disponível.
-// - Renderiza markdown sanitizado (DOMPurify, se presente).
-//
-// Estrutura típica de cada item (campos possíveis):
-//   - Conteúdo:      display_md | markdown | page_content | text
-//   - Fonte/Livro:   book | source | file
-//   - Numeração:     paragraph_number | number
-//   - Título:        title
-//   - Autor:         author | autor
-//   - Score:         score (número)
-//   - Datas:         date | data
-//   - Taxonomias:    especialidade | specialty | tematologia
-//   - Navegação:     link_wv | url | link
-//   - Outros campos arbitrários de metadados podem aparecer e serão renderizados.
-//
-// Dependências esperadas no projeto:
-//   - renderMarkdown(htmlString)
-//   - escapeHtml(text)
-//   - window.DOMPurify (opcional, para sanitização)
-//   - window.normSourceName (opcional; se não houver, usamos fallback local)
-//
-// Campos de metadados esperados no projeto:
-//
-// LO:  Content_Text	Markdown	Title	  Number	Source						
-// DAC: Content_Text	Markdown	Title	  Number  Source		Division   Argumento	  			
-// CCG: Content_Text	Markdown	Title	  Number  Source		Folha	      	    			
-// EC:  Content_Text	Markdown	Title	  Number	Source    Date  Area  Theme	 Author	 Sigla 	Link	
-//
-// ________________________________________________________________________________________
+//______________________________________________________________________________________________
+// showSearch
+//______________________________________________________________________________________________
 function showSearch(container, data) {
     if (!container) {
         console.error('Results container not found');
@@ -206,6 +166,10 @@ function showSearch(container, data) {
         return;
     }
 
+
+    // Processamento GERAL
+    // ===========================================================================================
+
     // 1) Normalizador de fonte/livro para exibição (remove diretórios e .md)
     const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
         ? window.normSourceName
@@ -217,7 +181,7 @@ function showSearch(container, data) {
             return s;
         };
 
-    // 3) Agrupar por fonte normalizada
+    // 2) Agrupar por fonte normalizada
     const groups = arr.reduce((acc, it, idx) => {
         const raw = it?.book || it?.source || it?.file || 'Results';
         const key = normSourceName(raw);
@@ -227,7 +191,12 @@ function showSearch(container, data) {
     }, {});
     const groupNames = Object.keys(groups);
 
-    // 4) Resumo superior
+
+
+    // 3) Resultados do grupo
+    // ===========================================================================================
+    
+    // Resumo superior
     const totalCount = arr.length;
     const perSourceLines = groupNames.map(name => {
         const n = groups[name].length;
@@ -242,7 +211,7 @@ function showSearch(container, data) {
         border-radius: 8px;
         margin: 8px 0 14px 0;
     ">
-        <div style="font-weight: bold; margin-bottom: 6px;">
+        <div style="font-weight: bold;">
             Total de parágrafos encontrados: ${totalCount}
         </div>
         ${perSourceLines}
@@ -250,84 +219,357 @@ function showSearch(container, data) {
     
     container.insertAdjacentHTML('beforeend', summaryHtml);
 
-    // 5) Render por grupo
+
+    // 4) Render por GRUPOS (cada source name)
+    // ===========================================================================================
     groupNames.forEach(groupName => {
-        // Ordena por paragraph_number quando houver (senão mantém ordem original)
-        const items = groups[groupName].slice().sort((a, b) => {
-            const na = Number.isFinite(a?.paragraph_number) ? a.paragraph_number : Infinity;
-            const nb = Number.isFinite(b?.paragraph_number) ? b.paragraph_number : Infinity;
-            return na - nb;
+
+        const groupItems = groups[groupName];
+        let groupHtml = '';
+    
+
+        // 4.1) Processar cada parágrafo
+        // =======================================
+        groupItems.forEach((item, idx) => {
+
+           // Marcador sequencial [n] (posição dentro do grupo)
+           const markerHtml = `<span class="paragraph-marker" style="font-size: 10px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
+          
+           // Nome da fonte
+           const sourceName = item.source || item.file || item.book || 'Unknown';
+
+           console.log('**********sourceName', sourceName);
+
+           // Montagem específica do parágrafo final para cada tipo de fonte
+           let itemHtml = '';
+           if (sourceName === 'LO') {
+                itemHtml = format_paragraph_LO(item);
+            }
+            else if (sourceName === 'DAC') {
+                itemHtml = format_paragraph_DAC(item);
+            }
+            else if (sourceName === 'CCG') {
+                itemHtml = format_paragraph_CCG(item);
+            }
+            else if (sourceName === 'EC' || sourceName === 'ECALL_DEF' || sourceName === 'ECWV' || sourceName === 'ECALL') {
+                itemHtml = format_paragraph_EC(item);
+            }
+            else {
+                itemHtml = format_paragraph_default(item);
+            }
+
+            // Adicionar parágrafo ao conteúdo do grupo
+            groupHtml += itemHtml;
         });
+        
 
-        // Gera linhas
-        const contentHtml = items.map((item, idx) => {
-            // 5.1) Conteúdo de parágrafo (markdown)
-            let content = (
-                (typeof item.markdown === 'string' && item.markdown) ||
-                (typeof item.page_content === 'string' && item.page_content) ||
-                ''  
-            );
-            
-            // If source is "LO" and there's a title, prepend it in bold
-            if ((item.book === 'LO' || item.source === 'LO' || item.file === 'LO') && item.title) {
-                content = `**${item.title}**. ${content}`;
-            }
-
-            const rawHtml = renderMarkdown(content);
-            const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-
-            // 5.2) Marcador sequencial [n] (posição dentro do grupo)
-            const markerHtml = `<span class="paragraph-marker" style="font-size: 10px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
-
-            // Extract metadata
-            const metadata = extractMetadata(item, 'semantical');
-
-            // Initialize badges array
-            const metaBadges = [];
-
-            // Loop through all metadata entries
-            for (const [key, value] of Object.entries(metadata)) {
-                // Skip if value is empty, null, or undefined
-                if (value === undefined || value === null || value === '') continue;
-                
-                // Skip internal/private fields (those starting with _)
-                if (key.startsWith('_') || key === 'id') continue;
-
-                // Format the value for display
-                const displayValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
-
-                // Add badge with appropriate class based on key
-                metaBadges.push(`
-                    <span class="metadata-badge ${key.toLowerCase()}">
-                        ${key}: ${displayValue}
-                    </span>
-                `);
-            }
-
-            // Return statement:
-            return `
-            <div class="displaybox-item">
-                <div class="displaybox-text markdown-content">${safeHtml}</div>
-                <div class="metadata-badge">
-                    ${metaBadges.join('')}
+        // 5) HTML final do grupo
+        // =======================================
+        const finalHtml = `
+            <div class="displaybox-group">
+                <div class="displaybox-header">
+                    <span style="color: blue; font-weight: bold; font-size: 14px">${escapeHtml(groupName)}</span>
+                    <span class="score-badge" style="font-size: 12px">${groupItems.length} resultado${groupItems.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div class="displaybox-content">
+                    ${groupHtml}
                 </div>
             </div>`;
-        }).join('');
 
-        // Header do grupo + conteúdo
-        const groupHtml = `
-        <div class="displaybox-group">
-            <div class="displaybox-header">
-                <span style="color: blue; font-weight: bold;">${escapeHtml(groupName)}</span>
-                <span class="score-badge" style="font-size: 10px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
-            </div>
-            <div class="displaybox-content">
-                ${contentHtml}
-            </div>
-        </div>`;
         container.insertAdjacentHTML('beforeend', groupHtml);
+
     });
 }
+
+
+
+
+
+// ===========================================================================
+// LO: Content_Text  Markdown_Text Title  Number  Score
+// ===========================================================================
+const format_paragraph_LO = (item) => {
+
+    console.log('Available properties:', Object.keys(item));
+    if (item.metadata) {
+        console.log('Metadata properties:', Object.keys(item.metadata));
+    }
+
+    // Fields are directly on the item
+    const title = item.title || '';
+    const paragraph_number = item.number || '';
+    const score = item.score || 0.00;
+    const text = item.markdown || item.content_text || '';
+    const source = item.source || '';
+
+    console.log('---------------[display.js] [format_paragraph_LO] paragraph_number: ', paragraph_number);
+    console.log('---------------[display.js] [format_paragraph_LO] title: ', title);
+    console.log('---------------[display.js] [format_paragraph_LO] score: ', score);
+    console.log('---------------[display.js] [format_paragraph_LO] source: ', source);
+
+    // Add each field to the array only if it has a value
+    const badgeParts = [];
+    if (source) {
+        badgeParts.push(`<span class="metadata-badge estilo1"> <strong>${escapeHtml(source)}</strong></span>`);
+    }
+    if (title) {
+        badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
+    }
+    if (paragraph_number) {
+        badgeParts.push(`<span class="metadata-badge estilo3"> @${escapeHtml(paragraph_number)}</span>`);
+    }
+    if (score > 0.0) {
+        badgeParts.push(`<span class="metadata-badge estilo4"> #${escapeHtml(score)}</span>`);
+    }
+
+    // Join the non-empty badges with a space
+    metaBadges = badgeParts.join('');
+
+    // Add title to text if score > 0.0 (Semantical Search)
+    const textCompleted = (score > 0.0) ? `**${title}**. ${text}` : text;
+
+    // Renderiza markdown
+    const rawHtml = renderMarkdown(textCompleted);
+    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+    // Monta HTML final
+    const finalHtml = `
+    <div class="displaybox-item">
+        <div class="displaybox-text markdown-content">${safeHtml}</div>
+        ${metaBadges}
+    </div>`;
+
+
+    return finalHtml;
+}
+
+  
+
+
+// ===========================================================================
+// DAC: Content_Text  Markdown  Title  Number  Source  Argumento  Section
+// ===========================================================================
+const format_paragraph_DAC = (item) => {
+    
+
+    console.log('Available properties:', Object.keys(item));
+    if (item.metadata) {
+        console.log('Metadata properties:', Object.keys(item.metadata));
+    }
+
+    // Fields are directly on the item
+    const title = item.title || '';
+    const paragraph_number = item.number || '';
+    const score = item.score || 0.00;
+    const text = item.markdown || item.content_text || '';
+    const argumento = item.argumento || '';
+    const section = item.section || '';
+    const source = item.source || '';
+
+    console.log('---------------[display.js] [format_paragraph_DAC] paragraph_number: ', paragraph_number);
+    console.log('---------------[display.js] [format_paragraph_DAC] title: ', title);
+    console.log('---------------[display.js] [format_paragraph_DAC] score: ', score);
+    console.log('---------------[display.js] [format_paragraph_DAC] argumento: ', argumento);
+    console.log('---------------[display.js] [format_paragraph_DAC] section: ', section);
+    console.log('---------------[display.js] [format_paragraph_DAC] source: ', source);
+
+    // Add each field to the array only if it has a value
+    const badgeParts = [];   
+    if (source) {
+        badgeParts.push(`<span class="metadata-badge estilo1"> <strong>${escapeHtml(source)}</strong></span>`);
+    }
+    if (title) {
+        badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
+    }
+    if (argumento) {
+        badgeParts.push(`<span class="metadata-badge estilo5"> ${escapeHtml(argumento)}</span>`);
+    }
+    if (section) {
+        badgeParts.push(`<span class="metadata-badge estilo6"> <em> ${escapeHtml(section)}</em></span>`);
+    }
+    if (paragraph_number) {
+        badgeParts.push(`<span class="metadata-badge estilo4"> @${escapeHtml(paragraph_number)}</span>`);
+    }
+    if (score > 0.0) {
+        badgeParts.push(`<span class="metadata-badge estilo9"> #${escapeHtml(score)}</span>`);
+    }
+
+    // Join the non-empty badges with a space
+    metaBadges = badgeParts.join('');
+
+    // Renderiza markdown
+    const rawHtml = renderMarkdown(text);
+    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+    // Monta HTML final
+    const finalHtml = `
+    <div class="displaybox-item">
+        <div class="displaybox-text markdown-content">${safeHtml}</div>
+        ${metaBadges}
+    </div>`;
+
+    return finalHtml;
+}
+    
+    
+  
+// ===========================================================================
+// CCG: Content_Text  Markdown_Text  Title  Number  Source  Folha
+// ===========================================================================
+const format_paragraph_CCG = (item) => {
+    
+
+    console.log('Available properties:', Object.keys(item));
+    if (item.metadata) {
+        console.log('Metadata properties:', Object.keys(item.metadata));
+    }
+
+    // Fields are directly on the item
+    const title = item.title || '';
+    const question_number = item.number || '';
+    const score = item.score || 0.00;
+    const text = item.markdown || item.content_text || '';
+    const folha = item.folha || '';
+    const source = item.source || '';
+
+    console.log('---------------[display.js] [format_paragraph_CCG] question_number: ', question_number);
+    console.log('---------------[display.js] [format_paragraph_CCG] title: ', title);
+    console.log('---------------[display.js] [format_paragraph_CCG] score: ', score);
+    console.log('---------------[display.js] [format_paragraph_CCG] folha: ', folha);
+    console.log('---------------[display.js] [format_paragraph_CCG] source: ', source);
+
+
+    // Add each field to the array only if it has a value
+    const badgeParts = [];   
+    if (source) {
+        badgeParts.push(`<span class="metadata-badge estilo1"> <strong>${escapeHtml(source)}</strong></span>`);
+    }
+    if (title) {
+        badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
+    }
+    if (folha) {
+        badgeParts.push(`<span class="metadata-badge estilo4"> (${escapeHtml(folha)})</span>`);
+    }
+    if (question_number) {
+        badgeParts.push(`<span class="metadata-badge estilo3"> @${escapeHtml(question_number)}</span>`);
+    }
+    if (score > 0.0) {
+        badgeParts.push(`<span class="metadata-badge estilo9"> #${escapeHtml(score)}</span>`);
+    }
+
+    // Join the non-empty badges with a space
+    metaBadges = badgeParts.join('');
+    
+    // Renderiza markdown
+    const rawHtml = renderMarkdown(text);
+    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+    // Monta HTML final
+    const finalHtml = `
+    <div class="displaybox-item">
+        <div class="displaybox-text markdown-content">${safeHtml}</div>
+        ${metaBadges}
+    </div>`;
+
+    return finalHtml;
+}
+
+  
+// ===========================================================================
+// EC: Content_Text  Markdown_Text  Title  Number  Source  Area  Theme  Author  Sigla  Date  Link
+// ===========================================================================
+const format_paragraph_EC = (item) => {
+    
+
+    console.log('Available properties:', Object.keys(item));
+    if (item.metadata) {
+        console.log('Metadata properties:', Object.keys(item.metadata));
+    }
+
+    // Fields are directly on the item
+    const title = item.title || '';
+    const verbete_number = item.number || '';
+    const score = item.score || 0.00;
+    const text = item.markdown || item.content.text || '';
+    const area = item.area || '';
+    const theme = item.theme || '';
+    const author = item.author || '';
+    const sigla = item.sigla || '';
+    const date = item.date || '';
+    const link = item.link || '';
+    const source = 'EC';
+
+
+    console.log('---------------[display.js] [format_paragraph_EC] verbete_number: ', verbete_number);
+    console.log('---------------[display.js] [format_paragraph_EC] title: ', title);
+    console.log('---------------[display.js] [format_paragraph_EC] score: ', score);
+    console.log('---------------[display.js] [format_paragraph_EC] area: ', area);
+    console.log('---------------[display.js] [format_paragraph_EC] theme: ', theme);
+    console.log('---------------[display.js] [format_paragraph_EC] author: ', author);
+    console.log('---------------[display.js] [format_paragraph_EC] sigla: ', sigla);
+    console.log('---------------[display.js] [format_paragraph_EC] date: ', date);
+    console.log('---------------[display.js] [format_paragraph_EC] link: ', link);
+    console.log('---------------[display.js] [format_paragraph_EC] source: ', source);
+
+    // Add each field to the array only if it has a value
+    const badgeParts = [];   
+    if (source) {
+        badgeParts.push(`<span class="metadata-badge estilo1" style="color: red"> <strong>${escapeHtml(source)}</strong></span>`);
+    }
+    if (title) {
+        badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span> `);
+    }
+    if (area) {
+        badgeParts.push(`<span class="metadata-badge estilo4"> <em> ${escapeHtml(area)}</em></span>`);
+    }
+    if (verbete_number) {
+        badgeParts.push(`<span class="metadata-badge estilo3"> @${escapeHtml(verbete_number)}</span>`);
+    }
+    if (theme) {
+        badgeParts.push(`<span class="metadata-badge estilo5"> ${escapeHtml(theme)}</span>`);
+    }
+    if (author) {
+        badgeParts.push(`<span class="metadata-badge estilo6"> ${escapeHtml(author)}</span>`);
+    }
+    if (date) {
+        badgeParts.push(`<span class="metadata-badge estilo7"> ${escapeHtml(date)}</span>`);
+    }
+    if (score > 0.0) {
+        badgeParts.push(`<span class="metadata-badge estilo9"> #${escapeHtml(score)}</span>`);
+    }
+
+    // Join the non-empty badges with a space
+    metaBadges = badgeParts.join('');
+      
+    // Renderiza markdown
+    const rawHtml = renderMarkdown(text);
+    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+    // Monta HTML final
+    const finalHtml = `
+    <div class="displaybox-item">
+        <div class="displaybox-text markdown-content">${safeHtml}</div>
+        ${metaBadges}
+    </div>`;
+
+    return finalHtml;
+}
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -345,8 +587,7 @@ function showSearch(container, data) {
   //   total_tokens_used: number,
   //   type: 'ragbot',
   //   model: string,
-  //   temperature: number,
-  //   top_k: number
+  //   temperature: number
   // }
   function showRagbot(container, data) {
     const text = data?.text || 'No text available.';
@@ -356,7 +597,7 @@ function showSearch(container, data) {
     // Extract metadata
     // ***********************************************************************
     // ragbot: {
-    //   metadataFields: ['title', 'number', 'source', 'citations', 'total_tokens_used', 'model', 'temperature', 'top_k']
+    //   metadataFields: ['title', 'number', 'source', 'citations', 'total_tokens_used', 'model', 'temperature']
     // }
     // ***********************************************************************
     metadata = extractMetadata(data, 'ragbot');
@@ -365,15 +606,13 @@ function showSearch(container, data) {
     const total_tokens_used = metadata?.total_tokens_used;
     const model = metadata?.model;
     const temperature = metadata?.temperature;
-    const top_k = metadata?.top_k;
-
+    
     // Badge do número absoluto do parágrafo no arquivo (se presente)
     const metaInfo = `
     <div class="metadata-container">
       <span class="metadata-badge citation">Citations: ${citations}</span>
       <span class="metadata-badge model">Model: ${model}</span>
       <span class="metadata-badge temperature">Temperature: ${temperature}</span>
-      <span class="metadata-badge topk">TopK: ${top_k}</span>
       <span class="metadata-badge tokens">Tokens: ${total_tokens_used}</span>
     </div>
     `;  
@@ -388,8 +627,6 @@ function showSearch(container, data) {
   `;
   container.insertAdjacentHTML('beforeend', html);
 }
-
-
 
 
 // ________________________________________________________________________________________
@@ -412,8 +649,7 @@ function showTitle(container, text) {
   //   total_tokens_used: number,
   //   type: 'simple',
   //   model: string,
-  //   temperature: number,
-  //   top_k: number
+  //   temperature: number
   // }
   function showSimple(container, data) {
     const text = data.text;
@@ -431,11 +667,8 @@ function showTitle(container, text) {
 
 
 
-
-
-
 // ________________________________________________________________________________________
-// Show Verbetopedia
+// Show Verbetopedia (simplificada — ordenação por score)
 // ________________________________________________________________________________________
 
 function showVerbetopedia(container, data) {
@@ -454,16 +687,93 @@ function showVerbetopedia(container, data) {
         return;
     }
 
-    // 1) Normalizador de fonte/livro para exibição (remove diretórios e .md)
-    const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
-        ? window.normSourceName
-        : function _fallbackNormSourceName(src) {
-            if (!src) return 'Results';
-            let s = String(src);
-            s = s.split(/[\\/]/).pop();           // tira diretórios
-            s = s.replace(/\.(md|markdown)$/i, ''); // tira extensão
-            return s;
-        };
+    // 1) Extrair metadados antes para usar score
+    const items = arr.map(item => {
+        const metaData = extractMetadata(item, 'verbetopedia');
+        return { ...item, _meta: metaData };
+    });
+
+    // 2) Ordenar por score decrescente
+    items.sort((a, b) => {
+        const sa = (typeof a._meta.score === 'number') ? a._meta.score : -Infinity;
+        const sb = (typeof b._meta.score === 'number') ? b._meta.score : -Infinity;
+        return sa - sb; // menor primeiro
+    });
+
+    // 3) Gera HTML de cada item
+    const contentHtml = items.map(item => {
+        // Conteúdo principal
+        let content = (
+            (typeof item.markdown === 'string' && item.markdown) ||
+            (typeof item.page_content === 'string' && item.page_content) ||
+            (typeof item.text === 'string' && item.text) ||
+            ''
+        );
+
+        const rawHtml  = renderMarkdown(content);
+        const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+        const metaData = item._meta;
+
+        const titleHtml = `<strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  ${metaData.number}  ●  ${metaData.date}`;
+
+        const scoreHtml = (typeof metaData.score === 'number' && !Number.isNaN(metaData.score))
+            ? `<span class="rag-badge">Score: ${metaData.score.toFixed(2)}</span>` : '';
+
+        return `
+        <div class="displaybox-item">
+            <div class="displaybox-header" style="text-align: left; padding-left: 0;">
+                <span class="header-text">${titleHtml}</span>
+            </div>
+            <div class="displaybox-text">
+                <span class="displaybox-text markdown-content">${safeHtml}</span>
+                <span class="metadata-badge">${scoreHtml}</span>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    // 4) Bloco final (único grupo — EC)
+    const groupHtml = `
+    <div class="displaybox-group">
+        <div class="displaybox-header">
+            <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
+            <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="displaybox-content">
+            ${contentHtml}
+        </div>
+    </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', groupHtml);
+}
+
+
+
+
+
+
+
+// ________________________________________________________________________________________
+// Show Verbetopedia
+// ________________________________________________________________________________________
+
+function showVerbetopedia2(container, data) {
+    if (!container) {
+        console.error('Results container not found');
+        return;
+    }
+
+    // 0) Garantir array de entrada
+    const arr = Array.isArray(data.results) ? data.results : [];
+    if (!arr.length) {
+        container.insertAdjacentHTML(
+            'beforeend',
+            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
+        );
+        return;
+    }
 
     // 3) Agrupar por fonte normalizada
     const groups = arr.reduce((acc, it, idx) => {

@@ -89,6 +89,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const responseData = await call_lexical (parameters);
         //*****************************************************************************************
        
+
+        // Get max results from input or use default
+        const maxResults = parseInt(document.getElementById('maxResults')?.value) || MAX_RESULTS_DISPLAY;
+
+        // Restrict display to first maxResults if results exist
+        if (responseData.results && Array.isArray(responseData.results)) {
+            responseData.results = responseData.results.slice(0, maxResults);
+        } else {
+            responseData.results = [];
+        }
+
         // Display results
         const newTitle = `Lexical Search    ●    ${term}`;
         removeLoading(resultsDiv);

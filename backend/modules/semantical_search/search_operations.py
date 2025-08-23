@@ -58,8 +58,9 @@ def _sort_key(val):
 
 # Simple Search SEMANTICAL
 # _________________________________________________________________________________________
-def simple_semantical_search(query, source, index_dir, top_k):
+def simple_semantical_search(query, source, index_dir):
     
+
 
     # ------------------------------------------------------
     # Busca Semântica em FAISS
@@ -69,6 +70,7 @@ def simple_semantical_search(query, source, index_dir, top_k):
        
 
         # Pesquisa em todos os vector stores
+        # ****************************************************************************************************************
         vector_store_ids = get_vector_store_id(source)
         for vs_id in vector_store_ids:
             index_path = os.path.abspath(os.path.join(index_dir, vs_id))
@@ -76,8 +78,7 @@ def simple_semantical_search(query, source, index_dir, top_k):
             index_file = os.path.join(index_path, "index.faiss")
 
             if not os.path.exists(index_file):
-                logger.info(f"[Search_operations.py  -- Simple_semantical_search]: index_file={index_file} does not exist")
-                continue
+               continue
 
 
             # Carrega o índice FAISS
@@ -91,43 +92,54 @@ def simple_semantical_search(query, source, index_dir, top_k):
             # k-NN clássico com fetch_k=150
             #------------------------------------------------------
             results_with_scores = vectorstore.similarity_search_with_score(
-                query, k=top_k, fetch_k=150, score_threshold=None
+                query, k=TOP_K, fetch_k=150, score_threshold=None
             )
+
           
             all_results.extend(results_with_scores)
 
+        # ****************************************************************************************************************
 
+     
         # ------------------------------------------------------
-        # Processa resultados (ordena por menor distância
+        # Processa resultados
         # ------------------------------------------------------
         processed_results = []
         for doc, score in all_results:
             if hasattr(doc, 'page_content') and hasattr(doc, 'metadata'):
-                # 1) score salvo como número ou None (bom para o frontend)
-                doc.metadata['score'] = _to_float_or_none(score)
+                # 1) score salvo como número ou None (2 difgitos decimais)
+                doc.metadata['score'] = round(_to_float_or_none(score), 2)  
                 processed_results.append(doc)
                 
- 
-        # ------------------------------------------------------
-        # Ordena e corta resultados
-        # ------------------------------------------------------
-        # 2) usa sort key à prova de None
-        processed_results.sort(key=lambda x: _sort_key(x.metadata.get('score')))
-        
 
-   
+
+        # ------------------------------------------------------
+        # Caso especial de FAISS do LO (dividido em 2 partes)
+        # ------------------------------------------------------
+        RENOMEAR = {
+            "LO1": "LO",
+            "LO2": "LO",
+            "LO": "LO",
+        }
+        for doc in processed_results:   # <<< agora só doc
+            src = doc.metadata.get("source")
+            if src in RENOMEAR:
+                doc.metadata["source"] = RENOMEAR[src]             
+ 
+
+
+        # ------------------------------------------------------
+        # Ordena resultados
+        # ------------------------------------------------------
+        processed_results.sort(key=lambda x: float(x.metadata.get('score', 0)))
+        
+       
         # ------------------------------------------------------
         # Converte resultados para dicionários planos
         # ------------------------------------------------------
         # plain_results = plain_dicts(processed_results)
-        # Converte resultados para dicionários planos (mantendo meta_score)
-        #logger.info("\n\n")
-        #logger.info(f"[Search_operations.py  -- Simple_semantical_search]: processed_results={processed_results}")
-        
+        # Converte resultados para dicionários planos (mantendo meta_score)       
         flat_results = plain_dicts(processed_results)
-
-        #logger.info("\n\n")
-        #logger.info(f"[Search_operations.py  -- Simple_semantical_search]: flat_results={flat_results}")
        
         # ------------------------------------------------------
         # Retorna resultados

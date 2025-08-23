@@ -471,7 +471,6 @@ button:active { background-color: #298e46; }
 .score-badge {
     display: inline-flex;
     align-items: center;    
-    background-color: #ecffec;
     color: #a10000;
     padding: 0.2em 0.2em;
     border-radius: 12px;
@@ -498,27 +497,39 @@ button:active { background-color: #298e46; }
     width: 100%;
 }
 
-/* RAGbot Badge Styles */
-.rag-badge {
-    display: inline-block;
-    font-size: 0.5rem !important;
-    background-color: #ecffec;
-    color: #7c7c7c;
-    border: 1px solid #ddd;
-    padding: 0.1rem 0.3rem !important;
-    border-radius: 0.2rem;
-    margin-right: 0.3rem !important;
-    margin-bottom: 0.2rem;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-.rag-badge:last-child {
-    margin-right: 0;
+/* Search Options */
+.search-options {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
 }
 
-/* Ensure consistent appearance in display items */
-.displaybox-item .rag-badge {
-    vertical-align: middle;
+.max-results {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.max-results label {
+    font-size: 0.9rem;
+    color: #4B5563;
+}
+
+.max-results input[type="number"] {
+    width: 60px;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.max-results input[type="number"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
 /* === Search layout overrides === */
@@ -677,8 +688,8 @@ button:active { background-color: #298e46; }
     align-items: center;
     gap: 10px;
     padding: 16px 28px;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 600;
     margin: 0 auto;
     height: 56px;
     border: none;
@@ -969,8 +980,8 @@ body { line-height: inherit !important; }
 }
 
 /* Specific badge colors */
-.metadata-badge.citation { background-color: #d1ecf1 !important; }
-.metadata-badge.model { background-color: #d4edda !important; }
-.metadata-badge.temperature { background-color: #fff3cd !important; }
-.metadata-badge.topk { background-color: #e2e3e5 !important; }
-.metadata-badge.tokens { background-color: #f8d7da !important; }
+.metadata-badge estilo1 { background-color: #d1ecf1 !important; color: blue!important; }
+.metadata-badge estilo2 { background-color: #d4edda !important; color: #000000 !important; }
+.metadata-badge estilo3 { background-color: #fff3cd !important; color: #000000 !important; }
+.metadata-badge estilo4 { background-color: #e2e3e5 !important; color: #000000 !important; }
+.metadata-badge estilo5 { background-color: #f8d7da !important; color: #000000 !important; }

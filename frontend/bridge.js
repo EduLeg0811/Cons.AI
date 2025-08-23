@@ -1,7 +1,7 @@
 // escopo de módulo
 let _lexicalController = null;
 let _semanticalController = null;
-let _ragbotController = null;
+let _llmQueryController = null;
 let _randomPensataController = null;
 let _downloadController = null;  // Added download controller
 
@@ -136,18 +136,18 @@ async function call_semantical(parameters) {
 
 
 //_________________________________________________________
-// RAGbot
+// LLM
 //_________________________________________________________
-async function call_ragbot(parameters) {
+async function call_llm(parameters) {
 
-  if (_ragbotController) _ragbotController.abort();
-  _ragbotController = new AbortController();
+  if (_llmQueryController) _llmQueryController.abort();
+  _llmQueryController = new AbortController();
 
-const response = await fetch(apiBaseUrl + '/ragbot', {
+const response = await fetch(apiBaseUrl + '/llm_query', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(parameters),
-    signal: _ragbotController.signal
+    signal: _llmQueryController.signal
 });
 
 if (!response.ok) {
@@ -158,10 +158,10 @@ if (!response.ok) {
 const responseData = await response.json();
 
 
-// Transform the RAGbot response to match what displayResults expects
-const formattedResponse = ragbot_formatResponse(responseData);
+// Transform the LLM response to match what displayResults expects
+const formattedResponse = llm_formatResponse(responseData);
 
-console.log(`********bridge.js - ragbot*** [formattedResponse]:`, formattedResponse);
+console.log(`********bridge.js - llm*** [formattedResponse]:`, formattedResponse);
 
 return formattedResponse;
 }
