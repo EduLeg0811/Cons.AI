@@ -79,16 +79,20 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
             "max_num_results": int(LLM_MAX_RESULTS)
         }],
         "input": query,
-        "instructions": instructions,          # reenvie sempre
-        "temperature": float(temperature),
-        "store": True                          # necessário para encadear
+        "instructions": instructions,   # reenvie sempre
+        "store": True                   # necessário para encadear
     }
 
+    # adiciona temperature apenas se o modelo NÃO começar com gpt-5
+    if not str(model).startswith("gpt-5"):
+        llm_str["temperature"] = float(temperature)
+
+    # adiciona previous_response_id se existir
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
-    try:
 
+    try:
 
         response = client.responses.create(**llm_str)
 
