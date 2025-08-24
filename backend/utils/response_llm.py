@@ -11,7 +11,7 @@ from utils.config import (
     LLM_MAX_RESULTS, 
     DEFAULT_VECTOR_STORE_OPENAI, 
     TEMPERATURE, 
-    INSTRUCTIONS_LLM, 
+    INSTRUCTIONS_LLM_BACKEND,
     OPENAI_ID_ALLWV, 
     OPENAI_ID_ALLCONS
 )
@@ -58,7 +58,7 @@ def get_llm_session():
 # =============================================================================
 # Função principal para gerar resposta do LLM
 # =============================================================================
-def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temperature=TEMPERATURE, instructions=INSTRUCTIONS_LLM, use_session=True, chat_id="default"):
+def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temperature=TEMPERATURE, instructions=INSTRUCTIONS_LLM_BACKEND, use_session=True, chat_id="default"):
    
     client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -88,13 +88,9 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
         llm_str["previous_response_id"] = previous_id
 
     try:
-        
-        logger.info("\n\n")
-        logger.info(f".............................[ResponseLLM.py] [LLM call] :  {llm_str}")
+
 
         response = client.responses.create(**llm_str)
-
-        logger.info(f".............................[ResponseLLM.py] [LLM response] :  {response}")
 
         # Atualiza o último id desta conversa
         last_id = getattr(response, "id", None)

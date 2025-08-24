@@ -17,7 +17,6 @@ from utils.config import (
     FAISS_ID_ECALL_DEF,
     FAISS_ID_ECWV,
     FAISS_ID_HSRP,
-    FAISS_ID_LO,
     FAISS_ID_MANUAIS,
     FAISS_ID_PROJ,
     FAISS_ID_QUEST,
@@ -26,6 +25,8 @@ from utils.config import (
     OPENAI_ID_ALLWV,
     TEMPERATURE,
     TOP_K,
+    FAISS_ID_LO1,
+    FAISS_ID_LO2,
 )
 from utils.response_llm import generate_llm_answer
 
@@ -61,20 +62,29 @@ def _sort_key(val):
 def simple_semantical_search(query, source, index_dir):
     
 
+    # Normalize query to lowercase for case-insensitive search
+    if query and isinstance(query, str):
+        query = query.lower()
 
     # ------------------------------------------------------
     # Busca Semântica em FAISS
     # ------------------------------------------------------
     all_results = []
     try:
-       
 
+        # Caso source contenha "LO", substitui "LO" por "LO1", "LO2"
+        if "LO" in source:
+            source.remove("LO")
+            source.extend(["LO1", "LO2"])
+
+             
         # Pesquisa em todos os vector stores
         # ****************************************************************************************************************
         vector_store_ids = get_vector_store_id(source)
-        for vs_id in vector_store_ids:
-            index_path = os.path.abspath(os.path.join(index_dir, vs_id))
 
+        for vs_id in vector_store_ids:
+
+            index_path = os.path.abspath(os.path.join(index_dir, vs_id))
             index_file = os.path.join(index_path, "index.faiss")
 
             if not os.path.exists(index_file):
@@ -94,7 +104,6 @@ def simple_semantical_search(query, source, index_dir):
             results_with_scores = vectorstore.similarity_search_with_score(
                 query, k=TOP_K, fetch_k=150, score_threshold=None
             )
-
           
             all_results.extend(results_with_scores)
 
@@ -112,20 +121,17 @@ def simple_semantical_search(query, source, index_dir):
                 processed_results.append(doc)
                 
 
-
         # ------------------------------------------------------
         # Caso especial de FAISS do LO (dividido em 2 partes)
         # ------------------------------------------------------
         RENOMEAR = {
             "LO1": "LO",
             "LO2": "LO",
-            "LO": "LO",
         }
         for doc in processed_results:   # <<< agora só doc
             src = doc.metadata.get("source")
             if src in RENOMEAR:
                 doc.metadata["source"] = RENOMEAR[src]             
- 
 
 
         # ------------------------------------------------------
@@ -140,6 +146,7 @@ def simple_semantical_search(query, source, index_dir):
         # plain_results = plain_dicts(processed_results)
         # Converte resultados para dicionários planos (mantendo meta_score)       
         flat_results = plain_dicts(processed_results)
+
        
         # ------------------------------------------------------
         # Retorna resultados
@@ -273,54 +280,63 @@ def plain_dicts(
 # ------------------------------------------------------
 # Define vector stores
 # ------------------------------------------------------
-def get_vector_store_id(source):
-    vector_stores_ids = []
-
-    try:
-        if "LO" in source:
-            vector_stores_ids.append(FAISS_ID_LO)
-        if "HSRP" in source:
-            vector_stores_ids.append(FAISS_ID_HSRP)
-        if "700EXP" in source:
-            vector_stores_ids.append(FAISS_ID_700EXP)
-        if "PROJ" in source:
-            vector_stores_ids.append(FAISS_ID_PROJ)
-        if "CCG" in source:
-            vector_stores_ids.append(FAISS_ID_CCG)
-        if "DAC" in source:
-            vector_stores_ids.append(FAISS_ID_DAC)
-        if "QUEST" in source:
-            vector_stores_ids.append(FAISS_ID_QUEST)
-        if "MANUAIS" in source:
-            vector_stores_ids.append(FAISS_ID_MANUAIS)
-        if "ECWV" in source:
-            vector_stores_ids.append(FAISS_ID_ECWV)
-        if "ECALL_DEF" in source:
-            vector_stores_ids.append(FAISS_ID_ECALL_DEF)
-        if "ALLCONS" in source:
-            vector_stores_ids.append(FAISS_ID_MANUAIS)
-        if "ALLWV" in source:
-            vector_stores_ids.append(FAISS_ID_LO)
-            vector_stores_ids.append(FAISS_ID_ECWV)
-            vector_stores_ids.append(FAISS_ID_HSRP)
-            vector_stores_ids.append(FAISS_ID_700EXP)
-            vector_stores_ids.append(FAISS_ID_PROJ)
-            vector_stores_ids.append(FAISS_ID_CCG)
-            vector_stores_ids.append(FAISS_ID_DAC)
-
-        # Verifica se IDs estão definidos
-        missing_ids = [vid for vid in vector_stores_ids if vid is None]
-        vector_store_ids = [vid for vid in vector_stores_ids if vid is not None]
-
-        if not vector_store_ids:
-            return []
-
-        if missing_ids:
-            logger.warning(f"Alguns Vector Store IDs não estão definidos no .env: {missing_ids}")
-
-    except Exception as e:
-        logger.error(f"Erro ao obter Vector Store IDs: {str(e)}")
+def get_vector_store_id(sources):
+    """
+    Get vector store IDs based on a list of sources.
+    
+    Args:
+        sources: List of source strings (e.g., ["LO1", "LO2"])
+        
+    Returns:
+        List of vector store IDs
+    """
+    if not isinstance(sources, list):
+        logger.warning(f"Expected list for sources, got {type(sources)}")
         return []
+
+    # Convert all sources to uppercase for case-insensitive comparison
+    sources = [str(s).upper() for s in sources]
+    vector_store_ids = []
+
+    # Process each source
+    for source in sources:
+        if source == "LO1":
+            vector_store_ids.append(FAISS_ID_LO1)
+        elif source == "LO2":
+            vector_store_ids.append(FAISS_ID_LO2)
+        elif source == "HSRP":
+            vector_store_ids.append(FAISS_ID_HSRP)
+        elif source == "700EXP":
+            vector_store_ids.append(FAISS_ID_700EXP)
+        elif source == "PROJ":
+            vector_store_ids.append(FAISS_ID_PROJ)
+        elif source == "CCG":
+            vector_store_ids.append(FAISS_ID_CCG)
+        elif source == "DAC":
+            vector_store_ids.append(FAISS_ID_DAC)
+        elif source == "QUEST":
+            vector_store_ids.append(FAISS_ID_QUEST)
+        elif source == "MANUAIS":
+            vector_store_ids.append(FAISS_ID_MANUAIS)
+        elif source == "ECWV":
+            vector_store_ids.append(FAISS_ID_ECWV)
+        elif source == "ECALL_DEF" or source == "EC" or source == "ECWV":
+            vector_store_ids.append(FAISS_ID_ECALL_DEF)
+        elif source == "ALLCONS":
+            vector_store_ids.append(FAISS_ID_MANUAIS)
+        elif source == "ALLWV":
+            vector_store_ids.extend([
+                FAISS_ID_LO, FAISS_ID_ECWV, FAISS_ID_HSRP,
+                FAISS_ID_700EXP, FAISS_ID_PROJ, FAISS_ID_CCG, FAISS_ID_DAC
+            ])
+
+    # Filter out None values and remove duplicates
+    vector_store_ids = list(dict.fromkeys([vid for vid in vector_store_ids if vid is not None]))
+
+    if not vector_store_ids:
+        logger.warning("No valid vector store IDs found for the provided sources")
+    elif None in vector_store_ids:
+        logger.warning("Some vector store IDs are not defined in .env")
 
     return vector_store_ids
 

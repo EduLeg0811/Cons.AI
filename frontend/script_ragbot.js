@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             model: MODEL_LLM,
             temperature: TEMPERATURE,
             vector_store_names: OPENAI_RAGBOT,
-            instructions: INSTRUCTIONS_LLM,
+            instructions: INSTRUCTIONS_LLM_USER,
             use_session: true,
             chat_id
           };
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const downloadData = prepareDownloadData(response, term);
           
           // Update results for download
-          window.downloadUtils.updateResults(downloadData, term, 'ragbot');
+          //window.downloadUtils.updateResults(downloadData, term, 'ragbot');
 
         } catch (error) {
             console.error('Error in ragbot:', error);

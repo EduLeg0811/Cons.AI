@@ -1,8 +1,9 @@
 from collections import defaultdict
 import logging
 import os
-from typing import Any, Dict, List
+import re
 from typing import Any, DefaultDict, Dict, List
+import unicodedata
 
 from utils.config import FILES_SEARCH_DIR
 
@@ -194,13 +195,13 @@ def _read_markdown_file(path: str, encodings: tuple = ("utf-8", "cp1252")) -> st
     raise Exception(f"Não foi possível decodificar {path} com os encodings {encodings}")
 
 
+
+
 # =============================================================================================
 # Função auxiliar: Buscar dentro do conteúdo
 # =============================================================================================
 # topo do arquivo
-import re
-import unicodedata
-from typing import List, Dict, Any
+
 
 def _strip_accents(s: str) -> str:
     # remove acentos mantendo apenas letras “base”

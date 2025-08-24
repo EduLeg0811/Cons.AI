@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
              const paramSem = {
                 term: term + ": " + newTerm + ".",
-                source: "ECALL_DEF",
+                source: ["EC"],
                 model: MODEL_LLM,
             };
             
@@ -170,9 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`********Script_verbetopedia.js - verbetopedia*** [semJson]:`, semJson);
 
             // Update results using centralized function
-            if (window.downloadUtils && window.downloadUtils.updateResults) {
-                window.downloadUtils.updateResults(semJson, term, 'semantical');
-            }
+            // if (window.downloadUtils && window.downloadUtils.updateResults) {
+            //     window.downloadUtils.updateResults(semJson, term, 'semantical');
+            // }
 
         } catch (error) {
             console.error('Search error:', error);

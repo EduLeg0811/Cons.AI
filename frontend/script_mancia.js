@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
         
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Pensata Sorteada:   ●   " + pensJson.metadata.title + "   ●   Léxico de Ortopensatas (2a edição, 2019)", 'title');
+            displayResults(resultsDiv, "Pensata Sorteada:   ●   Léxico de Ortopensatas (2a edição, 2019)", 'title');
             displayResults(resultsDiv, pensJson, 'simple');
             
 
@@ -99,8 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             instructions: [
             "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.",
             "A frase apresentada é uma pensata do livro Léxico de Ortopensatas, do autor Waldo Vieira.",
-            "Comente a frase de forma direta e objetiva, com base na Conscienciologia.",
-            "Não responda o óbvio, aprofunde a interpretação com base na Conscienciologia.",
+            "Comente a frase de forma direta e objetiva, com base na Conscienciologia, mas usando termos comuns da língua portuguesa.",
             "Utilize marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes."
         ].join("\n"),
         use_session: true,
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const downloadData = prepareDownloadData(pensataText, commentaryData, "Bibliomancia");
 
         // Update results for download
-        window.downloadUtils.updateResults(downloadData, "Bibliomancia", 'mancia');
+        //window.downloadUtils.updateResults(downloadData, "Bibliomancia", 'mancia');
 
     } catch (error) {
         console.error('Error in mancia:', error);

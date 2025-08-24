@@ -15,8 +15,7 @@ def get_random_paragraph(filename: str, term: str) -> dict:
         # Convert to Path object and resolve any relative paths
         base_dir = Path(FILES_SEARCH_DIR).resolve()
         file_path = base_dir / filename
-        
-        logger.info(f"Looking for file at: {file_path}")
+     
         
         if not file_path.exists():
             # Try with .md extension if not present
@@ -45,12 +44,6 @@ def get_random_paragraph(filename: str, term: str) -> dict:
         # Clean the paragraph (remove leading numbers if present)
         cleaned_paragraph = re.sub(r'^\d+[\.\s]*', '', selected_paragraph).strip()
 
-        logger.info(f"Term: {term}")
-        logger.info(f"Selected paragraph: {cleaned_paragraph}")
-        logger.info(f"Selected paragraph number: {random_index + 1}")
-        logger.info(f"Total paragraphs: {total_paragraphs}")
-        logger.info(f"Filename: {file_path.name}")
- 
         return {
             "paragraph": cleaned_paragraph,
             "paragraph_number": random_index + 1,

@@ -7,9 +7,10 @@ API Response Structures
 from io import BytesIO
 import logging
 import os
+from typing import Any, Dict, Tuple
 import uuid
-from typing import Tuple, Dict, Any
-from flask import Flask, request, jsonify, send_file
+
+from flask import Flask, jsonify, request, send_file, Response
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
@@ -17,19 +18,11 @@ from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
 from modules.semantical_search.search_operations import simple_semantical_search
 from utils.config import (
-    DEFAULT_VECTOR_STORE_OPENAI,
     FAISS_INDEX_DIR,
     FILES_SEARCH_DIR,
-    LLM_MAX_RESULTS,
-    TEMPERATURE,
-    MODEL_LLM,
-    OPENAI_API_KEY,
-    OPENAI_ID_ALLWV,
-    OPENAI_ID_ALLCONS,
-    INSTRUCTIONS_LLM
+    INSTRUCTIONS_LLM_BACKEND
 )
-
-from utils.docx_export import build_grouped_markdown, markdown_to_docx_bytes
+from utils.docx_export import build_docx_bytes
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
     
 
@@ -132,11 +125,7 @@ class SemanticalSearchResource(Resource):
             payload = request.get_json(force=True)
             term = safe_str(payload.get("term", ""))
 
-            raw_source = payload.get("source", [])
-            if isinstance(raw_source, list):
-                source = ",".join(str(s).upper() for s in raw_source)
-            else:
-                source = safe_str(raw_source).upper()
+            source = payload.get("source", [])
 
             if not term:
                 raise ValueError("Search term is required")
@@ -147,6 +136,7 @@ class SemanticalSearchResource(Resource):
                 source=source,
                 index_dir=FAISS_INDEX_DIR,
             )
+
 
 
             return processed_results, 200, get_search_headers('semantical')
@@ -172,7 +162,7 @@ class LlmQueryResource(Resource):
 
             model = data.get("model", "gpt-4.1-nano")
             temperature = float(data.get("temperature", 0.3))
-            instructions = data.get("instructions", INSTRUCTIONS_LLM)
+            instructions = data.get("instructions", INSTRUCTIONS_LLM_BACKEND)
             use_session = bool(data.get("use_session", True))
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
@@ -190,15 +180,10 @@ class LlmQueryResource(Resource):
                 "chat_id": chat_id,
             }
 
-            #logger.info("\n\n")
-            #logger.info(f"...............[app.py][RAGbotResource] Parameters={parameters}")
-
             results = generate_llm_answer(**parameters)
 
             if "error" in results:
                 return {"error": results["error"]}, 500
-
-            #logger.info(f"...............[app.py][RAGbotResource] Results={results}")
 
             clean_text = results.get("text", "")
 
@@ -214,8 +199,6 @@ class LlmQueryResource(Resource):
                 # Retorne o chat_id para o frontend persistir
                 "chat_id": chat_id,
             }
-
-            #logger.info(f"...............[app.py][RAGbotResource] Formatted Response={response}")
 
             return response, 200
 
@@ -280,29 +263,28 @@ class DownloadResource(Resource):
             search_type = safe_str(data.get("type", "") or "lexical")  # Changed from 'type' to 'search_type' for consistency
             results_array = data.get("results", [])
 
+            # 1) Monta payload
             payload = {
                 "term": term,
                 "results": results_array,
-                "search_type": search_type,  # Ensure consistent key name
-                "type": search_type,  # Keep for backward compatibility
+                "search_type": search_type,
+                "type": search_type,
                 "format": format,
             }
 
-            # 1) Build grouped markdown
-            md = build_grouped_markdown(payload)
-
-            # 2a) Return markdown if requested
-            if format == "md" or format == "markdown":
+            # 2) Se markdown for pedido
+            if format in ("md", "markdown"):
+                md = build_grouped_markdown(payload)   # você pode manter essa função para MD
                 return Response(
                     md,
                     mimetype="text/markdown",
                     headers={"Content-Disposition": f"attachment; filename=results_{search_type}.md"}
                 )
 
-            # 2b) Otherwise, convert to DOCX
-            docx_bytes = markdown_to_docx_bytes(md, justify_globally=True)
+            # 3) Se DOCX for pedido → usa versão nova
+            docx_bytes = build_docx_bytes(payload)
             filename = f"{term or 'resultados'}_{search_type}.docx"
-            filename = filename.replace(' ', '_')[:50]  # Limit filename length
+            filename = filename.replace(' ', '_')[:50]
 
             return send_file(
                 BytesIO(docx_bytes),
@@ -310,6 +292,7 @@ class DownloadResource(Resource):
                 download_name=filename,
                 mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             )
+
 
         except Exception as e:
             logger.error(f"Error in DownloadResource: {str(e)}", exc_info=True)

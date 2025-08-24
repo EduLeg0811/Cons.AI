@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Get selected books
-            const selectedBooks = [];
+            let selectedBooks = [];
             document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
                 selectedBooks.push(checkbox.value);
             });
@@ -76,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear previous results
             resultsDiv.innerHTML = '';
 
+            let newTerm = '';
+
             // Get the checkbox state
             const flag_definition = document.getElementById('enableDefinition')?.checked ?? true;
-            let newTerm = '';
+           
 
             if (flag_definition) {
                 // _________________________________________________________________________________
@@ -163,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 semJson.results = [];
             }
+
 
             // Display results
             const newTitle = `Semantical Search    ●    ${term}`;

@@ -8,6 +8,13 @@ function semantical_formatResponse(responseData, term) {
   const count = responseData.length;
   const search_type = "semantical";
 
+  //if source contains "ECALL_DEF", change it to "EC"
+  responseData.forEach(item => {
+    if (item.source === "ECALL_DEF") {
+        item.source = "EC";
+    }            
+  });
+
   const formattedResponse = {
     count: count,
     search_type: search_type,
