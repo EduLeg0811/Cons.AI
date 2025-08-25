@@ -1,12 +1,26 @@
 from io import BytesIO
 from collections import defaultdict
 from docx import Document
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt, RGBColor, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from markdown import markdown
 from html2docx import html2docx
+
+
+# =======================
+# CONSTANTES GERAIS
+# =======================
+DEFAULT_FONT_NAME   = "Calibri"
+DEFAULT_FONT_SIZE   = Pt(12)             # corpo do texto
+DEFAULT_FONT_COLOR  = RGBColor(0, 0, 0)  # preto
+
+LINE_SPACING        = 1.0                # espaçamento entre linhas (simples)
+SPACE_BEFORE        = Pt(0)              # espaço antes do parágrafo
+SPACE_AFTER         = Pt(6)              # espaço depois do parágrafo
+
+MARGIN_CM           = 2.5                # todas as margens em cm
 
 
 def _add_paragraph_border_double(paragraph, color="000000", size_eights_pt=12):
@@ -49,6 +63,23 @@ def build_docx_bytes(payload: dict) -> bytes:
     total_count = sum(len(v) for v in grouped.values())
     doc = Document()
 
+    # ===== Ajustes globais =====
+    style = doc.styles["Normal"]
+    style.font.name = DEFAULT_FONT_NAME
+    style.font.size = DEFAULT_FONT_SIZE
+    style.font.color.rgb = DEFAULT_FONT_COLOR
+
+    pf = style.paragraph_format
+    pf.line_spacing = LINE_SPACING
+    pf.space_before = SPACE_BEFORE
+    pf.space_after = SPACE_AFTER
+
+    for section in doc.sections:
+        section.top_margin    = Cm(MARGIN_CM)
+        section.bottom_margin = Cm(MARGIN_CM)
+        section.left_margin   = Cm(MARGIN_CM)
+        section.right_margin  = Cm(MARGIN_CM)
+
     # ===== Cabeçalho =====
     p = doc.add_paragraph(term)
     run = p.runs[0]
@@ -57,24 +88,21 @@ def build_docx_bytes(payload: dict) -> bytes:
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     _add_paragraph_border_double(p, size_eights_pt=16)
 
-    for _ in range(1):
-        doc.add_paragraph("")
+    doc.add_paragraph("")
 
     # ===== Tipo =====
     p = doc.add_paragraph()
     p.add_run("Tipo de pesquisa: ").bold = True
     p.add_run(search_type)
 
-    for _ in range(1):
-        doc.add_paragraph("")
+    doc.add_paragraph("")
 
     # ===== Termo =====
     p = doc.add_paragraph()
     p.add_run("Termo de pesquisa: ").bold = True
     p.add_run(term)
 
-    for _ in range(1):
-        doc.add_paragraph("")
+    doc.add_paragraph("")
 
     # ===== Estatísticas =====
     p = doc.add_paragraph()
@@ -83,11 +111,9 @@ def build_docx_bytes(payload: dict) -> bytes:
     for src, items in grouped.items():
         doc.add_paragraph(f"• {src}: {len(items)}")
 
-    for _ in range(1):
-        doc.add_paragraph("")
+    doc.add_paragraph("")
 
     # ===== Resultados =====
-
     counter = 1   # <<< INÍCIO DA NUMERAÇÃO GLOBAL
 
     for src, items in grouped.items():
@@ -124,15 +150,24 @@ def build_docx_bytes(payload: dict) -> bytes:
                 num_run = new_p.add_run(f"{counter}. ")
                 num_run.bold = True
                 num_run.font.color.rgb = RGBColor(0, 0, 255)
-                
+
                 # Conteúdo original
                 for r in p.runs:
                     new_r = new_p.add_run(r.text)
                     new_r.bold = r.bold
                     new_r.italic = r.italic
+                    new_r.font.name = DEFAULT_FONT_NAME
+                    new_r.font.size = DEFAULT_FONT_SIZE
+                    new_r.font.color.rgb = DEFAULT_FONT_COLOR
 
                 # Justificar o parágrafo
                 new_p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+                # Garantir formatação de parágrafo
+                pf = new_p.paragraph_format
+                pf.line_spacing = LINE_SPACING
+                pf.space_before = SPACE_BEFORE
+                pf.space_after = SPACE_AFTER
 
                 counter += 1
 
@@ -158,6 +193,12 @@ def build_docx_bytes(payload: dict) -> bytes:
                 meta_p = doc.add_paragraph(" | ".join(meta))
                 meta_p.runs[0].font.size = Pt(9)
                 meta_p.runs[0].font.color.rgb = RGBColor(100, 100, 100)
+
+                # Garantir formatação de parágrafo
+                pf = meta_p.paragraph_format
+                pf.line_spacing = LINE_SPACING
+                pf.space_before = SPACE_BEFORE
+                pf.space_after = SPACE_AFTER
 
             doc.add_paragraph("")
 

@@ -3,8 +3,10 @@ Search operations for the RAG application.
 """
 import logging
 import os
-from typing import Any, Dict, List, Optional
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
+import faiss
+
+import gc
+import psutil
 
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
@@ -27,6 +29,7 @@ from utils.config import (
     TOP_K,
     FAISS_ID_LO1,
     FAISS_ID_LO2,
+    FECTH_K,
 )
 from utils.response_llm import generate_llm_answer
 
@@ -90,6 +93,9 @@ def simple_semantical_search(query, source, index_dir):
             if not os.path.exists(index_file):
                continue
 
+            # Log de memória antes
+            process = psutil.Process(os.getpid())
+            logger.info(f"[FAISS] Antes de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
             # Carrega o índice FAISS
             #------------------------------------------------------
@@ -99,13 +105,26 @@ def simple_semantical_search(query, source, index_dir):
                 allow_dangerous_deserialization=True
                 )
 
+            # Log de memória antes
+            process = psutil.Process(os.getpid())
+            logger.info(f"[FAISS] Depois de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+
             # k-NN clássico com fetch_k=150
             #------------------------------------------------------
             results_with_scores = vectorstore.similarity_search_with_score(
-                query, k=TOP_K, fetch_k=150, score_threshold=None
+                query, k=TOP_K, fetch_k=FECTH_K, score_threshold=None
             )
           
             all_results.extend(results_with_scores)
+
+            # Libera memória imediatamente
+            del vectorstore
+            gc.collect()
+
+            # Log de memória depois
+            process = psutil.Process(os.getpid())
+            logger.info(f"[FAISS] Depois de liberar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+
 
         # ****************************************************************************************************************
 
@@ -124,10 +143,7 @@ def simple_semantical_search(query, source, index_dir):
         # ------------------------------------------------------
         # Caso especial de FAISS do LO (dividido em 2 partes)
         # ------------------------------------------------------
-        RENOMEAR = {
-            "LO1": "LO",
-            "LO2": "LO",
-        }
+        RENOMEAR = {"LO1": "LO", "LO2": "LO"}
         for doc in processed_results:   # <<< agora só doc
             src = doc.metadata.get("source")
             if src in RENOMEAR:
@@ -341,4 +357,38 @@ def get_vector_store_id(sources):
     return vector_store_ids
 
 
-    
+
+
+# ------------------------------------------------------
+# Converte índice FAISS para float16
+# ------------------------------------------------------
+def convert_faiss_index_to_fp16(input_dir, output_dir):
+    input_file = os.path.join(input_dir, "index.faiss")
+    if not os.path.exists(input_file):
+        raise FileNotFoundError(f"Index file not found: {input_file}")
+
+    # Carregar índice original
+    index = faiss.read_index(input_file)
+    print(f"Loaded index from {input_file}, type: {type(index)}")
+
+    # Converter para float16
+    index_fp16 = faiss.IndexPreTransform(
+        faiss.FloatToHalfScaler(), index
+    )
+
+    # Criar pasta de saída
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "index.faiss")
+
+    # Salvar índice convertido
+    faiss.write_index(index_fp16, output_file)
+    print(f"Saved float16 index to {output_file}")
+
+    return output_file
+
+
+if __name__ == "__main__":
+    # Exemplo: converter LO1
+    input_dir = "backend/faiss_index/LO1"
+    output_dir = "backend/faiss_index/LO1_fp16"
+    convert_faiss_index_to_fp16(input_dir, output_dir)
