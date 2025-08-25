@@ -102,10 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     temperature: TEMPERATURE,
                     vector_store_id: OPENAI_RAGBOT, 
                     instructions: [
-                        "Você é um assistente especialista em Conscienciologia, que responde perguntas baseadas em documentos.Sua função é receber um TEXTO DE ENTRADA",
-                        "e formular um parágrafo breve e objetivo explicando o seu significado na Conscienciologia. ",
-                        "Utilize sempre marcação Markdown para formatar a resposta, a fim de realçar as partes mais relevantes e destacar os termos importantes e as citações. ",
-                        "Apresente a resposta em até 3 parágrafos sintéticos e objetivos, sem preâmbulos, na seguinte forma direta: O (TEXTO DE ENTRADA) é ..."  
+                        "Você é um assistente especialista em Conscienciologia.",
+                        "Sua função é, a partir da query de entrada:",
+                        "1) Entender o significado específico na Conscienciologia.",
+                        "2) Formular uma lista de termos que compõem o significado.",
+                        "3) A resposta vai ser utilizada para formular uma pesquisa semântica.",
+                        "4) Não use elementos de ligação como artigos, preposições, etc.",
+                        "5) Não use repetições ou preâmbulos, como por exemplo 'significa' ou 'é'.",
+                        "6) Responda na saída apenas a lista de palavras ou expressões secas, separadas por ponto-e-vírgula.",  
                     ].join("\n"),
                     use_session: true,
                     chat_id                     // <<< NOVO
