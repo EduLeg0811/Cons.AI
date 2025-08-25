@@ -44,3 +44,4 @@ html2docx
 python-docx
 markdown
 beautifulsoup4
+psutil
