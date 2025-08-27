@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cons.AI - Conscienciologia Toolbox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-brand">
+                <div class="navbar-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="navbar-text">
+                    <div class="navbar-title">Cons.AI</div>
+                    <div class="navbar-subtitle">Conscienciologia Toolbox</div>
+                </div>
+            </a>
+            <div class="navbar-controls">
+                <button class="navbar-control-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="tools-section">
+            <div class="tools-grid">
+                <!-- Search Panel -->
+                <div class="tool-panel search">
+                    <div class="panel-header">
+                        <div class="panel-icon search">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="panel-info">
+                            <h2>AI Search</h2>
+                            <p>Advanced search capabilities with lexical and semantic analysis</p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+                        <a href="index_lexical.html" class="tool-card">
+                            <div class="tool-icon lexical">
+                                <i class="fas fa-spell-check"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Lexical Search</h3>
+                                <p>Exact word and phrase matching across documents</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                        <a href="index_semantical.html" class="tool-card">
+                            <div class="tool-icon semantic">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Semantic Search</h3>
+                                <p>AI-powered contextual and meaning-based search</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bots Panel -->
+                <div class="tool-panel bots">
+                    <div class="panel-header">
+                        <div class="panel-icon bots">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="panel-info">
+                            <h2>AI Bots</h2>
+                            <p>Intelligent conversational assistants for Conscienciologia</p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+                        <a href="index_ragbot.html" class="tool-card">
+                            <div class="tool-icon ragbot">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>ConsBOT</h3>
+                                <p>RAG-powered chatbot with comprehensive knowledge base</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                        <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon openai">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>OpenAI ConsGPT</h3>
+                                <p>Advanced GPT model specialized in Conscienciologia</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </a>
+                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67" class="tool-card" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon google">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Google ConsLM</h3>
+                                <p>Google's NotebookLM for Conscienciologia research</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Apps Panel -->
+                <div class="tool-panel apps">
+                    <div class="panel-header">
+                        <div class="panel-icon apps">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <div class="panel-info">
+                            <h2>AI Apps</h2>
+                            <p>Specialized applications for research and exploration</p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+                        <a href="index_mancia.html" class="tool-card">
+                            <div class="tool-icon mancia">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Bibliomancia</h3>
+                                <p>Random wisdom extraction with AI commentary</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                        <a href="index_verbetopedia.html" class="tool-card">
+                            <div class="tool-icon verbeto">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Verbetopédia</h3>
+                                <p>Comprehensive encyclopedia search and exploration</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Utils Panel -->
+                <div class="tool-panel utils">
+                    <div class="panel-header">
+                        <div class="panel-icon utils">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="panel-info">
+                            <h2>Utils</h2>
+                            <p>External resources and reference materials</p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+                        <a href="https://enciclopediadaconscienciologia.org/" class="tool-card" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Encyclopedia NEW</h3>
+                                <p>Latest version of the Conscienciologia Encyclopedia</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </a>
+                        <a href="http://68.183.133.115/buscaverbete/" class="tool-card" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-archive"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Encyclopedia OLD</h3>
+                                <p>Legacy version of the Conscienciologia Encyclopedia</p>
+                            </div>
+                            <div class="tool-arrow">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © 2024 Cons.AI - Conscienciologia Toolbox. All rights reserved.
+            </div>
+            <div class="footer-contact">
+                <i class="fas fa-envelope"></i>
+                <span>Contact us for support</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme on page load
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // Initialize theme when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initTheme);
+    </script>
+</body>
+</html>

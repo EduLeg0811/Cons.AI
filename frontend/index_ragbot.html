@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsBOT - Cons.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+                <div class="navbar-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="navbar-text">
+                    <div class="navbar-title">ConsBOT</div>
+                    <div class="navbar-subtitle">RAG-powered AI assistant</div>
+                </div>
+            </div>
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button class="navbar-control-btn" title="New Conversation" onclick="resetConversation()">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="navbar-control-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="chat-container">
+        <!-- Welcome Message -->
+        <div class="page-header">
+            <h1 class="page-title">ConsBOT</h1>
+            <p class="page-subtitle">Your AI assistant for Conscienciologia research and questions</p>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message bot">
+                <div class="message-avatar bot">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Hello! I'm ConsBOT, your AI assistant specialized in Conscienciologia. I can help you with questions, research, and provide insights based on the comprehensive knowledge base. What would you like to know?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea id="searchInput" placeholder="Ask me anything about Conscienciologia..." class="chat-input" rows="1"></textarea>
+                <button id="searchButton" class="chat-send-btn" aria-label="Send Message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="chat-input-footer">
+                <div class="model-info">
+                    <i class="fas fa-brain"></i>
+                    <span>Powered by GPT-5 Nano</span>
+                </div>
+                <div class="download-buttons">
+                    <button id="downloadDocx" class="download-btn">
+                        <i class="fas fa-file-word"></i>
+                        Download Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+            <!-- Results will be displayed here for download functionality -->
+        </div>
+    </div>
+
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="display.js"></script>
+    <script src="bridge.js"></script>
+    <script src="download.js"></script>
+    <script src="script_ragbot.js"></script>
+
+    <script>
+        // Auto-resize textarea
+        document.getElementById('searchInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Handle Enter key (send message) and Shift+Enter (new line)
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('searchButton').click();
+            }
+        });
+
+        // Dark mode functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme on page load
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // Initialize theme when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initTheme);
+    </script>
+</body>
+</html>

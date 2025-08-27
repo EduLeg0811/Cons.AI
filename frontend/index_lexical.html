@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Lexical Search - Cons.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+                <div class="navbar-icon">
+                    <i class="fas fa-spell-check"></i>
+                </div>
+                <div class="navbar-text">
+                    <div class="navbar-title">Lexical Search</div>
+                    <div class="navbar-subtitle">Exact word and phrase matching</div>
+                </div>
+            </div>
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button class="navbar-control-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Lexical Search</h1>
+            <p class="page-subtitle">Find exact matches and phrases across the knowledge base</p>
+        </div>
+
+        <!-- Options Panel -->
+        <div class="options-panel">
+            <div class="options-header" onclick="toggleOptions()">
+                <h3 class="options-title">Search Options</h3>
+                <button class="options-toggle" id="optionsToggle">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="options-content" id="optionsContent">
+                <div class="option-group">
+                    <div class="option-group-label">Select Books to Search:</div>
+                    <div class="book-checkboxes">
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="LO" checked>
+                            <span>LO</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="DAC">
+                            <span>DAC</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="TNP">
+                            <span>TNP</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="DUPLA">
+                            <span>DUPLA</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="200TEAT">
+                            <span>200TEAT</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="PROEXIS">
+                            <span>PROEXIS</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="700EXP">
+                            <span>700EXP</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="TEMAS">
+                            <span>TEMAS</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="CCG">
+                            <span>CCG</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <div class="option-group-label">Search Settings:</div>
+                    <div class="toggle-option">
+                        <div class="toggle-switch" onclick="toggleSwitch(this)" data-target="groupResults">
+                            <input type="checkbox" id="groupResults" style="display: none;">
+                        </div>
+                        <label class="toggle-label" for="groupResults">Group results by source</label>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <label for="maxResults" style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--gray-700);">Max Results:</label>
+                        <input type="number" id="maxResults" min="1" max="200" value="5" style="width: 100%; padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <div class="search-row">
+                <div class="search-input-wrapper">
+                    <textarea id="searchInput" placeholder="Enter a term to search..." class="search-input" rows="1"></textarea>
+                    <button id="searchButton" class="search-button" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="download-buttons hidden">
+                    <button id="downloadDocx" class="download-btn">
+                        <i class="fas fa-file-word"></i>
+                        Download as Word
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results" class="results">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+    
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="display.js"></script>
+    <script src="bridge.js"></script>
+    <script src="download.js"></script>
+    <script src="script_lexical.js"></script>
+
+    <script>
+        // Auto-resize textarea for search input
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                });
+            }
+        });
+    </script>
+
+    <script>
+        function toggleOptions() {
+            const content = document.getElementById('optionsContent');
+            const toggle = document.getElementById('optionsToggle');
+            const icon = toggle.querySelector('i');
+            
+            if (content.style.display === 'none' || !content.style.display) {
+                content.style.display = 'grid';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        function toggleSwitch(element) {
+            const checkbox = document.getElementById(element.dataset.target);
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('active', checkbox.checked);
+        }
+
+        // Initialize options as collapsed
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('optionsContent').style.display = 'none';
+            initTheme();
+        });
+
+        // Dark mode functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme on page load
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+    </script>
+</body>
+</html>
