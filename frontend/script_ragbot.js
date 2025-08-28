@@ -107,8 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const downloadData = prepareDownloadData(response, term);
           
-          // Update results for download
-          //window.downloadUtils.updateResults(downloadData, term, 'ragbot');
+          // Update results for download (show button only when ready)
+          if (window.downloadUtils && window.downloadUtils.updateResults) {
+            window.downloadUtils.updateResults(downloadData, term, 'ragbot');
+          }
 
         } catch (error) {
             console.error('Error in ragbot:', error);
@@ -193,6 +195,5 @@ function prepareDownloadData(response, term) {
         search_type: "ragbot",
     };
 }
-
 
 

@@ -116,8 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const downloadData = prepareDownloadData(pensataText, commentaryData, "Bibliomancia");
 
-        // Update results for download
-        //window.downloadUtils.updateResults(downloadData, "Bibliomancia", 'mancia');
+        // Update results for download (show button only when ready)
+        if (window.downloadUtils && window.downloadUtils.updateResults) {
+            window.downloadUtils.updateResults(downloadData, "Bibliomancia", 'mancia');
+        }
 
     } catch (error) {
         console.error('Error in mancia:', error);

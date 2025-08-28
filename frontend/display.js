@@ -215,6 +215,20 @@ function showSearch(container, data) {
     
     container.insertAdjacentHTML('beforeend', summaryHtml);
 
+    // Elegant badges summary (collapsible triggers)
+    const slug = (s) => String(s || 'all')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    let pillsBar = `<div class="summary-bar">`;
+    pillsBar += `<button class="pill pill-total" data-target="all-results">Total <span class=\"count\">${totalCount}</span></button>`;
+    pillsBar += groupNames.map(name => {
+        const n = groups[name].length;
+        return `<button class=\"pill\" data-target=\"group-${slug(name)}\">${escapeHtml(name)} <span class=\"count\">${n}</span></button>`;
+    }).join('');
+    pillsBar += `</div>`;
+    container.insertAdjacentHTML('beforeend', pillsBar);
+
 
 
 
@@ -250,28 +264,18 @@ function showSearch(container, data) {
 
             // 5) HTML final do grupo
             // =======================================
-            const groupHeader = `           
-            <div style="
-                border: 1px solid #ddd;
-                background-color: #f7f7f7;
-                padding: 10px 12px;
-                border-radius: 8px;
-                margin: 8px 0 14px 0;
-            ">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="font-weight: bold;">${groupName}</span>
-                <span class="badge">${groupItems.length} itens</span>
-              </div>
-            </div>
-            `;
- 
-            const groupContent = `
-                <div class="group-content">
-                    ${groupHtml}
+            const panelId = 'group-' + (String(groupName || 'all')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, ''));
+            const groupPanel = `
+                <div id="${panelId}" class="collapse-panel">
+                    <div class="group-content">
+                        ${groupHtml}
+                    </div>
                 </div>
             `;
-
-            container.insertAdjacentHTML('beforeend', groupHeader + groupContent);
+            container.insertAdjacentHTML('beforeend', groupPanel);
 
         });
 
@@ -304,21 +308,30 @@ function showSearch(container, data) {
        
          // 5) HTML final do grupo
         // =======================================
-        const groupHeader = `
-        <div class="group-header">
-            <h3>Resultados ordenados: <span class="badge">${sortedItems.length} itens</span></h3>
-        </div>
-        `;
-
-        const groupContent = `
-            <div class="group-content">
-                ${groupHtml}
+        const groupPanel = `
+            <div id="all-results" class="collapse-panel">
+                <div class="group-content">
+                    ${groupHtml}
+                </div>
             </div>
         `;
-
-        container.insertAdjacentHTML('beforeend', groupHeader + groupContent);
+        container.insertAdjacentHTML('beforeend', groupPanel);
 
     };
+
+    // Attach toggle behavior for summary pills (event delegation inside container)
+    container.addEventListener('click', function(ev) {
+        const btn = ev.target.closest('.pill');
+        if (!btn) return;
+        const targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        const panel = container.querySelector(`#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`) || container.querySelector(`#${targetId}`);
+        if (!panel) return;
+        panel.classList.toggle('open');
+        if (panel.classList.contains('open')) {
+            try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+        }
+    });
 
 }
 
@@ -897,4 +910,3 @@ function showVerbetopedia(container, data) {
 
     container.insertAdjacentHTML('beforeend', groupHtml);
 }
-

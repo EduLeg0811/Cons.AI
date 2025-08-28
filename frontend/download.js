@@ -11,23 +11,31 @@ let currentSearchTerm = '';
 function initDownloadButtons(searchType, searchTerm = '') {
     currentSearchType = searchType;
     currentSearchTerm = searchTerm;
-    
-    const downloadDocx = document.getElementById('downloadDocx');
+
+    let btn = document.getElementById('downloadDocx');
     const downloadButtons = document.querySelector('.download-buttons');
-    
-    // Remove existing event listeners to avoid duplicates
-    if (downloadDocx) {
-        const newDownloadDocx = downloadDocx.cloneNode(true);
-        downloadDocx.parentNode.replaceChild(newDownloadDocx, downloadDocx);
-        newDownloadDocx.addEventListener('click', handleDocxDownload);
+
+    // Remove existing event listeners to avoid duplicates by cloning
+    if (btn) {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        btn = newBtn;
+        btn.addEventListener('click', handleDocxDownload);
     }
-    
-    // Show/hide download buttons container based on results
+
+    // Determine if there are results (array, object.results, or text-only payloads)
+    const hasResults = !!(lastResults && (
+        (Array.isArray(lastResults) && lastResults.length > 0) ||
+        (Array.isArray(lastResults?.results) && lastResults.results.length > 0) ||
+        (typeof lastResults?.text === 'string' && lastResults.text.trim().length > 0)
+    ));
+
+    // Toggle visibility for container and/or icon button
     if (downloadButtons) {
-        const hasResults = lastResults && 
-                         ((Array.isArray(lastResults) && lastResults.length > 0) || 
-                          (lastResults.results && lastResults.results.length > 0));
         downloadButtons.style.display = hasResults ? 'block' : 'none';
+    }
+    if (btn) {
+        btn.classList.toggle('hidden', !hasResults);
     }
 }
 
@@ -58,6 +66,17 @@ async function handleDocxDownload() {
             button.innerHTML = originalHtml;
             button.disabled = false;
         }
+        // After a successful (or attempted) download, hide until next search completes
+        const container = document.querySelector('.download-buttons');
+        if (container) {
+            container.style.display = 'none';
+        }
+        const btn = document.getElementById('downloadDocx');
+        if (btn) {
+            btn.classList.add('hidden');
+        }
+        // Clear stored results to prevent re-show from init without new results
+        lastResults = null;
     }
 }
 

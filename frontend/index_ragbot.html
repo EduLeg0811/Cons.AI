@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConsBOT - Cons.AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-bots">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -60,7 +60,7 @@
                     <i class="fas fa-robot"></i>
                 </div>
                 <div class="message-content">
-                    <p>Hello! I'm ConsBOT, your AI assistant specialized in Conscienciologia. I can help you with questions, research, and provide insights based on the comprehensive knowledge base. What would you like to know?</p>
+                    <p>Hello! I'm ConsBOT, your AI assistant specialized in Conscienciologia. What would you like to know?</p>
                 </div>
             </div>
         </div>
@@ -68,19 +68,12 @@
         <!-- Chat Input -->
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <textarea id="searchInput" placeholder="Ask me anything about Conscienciologia..." class="chat-input" rows="1"></textarea>
+                <textarea id="searchInput" placeholder="Ask me anything about Conscienciologia..." class="chat-input" rows="2"></textarea>
                 <button id="searchButton" class="chat-send-btn" aria-label="Send Message">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-            <div class="chat-input-footer">
-                <div class="download-buttons">
-                    <button id="downloadDocx" class="download-btn">
-                        <i class="fas fa-file-word"></i>
-                        Download Chat
-                    </button>
-                </div>
-            </div>
+            
         </div>
 
         <div id="results" class="results" style="display: none;">

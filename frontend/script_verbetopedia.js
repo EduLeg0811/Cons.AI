@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const resultsDiv = document.getElementById('results');
-    const downloadButtons = document.querySelector('.download-buttons');
 
-    // Initialize download buttons as hidden
-    if (downloadButtons) {
-        downloadButtons.style.display = 'none';
+    // Initialize download buttons (icon or container)
+    if (window.downloadUtils && window.downloadUtils.initDownloadButtons) {
+        window.downloadUtils.initDownloadButtons('verbetopedia');
     }
 
     searchButton.addEventListener('click', verbetopedia);
@@ -163,10 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log(`********Script_verbetopedia.js - verbetopedia*** [semJson]:`, semJson);
 
-            // Update results using centralized function
-            // if (window.downloadUtils && window.downloadUtils.updateResults) {
-            //     window.downloadUtils.updateResults(semJson, term, 'semantical');
-            // }
+            // Update results using centralized function (show download when ready)
+            if (window.downloadUtils && window.downloadUtils.updateResults) {
+                window.downloadUtils.updateResults(semJson, term, 'verbetopedia');
+            }
 
         } catch (error) {
             console.error('Search error:', error);

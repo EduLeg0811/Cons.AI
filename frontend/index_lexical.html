@@ -8,10 +8,10 @@
     <meta http-equiv="Expires" content="0">
     <title>Lexical Search - Cons.AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-search">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -26,11 +26,11 @@
 
                <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
                     <div class="navbar-icon">
-                        <i class="fas fa-book-open"></i>
+                        <i class="fas fa-spell-check"></i>
                     </div>
                     <div class="navbar-text">
-                        <div class="navbar-title">Bibliomancia</div>
-                        <div class="navbar-subtitle">Random wisdom with AI commentary</div>
+                        <div class="navbar-title">Lexical Search</div>
+                        <div class="navbar-subtitle">Search for an exact term in the books</div>
                     </div>
                 </div>
 
@@ -50,15 +50,35 @@
 
     <div class="container">
 
-        <!-- Options Panel -->
-        <div class="options-panel">
+       
+
+        <!-- Options Trigger + Panel (dropdown) -->
+        <div class="options-wrapper">
+            
+            <div class="search-toolbar">
+                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
+                    <i class="fas fa-file-word fa-2x"></i>
+                </button>
+                <button class="options-trigger" id="optionsTrigger" title="Search options">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+
+            <div class="options-panel" id="optionsPanel">
+
+
             <div class="options-header" onclick="toggleOptions()">
                 <h3 class="options-title">Search Options</h3>
                 <button class="options-toggle" id="optionsToggle">
                     <i class="fas fa-chevron-down"></i>
                 </button>
             </div>
+
+                     
+
             <div class="options-content" id="optionsContent">
+
+
                 <div class="option-group">
                     <div class="option-group-label">Select Books to Search:</div>
                     <div class="book-checkboxes">
@@ -100,6 +120,7 @@
                         </label>
                     </div>
                 </div>
+
                 <div class="option-group">
                     <div class="option-group-label">Search Settings:</div>
                     <div class="toggle-option">
@@ -113,7 +134,13 @@
                         <input type="number" id="maxResults" min="1" max="200" value="5" style="width: 100%; padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px;">
                     </div>
                 </div>
+
+
+
+
             </div>
+                       
+           
         </div>
 
         <!-- Search Container -->
@@ -123,13 +150,6 @@
                     <textarea id="searchInput" placeholder="Enter a term to search..." class="search-input" rows="1"></textarea>
                     <button id="searchButton" class="search-button" aria-label="Search">
                         <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                
-                <div class="download-buttons hidden">
-                    <button id="downloadDocx" class="download-btn">
-                        <i class="fas fa-file-word"></i>
-                        Download as Word
                     </button>
                 </div>
             </div>
@@ -188,10 +208,27 @@
             element.classList.toggle('active', checkbox.checked);
         }
 
-        // Initialize options as collapsed
+        // Initialize theme and bind options dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('optionsContent').style.display = 'none';
             initTheme();
+
+            const trigger = document.getElementById('optionsTrigger');
+            const panel = document.getElementById('optionsPanel');
+            const content = document.getElementById('optionsContent');
+            if (content) content.style.display = 'grid';
+
+            if (trigger && panel) {
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    panel.classList.toggle('open');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
+                        panel.classList.remove('open');
+                    }
+                });
+            }
         });
 
         // Dark mode functionality
