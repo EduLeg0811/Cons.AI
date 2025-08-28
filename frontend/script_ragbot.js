@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Disable and show "searching"
         searchButton.disabled = true;
-        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+        //searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
         searchButton.style.opacity = '0.7';
         searchButton.style.cursor = 'not-allowed'
 

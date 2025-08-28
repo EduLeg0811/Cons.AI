@@ -801,9 +801,8 @@ function showTitle(container, text) {
     <div class="displaybox-container" style="background-color:rgb(255, 254, 236);">
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">
-          ${mdHtml}
-            <div style="text-align: right; color: #808080; font-size: 0.8em; font-style: italic;">
-              [${ref}]
+          ${mdHtml}  <div style="text-align: right; color: #808080; font-size: 0.8em; font-style: italic;">
+            [${ref}]
             </div>
         </div>
       </div>

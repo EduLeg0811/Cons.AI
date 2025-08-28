@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Desabilita e mostra "searching"
         searchButton.disabled = true;
-        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+        //searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
         searchButton.style.opacity = '0.7';
         searchButton.style.cursor = 'not-allowed';
 
@@ -67,8 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const pensJson = await call_random_pensata(paramPensata);
             //*****************************************************************************************
         
+            pensJson.ref = "Léxico de Ortopensatas; 2a edição; 2019"
+
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Pensata Sorteada:   ●   Léxico de Ortopensatas (2a edição, 2019)", 'title');
+            displayResults(resultsDiv, "Pensata Sorteada", 'title');
             displayResults(resultsDiv, pensJson, 'simple');
             
 
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         //***************************************************************************************** 
        
-        
+                
         // Display results
         removeLoading(resultsDiv);
         displayResults(resultsDiv, "Comentário", 'title');

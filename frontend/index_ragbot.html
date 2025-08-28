@@ -12,7 +12,16 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
+
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+
             <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+
+                
                 <div class="navbar-icon">
                     <i class="fas fa-robot"></i>
                 </div>
@@ -22,9 +31,6 @@
                 </div>
             </div>
             <div class="navbar-controls">
-                <a href="index.html" class="back-button" title="Back to Home">
-                    <i class="fas fa-home"></i>
-                </a>
                 <button class="navbar-control-btn" title="New Conversation" onclick="resetConversation()">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -40,10 +46,11 @@
     </nav>
 
     <div class="chat-container">
-        <!-- Welcome Message -->
-        <div class="page-header">
-            <h1 class="page-title">ConsBOT</h1>
-            <p class="page-subtitle">Your AI assistant for Conscienciologia research and questions</p>
+
+        <!-- Options Panel --> 
+        <div>
+            <br>
+            <br>
         </div>
 
         <!-- Chat Messages -->
@@ -67,10 +74,6 @@
                 </button>
             </div>
             <div class="chat-input-footer">
-                <div class="model-info">
-                    <i class="fas fa-brain"></i>
-                    <span>Powered by GPT-5 Nano</span>
-                </div>
                 <div class="download-buttons">
                     <button id="downloadDocx" class="download-btn">
                         <i class="fas fa-file-word"></i>

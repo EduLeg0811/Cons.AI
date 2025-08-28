@@ -835,7 +835,7 @@ body {
     border: none;
     outline: none;
     font-size: var(--text-base);
-    min-height: 24px;
+    min-height: 12px;
     max-height: 120px;
     resize: none;
     line-height: 1.5;
