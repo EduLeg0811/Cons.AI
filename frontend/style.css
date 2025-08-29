@@ -478,18 +478,24 @@ body {
 
 .tool-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;     /* title above, description below */
+    align-items: flex-start;
+    gap: 0;                     /* tighter spacing between title and text */
+    white-space: normal;        /* allow wrapping */
 }
 
 .tool-info h3 {
     font-size: var(--text-lg);
     font-weight: 600;
     color: var(--gray-900);
-    margin-bottom: var(--space-1);
+    margin: 0 0 var(--space-1) 0; /* space below title */
 }
 
 .tool-info p {
     font-size: var(--text-sm);
     color: var(--gray-500);
+    margin: 0;                  /* stacked under title */
 }
 
 .tool-arrow {
@@ -1029,6 +1035,23 @@ body {
     border-top: 1px solid var(--gray-200);
 }
 
+/* ===== RAGBOT (theme-bots) OVERRIDES ===== */
+/* 1) Bot responses use full width and hide bot avatar */
+.theme-bots .chat-message.bot .message-avatar { display: none; }
+.theme-bots .chat-message.bot {
+    max-width: 100%;
+    width: 100%;
+    gap: 0;
+}
+.theme-bots .chat-message.bot .message-content {
+    width: 100%;
+    flex: 1;
+}
+
+/* 2) Keep input at the very bottom; let messages fill remaining space */
+.theme-bots .chat-messages { max-height: none; }
+.theme-bots .chat-input-wrapper { margin-top: auto; }
+
 .model-info {
     display: flex;
     align-items: center;
@@ -1534,8 +1557,21 @@ textarea:focus-visible {
     outline: 2px solid var(--primary-500);
     outline-offset: 2px;
     box-shadow: none !important;
+  }
+  
+  
+/* ===== OPTIONS PANEL OVERRIDES (force light inputs/labels) ===== */
+.options-panel .max-results label,
+.options-panel .toggle-label,
+.option-column .toggle-label {
+  color: #000 !important;
 }
 
+.options-panel .max-results input {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: var(--gray-300, #ccc) !important;
+}
 
 
 
@@ -1567,7 +1603,7 @@ textarea:focus-visible {
   .max-results label {
     font-size: 14px;
     font-weight: 500;
-    color: var(--gray-700, #333);
+    color: #000; /* ensure black label */
     white-space: nowrap;
   }
   
@@ -1629,7 +1665,7 @@ textarea:focus-visible {
   .toggle-label {
     font-size: 15px;
     font-weight: 500;
-    color: var(--gray-700, #333);
+    color: #000; /* ensure black label */
     cursor: pointer;
     user-select: none;
   }
@@ -1675,11 +1711,11 @@ textarea:focus-visible {
   @media (prefers-color-scheme: dark) {
     .max-results label,
     .toggle-label {
-      color: #ddd;
+      color: #000; /* keep black in dark scheme for options */
     }
     .max-results input {
-      background: #1e1e1e;
-      color: #f0f0f0;
+      background: #ffffff; /* keep white input */
+      color: #000;
       border: 1px solid #444;
     }
     .slider {
