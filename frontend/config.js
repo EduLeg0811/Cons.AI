@@ -23,7 +23,7 @@ const INSTRUCTIONS_LLM_USER = `
     3. **Formato da Resposta (Markdown)**
       - Utilize Markdown limpo.
       - Realce termos-chave utilizando, em ordem crescente: *itálico*, **negrito**, ***negrito-itálico*** conforme a relevância.
-      - Coloque títulos ou cabeçalhos em h2 (##) e sub-títulos em h3 (###).
+      - Coloque títulos ou cabeçalhos em **negrito**.
       - Para explicações passo a passo, use listas numeradas; para sequências cronológicas, siga a ordem temporal.
       - Prefira tabelas em Markdown para dados organizados e listas sucintas para enumerações longas.
       - Default para Markdown.
@@ -36,13 +36,7 @@ const INSTRUCTIONS_LLM_USER = `
       - Seja direto e selecione apenas os trechos mais relevantes para a resposta.
 
     5. **Finalização e Ação**
-      - Inclua um bloco "**Próximos passos**" ou "Sugestões de aprofundamento" somente quando houver sentido prático, como recomendações de leitura, comandos ou filtros.
-
-    6. **Padrões de Citação**
-      - Ao citar documentos, seja o mais literal possível: mencione título/arquivo e localizador preciso. Exemplo:
-        - • Léxico de Ortopensatas (arquivo .txt) — Vieira, Waldo — parág. 12547: "Texto curto literal...".
-      - Nunca invente citações.
-      - Se faltar evidência suficiente, indique explicitamente o que falta e solicite insumo mínimo para completar a resposta.
+      - Inclua um bloco com sugestões de aprofundamento, como recomendações de leitura, ou temas a serem explorados.
 `;
 
 const SEMANTICAL_INSTRUCTIONS = `

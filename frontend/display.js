@@ -87,6 +87,29 @@ const renderers = {
     verbetopedia: showVerbetopedia,
 };
 
+// Helper: decide if reference badges should be shown (default: true)
+function shouldShowRefBadges() {
+  try {
+    const el = document.getElementById('ref_badges');
+    if (el && typeof el.checked === 'boolean') return !!el.checked;
+  } catch (e) {}
+  return true; // default behavior keeps badges
+}
+
+// Helper: build inline reference line like: [ Name: value; Name2: value2 ]
+function buildMetaInlineLine(pairs) {
+  try {
+    const parts = (pairs || [])
+      .filter(arr => Array.isArray(arr) && arr.length >= 2 && String(arr[1]).trim() !== '')
+      .map(([k, v]) => `${escapeHtml(String(k))}: ${escapeHtml(String(v))}`);
+    if (!parts.length) return '';
+    const content = `[ ${parts.join('; ')} ]`;
+    return `<div class="meta-inline" style="font-size: 80%; color: var(--gray-600); margin-top: 4px;">${content}</div>`;
+  } catch (e) {
+    return '';
+  }
+}
+
 /**
  * Displays results based on search type
  * @param {HTMLElement} container - The container element
@@ -403,13 +426,25 @@ const format_paragraph_LO = (item) => {
     const rawHtml = renderMarkdown(textCompleted);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // Monta HTML final
-    const finalHtml = `
-    <div class="displaybox-item">
-        <div class="displaybox-text markdown-content">${safeHtml}</div>
-        ${metaBadges}
-    </div>`;
+    // Decide badges vs inline meta line
+    const showBadges = shouldShowRefBadges();
+    const metaInline = buildMetaInlineLine([
+        ['Source', source],
+        ['Title', title],
+        ['Number', paragraph_number],
+        ...(score > 0.0 ? [['Score', score]] : []),
+    ]);
 
+    const finalHtml = showBadges
+      ? `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}</div>
+            ${metaBadges}
+        </div>`
+      : `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}${metaInline}</div>
+        </div>`;
 
     return finalHtml;
 }
@@ -472,12 +507,27 @@ const format_paragraph_DAC = (item) => {
     const rawHtml = renderMarkdown(text);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // Monta HTML final
-    const finalHtml = `
-    <div class="displaybox-item">
-        <div class="displaybox-text markdown-content">${safeHtml}</div>
-        ${metaBadges}
-    </div>`;
+    // Decide badges vs inline meta line
+    const showBadges = shouldShowRefBadges();
+    const metaInline = buildMetaInlineLine([
+        ['Source', source],
+        ['Title', title],
+        ['Argument', argumento],
+        ['Section', section],
+        ['Number', paragraph_number],
+        ...(score > 0.0 ? [['Score', score]] : []),
+    ]);
+
+    const finalHtml = showBadges
+      ? `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}</div>
+            ${metaBadges}
+        </div>`
+      : `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}${metaInline}</div>
+        </div>`;
 
     return finalHtml;
 }
@@ -535,12 +585,26 @@ const format_paragraph_CCG = (item) => {
     const rawHtml = renderMarkdown(text);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // Monta HTML final
-    const finalHtml = `
-    <div class="displaybox-item">
-        <div class="displaybox-text markdown-content">${safeHtml}</div>
-        ${metaBadges}
-    </div>`;
+    // Decide badges vs inline meta line
+    const showBadges = shouldShowRefBadges();
+    const metaInline = buildMetaInlineLine([
+        ['Source', source],
+        ['Title', title],
+        ['Folha', folha],
+        ['Number', question_number],
+        ...(score > 0.0 ? [['Score', score]] : []),
+    ]);
+
+    const finalHtml = showBadges
+      ? `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}</div>
+            ${metaBadges}
+        </div>`
+      : `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}${metaInline}</div>
+        </div>`;
 
     return finalHtml;
 }
@@ -616,12 +680,29 @@ const format_paragraph_EC = (item) => {
     const rawHtml = renderMarkdown(text);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // Monta HTML final
-    const finalHtml = `
-    <div class="displaybox-item">
-        <div class="displaybox-text markdown-content">${safeHtml}</div>
-        ${metaBadges}
-    </div>`;
+    // Decide badges vs inline meta line
+    const showBadges = shouldShowRefBadges();
+    const metaInline = buildMetaInlineLine([
+        ['Source', source],
+        ['Title', title],
+        ['Area', area],
+        ['Number', verbete_number],
+        ['Theme', theme],
+        ['Author', author],
+        ['Date', date],
+        ...(score > 0.0 ? [['Score', score]] : []),
+    ]);
+
+    const finalHtml = showBadges
+      ? `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}</div>
+            ${metaBadges}
+        </div>`
+      : `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}${metaInline}</div>
+        </div>`;
 
     return finalHtml;
 }
@@ -684,13 +765,25 @@ const format_paragraph_Default = (item) => {
     const rawHtml = renderMarkdown(textCompleted);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // Monta HTML final
-    const finalHtml = `
-    <div class="displaybox-item">
-        <div class="displaybox-text markdown-content">${safeHtml}</div>
-        ${metaBadges}
-    </div>`;
+    // Decide badges vs inline meta line
+    const showBadges = shouldShowRefBadges();
+    const metaInline = buildMetaInlineLine([
+        ['Source', source],
+        ['Title', title],
+        ['Number', paragraph_number],
+        ...(score > 0.0 ? [['Score', score]] : []),
+    ]);
 
+    const finalHtml = showBadges
+      ? `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}</div>
+            ${metaBadges}
+        </div>`
+      : `
+        <div class="displaybox-item">
+            <div class="displaybox-text markdown-content">${safeHtml}${metaInline}</div>
+        </div>`;
 
     return finalHtml;
 }
@@ -748,7 +841,7 @@ const format_paragraph_Default = (item) => {
     `;  
   
   const html = `
-    <div class="displaybox-container">
+    <div class="displaybox-container ragbot-box">
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
         ${metaInfo}
@@ -766,13 +859,13 @@ function showTitle(container, text) {
     const cleanText = renderMarkdown(text);
     const html = `
     <div style="
-        border: 1px solid #ddd;
-        background-color: #f7f7f7;
+        border: 1px solid var(--gray-200);
+        background-color: var(--gray-100);
         padding: 10px 12px;
         border-radius: 8px;
         margin: 8px 0 14px 0;
     ">
-        <div style="font-weight: bold; color: darkblue;">
+        <div style="font-weight: bold; color: var(--gray-900);">
            ${cleanText}
         </div>
     </div>`;
@@ -796,24 +889,21 @@ function showTitle(container, text) {
   // }
   function showSimple(container, data) {
     const text = data.text;
-    const ref = data.ref || ""
-    const mdHtml = renderMarkdown(text); // <<<
+    const ref = data.ref || "";
+    const mdHtml = renderMarkdown(text);
 
     const html = `
-    <div class="displaybox-container" style="background-color:rgb(255, 254, 236);">
+    <div class="displaybox-container simple">
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">
-          ${mdHtml}  <div style="text-align: right; color: #808080; font-size: 0.8em; font-style: italic;">
-            [${ref}]
-            </div>
+          ${mdHtml}
+          <div class="simple-ref">[${ref}]</div>
         </div>
       </div>
     </div>`;
 
-
-
     container.insertAdjacentHTML('beforeend', html);
-}
+  }
 
 
 

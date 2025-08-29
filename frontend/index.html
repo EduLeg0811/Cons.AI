@@ -25,6 +25,9 @@
                 <!-- <button class="navbar-control-btn" title="Settings">
                     <i class="fas fa-cog"></i>
                 </button> -->
+                <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
+                    <i class="fas fa-circle-info"></i>
+                </button>
                 <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
@@ -61,38 +64,56 @@
                     </div>
                     <div class="tools-list">
                         
-                        <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card" target="_blank" rel="noopener noreferrer">
+                        <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card compact" target="_blank" rel="noopener noreferrer" title="Converse com um GPT especializado em Conscienciologia.&#10;Ótimo para brainstorming, sínteses e dúvidas gerais.&#10;Pode sugerir explicações e caminhos de estudo.&#10;Use como apoio antes de checar as fontes.">
                             <div class="tool-icon openai">
                                 <img src="https://cdn.simpleicons.org/openai/FFFFFF" alt="OpenAI" style="width:26px;height:26px;display:block;" />
                             </div>
                             <div class="tool-info">
                                 <h3>OpenAI ConsGPT</h3>
                                 <p>Advanced GPT model specialized in Conscienciologia</p>
+                                <div class="tool-info-extra">
+                                    Converse com um GPT especializado em Conscienciologia.<br>
+                                    Útil para brainstorming e sínteses rápidas.<br>
+                                    Sugere explicações e caminhos de estudo.<br>
+                                    Use como apoio antes de checar as fontes.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-external-link-alt"></i>
                             </div> -->
                         </a>
-                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67" class="tool-card" target="_blank" rel="noopener noreferrer">
+                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67" class="tool-card compact" target="_blank" rel="noopener noreferrer" title="NotebookLM com base de estudos.&#10;Resuma, compare e consulte materiais carregados.&#10;Bom para revisões rápidas e links internos.&#10;Requer login Google; abre em nova aba.">
                             <div class="tool-icon google">
                                 <i class="fab fa-google"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>Google ConsLM</h3>
                                 <p>Google's NotebookLM for Conscienciologia research</p>
+                                <div class="tool-info-extra">
+                                    NotebookLM com sua base de estudos.<br>
+                                    Resuma, compare e consulte materiais carregados.<br>
+                                    Bom para revisões rápidas e links internos.<br>
+                                    Requer login Google (abre em nova aba).
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-external-link-alt"></i>
                             </div> -->
                         </a>
 
-                        <a href="index_ragbot.html" class="tool-card">
+                        <a href="index_ragbot.html" class="tool-card compact" title="Chatbot RAG com base textual.&#10;Responde com trechos de fontes quando possível.&#10;Bom para perguntas objetivas e localização rápida.&#10;Refine com perguntas de sequência.">
                             <div class="tool-icon ragbot">
                                 <i class="fa-solid fa-comment-dots"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>ConsBOT</h3>
                                 <p>RAG-powered chatbot with comprehensive knowledge base (<em>experimental</em>)</p>
+                                <div class="tool-info-extra">
+                                    Chatbot RAG com base textual.<br>
+                                    Quando possível, referencia trechos das fontes.<br>
+                                    Bom para perguntas objetivas e localização rápida.<br>
+                                    Refine com perguntas de sequência.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-arrow-right"></i>
@@ -115,25 +136,37 @@
                         </div>
                     </div>
                     <div class="tools-list">
-                        <a href="index_lexical.html" class="tool-card">
+                        <a href="index_lexical.html" class="tool-card lexical-compact compact" title="Busca exata por termos em livros.&#10;Localize palavras/frases específicas com precisão.&#10;Útil para conferir definições e ocorrências.&#10;Use aspas para frases exatas.">
                             <div class="tool-icon lexical">
                                 <i class="fas fa-spell-check"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>Lexical Search</h3>
                                 <p>Exact word and phrase matching across documents</p>
+                                <div class="tool-info-extra">
+                                    Busca exata por termos em livros.<br>
+                                    Localize palavras ou frases com precisão.<br>
+                                    Útil para checar definições e ocorrências.<br>
+                                    Use aspas para frases exatas.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-arrow-right"></i>
                             </div> -->
                         </a>
-                        <a href="index_semantical.html" class="tool-card">
+                        <a href="index_semantical.html" class="tool-card compact" title="Busca semântica por significado/contexto.&#10;Encontra trechos relacionados sem o termo exato.&#10;Ótima para temas e ideias correlatas.&#10;Ajuste resultados e agrupamento.">
                             <div class="tool-icon semantic">
                                 <i class="fas fa-brain"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>Semantic Search</h3>
                                 <p>AI-powered contextual and meaning-based search</p>
+                                <div class="tool-info-extra">
+                                    Busca semântica por significado e contexto.<br>
+                                    Encontra trechos relacionados sem o termo exato.<br>
+                                    Ótima para temas e ideias correlatas.<br>
+                                    Ajuste resultados e agrupamento.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-arrow-right"></i>
@@ -156,25 +189,37 @@
                         </div>
                     </div>
                     <div class="tools-list">
-                        <a href="index_mancia.html" class="tool-card">
+                        <a href="index_mancia.html" class="tool-card compact" title="Sorteia uma pensata com comentário da IA.&#10;Boa para inspiração e reflexão rápida.&#10;Útil em dinâmicas e debates.&#10;Gere novas pensatas à vontade.">
                             <div class="tool-icon mancia">
                                 <i class="fas fa-book-open"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>Bibliomancia</h3>
                                 <p>Random <em>pensata</em> extraction with AI commentary</p>
+                                <div class="tool-info-extra">
+                                    Sorteia uma pensata com comentário da IA.<br>
+                                    Boa para inspiração e reflexão rápida.<br>
+                                    Útil em dinâmicas e debates.<br>
+                                    Gere novas pensatas à vontade.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-arrow-right"></i>
                             </div> -->
                         </a>
-                        <a href="index_verbetopedia.html" class="tool-card">
+                        <a href="index_verbetopedia.html" class="tool-card compact" title="Exploração semântica de verbetes.&#10;Sugere verbetes e relações entre temas.&#10;Bom para estudar áreas afins.&#10;Aprofunde nos links sugeridos.">
                             <div class="tool-icon verbeto">
                                 <i class="fas fa-book"></i>
                             </div>
                             <div class="tool-info">
-                                <h3>Verbetopédia</h3>
-                                <p>Semantical encyclopedia search and exploration</p>
+                                <h3>Verbetop?dia</h3>
+                                <p>Semantical encyclopedia recommendations</p>
+                                <div class="tool-info-extra">
+                                    Explora��o sem�ntica de verbetes.<br>
+                                    Sugere rela��es entre temas e verbetes.<br>
+                                    Bom para estudar �reas afins.<br>
+                                    Aprofunde nos links sugeridos.
+                                </div>
                             </div>
                             <!-- <div class="tool-arrow">
                                 <i class="fas fa-arrow-right"></i>
@@ -195,7 +240,7 @@
                         </div>
                     </div>
                     <div class="tools-list">
-                        <a href="https://enciclopediadaconscienciologia.org/" class="tool-card" target="_blank" rel="noopener noreferrer">
+                        <a href="https://enciclopediadaconscienciologia.org/" class="tool-card compact" target="_blank" rel="noopener noreferrer" title="Enciclopédia da Conscienciologia (oficial).&#10;Verbetes atualizados para estudo formal.&#10;Pesquise e navegue por temas.&#10;Abre em nova aba.">
                             <div class="tool-icon encyclopedia">
                                 <i class="fas fa-globe"></i>
                             </div>
@@ -207,7 +252,7 @@
                                 <i class="fas fa-external-link-alt"></i>
                             </div> -->
                         </a>
-                        <a href="https://www.icge.org.br/" class="tool-card" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.icge.org.br/" class="tool-card compact" target="_blank" rel="noopener noreferrer" title="Portal do ICGE com recursos e referências.&#10;Pesquise materiais institucionais e históricos.&#10;Complementa as ferramentas internas.&#10;Abre em nova aba.">
                             <div class="tool-icon encyclopedia">
                                 <i class="fas fa-archive"></i>
                             </div>
@@ -233,7 +278,7 @@
             </div>
             <div class="footer-contact">
                 <i class="fas fa-envelope"></i>
-                <span style="font-size: 14px; color: #08016a;"><em>transmentor@interludium.ccce</em></span>
+                <span style="font-size: 14px; color: var(--gray-700);"><em>transmentor@interludium.ccce</em></span>
             </div>
         </div>
     </footer>
@@ -255,6 +300,13 @@
             const theme = savedTheme || (prefersDark ? 'dark' : 'light');
             
             document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // Info toggle (expand/collapse badge descriptions)
+        function toggleInfo() {
+            const current = document.documentElement.getAttribute('data-show-info') === 'true';
+            const next = (!current).toString();
+            document.documentElement.setAttribute('data-show-info', next);
         }
 
         // Initialize theme when DOM is loaded

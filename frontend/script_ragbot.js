@@ -147,10 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContent.className = `message-content${sender === 'user' ? ' user' : ''}`;
         
         if (sender === 'bot' && !isLoading) {
-            // Render markdown for bot messages
+            // Render markdown for bot messages and wrap with markdown-content for styling
             const rawHtml = renderMarkdown(content);
             const safeHtml = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml;
-            messageContent.innerHTML = safeHtml;
+            messageContent.innerHTML = `<div class="markdown-content">${safeHtml}</div>`;
         } else {
             messageContent.innerHTML = `<p>${content}</p>`;
         }
@@ -195,5 +195,4 @@ function prepareDownloadData(response, term) {
         search_type: "ragbot",
     };
 }
-
 

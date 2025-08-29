@@ -23,18 +23,18 @@
             <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
 
                 
-                <div class="navbar-icon">
+                <!-- <div class="navbar-icon">
                     <i class="fas fa-brain"></i>
-                </div>
+                </div> -->
                 <div class="navbar-text">
                     <div class="navbar-title">Semantical Search</div>
                     <div class="navbar-subtitle">AI-powered contextual search</div>
                 </div>
             </div>
             <div class="navbar-controls">
-                <button class="navbar-control-btn" title="Settings">
+                <!-- <button class="navbar-control-btn" title="Settings">
                     <i class="fas fa-cog"></i>
-                </button>
+                </button> -->
                 <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
@@ -139,6 +139,14 @@
                                 </label>
                                 <label class="toggle-label" for="groupResults">Agrupa por livro</label>
                             </div>
+
+                            <div class="row toggle-option">
+                                <label class="switch">
+                                  <input type="checkbox" id="ref_badges" checked>
+                                  <span class="slider"></span>
+                                </label>
+                                <label class="toggle-label" for="ref_badges">Badges Referências</label>
+                              </div>
                           
                             <!-- Botão -->
                             <div class="row">
@@ -253,6 +261,10 @@
                         const chk2 = document.getElementById('enableDefinition');
                         if (chk2) chk2.checked = saved.enableDefinition;
                     }
+                    if (typeof saved.ref_badges === 'boolean') {
+                        const rb = document.getElementById('ref_badges');
+                        if (rb) rb.checked = saved.ref_badges;
+                    }
                 } catch(e) { console.warn('Failed to apply semantical settings', e); }
             })();
 
@@ -277,7 +289,8 @@
                     const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
                     const groupResults = !!document.getElementById('groupResults')?.checked;
                     const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
-                    const settings = { books, maxResults, groupResults, enableDefinition };
+                    const ref_badges = !!document.getElementById('ref_badges')?.checked;
+                    const settings = { books, maxResults, groupResults, enableDefinition, ref_badges };
                     localStorage.setItem('settings_semantical', JSON.stringify(settings));
                     if (panel) panel.classList.remove('open');
                 });
