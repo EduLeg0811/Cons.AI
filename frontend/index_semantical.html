@@ -43,14 +43,24 @@
         </div>
     </nav>
 
+
+
+
+
+
+
+
+
     <div class="container">
 
 
         <!-- Options Trigger + Panel (dropdown) -->
         <div class="options-wrapper">
+
+
             <div class="search-toolbar">
                 <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
-                    <i class="fas fa-file-word"></i>
+                    <i class="fas fa-file-word fa-2x"></i>
                 </button>
                 <button class="options-trigger" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
@@ -59,14 +69,22 @@
 
 
             <div class="options-panel" id="optionsPanel">
+
+
                 <div class="options-header" onclick="toggleOptions()">
                     <h3 class="options-title">Search Options</h3>
                     <button class="options-toggle" id="optionsToggle">
                         <i class="fas fa-chevron-down"></i>
                     </button>
                 </div>
+
                 <div class="options-content" id="optionsContent">
+
                 <div class="option-group">
+
+
+                    <!--CONFIGURAÇÕES DE PESQUISA!-->
+
                     <div class="option-group-label">Select Books to Search:</div>
                     <div class="book-checkboxes">
                         <label class="book-checkbox">
@@ -87,25 +105,52 @@
                         </label>
                     </div>
                 </div>
+
+                
                 <div class="option-group">
-                    <div class="option-group-label">Search Settings:</div>
-                    <div class="toggle-option">
-                        <div class="toggle-switch" onclick="toggleSwitch(this)" data-target="enableDefinition">
-                            <input type="checkbox" id="enableDefinition" style="display: none;">
+
+
+                    <!--CONFIGURAÇÕES DE PESQUISA!-->
+
+                    <div class="option-grid">
+
+                        <div class="option-column">
+
+                            <!-- Toggle 1: Neologism synthesis -->
+                            <div class="toggle-option">
+                                <label class="switch">
+                                  <input type="checkbox" id="enableDefinition">
+                                  <span class="slider"></span>
+                                </label>
+                                <label class="toggle-label" for="enableDefinition">Neologismo</label>
+                            </div>
+
+                            <!-- Max Results -->
+                            <div class="row max-results">
+                              <input type="number" id="maxResults" min="1" max="200" value="5">
+                              <label for="maxResults">Resultados</label>
+                            </div>
+                          
+                            <!-- Toggle 2: Agrupa por livro -->
+                            <div class="toggle-option">
+                                <label class="switch">
+                                  <input type="checkbox" id="groupResults">
+                                  <span class="slider"></span>
+                                </label>
+                                <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                            </div>
+                          
+                            <!-- Botão -->
+                            <div class="row">
+                              <button class="save-btn">Salvar Ajustes</button>
+                            </div>
+                          
                         </div>
-                        <label class="toggle-label" for="enableDefinition">Neologism synthesis</label>
+                          
                     </div>
-                    <div class="toggle-option">
-                        <div class="toggle-switch" onclick="toggleSwitch(this)" data-target="groupResults">
-                            <input type="checkbox" id="groupResults" style="display: none;">
-                        </div>
-                        <label class="toggle-label" for="groupResults">Group results by source</label>
-                    </div>
-                    <div style="margin-top: 16px;">
-                        <label for="maxResults" style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--gray-700);">Max Results:</label>
-                        <input type="number" id="maxResults" min="1" max="200" value="5" style="width: 100%; padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px;">
-                    </div>
+                  
                 </div>
+
             </div>
 
          
@@ -186,6 +231,31 @@
             const content = document.getElementById('optionsContent');
             if (content) content.style.display = 'grid';
 
+            // Apply saved settings for semantical module
+            (function applySemanticalSavedSettings(){
+                try {
+                    const raw = localStorage.getItem('settings_semantical');
+                    if (!raw) return;
+                    const saved = JSON.parse(raw);
+                    if (Array.isArray(saved.books)) {
+                        const set = new Set(saved.books);
+                        document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
+                    }
+                    if (typeof saved.maxResults === 'number') {
+                        const inp = document.getElementById('maxResults');
+                        if (inp) inp.value = saved.maxResults;
+                    }
+                    if (typeof saved.groupResults === 'boolean') {
+                        const chk = document.getElementById('groupResults');
+                        if (chk) chk.checked = saved.groupResults;
+                    }
+                    if (typeof saved.enableDefinition === 'boolean') {
+                        const chk2 = document.getElementById('enableDefinition');
+                        if (chk2) chk2.checked = saved.enableDefinition;
+                    }
+                } catch(e) { console.warn('Failed to apply semantical settings', e); }
+            })();
+
             if (trigger && panel) {
                 trigger.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -196,6 +266,20 @@
                     if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
                         panel.classList.remove('open');
                     }
+                });
+            }
+
+            // Save settings button
+            const saveBtn = document.querySelector('.save-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
+                    const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
+                    const groupResults = !!document.getElementById('groupResults')?.checked;
+                    const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
+                    const settings = { books, maxResults, groupResults, enableDefinition };
+                    localStorage.setItem('settings_semantical', JSON.stringify(settings));
+                    if (panel) panel.classList.remove('open');
                 });
             }
         });
@@ -220,4 +304,3 @@
     </script>
 </body>
 </html>
-

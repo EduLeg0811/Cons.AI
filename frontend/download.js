@@ -52,7 +52,7 @@ async function handleDocxDownload() {
     const originalHtml = button?.innerHTML;
     
     if (button) {
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         button.disabled = true;
     }
     
@@ -154,7 +154,7 @@ async function downloadResults(format, resultsData, searchTerm, searchType) {
   const originalHtml = button?.innerHTML;
   
   if (button) {
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     button.disabled = true;
   }
 

@@ -49,8 +49,8 @@ const SEMANTICAL_INSTRUCTIONS = `
     "Você é um assistente especialista em Conscienciologia.",
     "A sua resposta à query de entrada vai ser utilizada para formular uma pesquisa semântica.",
     "Sua função é realizar os seguintes passos:",
-    "1) Entender o significado específico da query de entrada na Conscienciologia.",
-    "2) Formular uma lista de termos que compõem o seu significado.",
+    "1) Entender o significado específico da query no contexto da Conscienciologia, e não apenas no contexto da língua portuguesa comum.",
+    "2) Formular uma lista de termos que compõem o seu significado denotativo na Conscienciologia.",
     "3) Não use elementos de ligação como artigos, preposições, etc.",
     "4) Não use repetições ou preâmbulos, como por exemplo 'significa' ou 'é'.",
     "5) Responda na saída apenas a lista de palavras ou expressões secas, separadas por ponto-e-vírgula."

@@ -189,55 +189,36 @@ function showSearch(container, data) {
         const groupNames = Object.keys(groups);
 
 
-    // 3) Resultados do grupo
+    // 3) Summary badges (rows) and rendering
     // ===========================================================================================
-    
-    // Resumo superior
+
     const totalCount = arr.length;
-    const perSourceLines = groupNames.map(name => {
-        const n = groups[name].length;
-        return `<div><strong>${escapeHtml(name)}</strong>: ${n} resultado${n !== 1 ? 's' : ''}</div>`;
-    }).join('');
-
-    const summaryHtml = `
-    <div style="
-        border: 1px solid #ddd;
-        background-color: #f7f7f7;
-        padding: 10px 12px;
-        border-radius: 8px;
-        margin: 8px 0 14px 0;
-    ">
-        <div style="font-weight: bold;">
-            Total de parágrafos encontrados: ${totalCount}
-        </div>
-        ${perSourceLines}
-    </div>`;
-    
-    container.insertAdjacentHTML('beforeend', summaryHtml);
-
-    // Elegant badges summary (collapsible triggers)
     const slug = (s) => String(s || 'all')
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
-    let pillsBar = `<div class="summary-bar">`;
-    pillsBar += `<button class="pill pill-total" data-target="all-results">Total <span class=\"count\">${totalCount}</span></button>`;
-    pillsBar += groupNames.map(name => {
-        const n = groups[name].length;
-        return `<button class=\"pill\" data-target=\"group-${slug(name)}\">${escapeHtml(name)} <span class=\"count\">${n}</span></button>`;
-    }).join('');
-    pillsBar += `</div>`;
-    container.insertAdjacentHTML('beforeend', pillsBar);
-
-
-
-
-   
-    // Processamento GERAL
-    // ===========================================================================================
 
     // Get the checkbox state
     const flag_grouping = document.getElementById('groupResults')?.checked ?? true;
+
+    // Build summary rows according to grouping toggle
+    let summaryRows = '<div class="summary-list">';
+    if (flag_grouping) {
+        // Only per-source rows
+        summaryRows += groupNames.map(name => {
+            const n = groups[name].length;
+            const target = `group-${slug(name)}`;
+            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(name)}</span><span class="count">${n}</span></button>`;
+        }).join('');
+    } else {
+        // Only total row
+        summaryRows += `<button class="pill pill-row" data-target="all-results"><span class="pill-label">Total</span><span class="count">${totalCount}</span></button>`;
+    }
+    summaryRows += '</div>';
+    container.insertAdjacentHTML('beforeend', summaryRows);
+
+    // Processamento GERAL
+    // ===========================================================================================
 
     if (flag_grouping) {
 
@@ -264,14 +245,13 @@ function showSearch(container, data) {
 
             // 5) HTML final do grupo
             // =======================================
-            const panelId = 'group-' + (String(groupName || 'all')
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, ''));
+            const panelId = 'group-' + slug(groupName);
             const groupPanel = `
                 <div id="${panelId}" class="collapse-panel">
-                    <div class="group-content">
-                        ${groupHtml}
+                    <div class="displaybox-container">
+                        <div class="displaybox-content group-content">
+                            ${groupHtml}
+                        </div>
                     </div>
                 </div>
             `;
@@ -310,8 +290,10 @@ function showSearch(container, data) {
         // =======================================
         const groupPanel = `
             <div id="all-results" class="collapse-panel">
-                <div class="group-content">
-                    ${groupHtml}
+                <div class="displaybox-container">
+                    <div class="displaybox-content group-content">
+                        ${groupHtml}
+                    </div>
                 </div>
             </div>
         `;
@@ -320,18 +302,25 @@ function showSearch(container, data) {
     };
 
     // Attach toggle behavior for summary pills (event delegation inside container)
-    container.addEventListener('click', function(ev) {
-        const btn = ev.target.closest('.pill');
-        if (!btn) return;
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return;
-        const panel = container.querySelector(`#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`) || container.querySelector(`#${targetId}`);
-        if (!panel) return;
-        panel.classList.toggle('open');
-        if (panel.classList.contains('open')) {
-            try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-        }
-    });
+    // Bind click handler once per container to avoid double toggles after new queries
+    if (!container.__pillHandlerBound) {
+        container.addEventListener('click', function(ev) {
+            const btn = ev.target.closest('.pill');
+            if (!btn) return;
+            ev.preventDefault();
+            const targetId = btn.getAttribute('data-target');
+            if (!targetId) return;
+            const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
+            const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
+            if (!panel) return;
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+            }
+        });
+        // mark bound
+        container.__pillHandlerBound = true;
+    }
 
 }
 
@@ -884,7 +873,7 @@ function showVerbetopedia(container, data) {
 
         return `
         <div class="displaybox-item">
-            <div class="displaybox-header" style="text-align: left; padding-left: 0;">
+            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0;">
                 <span class="header-text">${titleHtml}</span>
             </div>
             <div class="displaybox-text">
@@ -909,4 +898,40 @@ function showVerbetopedia(container, data) {
     `;
 
     container.insertAdjacentHTML('beforeend', groupHtml);
+
+    // Also render collapsible badge row + panel for Verbetopedia
+    const _vb_count = items.length;
+    const _vb_html = `
+      <div class="summary-list">
+        <button class="pill pill-row" data-target="group-ec">
+          <span class="pill-label">Enciclopédia da Conscienciologia</span>
+          <span class="count">${_vb_count}</span>
+        </button>
+      </div>
+      <div id="group-ec" class="collapse-panel">
+        <div class="displaybox-container">
+          <div class="displaybox-content group-content">
+            ${contentHtml}
+          </div>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML('beforeend', _vb_html);
+
+    if (!container.__pillHandlerBound) {
+      container.addEventListener('click', function(ev) {
+          const btn = ev.target.closest('.pill');
+          if (!btn) return;
+          ev.preventDefault();
+          const targetId = btn.getAttribute('data-target');
+          if (!targetId) return;
+          const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
+          const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
+          if (!panel) return;
+          panel.classList.toggle('open');
+          if (panel.classList.contains('open')) {
+              try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+          }
+      });
+      container.__pillHandlerBound = true;
+    }
 }

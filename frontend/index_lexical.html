@@ -121,20 +121,50 @@
                     </div>
                 </div>
 
-                <div class="option-group">
-                    <div class="option-group-label">Search Settings:</div>
-                    <div class="toggle-option">
-                        <div class="toggle-switch" onclick="toggleSwitch(this)" data-target="groupResults">
-                            <input type="checkbox" id="groupResults" style="display: none;">
-                        </div>
-                        <label class="toggle-label" for="groupResults">Group results by source</label>
-                    </div>
-                    <div style="margin-top: 16px;">
-                        <label for="maxResults" style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--gray-700);">Max Results:</label>
-                        <input type="number" id="maxResults" min="1" max="200" value="5" style="width: 100%; padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px;">
-                    </div>
-                </div>
+                
 
+                <!--CONFIGURAÇÕES DE PESQUISA!-->
+
+                <div class="option-column">
+
+                    <!-- Max Results -->
+                    <div class="row max-results">
+                      <label for="maxResults">Max Results:</label>
+                      <input type="number" id="maxResults" min="1" max="200" value="5">
+                    </div>
+                  
+                    <!-- Toggle -->
+                    <div class="row toggle-option">
+                      <label class="switch">
+                        <input type="checkbox" id="groupResults">
+                        <span class="slider"></span>
+                      </label>
+                      <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                    </div>
+                  
+                    <!-- Botão -->
+                    <div class="row">
+                      <button class="save-btn">Salvar Ajustes</button>
+                    </div>
+                  
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                  
+
+
+
+
+
+
+
+
+
+                
+                
 
 
 
@@ -217,6 +247,27 @@
             const content = document.getElementById('optionsContent');
             if (content) content.style.display = 'grid';
 
+            // Apply saved settings
+            (function applyLexicalSavedSettings(){
+                try {
+                    const raw = localStorage.getItem('settings_lexical');
+                    if (!raw) return;
+                    const saved = JSON.parse(raw);
+                    if (Array.isArray(saved.books)) {
+                        const set = new Set(saved.books);
+                        document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
+                    }
+                    if (typeof saved.maxResults === 'number') {
+                        const inp = document.getElementById('maxResults');
+                        if (inp) inp.value = saved.maxResults;
+                    }
+                    if (typeof saved.groupResults === 'boolean') {
+                        const chk = document.getElementById('groupResults');
+                        if (chk) chk.checked = saved.groupResults;
+                    }
+                } catch(e) { console.warn('Failed to apply lexical settings', e); }
+            })();
+
             if (trigger && panel) {
                 trigger.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -227,6 +278,19 @@
                     if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
                         panel.classList.remove('open');
                     }
+                });
+            }
+
+            // Save settings button
+            const saveBtn = document.querySelector('.save-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
+                    const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
+                    const groupResults = !!document.getElementById('groupResults')?.checked;
+                    const settings = { books, maxResults, groupResults };
+                    localStorage.setItem('settings_lexical', JSON.stringify(settings));
+                    if (panel) panel.classList.remove('open');
                 });
             }
         });

@@ -255,6 +255,42 @@ body {
     min-height: calc(100vh - 70px);
 }
 
+/* Centered hero for index page */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--space-3);
+    margin: 0 auto var(--space-12) auto;
+}
+
+.hero-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-2xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 32px;
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
+}
+
+.hero-title {
+    font-weight: 800;
+    color: var(--gray-900);
+    font-size: calc(var(--text-4xl) + 0.4rem); /* slightly larger than 4xl */
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    color: var(--gray-500);
+    font-size: var(--text-lg);
+}
+
 .tools-section {
     max-width: 1400px;
     margin: 0 auto;
@@ -1013,26 +1049,26 @@ body {
     text-align: center;
 }
 
-.pensata-button {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-5) var(--space-8);
-    background: var(--primary-500);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-xl);
-    font-size: var(--text-lg);
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: all var(--transition-fast);
-}
-
-.pensata-button:hover:not(:disabled) {
-    background: var(--primary-600);
-    transform: translateY(-2px);
-}
+  .pensata-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-5) var(--space-8);
+      background: var(--apps-primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-xl);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all var(--transition-fast);
+  }
+  
+  .pensata-button:hover:not(:disabled) {
+      background: var(--apps-secondary);
+      transform: translateY(-2px);
+  }
 
 /* ===== RESULTS CONTAINER ===== */
 .results-container {
@@ -1066,6 +1102,25 @@ body {
     align-items: center;
 }
 
+/* Verbetopedia header overrides */
+/* To change the title color later, modify the color below */
+.verbetopedia-header {
+    background: transparent;       /* remove light gray background */
+    border-bottom: none;           /* no bottom border */
+    border-top: 1px solid var(--gray-200); /* add top border */
+    color: #0a2a66;                /* dark blue text color (change here) */
+    padding-bottom: 0;             /* remove bottom padding to tighten spacing */
+    margin-bottom: 0.5em;          /* half-line spacing to next paragraph */
+}
+
+/* Remove extra top margin from the first paragraph after the verbetopedia header */
+.verbetopedia-header + .displaybox-text .markdown-content p:first-child {
+    margin-top: 0;
+}
+
+/* Hide legacy non-collapsible group layout (replaced by badge rows) */
+.displaybox-group { display: none; }
+
 .displaybox-content {
     padding: var(--space-6);
     line-height: 1.7;
@@ -1095,6 +1150,13 @@ body {
     margin: var(--space-4) 0;
 }
 
+/* Full-width summary rows (used in search views) */
+.summary-list {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+}
+
 .pill {
     display: inline-flex;
     align-items: center;
@@ -1107,6 +1169,15 @@ body {
     font-size: var(--text-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
+}
+
+/* Make a pill span the full row and feel like a badge header */
+.pill.pill-row {
+    width: 100%;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-xl);
+    font-size: var(--text-base);
 }
 
 .pill .count {
@@ -1464,3 +1535,164 @@ textarea:focus-visible {
     outline-offset: 2px;
     box-shadow: none !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+/* Coluna única */
+/*==============================================================================*/
+.option-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: none; /* largura máxima agradável */
+  }
+  
+  /* Linha base */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Max Results */
+  .max-results label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700, #333);
+    white-space: nowrap;
+  }
+  
+  .max-results input {
+    width: 80px;
+    flex: none;
+    padding: 6px 8px;
+    border: 1px solid var(--gray-300, #ccc);
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    color: #000;
+    text-align: right;
+  }
+  
+  /* Toggle moderno */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  
+  .switch input:checked + .slider {
+    background-color: var(--primary, #007bff);
+  }
+  
+  .switch input:checked + .slider:before {
+    transform: translateX(18px);
+  }
+  
+  .toggle-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gray-700, #333);
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  /* Botão */
+  .save-btn {
+    padding: 12px 24px;
+    background: var(--primary, #b3b3b3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.2s ease;
+    display: block;
+    margin-left: auto;   /* centraliza */
+    margin-right: auto;  /* centraliza */
+    width: auto;         
+    min-width: 140px;    
+    text-align: center;
+  }
+  
+  .save-btn:hover {
+    background: #898989;
+  }
+  
+  /* Theme-specific identity for Save button */
+  .theme-search .save-btn { background: var(--search-primary); }
+  .theme-search .save-btn:hover { background: var(--search-secondary); }
+  
+  .theme-apps .save-btn { background: var(--apps-primary); }
+  .theme-apps .save-btn:hover { background: var(--apps-secondary); }
+  
+  .theme-bots .save-btn { background: var(--bots-primary); }
+  .theme-bots .save-btn:hover { background: var(--bots-secondary); }
+  
+  .theme-utils .save-btn { background: var(--utils-primary); }
+  .theme-utils .save-btn:hover { background: var(--utils-secondary); }
+  
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .max-results label,
+    .toggle-label {
+      color: #ddd;
+    }
+    .max-results input {
+      background: #1e1e1e;
+      color: #f0f0f0;
+      border: 1px solid #444;
+    }
+    .slider {
+      background-color: #555;
+    }
+    .switch input:checked + .slider {
+      background-color: #3399ff;
+    }
+    .save-btn {
+      background: #3399ff;
+    }
+    .save-btn:hover {
+      background: #267acc;
+    }
+  }
+  

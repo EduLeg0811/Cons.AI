@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const chat_id = getOrCreateChatId();
                 
                 const paramRAGbot = {
-                    query: "**TEXTO DE ENTRADA** :  " + term + ".",
+                    query: "TEXTO DE ENTRADA:  " + term + ".",
                     model: MODEL_LLM,
                     temperature: TEMPERATURE,
                     vector_store_id: OPENAI_RAGBOT,
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 //*****************************************************************************************
 
-                
+                defJson.ref = "Descritivos"
 
                 // Display results
                 // ================
