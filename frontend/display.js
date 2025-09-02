@@ -425,10 +425,10 @@ const format_paragraph_LO = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     }
     if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo3"> #${escapeHtml(paragraph_number)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     }
     if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo4"> @${escapeHtml(score)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
 
     // Join the non-empty badges with a space
@@ -503,16 +503,16 @@ const format_paragraph_DAC = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     }
     if (argumento) {
-        badgeParts.push(`<span class="metadata-badge estilo5"> ${escapeHtml(argumento)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(argumento)}</span>`);
     }
     if (section) {
-        badgeParts.push(`<span class="metadata-badge estilo6"> <em> ${escapeHtml(section)}</em></span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> <em> ${escapeHtml(section)}</em></span>`);
     }
     if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo4"> #${escapeHtml(paragraph_number)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     }
     if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo9"> @${escapeHtml(score)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
 
     // Join the non-empty badges with a space
@@ -584,13 +584,13 @@ const format_paragraph_CCG = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     }
     if (folha) {
-        badgeParts.push(`<span class="metadata-badge estilo4"> (${escapeHtml(folha)})</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> (${escapeHtml(folha)})</span>`);
     }
     if (question_number) {
-        badgeParts.push(`<span class="metadata-badge estilo3"> #${escapeHtml(question_number)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(question_number)}</span>`);
     }
     if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo9"> @${escapeHtml(score)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
 
     // Join the non-empty badges with a space
@@ -670,22 +670,22 @@ const format_paragraph_EC = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span> `);
     }
     if (area) {
-        badgeParts.push(`<span class="metadata-badge estilo4"> <em> ${escapeHtml(area)}</em></span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> <em> ${escapeHtml(area)}</em></span>`);
     }
     if (verbete_number) {
-        badgeParts.push(`<span class="metadata-badge estilo3"> #${escapeHtml(verbete_number)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(verbete_number)}</span>`);
     }
     if (theme) {
-        badgeParts.push(`<span class="metadata-badge estilo5"> ${escapeHtml(theme)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(theme)}</span>`);
     }
     if (author) {
-        badgeParts.push(`<span class="metadata-badge estilo6"> ${escapeHtml(author)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(author)}</span>`);
     }
     if (date) {
-        badgeParts.push(`<span class="metadata-badge estilo7"> ${escapeHtml(date)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(date)}</span>`);
     }
     if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo9"> @${escapeHtml(score)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
 
     // Join the non-empty badges with a space
@@ -764,10 +764,10 @@ const format_paragraph_Default = (item) => {
     //     badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     // }
     if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo3"> #${escapeHtml(paragraph_number)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     }
     if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo4"> @${escapeHtml(score)}</span>`);
+        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
 
     // Join the non-empty badges with a space
@@ -953,7 +953,7 @@ function showVerbetopedia(container, data) {
     items.sort((a, b) => {
         const sa = (typeof a._meta.score === 'number') ? a._meta.score : -Infinity;
         const sb = (typeof b._meta.score === 'number') ? b._meta.score : -Infinity;
-        return sb - sa; // maior primeiro
+        return sa - sb; // menor primeiro
     });
 
    
@@ -994,7 +994,6 @@ function showVerbetopedia(container, data) {
         // Monta link final (com encoding seguro)
         const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
 
-        console.log("SANITIZED verbLink = ", verbLink);
 
         const pdfLink = `
             <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
@@ -1097,7 +1096,7 @@ function showCcg(container, data) {
 
     // 1) Extrair metadados antes para usar score
     const items = arr.map(item => {
-        const metaData = extractMetadata(item, 'verbetopedia');
+        const metaData = extractMetadata(item, 'ccg');
         return { ...item, _meta: metaData };
     });
 
@@ -1105,9 +1104,10 @@ function showCcg(container, data) {
     items.sort((a, b) => {
         const sa = (typeof a._meta.score === 'number') ? a._meta.score : -Infinity;
         const sb = (typeof b._meta.score === 'number') ? b._meta.score : -Infinity;
-        return sb - sa; // maior primeiro
+        return sa- sb; // menor primeiro
     });
 
+    
    
     // 3) Gera HTML de cada item
     const contentHtml = items.map(item => {
@@ -1124,6 +1124,8 @@ function showCcg(container, data) {
 
         const metaData = item._meta;
 
+
+        console.log(`********display.js - ccg*** [metaData]:`, metaData);
 
         const titleHtml = `
         <strong>${metaData.title}</strong>  ●  ${metaData.folha}  ●  #${metaData.number}

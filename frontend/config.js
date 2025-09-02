@@ -6,11 +6,15 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 // Global Parameters
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
-window.SHOW_REF_BADGES = false;
+window.SHOW_REF_BADGES = true;
 const MODEL_LLM='gpt-5-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';
+
+
+
+
 const INSTRUCTIONS_LLM_USER = `
     Developer: # Papel e Objetivo
     Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia.
@@ -159,6 +163,10 @@ function newConversationId() {
 
 // Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset
 async function resetConversation() {
+  // Abort a requisição ativa (se houver)
+  if (window.abortRagbot) {
+    try { window.abortRagbot(); } catch {}
+  }
   const chat_id = getOrCreateChatId();
   try {
     await fetch(apiBaseUrl + '/ragbot_reset', {
@@ -173,8 +181,20 @@ async function resetConversation() {
   // Limpeza básica de UI se existir
   const container = document.querySelector('#results');
   if (container) container.innerHTML = '';
+  // Limpa mensagens do chat
+  const chat = document.getElementById('chatMessages');
+  if (chat) chat.innerHTML = '';
+  // Zera histórico em memória (se exposto)
+  if (window.chatHistory && Array.isArray(window.chatHistory)) {
+    try { window.chatHistory.length = 0; } catch {}
+  }
   const input = document.getElementById('searchInput');
   if (input) input.value = '';
+
+  // Mensagem de boas-vindas
+  if (window.ragbotAddMessage) {
+    window.ragbotAddMessage('bot', 'Nova conversa iniciada. Como posso ajudar?');
+  }
 }
 
 // Se existir um botão com este id, liga automaticamente

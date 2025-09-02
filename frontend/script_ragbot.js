@@ -2,6 +2,11 @@
 
 let controller = null;
 let chatHistory = [];
+// Expor refs no escopo global para integrações (reset, etc.)
+window.chatHistory = chatHistory;
+window.abortRagbot = function abortRagbot() {
+  try { if (controller) controller.abort(); } catch {}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchButton = document.getElementById('searchButton');
@@ -165,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return messageId;
     }
+
+    // Expor util para adicionar mensagens externamente (ex.: boas-vindas)
+    window.ragbotAddMessage = (sender, content, isLoading=false) => addChatMessage(sender, content, isLoading);
     
     // Function to remove chat message
     function removeChatMessage(messageId) {
@@ -195,4 +203,3 @@ function prepareDownloadData(response, term) {
         search_type: "ragbot",
     };
 }
-

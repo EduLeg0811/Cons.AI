@@ -29,8 +29,8 @@
                         <i class="fas fa-spell-check"></i>
                     </div> -->
                     <div class="navbar-text">
-                        <div class="navbar-title">Lexical Search</div>
-                        <div class="navbar-subtitle">Search for an exact term in the books</div>
+                        <div class="navbar-title">Pesquisa Léxica</div>
+                        <div class="navbar-subtitle">Busca por termos exatos nos livros</div>
                     </div>
                 </div>
 
@@ -80,7 +80,7 @@
 
 
                 <div class="option-group">
-                    <div class="option-group-label">Select Books to Search:</div>
+                    <div class="option-group-label">Selecione os livros para pesquisar:</div>
                     <div class="book-checkboxes">
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="LO" checked>
@@ -92,31 +92,39 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="TNP">
-                            <span>TNP</span>
+                            <span>Manual da Tenepes</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="DUPLA">
-                            <span>DUPLA</span>
+                            <span>Manual da Dupla</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="200TEAT">
-                            <span>200TEAT</span>
+                            <span>200 Teáticas</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="PROEXIS">
-                            <span>PROEXIS</span>
+                            <span>Manual da Proéxis</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="700EXP">
-                            <span>700EXP</span>
+                            <span>700 Experimentos</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="TEMAS">
-                            <span>TEMAS</span>
+                            <span>Temas da Cosnscienciologia</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="CCG">
-                            <span>CCG</span>
+                            <span>Conscienciograma</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="HSR">
+                            <span>Homo sapiens reurbanisatus</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="book" value="HSP">
+                            <span>Homo sapiens pacificus</span>
                         </label>
                     </div>
                 </div>
@@ -128,10 +136,11 @@
                 <div class="option-column">
 
                     <!-- Max Results -->
-                    <div class="row max-results">
-                      <label for="maxResults">Max Results:</label>
-                      <input type="number" id="maxResults" min="1" max="200" value="5">
-                    </div>
+                     <!-- Max Results -->
+                     <div class="row max-results">
+                        <label for="maxResults">Máximo de Resultados</label>
+                        <input type="number" id="maxResults" min="1" max="100" value="5">
+                      </div>
                   
                     <!-- Toggle -->
                     <!-- removed: ref_badges toggle

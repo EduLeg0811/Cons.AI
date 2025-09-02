@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Use the generic semantical renderer, which formats CCG items properly
             displayResults(resultsDiv, semJson, "ccg");
 
-            console.log(`********Script_ccg.js - ccg*** [semJson]:`, semJson);
 
             // Update results using centralized function (show download when ready)
             if (window.downloadUtils && window.downloadUtils.updateResults) {
