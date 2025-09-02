@@ -85,7 +85,9 @@ function llm_formatResponse(responseData) {
 }
 
 
-
+//______________________________________________________________________________________________
+// bookName  --- call from [bridge.js] <call_llm>
+//______________________________________________________________________________________________
 function bookName(source) {
 
   let realName = source;
