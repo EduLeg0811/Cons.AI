@@ -244,7 +244,7 @@ function showSearch(container, data) {
         summaryRows += groupNames.map(name => {
             const n = groups[name].length;
             const target = `group-${slug(name)}`;
-            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(name)}</span><span class="count">${n}</span></button>`;
+            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count">${n}</span></button>`;
         }).join('');
     } else {
         // Only total row
@@ -409,7 +409,8 @@ const format_paragraph_LO = (item) => {
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
     const text = item.markdown || item.content_text || '';
-    const source = item.source || '';
+    let source = item.source || '';
+    source = bookName(source);
 
     console.log('---------------[display.js] [format_paragraph_LO] paragraph_number: ', paragraph_number);
     console.log('---------------[display.js] [format_paragraph_LO] title: ', title);
@@ -485,7 +486,8 @@ const format_paragraph_DAC = (item) => {
     const text = item.markdown || item.content_text || '';
     const argumento = item.argumento || '';
     const section = item.section || '';
-    const source = item.source || '';
+    let source = item.source || '';
+    source = bookName(source);
 
     console.log('---------------[display.js] [format_paragraph_DAC] paragraph_number: ', paragraph_number);
     console.log('---------------[display.js] [format_paragraph_DAC] title: ', title);
@@ -566,7 +568,8 @@ const format_paragraph_CCG = (item) => {
     const score = item.score || 0.00;
     const text = item.markdown || item.content_text || '';
     const folha = item.folha || '';
-    const source = item.source || '';
+    let source = item.source || '';
+    source = bookName(source);
 
     console.log('---------------[display.js] [format_paragraph_CCG] question_number: ', question_number);
     console.log('---------------[display.js] [format_paragraph_CCG] title: ', title);
@@ -647,7 +650,8 @@ const format_paragraph_EC = (item) => {
     const sigla = item.sigla || '';
     const date = item.date || '';
     const link = item.link || '';
-    const source = 'EC';
+    let source = item.source || '';
+    source = bookName(source);
 
 
     console.log('---------------[display.js] [format_paragraph_EC] verbete_number: ', verbete_number);
@@ -748,7 +752,11 @@ const format_paragraph_Default = (item) => {
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
     const text = item.markdown || item.content_text || '';
-    const source = item.source || '';
+    let source = item.source || '';
+    source = bookName(source);
+
+
+
 
     console.log('---------------[display.js] [format_paragraph_Default] paragraph_number: ', paragraph_number);
     console.log('---------------[display.js] [format_paragraph_Default] title: ', title);

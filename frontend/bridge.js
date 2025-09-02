@@ -22,7 +22,6 @@ async function call_lexical(parameters) {
   if (_lexicalController) _lexicalController.abort();
   _lexicalController = new AbortController();
 
-
   console.log(' LEXICAL SEARCH REQUEST:', {
       endpoint: `${apiBaseUrl}/lexical_search`,
       parameters: JSON.parse(JSON.stringify(parameters)) // Deep clone to avoid reference issues

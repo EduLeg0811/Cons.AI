@@ -86,7 +86,51 @@ function llm_formatResponse(responseData) {
 
 
 
+function bookName(source) {
 
+  let realName = source;
+
+    if (source === 'HSR') {
+        realName = 'Homo sapiens reurbanisatus';
+    }
+    if (source === 'HSP') {
+        realName = 'Homo sapiens pacificus';
+    }   
+    if (source === '200TEAT') {
+        realName = '200 Teáticas da Conscienciologia';
+    }
+    if (source === '700EXP') {
+        realName = '700 Experimentos da Conscienciologia';
+    }   
+    if (source === 'TEMAS') {
+        realName = 'Temas da Conscienciologia';
+    }   
+    if (source === 'PROEXIS') {
+        realName = 'Manual da Proéxis';
+    }   
+    if (source === 'TNP') {
+        realName = 'Manual da Tenepes';
+    }   
+    if (source === 'DUPLA') {
+        realName = 'Manual da Dupla Evolutiva';
+    }        
+    if (source === 'LO') {
+        realName = 'Léxico de Ortopensatas';
+    }        
+    if (source === 'EC') {
+        realName = 'Enciclopédia da Conscienciologia';
+    }        
+    if (source === 'DAC') {
+        realName = 'Dicionário de Argumentos da Conscienciologia';
+    }        
+    if (source === 'ECALL_DEF') {
+        realName = 'Enciclopédia da Conscienciologia (Definologia)';
+    }        
+    if (source === 'PROJ') {
+        realName = 'Projeciologia';
+    }        
+    return realName;
+}
 
 
 

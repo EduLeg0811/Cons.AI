@@ -71,7 +71,8 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
         try:
             content = _read_markdown_file(file_path)
             book = os.path.splitext(os.path.basename(file_path))[0]
-            matches = _search_in_content(content, search_term)
+            # Use substring matching to avoid word-boundary issues with punctuation/diacritics
+            matches = _search_in_content(content, search_term, match_mode="substring")
 
             for match in matches or []:
                 results.append({
@@ -110,7 +111,9 @@ def process_found_paragraph(paragraph: str, search_term: str) -> str:
     if not search_term:
         return paragraph
 
-    search_term_lower = search_term.lower()
+    # Use mesma normalização do mecanismo de busca para garantir
+    # insensibilidade a maiúsc/minúsc e acentos (inclui ç->c via NFD)
+    needle = _normalize_for_match(search_term)
 
     if paragraph.count("|") >= 2:
         subtrechos = paragraph.split("|")
@@ -121,7 +124,7 @@ def process_found_paragraph(paragraph: str, search_term: str) -> str:
 
         for subtrecho in subtrechos[1:]:
             subtrecho_limpo = subtrecho.strip()
-            if search_term_lower in subtrecho_limpo.lower():
+            if needle in _normalize_for_match(subtrecho_limpo):
                 novo_paragrafo_partes.append(subtrecho_limpo)
 
         # Se nenhum subtrecho relevante foi encontrado, descarta
@@ -308,7 +311,5 @@ def group_lexical(results: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any
         grouped[book].append(item)
 
     return dict(grouped)
-
-
 
 
