@@ -71,21 +71,39 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
     # Recupera o último response.id dessa conversa
     previous_id = _conversation_last_id.get(chat_id) if use_session else None
 
-    llm_str = {
-        "model": model,
-        "tools": [{
-            "type": "file_search",
+    if str(model).startswith("gpt-5"):
+
+        
+        llm_str = {
+            "model": model,
+            "tools": [{
+                "type": "file_search",
+                "vector_store_ids": vector_store_ids,
+                "max_num_results": int(LLM_MAX_RESULTS)
+            }],
+            "input": query,
+            "instructions": instructions,   # reenvie sempre
+            "store": True,                   # necessário para encadear
+            "text": {"verbosity": "low"},
+            "reasoning": {"effort": "minimal"}
+
+        }
+
+    else:
+
+        llm_str = {
+            "model": model,
+            "tools": [{
+                "type": "file_search",
             "vector_store_ids": vector_store_ids,
             "max_num_results": int(LLM_MAX_RESULTS)
         }],
         "input": query,
         "instructions": instructions,   # reenvie sempre
-        "store": True                   # necessário para encadear
+        "store": True,                   # necessário para encadear
+        "temperature": float(temperature)
     }
 
-    # adiciona temperature apenas se o modelo NÃO começar com gpt-5
-    if not str(model).startswith("gpt-5"):
-        llm_str["temperature"] = float(temperature)
 
     # adiciona previous_response_id se existir
     if previous_id:

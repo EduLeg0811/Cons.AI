@@ -412,10 +412,10 @@ const format_paragraph_LO = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-    console.log('---------------[display.js] [format_paragraph_LO] paragraph_number: ', paragraph_number);
-    console.log('---------------[display.js] [format_paragraph_LO] title: ', title);
-    console.log('---------------[display.js] [format_paragraph_LO] score: ', score);
-    console.log('---------------[display.js] [format_paragraph_LO] source: ', source);
+    // console.log('---------------[display.js] [format_paragraph_LO] paragraph_number: ', paragraph_number);
+    // console.log('---------------[display.js] [format_paragraph_LO] title: ', title);
+    // console.log('---------------[display.js] [format_paragraph_LO] score: ', score);
+    // console.log('---------------[display.js] [format_paragraph_LO] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];
@@ -425,11 +425,14 @@ const format_paragraph_LO = (item) => {
     if (title) {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     }
-    if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
-    }
-    if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+
+    if (FULL_BADGES) {
+        if (paragraph_number) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+        }
+        if (score > 0.0) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+        }
     }
 
     // Join the non-empty badges with a space
@@ -489,12 +492,12 @@ const format_paragraph_DAC = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-    console.log('---------------[display.js] [format_paragraph_DAC] paragraph_number: ', paragraph_number);
-    console.log('---------------[display.js] [format_paragraph_DAC] title: ', title);
-    console.log('---------------[display.js] [format_paragraph_DAC] score: ', score);
-    console.log('---------------[display.js] [format_paragraph_DAC] argumento: ', argumento);
-    console.log('---------------[display.js] [format_paragraph_DAC] section: ', section);
-    console.log('---------------[display.js] [format_paragraph_DAC] source: ', source);
+    // console.log('---------------[display.js] [format_paragraph_DAC] paragraph_number: ', paragraph_number);
+    // console.log('---------------[display.js] [format_paragraph_DAC] title: ', title);
+    // console.log('---------------[display.js] [format_paragraph_DAC] score: ', score);
+    // console.log('---------------[display.js] [format_paragraph_DAC] argumento: ', argumento);
+    // console.log('---------------[display.js] [format_paragraph_DAC] section: ', section);
+    // console.log('---------------[display.js] [format_paragraph_DAC] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];      
@@ -510,11 +513,14 @@ const format_paragraph_DAC = (item) => {
     if (section) {
         badgeParts.push(`<span class="metadata-badge estilo2"> <em> ${escapeHtml(section)}</em></span>`);
     }
-    if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
-    }
-    if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+
+    if (FULL_BADGES) {
+        if (paragraph_number) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+        }
+        if (score > 0.0) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+        }
     }
 
     // Join the non-empty badges with a space
@@ -571,11 +577,11 @@ const format_paragraph_CCG = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-    console.log('---------------[display.js] [format_paragraph_CCG] question_number: ', question_number);
-    console.log('---------------[display.js] [format_paragraph_CCG] title: ', title);
-    console.log('---------------[display.js] [format_paragraph_CCG] score: ', score);
-    console.log('---------------[display.js] [format_paragraph_CCG] folha: ', folha);
-    console.log('---------------[display.js] [format_paragraph_CCG] source: ', source);
+    // console.log('---------------[display.js] [format_paragraph_CCG] question_number: ', question_number);
+    // console.log('---------------[display.js] [format_paragraph_CCG] title: ', title);
+    // console.log('---------------[display.js] [format_paragraph_CCG] score: ', score);
+    // console.log('---------------[display.js] [format_paragraph_CCG] folha: ', folha);
+    // console.log('---------------[display.js] [format_paragraph_CCG] source: ', source);
 
 
     // Add each field to the array only if it has a value
@@ -592,8 +598,11 @@ const format_paragraph_CCG = (item) => {
     if (question_number) {
         badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(question_number)}</span>`);
     }
-    if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+
+    if (FULL_BADGES) {
+        if (score > 0.0) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+        }
     }
 
     // Join the non-empty badges with a space
@@ -654,16 +663,16 @@ const format_paragraph_EC = (item) => {
     source = bookName(source);
 
 
-    console.log('---------------[display.js] [format_paragraph_EC] verbete_number: ', verbete_number);
-    console.log('---------------[display.js] [format_paragraph_EC] title: ', title);
-    console.log('---------------[display.js] [format_paragraph_EC] score: ', score);
-    console.log('---------------[display.js] [format_paragraph_EC] area: ', area);
-    console.log('---------------[display.js] [format_paragraph_EC] theme: ', theme);
-    console.log('---------------[display.js] [format_paragraph_EC] author: ', author);
-    console.log('---------------[display.js] [format_paragraph_EC] sigla: ', sigla);
-    console.log('---------------[display.js] [format_paragraph_EC] date: ', date);
-    console.log('---------------[display.js] [format_paragraph_EC] link: ', link);
-    console.log('---------------[display.js] [format_paragraph_EC] source: ', source);
+    // console.log('---------------[display.js] [format_paragraph_EC] verbete_number: ', verbete_number);
+    // console.log('---------------[display.js] [format_paragraph_EC] title: ', title);
+    // console.log('---------------[display.js] [format_paragraph_EC] score: ', score);
+    // console.log('---------------[display.js] [format_paragraph_EC] area: ', area);
+    // console.log('---------------[display.js] [format_paragraph_EC] theme: ', theme);
+    // console.log('---------------[display.js] [format_paragraph_EC] author: ', author);
+    // console.log('---------------[display.js] [format_paragraph_EC] sigla: ', sigla);
+    // console.log('---------------[display.js] [format_paragraph_EC] date: ', date);
+    // console.log('---------------[display.js] [format_paragraph_EC] link: ', link);
+    // console.log('---------------[display.js] [format_paragraph_EC] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];   
@@ -688,8 +697,11 @@ const format_paragraph_EC = (item) => {
     if (date) {
         badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(date)}</span>`);
     }
-    if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+
+    if (FULL_BADGES) {
+        if (score > 0.0) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+        }
     }
 
     // Join the non-empty badges with a space
@@ -758,25 +770,30 @@ const format_paragraph_Default = (item) => {
 
 
 
-    console.log('---------------[display.js] [format_paragraph_Default] paragraph_number: ', paragraph_number);
-    console.log('---------------[display.js] [format_paragraph_Default] title: ', title);
-    console.log('---------------[display.js] [format_paragraph_Default] score: ', score);
-    console.log('---------------[display.js] [format_paragraph_Default] source: ', source);
+    // console.log('---------------[display.js] [format_paragraph_Default] paragraph_number: ', paragraph_number);
+    // console.log('---------------[display.js] [format_paragraph_Default] title: ', title);
+    // console.log('---------------[display.js] [format_paragraph_Default] score: ', score);
+    // console.log('---------------[display.js] [format_paragraph_Default] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];
     if (source) {
         badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
     }
-    // if (title) {
-    //     badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
-    // }
-    if (paragraph_number) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+     if (title) {
+         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
+     }
+
+     if (FULL_BADGES) {
+        if (paragraph_number) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+        }
+    
+        if (score > 0.0) {
+            badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+        }
     }
-    if (score > 0.0) {
-        badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
-    }
+
 
     // Join the non-empty badges with a space
     metaBadges = badgeParts.join('');
@@ -920,7 +937,7 @@ function showTitle(container, text) {
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">
           ${mdHtml}
-          <div class="simple-ref">[${ref}]</div>
+          <div class="simple-ref">${ref}</div>
         </div>
       </div>
     </div>`;
@@ -1018,7 +1035,7 @@ function showVerbetopedia(container, data) {
             </div>
             <div class="displaybox-text">
                 <span class="displaybox-text markdown-content">${safeHtml}</span>
-                <span class="metadata-badge">${scoreHtml}</span>
+                ${FULL_BADGES ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
                 ${pdfLink}
             </div>
         </div>
@@ -1151,7 +1168,7 @@ function showCcg(container, data) {
             </div>
             <div class="displaybox-text">
                 <span class="displaybox-text markdown-content">${safeHtml}</span>
-                <span class="metadata-badge">${scoreHtml}</span>
+                ${FULL_BADGES ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
             </div>
         </div>
         `;
