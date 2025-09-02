@@ -1932,7 +1932,7 @@ textarea:focus-visible {
     width: 18px;
     left: 3px;
     bottom: 3px;
-    background-color: white;
+    background-color: var(--white);
     transition: 0.3s;
     border-radius: 50%;
   }
@@ -1948,7 +1948,7 @@ textarea:focus-visible {
   .toggle-label {
     font-size: 15px;
     font-weight: 500;
-    color: #000; /* ensure black label */
+    color: var(--gray-800);
     cursor: pointer;
     user-select: none;
   }
@@ -1957,7 +1957,7 @@ textarea:focus-visible {
   .save-btn {
     padding: 12px 24px;
     background: var(--primary, #b3b3b3);
-    color: white;
+    color: var(--white);
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -1990,24 +1990,16 @@ textarea:focus-visible {
   .theme-utils .save-btn { background: var(--utils-primary); }
   .theme-utils .save-btn:hover { background: var(--utils-secondary); }
   
-  /* Dark mode */
-  @media (prefers-color-scheme: dark) {
-    .max-results label,
-    .toggle-label {
-      color: var(--gray-800);
-    }
-    .max-results input {
-      background: var(--white);
-      color: var(--gray-800);
-      border: 1px solid var(--gray-400);
-    }
-    .slider {
-      background-color: var(--gray-300);
-    }
-    .switch input:checked + .slider {
-      background-color: var(--primary-500);
-    }
+  /* Base toggle/inputs (theme-aware via CSS variables) */
+  .max-results label,
+  .toggle-label { color: var(--gray-800); }
+  .max-results input {
+    background: var(--white);
+    color: var(--gray-800);
+    border: 1px solid var(--gray-400);
   }
+  .slider { background-color: var(--gray-300); }
+  .switch input:checked + .slider { background-color: var(--primary-500); }
   
   /* Module-themed toggle ON colors (override) */
   .theme-search .switch input:checked + .slider { background-color: var(--search-primary) !important; }

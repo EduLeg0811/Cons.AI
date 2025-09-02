@@ -227,24 +227,9 @@
         </div>
     </footer>
 
+    <script src="config.js"></script>
     <script src="messages.js"></script>
     <script>
-        // Dark mode functionality
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Initialize theme on page load
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-
         // Info toggle (expand/collapse badge descriptions)
         function toggleInfo() {
             const current = document.documentElement.getAttribute('data-show-info') === 'true';

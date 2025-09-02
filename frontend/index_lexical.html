@@ -145,7 +145,7 @@
                     <!-- Toggle -->
                     <div class="row toggle-option">
                       <label class="switch">
-                        <input type="checkbox" id="groupResults">
+                        <input type="checkbox" id="groupResults" checked>
                         <span class="slider"></span>
                       </label>
                       <label class="toggle-label" for="groupResults">Agrupa por livro</label>
@@ -195,7 +195,7 @@
         <div class="search-container">
             <div class="search-row">
                 <div class="search-input-wrapper">
-                    <textarea id="searchInput" placeholder="Enter a term to search..." class="search-input" rows="1"></textarea>
+                    <textarea id="searchInput" placeholder="Digite o termo para pesquisar..." class="search-input" rows="1"></textarea>
                     <button id="searchButton" class="search-button" aria-label="Search">
                         <i class="fas fa-search"></i>
                     </button>
@@ -314,23 +314,7 @@
             }
         });
 
-        // Dark mode functionality
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Initialize theme on page load
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            
-            document.documentElement.setAttribute('data-theme', theme);
-        }
+        // Theme is provided by config.js (initTheme/toggleTheme)
     </script>
 </body>
 </html>

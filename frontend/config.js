@@ -56,7 +56,7 @@ const SEMANTICAL_INSTRUCTIONS = `
     "2) Formular uma lista de termos que compõem o seu significado denotativo na Conscienciologia.",
     "3) Não use elementos de ligação como artigos, preposições, etc.",
     "4) Não use repetições ou preâmbulos, como por exemplo 'significa' ou 'é'.",
-    "5) Responda na saída apenas a lista de palavras ou expressões secas, separadas por ponto-e-vírgula."
+    "5) Responda na saída apenas uma lista com 7 palavras ou expressões secas, separadas por ponto-e-vírgula."
 `;
 
 const COMMENTARY_INSTRUCTIONS = `
@@ -199,3 +199,53 @@ async function resetConversation() {
 
 // Se existir um botão com este id, liga automaticamente
 document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
+
+
+// ---------------- Theme (Light/Dark) ----------------
+// Centralized theme handling to keep all pages consistent
+// Applies `data-theme` on <html> and persists in localStorage
+(function setupTheme() {
+  function setTheme(theme) {
+    const t = theme === 'dark' ? 'dark' : 'light';
+    const root = document.documentElement;
+    root.setAttribute('data-theme', t);
+    // Hint to UA for built-in widgets (scrollbar, form controls)
+    try { root.style.colorScheme = t; } catch {}
+    try { localStorage.setItem('theme', t); } catch {}
+  }
+
+  function detectInitialTheme() {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch {}
+    // fallback to system preference
+    try { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch {}
+    return 'light';
+  }
+
+  function initTheme() {
+    setTheme(detectInitialTheme());
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Expose globally for inline handlers
+  window.initTheme = initTheme;
+  window.toggleTheme = toggleTheme;
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+  } else {
+    initTheme();
+  }
+
+  // Cross-tab sync
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'theme' && e.newValue) setTheme(e.newValue);
+  });
+})();

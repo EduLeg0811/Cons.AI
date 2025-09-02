@@ -82,25 +82,7 @@
     <script src="script_mancia.js"></script>
 
     <script>
-        // Dark mode functionality
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Initialize theme on page load
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        // Initialize theme when DOM is loaded
+        // Theme is provided by config.js (initTheme/toggleTheme)
         document.addEventListener('DOMContentLoaded', initTheme);
     </script>
 </body>

@@ -13,7 +13,7 @@ from html2docx import html2docx
 # CONSTANTES GERAIS
 # =======================
 DEFAULT_FONT_NAME   = "Calibri"
-DEFAULT_FONT_SIZE   = Pt(12)             # corpo do texto
+DEFAULT_FONT_SIZE   = Pt(10)             # corpo do texto
 DEFAULT_FONT_COLOR  = RGBColor(0, 0, 0)  # preto
 
 LINE_SPACING        = 1.0                # espaçamento entre linhas (simples)
@@ -81,6 +81,7 @@ def build_docx_bytes(payload: dict) -> bytes:
         section.right_margin  = Cm(MARGIN_CM)
 
     # ===== Cabeçalho =====
+    term = term.title()
     p = doc.add_paragraph(term)
     run = p.runs[0]
     run.font.size = Pt(20)
@@ -109,7 +110,7 @@ def build_docx_bytes(payload: dict) -> bytes:
     p.add_run("Total de resultados: ").bold = True
     p.add_run(str(total_count))
     for src, items in grouped.items():
-        doc.add_paragraph(f"• {src}: {len(items)}")
+        doc.add_paragraph(f"• {bookName(src)}: {len(items)}")
 
     doc.add_paragraph("")
 
@@ -121,7 +122,7 @@ def build_docx_bytes(payload: dict) -> bytes:
 
         # Badge da fonte (vermelho, bold)
         badge_p = doc.add_paragraph()
-        run = badge_p.add_run(f"{src}")
+        run = badge_p.add_run(f"{bookName(src)}")
         run.font.size = Pt(14)
         run.font.bold = True
         run.font.color.rgb = RGBColor(200, 0, 0)
@@ -172,7 +173,7 @@ def build_docx_bytes(payload: dict) -> bytes:
                 counter += 1
 
             # Metadados
-            meta = [f"Fonte: {src}"]
+            meta = [f"Fonte: {bookName(src)}"]
             if it.get("title"):
                 meta.append(f"Título: {it['title']}")
             if it.get("number"):
@@ -206,3 +207,61 @@ def build_docx_bytes(payload: dict) -> bytes:
     doc.save(bio)
     bio.seek(0)
     return bio.getvalue()
+
+
+
+
+
+
+
+
+
+
+
+
+
+#______________________________________________________________________________________________
+# bookName  --- call from [bridge.js] <call_llm>
+#______________________________________________________________________________________________
+def bookName(source):
+
+    realName = source;
+
+    if (source == 'HSR'):
+        realName = 'Homo sapiens reurbanisatus';
+    if (source == 'HSP'):
+        realName = 'Homo sapiens pacificus';
+    
+    if (source == '200TEAT'):
+        realName = '200 Teáticas da Conscienciologia';
+    if (source == '700EXP'):
+        realName = '700 Experimentos da Conscienciologia';
+    
+    if (source == 'TEMAS'):
+        realName = 'Temas da Conscienciologia';
+    
+    if (source == 'PROEXIS'):
+        realName = 'Manual da Proéxis';
+    
+    if (source == 'TNP'):
+        realName = 'Manual da Tenepes';
+    
+    if (source == 'DUPLA'):
+        realName = 'Manual da Dupla Evolutiva';
+    
+    if (source == 'LO'):
+        realName = 'Léxico de Ortopensatas';
+    
+    if (source == 'EC'):
+        realName = 'Enciclopédia da Conscienciologia';
+    
+    if (source == 'DAC'):
+        realName = 'Dicionário de Argumentos da Conscienciologia';
+    
+    if (source == 'ECALL_DEF'):
+        realName = 'Enciclopédia da Conscienciologia (Definologia)';
+    
+    if (source == 'PROJ'):
+        realName = 'Projeciologia';
+
+    return realName;
