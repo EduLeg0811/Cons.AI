@@ -1,7 +1,12 @@
 // config.js
 
 
+const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbetes/';
+
 // Global Parameters
+// UI toggles and defaults
+// Whether to show reference badges under each result (fixed global setting)
+window.SHOW_REF_BADGES = false;
 const MODEL_LLM='gpt-5-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
@@ -174,4 +179,3 @@ async function resetConversation() {
 
 // Se existir um botão com este id, liga automaticamente
 document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
-

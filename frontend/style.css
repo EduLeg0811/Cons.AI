@@ -117,6 +117,13 @@
     --simple-bg: rgba(255, 255, 224, 0.07); /* faint warm tint */
 }
 
+/* ===== MODULE ACCENTS (per page theme) ===== */
+/* Assign module accent color used by summary pills and panels */
+.theme-search { --module-accent: var(--search-primary); }
+.theme-apps { --module-accent: var(--apps-primary); }
+.theme-bots { --module-accent: var(--bots-primary); }
+.theme-utils { --module-accent: var(--utils-primary); }
+
 /* ===== RESET & BASE STYLES ===== */
 * {
     margin: 0;
@@ -385,9 +392,12 @@ body {
 
 .panel-header {
     display: flex;
-    align-items: center;
     gap: var(--space-4);
     margin-bottom: var(--space-6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .panel-icon {
@@ -423,6 +433,9 @@ body {
     font-weight: 700;
     color: var(--gray-900);
     margin-bottom: var(--space-1);
+    text-align: center;
+    align-self: center;
+    justify-self: center;
 }
 
 .panel-info p {
@@ -1224,6 +1237,24 @@ body {
     margin-top: 0;
 }
 
+/* Title text color for Verbetopedia and CCG pages */
+.page-verbetopedia .verbetopedia-header .header-text,
+.page-ccg .verbetopedia-header .header-text {
+    color: #1e3a8a; /* dark blue */
+}
+
+/* Add horizontal separators between search results (lexical/semantical) */
+.theme-search .group-content .displaybox-item {
+    border-top: 1px solid var(--gray-200);
+    padding-top: var(--space-3);
+    margin-top: var(--space-3);
+}
+.theme-search .group-content .displaybox-item:first-child {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
 /* Hide legacy non-collapsible group layout (replaced by badge rows) */
 .displaybox-group { display: none; }
 
@@ -1291,10 +1322,17 @@ body {
     border-radius: 9999px;
     background: var(--gray-100);
     color: var(--gray-700);
-    border: 1px solid var(--gray-200);
+    /* Accent border adopts module/theme color when provided */
+    border: 1px solid var(--module-accent, var(--gray-200));
     font-size: var(--text-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
+    /* 3D depth */
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.7),
+        0 1px 2px rgba(0,0,0,0.08),
+        0 2px 4px rgba(0,0,0,0.04);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0));
 }
 
 /* Make a pill span the full row and feel like a badge header */
@@ -1317,9 +1355,23 @@ body {
 .pill:hover {
     background: var(--gray-200);
     transform: translateY(-1px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.8),
+        0 2px 6px rgba(0,0,0,0.12),
+        0 0 0 3px var(--module-accent);
 }
 
-.collapse-panel { display: none; }
+.pill:active {
+    transform: translateY(0);
+    box-shadow:
+        inset 0 2px 4px rgba(0,0,0,0.12),
+        0 1px 2px rgba(0,0,0,0.08);
+}
+
+.collapse-panel { 
+    display: none;
+    margin: var(--space-2) 0 var(--space-4);
+}
 .collapse-panel.open { display: block; }
 
 .metadata-badge {

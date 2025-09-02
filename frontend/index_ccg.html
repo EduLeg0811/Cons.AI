@@ -3,39 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Lexical Search - Cons.AI</title>
+    <title>Conscienciogramopedia - Cons.AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-search">
+<body class="theme-apps page-ccg">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            
-            
 
-                <div class="navbar-controls">
-                    <a href="index.html" class="back-button" title="Back to Home">
-                        <i class="fas fa-home"></i>
-                    </a>
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+
+
+            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+
+                
+                <div class="navbar-icon">
+                    <i class="fas fa-cube"></i>
                 </div>
-
-               <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
-                    <!-- <div class="navbar-icon">
-                        <i class="fas fa-spell-check"></i>
-                    </div> -->
-                    <div class="navbar-text">
-                        <div class="navbar-title">Lexical Search</div>
-                        <div class="navbar-subtitle">Search for an exact term in the books</div>
-                    </div>
+                <div class="navbar-text">
+                    <div class="navbar-title">Conscienciogramopedia</div>
+                    <div class="navbar-subtitle">Conscienciogram search and exploration</div>
                 </div>
-
-               
-                    
+            </div>
             <div class="navbar-controls">
                 <!-- <button class="navbar-control-btn" title="Settings">
                     <i class="fas fa-cog"></i>
@@ -48,13 +43,18 @@
         </div>
     </nav>
 
+
+
+
+
     <div class="container">
 
        
-
+        
         <!-- Options Trigger + Panel (dropdown) -->
         <div class="options-wrapper">
-            
+
+
             <div class="search-toolbar">
                 <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
                     <i class="fas fa-file-word fa-2x"></i>
@@ -64,134 +64,72 @@
                 </button>
             </div>
 
+
+
             <div class="options-panel" id="optionsPanel">
 
 
-            <div class="options-header" onclick="toggleOptions()">
-                <h3 class="options-title">Search Options</h3>
-                <button class="options-toggle" id="optionsToggle">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-
-                     
-
-            <div class="options-content" id="optionsContent">
-
-
-                <div class="option-group">
-                    <div class="option-group-label">Select Books to Search:</div>
-                    <div class="book-checkboxes">
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="LO" checked>
-                            <span>LO</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="DAC">
-                            <span>DAC</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="TNP">
-                            <span>TNP</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="DUPLA">
-                            <span>DUPLA</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="200TEAT">
-                            <span>200TEAT</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="PROEXIS">
-                            <span>PROEXIS</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="700EXP">
-                            <span>700EXP</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="TEMAS">
-                            <span>TEMAS</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="CCG">
-                            <span>CCG</span>
-                        </label>
-                    </div>
+                <div class="options-header" onclick="toggleOptions()">
+                    <h3 class="options-title">Search Options</h3>
+                    <button class="options-toggle" id="optionsToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
 
-                
+                <div class="options-content" id="optionsContent">
 
-                <!--CONFIGURAÇÕES DE PESQUISA!-->
+                <div class="option-group">
 
-                <div class="option-column">
 
-                    <!-- Max Results -->
-                    <div class="row max-results">
-                      <label for="maxResults">Max Results:</label>
-                      <input type="number" id="maxResults" min="1" max="200" value="5">
+                    <!--CONFIGURAÇÕES DE PESQUISA!-->
+
+                    <div class="option-grid">
+
+                        <div class="option-column">
+
+                            <!-- Toggle 1: Neologism synthesis -->
+                            <div class="toggle-option">
+                                <label class="switch">
+                                    <input type="checkbox" id="enableDefinition">
+                                    <span class="slider"></span>
+                                </label>
+                                <label class="toggle-label" for="enableDefinition">Neologismo</label>
+                            </div>
+
+                            <!-- Max Results -->
+                            <div class="row max-results">
+                                <input type="number" id="maxResults" min="1" max="10" value="5">
+                                <label for="maxResults">Resultados</label>
+                            </div>
+                            
+                            
+                            <!-- Botão -->
+                            <div class="row">
+                                <button class="save-btn">Salvar Ajustes</button>
+                            </div>
+                            
+                        </div>
+                        
                     </div>
-                  
-                    <!-- Toggle -->
-                    <!-- removed: ref_badges toggle
-                    <div class="row toggle-option">
-                      <label class="switch">
-                        <input type="checkbox" id="groupResults">
-                        <span class="slider"></span>
-                      </label>
-                      <label class="toggle-label" for="groupResults">Agrupa por livro</label>
-                    </div>
 
-                    <div class="row toggle-option">
-                        <label class="switch">
-                          <input type="checkbox" id="ref_badges" checked>
-                          <span class="slider"></span>
-                        </label>
-                        <label class="toggle-label" for="ref_badges">Badges Referências</label>
-                      </div>
-                    -->
-                  
-                    <!-- Botão -->
-                    <div class="row">
-                      <button class="save-btn">Salvar Ajustes</button>
-                    </div>
-                  
-                  </div>
-                  
-                  
-                  
-                  
-                  
-                  
-
-
-
-
-
-
-
-
-
+                </div>
                 
-                
-
-
-
             </div>
-                       
-           
+                  
+            
         </div>
 
         <!-- Search Container -->
         <div class="search-container">
             <div class="search-row">
                 <div class="search-input-wrapper">
-                    <textarea id="searchInput" placeholder="Enter a term to search..." class="search-input" rows="1"></textarea>
+                    <textarea id="searchInput" placeholder="Enter a term to search related questions..." class="search-input" rows="1"></textarea>
                     <button id="searchButton" class="search-button" aria-label="Search">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+                
+               
             </div>
         </div>
         
@@ -212,7 +150,8 @@
     <script src="display.js"></script>
     <script src="bridge.js"></script>
     <script src="download.js"></script>
-    <script src="script_lexical.js"></script>
+    <script src="messages.js"></script>
+    <script src="script_ccg.js"></script>
 
     <script>
         // Auto-resize textarea for search input
@@ -257,26 +196,21 @@
             const content = document.getElementById('optionsContent');
             if (content) content.style.display = 'grid';
 
-            // Apply saved settings
-            (function applyLexicalSavedSettings(){
+            // Apply saved settings for Conscienciogramopedia
+            (function applyConscienciogramopediaSavedSettings(){
                 try {
-                    const raw = localStorage.getItem('settings_lexical');
+                    const raw = localStorage.getItem('settings_Conscienciogramopedia');
                     if (!raw) return;
                     const saved = JSON.parse(raw);
-                    if (Array.isArray(saved.books)) {
-                        const set = new Set(saved.books);
-                        document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
-                    }
                     if (typeof saved.maxResults === 'number') {
                         const inp = document.getElementById('maxResults');
                         if (inp) inp.value = saved.maxResults;
                     }
-                    if (typeof saved.groupResults === 'boolean') {
-                        const chk = document.getElementById('groupResults');
-                        if (chk) chk.checked = saved.groupResults;
+                    if (typeof saved.enableDefinition === 'boolean') {
+                        const chk = document.getElementById('enableDefinition');
+                        if (chk) chk.checked = saved.enableDefinition;
                     }
-                    // removed: saved.ref_badges handling
-                } catch(e) { console.warn('Failed to apply lexical settings', e); }
+                } catch(e) { console.warn('Failed to apply Conscienciogramopedia settings', e); }
             })();
 
             if (trigger && panel) {
@@ -296,11 +230,10 @@
             const saveBtn = document.querySelector('.save-btn');
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
-                    const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
                     const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
-                    const groupResults = !!document.getElementById('groupResults')?.checked;
-                    const settings = { books, maxResults, groupResults };
-                    localStorage.setItem('settings_lexical', JSON.stringify(settings));
+                    const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
+                    const settings = { maxResults, enableDefinition };
+                    localStorage.setItem('settings_Conscienciogramopedia', JSON.stringify(settings));
                     if (panel) panel.classList.remove('open');
                 });
             }

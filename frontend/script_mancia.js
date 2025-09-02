@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // _________________________________________________________________________________
             // 1. Random Pensata
             // _________________________________________________________________________________           
-            insertLoading(resultsDiv, "Selecting a random Pensata...");
+            insertLoading(resultsDiv, "Sorteando uma Pensata do LO...");
 
             
             
@@ -67,10 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const pensJson = await call_random_pensata(paramPensata);
             //*****************************************************************************************
         
-            pensJson.ref = "Léxico de Ortopensatas; 2a edição; 2019"
+            pensJson.ref = "Léxico de Ortopensatas, 2019"
 
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, "Pensata Sorteada", 'title');
+            //displayResults(resultsDiv, "Pensata Sorteada", 'title');
             displayResults(resultsDiv, pensJson, 'simple');
             
 
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Commentary   
         // _________________________________________________________________________________         
 
-        insertLoading(resultsDiv, "Waiting for The Oracle...");
+        insertLoading(resultsDiv, "Analisando e formulando o comentário...");
         
 
         //call_ragbot   
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
         // Display results
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, "Comentário", 'title');
+        //displayResults(resultsDiv, "Comentário", 'title');
         displayResults(resultsDiv, commentaryData, 'ragbot');
 
         const downloadData = prepareDownloadData(pensataText, commentaryData, "Bibliomancia");

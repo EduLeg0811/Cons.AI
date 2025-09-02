@@ -8,16 +8,16 @@
 // Value: one-line description shown under the title
 const PANEL_DESCRIPTIONS = {
   // Panel: AI Bots
-  'AI Bots': 'Intelligent conversational assistants for Conscienciologia',
+  'IA Bots': 'Assistentes de Conversação por IA',
 
   // Panel: AI Search
-  'AI Search': 'Advanced search capabilities with lexical and semantic analysis',
+  'IA Search': 'Pesquisa em Livros por IA',
 
   // Panel: AI Apps
-  'AI Apps': 'Specialized applications for research and exploration',
+  'IA Apps': 'Aplicativos de IA para Pesquisa',
 
   // Panel: Utils
-  'Utils': 'External resources and reference materials',
+  'Links Externos': 'Links e Recursos Úteis',
 };
 
 // Tool card messages keyed by the card title (h3)
@@ -28,104 +28,153 @@ const PANEL_DESCRIPTIONS = {
 
 const TOOL_MESSAGES = {
   // Tool: OpenAI ConsGPT (ChatGPT custom GPT for Conscienciologia)
-  'OpenAI ConsGPT': {
-    short: 'ChatGPT especializado em Conscienciologia',
+  'ConsGPT': {
+    short: '<em>ChatGPT da OpenAI especialista em Conscienciologia</em>',
     extra: [
-      'Provavelmente o chatbot mais inteligente de todos.',
-      'Ótimo para brainstorming, sínteses e dúvidas em geral.',
-      'Pode sugerir analogias e sugestões de estudo.',
-      'Dica: experimente enviar o seu texto no campo de entrada e pedir para ele dar sugestões de melhoria.'
+      'O <strong>ConsGPT</strong> é provavelmente o chatbot mais <em>inteligente</em> de todos.<br>',
+      'Ótimo para brainstorming, resumos e conversas em geral.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
+      '<strong>2.</strong> Peça a ele que formule <em>analogias</em> ou <em>metáforas</em> para algum tema.<br>',
+      '<strong>3.</strong> Se estiver no smartphone, não deixe de conversar <em>por voz</em> com ele.',
     ].join('\n')
   },
 
   // Tool: Google ConsLM (NotebookLM)
-  'Google ConsLM': {
-    short: 'NotebookLM especializado em Conscienciologia.',
+  'ConsLM': {
+    short: '<em>NotebookLM da Google especialista em Conscienciologia</em>',
     extra: [
-      'NotebookLM do Google Gemini alimentado com os textos e tratados da Conscienciologia.',
-      'Excelente para resumos e busca de informações em livros.',
-      'Fornece a referência do trecho encontrado.',
-      'Dica: experimente a seção lateral de Podcasts de Conscienciologia.',
-      'Veja também os resumos prontos e o mapa de conhecimento gerado.'
+      'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia.<br>',
+      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Experimente a seção lateral de <em>Podcasts de Conscienciologia</em>.',
+      '<strong>2.</strong> Veja também os <em>resumos prontos</em> e ointeressante <em>mapa de conhecimento</em>.'
     ].join('\n')
   },
 
   // Tool: ConsBOT (RAG chatbot)
   'ConsBOT': {
-    short: 'Chatbot próprio da Conscienciologia (<em>experimental</em>)',
+    short: '<em>Chatbot experimental da Conscienciologia</em>',
     extra: [
-      'Chatbot RAG da Conscienciologia.',
-      'OpenAI Response API GPT-5.',
-      'Contém informações da Conscienciologia além dos tratados e livros.',
-      'Mecanismo em constante Evolução.'
+      'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia.<br>',
+      'Ele usa o OpenAI Response API, última versão GPT-5.',
+      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
+      '<strong>2.</strong> Solicite <em>analogias</em> ou <em>metáforas</em> de algum tema.<br>',
+      '<strong>3.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
+      '<strong>4.</strong> O ConsBOT é um <em>minimecanismo</em> de IA em <em>Evolução</em>.'
     ].join('\n')
   },
 
   // Tool: Lexical Search
-  'Lexical Search': {
-    short: 'Busca exata por termos em livros.',
+  'Pesquisa Literal': {
+    short: '<em>Busca de termos exatos em livros</em>',
     extra: [
-      'Busca exata por termos em livros.<br>',
-      'Localize palavras ou frases com precisão.<br>',
-      'Útil para checar definições e ocorrências.<br>',
-      'Use aspas para frases exatas.'
+      'Encontra os parágrafos de livros que contenham os termos exatos (literais).<br>',
+      'Útil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
+      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
+      '<strong>4.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.'
     ].join('\n')
   },
 
   // Tool: Semantic Search
-  'Semantic Search': {
-    short: 'AI-powered contextual and meaning-based search',
+  'Pesquisa Semântica': {
+    short: '<em>Busca semântica por afinidade de significado</em>',
     extra: [
-      'Busca semântica por significado e contexto.<br>',
-      'Encontra trechos relacionados sem o termo exato.<br>',
-      'Ótima para temas e ideias correlatas.<br>',
-      'Ajuste resultados e agrupamento.'
+      'Encontra os parágrafos de livros que são <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato.<br>',
+      'Ótima para pesquisar temas e ideias correlatas ou afins.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
+      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
+      '<strong>4.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.',
+      '<strong>5.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
     ].join('\n')
   },
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: 'Random <em>pensata</em> extraction with AI commentary',
+    short: '<em>Sorteio de uma <em>pensata</em> do Léxico de Ortopensatas</em>',
     extra: [
-      'Sorteia uma pensata com comentário da IA.<br>',
-      'Boa para inspiração e reflexão rápida.<br>',
-      'Útil em dinâmicas e debates.<br>',
-      'Gere novas pensatas à vontade.'
+      'Busca aleatoriamente uma pensata do LO.<br>',
+      'Comenta com auxílio da IA.<br>',
+      'Simula digitalmente a <em>bibliomancia</em>, que é abrir aleatoriamente uma página de um livro para alimentar a autopesquisa.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Excelente para instigar as <em>sincronicidades</em> e ajudar na interpretação da pensata (hermenêutica).<br>',
+      '<strong>2.</strong> Útil também nas dinâmicas e debates.',
     ].join('\n')
   },
 
   // Tool: Verbetopedia
   'Verbetopedia': {
-    short: 'Semantical encyclopedia recommendations',
+    short: '<em>Indicação de verbetes para pesquisa</em>',
     extra: [
-      'Exploração semântica de verbetes.<br>',
-      'Sugere relações entre temas e verbetes.<br>',
-      'Bom para estudar áreas afins.<br>',
-      'Aprofunde nos links sugeridos.'
+      'Indica verbetes afins ao termo de busca.<br>',
+      'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
+      '<strong>3.</strong> Basta clicar no ícone do PDF para baixar o verbete sugerido.<br>',
+      '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
+    ].join('\n')
+  },
+
+  // Tool: Conscienciogramopedia
+  'Conscienciogramopedia': {
+    short: '<em>Sugestão de questões do Conscienciograma para pesquisa</em>',
+    extra: [
+      'Indica questões afins ao termo de busca.<br>',
+      'Excelente para sugerir questões para o aprofundamento da sua autopesquisa.<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
+      '<strong>3.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
+      '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
     ].join('\n')
   },
 
   // Tool: Verbetes Encyclopedia (external)
-  'Verbetes Encyclopedia': {
-    short: 'Latest version of the Encyclopedia of Conscientiology',
+  'Enciclopédia da Conscienciologia': {
+    short: '<em>Link para o site da Encyclossapiens</em>',
     extra: [
-      'Enciclopédia da Conscienciologia (oficial).',
-      'Verbetes atualizados para estudo formal.',
-      'Pesquise e navegue por temas.',
-      'Abre em nova aba.'
+      'Site oficial e atualizado para download de verbetes.',
     ].join('\n'),
   },
 
   // Tool: ICGE (external)
   'ICGE': {
-    short: 'ICGE Homepage with conscienciological resources',
+    short: '<em>Link para o site do ICGE</em>',
     extra: [
-      'Portal do ICGE com recursos e referências.',
-      'Pesquise materiais institucionais e históricos.',
-      'Complementa as ferramentas internas.',
-      'Abre em nova aba.'
+      'Portal do ICGE com amplo material da Conscienciologia.',
     ].join('\n'),
+  },
+  // Tool: Portal da Conscienciologia (external)
+  'Portal da Conscienciologia': {
+    short: '<em>Link para o portal da Conscienciologia</em>',
+    extra: [
+      'Acesso ao site central da Conscienciologia.',
+    ].join('\\n'),
   }
+};
+
+// Map visible H3 titles in index.html to canonical keys in TOOL_MESSAGES
+const TOOL_ALIASES = {
+  'OpenAI ConsGPT': 'ConsGPT',
+  'Google ConsLM': 'ConsLM',
+  'Lexical Search': 'Pesquisa Literal',
+  'Semantic Search': 'Pesquisa Semântica',
+  'Verbetes Encyclopedia': 'Enciclopédia da Conscienciologia',
+  // Direct matches (kept for clarity)
+  'ConsBOT': 'ConsBOT',
+  'Bibliomancia Digital': 'Bibliomancia Digital',
+  'Verbetopedia': 'Verbetopedia',
+  'Conscienciogramopedia': 'Conscienciogramopedia',
+  'ICGE': 'ICGE',
+  'Pesquisa Léxica': 'Pesquisa Literal',
 };
 
 // Apply messages to the DOM
@@ -147,17 +196,19 @@ function applyMessages() {
       const titleEl = card.querySelector('.tool-info h3');
       if (!titleEl) return;
       const key = titleEl.textContent.trim();
-      const msg = TOOL_MESSAGES[key];
+      const canonical = (typeof TOOL_ALIASES === 'object' && TOOL_ALIASES[key]) || key;
+      const msg = TOOL_MESSAGES[canonical];
       if (!msg) return;
 
-      // Set title to extra if title is not defined
-      if (!msg.title && msg.extra) {
-        msg.title = msg.extra;
-      }
-
-      // Anchor title tooltip
-      if (msg.title) {
-        card.setAttribute('title', msg.title);
+      // Native tooltip: use a plain-text version of title/short/extra
+      const titleRaw = msg.title || msg.short || msg.extra;
+      if (titleRaw) {
+        const div = document.createElement('div');
+        div.innerHTML = titleRaw;
+        const titleText = (div.textContent || '').replace(/\s+/g, ' ').trim();
+        if (titleText) {
+          card.setAttribute('title', titleText);
+        }
       }
 
       // One-line short description (accepts HTML for <em>)
@@ -253,4 +304,4 @@ function applyVerbetopediaMessages() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', applyVerbetopediaMessages);
+// Removed page-specific Verbetopedia message injection; page now contains static labels

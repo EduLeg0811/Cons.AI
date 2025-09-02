@@ -140,6 +140,7 @@
                                 <label class="toggle-label" for="groupResults">Agrupa por livro</label>
                             </div>
 
+                            <!-- removed: ref_badges toggle
                             <div class="row toggle-option">
                                 <label class="switch">
                                   <input type="checkbox" id="ref_badges" checked>
@@ -147,6 +148,7 @@
                                 </label>
                                 <label class="toggle-label" for="ref_badges">Badges Referências</label>
                               </div>
+                            -->
                           
                             <!-- Botão -->
                             <div class="row">
@@ -261,10 +263,7 @@
                         const chk2 = document.getElementById('enableDefinition');
                         if (chk2) chk2.checked = saved.enableDefinition;
                     }
-                    if (typeof saved.ref_badges === 'boolean') {
-                        const rb = document.getElementById('ref_badges');
-                        if (rb) rb.checked = saved.ref_badges;
-                    }
+                    // removed: saved.ref_badges handling
                 } catch(e) { console.warn('Failed to apply semantical settings', e); }
             })();
 
@@ -289,8 +288,7 @@
                     const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
                     const groupResults = !!document.getElementById('groupResults')?.checked;
                     const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
-                    const ref_badges = !!document.getElementById('ref_badges')?.checked;
-                    const settings = { books, maxResults, groupResults, enableDefinition, ref_badges };
+                    const settings = { books, maxResults, groupResults, enableDefinition };
                     localStorage.setItem('settings_semantical', JSON.stringify(settings));
                     if (panel) panel.classList.remove('open');
                 });

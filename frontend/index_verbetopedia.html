@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-apps">
+<body class="theme-apps page-verbetopedia">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
 
             <div class="navbar-controls">
-                <a href="index.html" class="back-button" title="">
+                <a href="index.html" class="back-button" title="Back to Home">
                     <i class="fas fa-home"></i>
                 </a>
             </div>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="navbar-text">
                     <div class="navbar-title">Verbetopédia</div>
-                    <div class="navbar-subtitle"></div>
+                    <div class="navbar-subtitle">Encyclopedia search and exploration</div>
                 </div>
             </div>
             <div class="navbar-controls">
@@ -56,10 +56,10 @@
 
 
             <div class="search-toolbar">
-                <button id="downloadDocx" class="download-trigger hidden" title="">
+                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
                     <i class="fas fa-file-word fa-2x"></i>
                 </button>
-                <button class="options-trigger" id="optionsTrigger" title="">
+                <button class="options-trigger" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
                 </button>
             </div>
@@ -70,7 +70,7 @@
 
 
                 <div class="options-header" onclick="toggleOptions()">
-                    <h3 class="options-title"></h3>
+                    <h3 class="options-title">Search Options</h3>
                     <button class="options-toggle" id="optionsToggle">
                         <i class="fas fa-chevron-down"></i>
                     </button>
@@ -93,19 +93,19 @@
                                     <input type="checkbox" id="enableDefinition">
                                     <span class="slider"></span>
                                 </label>
-                                <label class="toggle-label" for="enableDefinition"></label>
+                                <label class="toggle-label" for="enableDefinition">Neologismo</label>
                             </div>
 
                             <!-- Max Results -->
                             <div class="row max-results">
                                 <input type="number" id="maxResults" min="1" max="200" value="5">
-                                <label for="maxResults"></label>
+                                <label for="maxResults">Resultados</label>
                             </div>
                             
                             
                             <!-- Botão -->
                             <div class="row">
-                                <button class="save-btn"></button>
+                                <button class="save-btn">Salvar Ajustes</button>
                             </div>
                             
                         </div>
@@ -123,8 +123,8 @@
         <div class="search-container">
             <div class="search-row">
                 <div class="search-input-wrapper">
-                    <textarea id="searchInput" placeholder="" class="search-input" rows="1"></textarea>
-                    <button id="searchButton" class="search-button" aria-label="">
+                    <textarea id="searchInput" placeholder="Enter a term to search related verbetes..." class="search-input" rows="1"></textarea>
+                    <button id="searchButton" class="search-button" aria-label="Search">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>

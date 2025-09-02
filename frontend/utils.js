@@ -124,6 +124,9 @@ function extractMetadata(data, type) {
       },
       verbetopedia: {
         metadataFields: [...COMMON_FIELDS, 'area', 'theme', 'author', 'sigla', 'date', 'link', 'score']
+      },
+      ccg: {
+        metadataFields: [...COMMON_FIELDS, 'section', 'folha', 'number', 'date', 'score']
       }
     };
   

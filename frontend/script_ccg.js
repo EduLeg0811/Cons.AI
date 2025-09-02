@@ -1,4 +1,4 @@
-// script_verbetopedia.js
+// script_ccg.js
 
 let controller = null;
 
@@ -9,21 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize download buttons (icon or container)
     if (window.downloadUtils && window.downloadUtils.initDownloadButtons) {
-        window.downloadUtils.initDownloadButtons('verbetopedia');
+        window.downloadUtils.initDownloadButtons('ccg');
     }
 
-    searchButton.addEventListener('click', verbetopedia);
+    // Bind handlers to the correct function
+    searchButton.addEventListener('click', Conscienciogramopedia);
     searchInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') verbetopedia();
+        if (e.key === 'Enter') Conscienciogramopedia();
     });
 
 
 
 
     //______________________________________________________________________________________________
-    // Verbetopedia
+    // Conscienciogramopedia
     //______________________________________________________________________________________________
-    async function verbetopedia() {
+    async function Conscienciogramopedia() {
 
 
 
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Validação de termo — sai cedo, mas ainda passa pelo finally
             if (!term) {
                 resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
+                const downloadButtons = document.querySelector('.download-buttons');
                 if (downloadButtons) downloadButtons.style.display = 'none';
                 return;
             }
@@ -136,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
              const paramSem = {
                 term: term + ": " + newTerm + ".",
-                source: ["EC"],
+                source: ["CCG"],
                 model: MODEL_LLM,
             };
             
@@ -155,13 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Display results
-            const newTitle = `Verbetopedia    ●    ${term}`;
+            const newTitle = `Conscienciogramopedia    ●    ${term}`;
             removeLoading(resultsDiv);
 
             //displayResults(resultsDiv, newTitle, 'title');
-            displayResults(resultsDiv, semJson, "verbetopedia");
+            // Use the generic semantical renderer, which formats CCG items properly
+            displayResults(resultsDiv, semJson, "ccg");
 
-            console.log(`********Script_ccg.js - conscienciogramopedia*** [semJson]:`, semJson);
+            console.log(`********Script_ccg.js - ccg*** [semJson]:`, semJson);
 
             // Update results using centralized function (show download when ready)
             if (window.downloadUtils && window.downloadUtils.updateResults) {
