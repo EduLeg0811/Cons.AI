@@ -57,7 +57,6 @@ const TOOL_MESSAGES = {
     short: '<em>Chatbot experimental da Conscienciologia</em>',
     extra: [
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
-      'Ele usa o OpenAI Response API, última versão GPT-5. ',
       'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
