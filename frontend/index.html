@@ -13,29 +13,29 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="#" class="navbar-brand">
-                <!-- <div class="navbar-icon">
-                    <i class="fa-solid fa-eye"></i>
-                </div> -->
-                <div class="navbar-text">
-                    <div class="navbar-title">Cons.IA</div>
-                    <div class="navbar-subtitle">Toolbox de IA da Conscienciologia</div>
-                </div>
-            </a>
-            <div class="navbar-controls">
-                <!-- <button class="navbar-control-btn" title="Settings">
-                    <i class="fas fa-cog"></i>
-                </button> -->
-                <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
-                    <i class="fas fa-circle-info"></i>
-                </button>
-                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
-                </button>
+          
+          <!-- Botão esquerdo -->
+          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
+            <i class="fas fa-circle-info"></i>
+          </button>
+      
+          <!-- Título central -->
+          <a href="#" class="navbar-brand">
+            <div class="navbar-text">
+              <div class="navbar-title">Cons.IA</div>
+              <div class="navbar-subtitle">Toolbox de IA da Conscienciologia</div>
             </div>
+          </a>
+      
+          <!-- Botão direito -->
+          <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+      
         </div>
-    </nav>
+      </nav>
+      
 
     <!-- Main Content -->
     <main class="main-content">
@@ -239,6 +239,8 @@
 
         // Initialize theme when DOM is loaded
         document.addEventListener('DOMContentLoaded', initTheme);
+
+        
     </script>
 </body>
 </html>

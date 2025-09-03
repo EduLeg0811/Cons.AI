@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Definition - RAGbot
                 // _________________________________________________________________________________
 
-                insertLoading(resultsDiv, "Formulating a synthesis or definition");
+                insertLoading(resultsDiv, "Sintetizando os neologismos...");
 
              
 
@@ -112,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 //*****************************************************************************************
 
                 defJson.ref = "Descritivos"
+
+                console.log(defJson);
 
                 // Display results
                 // ================
@@ -138,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Searching for semantical similarities...");
+            insertLoading(resultsDiv, "Buscando as semelhanças semânticas...");
 
             
             //call_semantical
