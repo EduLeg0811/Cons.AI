@@ -1821,6 +1821,25 @@ body {
         flex-direction: column;
         text-align: center;
     }
+
+    /* When showing info on small screens, remove icon from layout
+       and let the text use the full badge width with harmonious margins */
+    [data-show-info="true"] .tool-card.compact {
+        gap: 0;                 /* no leftover gutter from icon column */
+        min-height: unset;      /* allow height to fit content */
+    }
+    [data-show-info="true"] .tool-card.compact .tool-icon {
+        display: none;          /* fully remove icon from flow */
+    }
+    [data-show-info="true"] .tool-card.compact .tool-info {
+        width: 100%;            /* span entire badge */
+    }
+    [data-show-info="true"] .tool-card.compact .tool-info h3 {
+        margin: 0 0 4px 0;      /* tidy spacing above extra text */
+    }
+    [data-show-info="true"] .tool-card.compact .tool-info-extra {
+        margin-top: var(--space-2);
+    }
 }
 
 /* ===== UTILITY CLASSES ===== */

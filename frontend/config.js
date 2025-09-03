@@ -7,11 +7,12 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
 window.SHOW_REF_BADGES = true;
-const MODEL_LLM='gpt-4.1-nano';
+const MODEL_LLM='gpt-5-nano';
+const MODEL_RAGBOT='gpt-5-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';
-const MODEL_RAGBOT='gpt-5-nano';
+
 const FULL_BADGES = false;
 
 const INSTRUCTIONS_RAGBOT = `
