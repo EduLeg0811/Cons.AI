@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Buscando as semelhanças semânticas...");
+            insertLoading(resultsDiv, "Buscando os verbetes afins...");
 
             
             //call_semantical
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "verbetopedia");
 
-            console.log(`********Script_ccg.js - conscienciogramopedia*** [semJson]:`, semJson);
+            //console.log(`********Script_ccg.js - conscienciogramopedia*** [semJson]:`, semJson);
 
             // Update results using centralized function (show download when ready)
             if (window.downloadUtils && window.downloadUtils.updateResults) {
