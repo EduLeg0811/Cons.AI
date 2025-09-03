@@ -85,10 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const chat_id = getOrCreateChatId();
           const paramRAGbot = {
             query: term,
-            model: MODEL_LLM,
+            model: MODEL_RAGBOT,
             temperature: TEMPERATURE,
             vector_store_names: OPENAI_RAGBOT,
-            instructions: INSTRUCTIONS_LLM_USER,
+            instructions: INSTRUCTIONS_RAGBOT,
             use_session: true,
             chat_id
           };

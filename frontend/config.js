@@ -11,9 +11,10 @@ const MODEL_LLM='gpt-4.1-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';
+const MODEL_RAGBOT='gpt-5-nano';
 const FULL_BADGES = false;
 
-const INSTRUCTIONS_LLM_USER = `
+const INSTRUCTIONS_RAGBOT = `
   Developer: # Papel e Objetivo
   Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia.
   # Instruções

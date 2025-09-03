@@ -84,8 +84,8 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
             "input": query,
             "instructions": instructions,   # reenvie sempre
             "store": True,                   # necessário para encadear
-            "text": {"verbosity": "low"},
-            "reasoning": {"effort": "minimal"}
+            #"text": {"verbosity": "low"},
+            #"reasoning": {"effort": "minimal"}
         }
 
     else:
