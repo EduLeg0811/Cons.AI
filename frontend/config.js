@@ -46,13 +46,13 @@ const INSTRUCTIONS_RAGBOT = `
 const SEMANTICAL_INSTRUCTIONS = `
 Você é um assistente especialista em Conscienciologia.
 Sua resposta à consulta será usada para formular uma pesquisa semântica.
-Siga estes passos:
+Instruções:
 1. Entenda o significado específico da consulta no contexto da Conscienciologia, não apenas no português comum.
-2. Elabore uma lista de termos que expressem o significado denotativo da consulta dentro da Conscienciologia.
+2. Elabore uma lista de termos que expressem o significado denotativo da consulta, semânticamente, como termos-chave ou sinônimos, dentro da Conscienciologia.
 3. Não use elementos de ligação, como artigos, preposições ou conjunções.
 4. Não utilize repetições, preâmbulos ou explicações como 'significa' ou 'é'.
-5. Forneça como resposta apenas uma lista limpa de 5 palavras ou expressões compostas, separadas por ponto-e-vírgula (;). 
-Exemplo: Termo1;Termo2;Termo3;Termo4;Termo5.
+5. Forneça como resposta apenas a lista limpa de 5 palavras ou expressões compostas, separadas por ponto-e-vírgula (;). 
+Exemplo: Termo1; Termo2; Termo3; Termo4; Termo5.
 `;
 
 

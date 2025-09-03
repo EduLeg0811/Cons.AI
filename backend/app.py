@@ -170,7 +170,7 @@ class LlmQueryResource(Resource):
 
             model = data.get("model", "gpt-4.1-nano")
             temperature = float(data.get("temperature", 0.3))
-            instructions = data.get("instructions", INSTRUCTIONS_LLM_BACKEND)
+            instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)

@@ -219,7 +219,7 @@
             </div>
             <div class="footer-contact">
                 <span>Fale com o Diretor:  </span>
-                <a href="mailto:cons.ai@gmail.com">
+                <a href="mailto:cons.ia@gmail.com">
                     <i class="fas fa-envelope"></i>
                     <span style="color: var(--gray-700);"><em>transmentor@interludium.ccce</em></span>
                 </a>
@@ -228,19 +228,38 @@
     </footer>
 
     <script src="config.js"></script>
-    <script src="messages.js"></script>
-    <script>
-        // Info toggle (expand/collapse badge descriptions)
-        function toggleInfo() {
-            const current = document.documentElement.getAttribute('data-show-info') === 'true';
-            const next = (!current).toString();
-            document.documentElement.setAttribute('data-show-info', next);
-        }
+        <script src="messages.js"></script>
+        <script>
+            // Info toggle (expand/collapse badge descriptions)
+            function toggleInfo() {
+                const current = document.documentElement.getAttribute('data-show-info') === 'true';
+                const next = (!current).toString();
+                document.documentElement.setAttribute('data-show-info', next);
 
-        // Initialize theme when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initTheme);
+                // On first user interaction, stop the pulsing permanently
+                try {
+                  if (!localStorage.getItem('infoPulseSeen')) {
+                      localStorage.setItem('infoPulseSeen', 'true');
+                  }
+                } catch (e) { /* ignore */ }
+                document.documentElement.setAttribute('data-info-pulse', 'off');
+            }
 
-        
-    </script>
+            // Initialize theme when DOM is loaded
+            document.addEventListener('DOMContentLoaded', initTheme);
+
+            // Disable pulse if user has already interacted before
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    if (localStorage.getItem('infoPulseSeen') === 'true') {
+                        document.documentElement.setAttribute('data-info-pulse', 'off');
+                    }
+                } catch (e) {
+                    // If localStorage unavailable, ignore
+                }
+            });
+
+            
+        </script>
 </body>
 </html>

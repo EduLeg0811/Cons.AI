@@ -86,6 +86,9 @@
 
     /* Simple view accents */
     --simple-bg: #fffef0; /* soft warm light */
+
+    /* Attention accent */
+    --pulse-yellow: #fff3c4; /* soft light yellow for subtle pulse */
 }
 
 /* ===== DARK MODE TOKENS ===== */
@@ -115,6 +118,9 @@
 
     /* Simple view accents (dark) */
     --simple-bg: rgba(255, 255, 224, 0.07); /* faint warm tint */
+
+    /* Attention accent (dark tuned) */
+    --pulse-yellow: rgba(255, 220, 120, 0.18);
 }
 
 /* ===== MODULE ACCENTS (per page theme) ===== */
@@ -269,6 +275,39 @@ body {
     background: var(--gray-200);
     color: var(--gray-800);
     transform: translateY(-2px);
+}
+
+/* Subtle pulsing background for the info-toggle on homepage */
+@keyframes infoPulse {
+    0%   { background-color: var(--gray-100); }
+    12.5% { background-color: var(--gray-100); }
+    25%  { background-color: var(--gray-100); }
+    37.5% { background-color: var(--gray-100); }
+    50%  { background-color: var(--gray-100); }
+    62.5% { background-color: var(--pulse-yellow); }
+    75%  { background-color: var(--pulse-yellow); }
+    87.5% { background-color: var(--pulse-yellow); }
+    100% { background-color: var(--pulse-yellow); }
+}
+
+.navbar-control-btn.info-toggle {
+    animation: infoPulse 1s ease-in-out infinite;
+}
+
+/* Pause the pulse on hover/focus to avoid clash with hover styles */
+.navbar-control-btn.info-toggle:hover,
+.navbar-control-btn.info-toggle:focus-visible {
+    animation: none;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .navbar-control-btn.info-toggle { animation: none; }
+}
+
+/* Stop pulsing once user has interacted (set by JS) */
+html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
+    animation: none;
 }
 
 .back-button {
@@ -558,6 +597,16 @@ body {
     overflow: hidden;
 }
 
+/* Center only title and short when info mode is on */
+[data-show-info="true"] .tool-card .tool-info {
+    align-items: center;         /* center children horizontally */
+}
+[data-show-info="true"] .tool-card .tool-info h3,
+[data-show-info="true"] .tool-card .tool-info > p {
+    text-align: center;          /* center text lines */
+    width: 100%;                 /* allow centering across full info width */
+}
+
 .tool-info h3 {
     font-size: var(--text-lg);
     font-weight: 600;
@@ -792,6 +841,21 @@ body {
     background: var(--gray-50);
     color: var(--gray-800);
     transform: translateY(-1px);
+}
+
+/* Subtle pulsing for module config buttons */
+@keyframes configPulse {
+    0%   { background-color: var(--white); box-shadow: none; }
+    50%  { background-color: var(--pulse-yellow); box-shadow: 0 0 0 6px rgba(255, 221, 128, 0.06); }
+    100% { background-color: var(--white); box-shadow: none; }
+}
+
+.options-trigger.pulsing { animation: configPulse 3s ease-in-out infinite; }
+.options-trigger.pulsing:hover,
+.options-trigger.pulsing:focus-visible { animation: none; }
+html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+    .options-trigger.pulsing { animation: none; }
 }
 
 /* Download icon button (Word) */
@@ -1712,6 +1776,7 @@ body {
     /* Keep subtitle visible on small screens */
     .navbar-subtitle {
         display: block;
+        font-size: var(--text-sm);
     }
     
     .options-content {

@@ -59,7 +59,7 @@
                 <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
                     <i class="fas fa-file-word fa-2x"></i>
                 </button>
-                <button class="options-trigger" id="optionsTrigger" title="Search options">
+                <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
                 </button>
             </div>
@@ -291,6 +291,13 @@
                 trigger.addEventListener('click', function(e) {
                     e.stopPropagation();
                     panel.classList.toggle('open');
+                    // On first user interaction with config, stop pulsing for this module
+                    try {
+                        if (!localStorage.getItem('configPulseSeen_lexical')) {
+                            localStorage.setItem('configPulseSeen_lexical', 'true');
+                        }
+                    } catch (err) { /* ignore */ }
+                    document.documentElement.setAttribute('data-config-pulse', 'off');
                 });
 
                 document.addEventListener('click', function(e) {
@@ -299,6 +306,13 @@
                     }
                 });
             }
+
+            // Disable pulse if user already interacted before
+            try {
+                if (localStorage.getItem('configPulseSeen_lexical') === 'true') {
+                    document.documentElement.setAttribute('data-config-pulse', 'off');
+                }
+            } catch (err) { /* ignore */ }
 
             // Save settings button
             const saveBtn = document.querySelector('.save-btn');

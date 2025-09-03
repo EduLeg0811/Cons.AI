@@ -29,7 +29,7 @@ const PANEL_DESCRIPTIONS = {
 const TOOL_MESSAGES = {
   // Tool: OpenAI ConsGPT (ChatGPT custom GPT for Conscienciologia)
   'ConsGPT': {
-    short: '<em>ChatGPT da OpenAI especialista em Conscienciologia</em>',
+    short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       'O <strong>ConsGPT</strong> é provavelmente o chatbot mais <em>inteligente</em> de todos. ',
       'Ótimo para brainstorming, resumos e conversas em geral.<br>',
@@ -42,26 +42,28 @@ const TOOL_MESSAGES = {
 
   // Tool: Google ConsLM (NotebookLM)
   'ConsLM': {
-    short: '<em>NotebookLM da Google especialista em Conscienciologia</em>',
+    short: '<em>NotebookLM da Google</em>',
     extra: [
       'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
       'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente a seção lateral de <em>Podcasts de Conscienciologia</em>.<br>',
-      '<strong>2.</strong> Veja também os <em>resumos prontos</em> e ointeressante <em>mapa de conhecimento</em>.'
+      '<strong>2.</strong> Veja também os <em>resumos prontos</em> e o <em>mapa de conhecimento</em> gerado por IA.'
     ].join('\n')
   },
 
   // Tool: ConsBOT (RAG chatbot)
   'ConsBOT': {
-    short: '<em>Chatbot experimental da Conscienciologia</em>',
+    short: '<em>Chatbot experimental</em>',
     extra: [
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
       'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
-      '<strong>3.</strong> O ConsBOT é um <em>minimecanismo</em> de IA em <em>Evolução</em>.'
+      '<strong>Observação:</strong> os sistemas RAG funcionam com busca vetorial. No momento, o ConsBOT não possui informações do <em>número da página</em> das fontes de referência. ',
+      'Para obter essa informação, é necessário consultar o livro na edição desejada. ',
+      'O ConsBOT é um <em>minimecanismo</em> de IA em evolução.',
     ].join('\n')
   },
 
@@ -82,7 +84,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Semantic Search
   'Pesquisa Semântica': {
-    short: '<em>Busca semântica por afinidade de significado</em>',
+    short: '<em>Busca semântica por afinidade</em>',
     extra: [
       'Encontra os parágrafos de livros que são <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
       'Ótima para pesquisar temas e ideias correlatas ou afins.<br>',
@@ -99,7 +101,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: '<em>Sorteio de uma <em>pensata</em> do Léxico de Ortopensatas</em>',
+    short: '<em>Sorteio de ortopensata do LO</em>',
     extra: [
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
       'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir aleatoriamente uma página de um livro para alimentar a autopesquisa.<br>',
@@ -125,7 +127,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Conscienciogramopedia
   'Conscienciogramopedia': {
-    short: '<em>Sugestão de questões do Conscienciograma</em>',
+    short: '<em>Questões do Conscienciograma</em>',
     extra: [
       'Indica questões afins ao termo de busca. ',
       'Ótimo para sugerir questões para o aprofundamento da sua autopesquisa.<br>',
@@ -139,24 +141,24 @@ const TOOL_MESSAGES = {
 
   // Tool: Verbetes Encyclopedia (external)
   'Enciclopédia da Conscienciologia': {
-    short: '<em>Link para o site da Encyclossapiens</em>',
+    short: '<em>Download de verbetes</em>',
     extra: [
-      'Site oficial e atualizado para download de verbetes.',
+      'Site da Encyclossapiens.',
     ].join('\n'),
   },
 
   // Tool: ICGE (external)
   'ICGE': {
-    short: '<em>Link para o site do ICGE</em>',
+    short: '<em>Site do ICGE</em>',
     extra: [
-      'Portal do ICGE com amplo material da Conscienciologia.',
+      'Informações e material da Conscienciologia.',
     ].join('\n'),
   },
   // Tool: Portal da Conscienciologia (external)
   'Portal da Conscienciologia': {
-    short: '<em>Link para o portal da Conscienciologia</em>',
+    short: '<em>site central da Conscienciologia</em>',
     extra: [
-      'Acesso ao site central da Conscienciologia.',
+      'Portal geral da CCCI.',
     ].join('\\n'),
   }
 };
@@ -173,7 +175,6 @@ const TOOL_ALIASES = {
   'Bibliomancia Digital': 'Bibliomancia Digital',
   'Verbetopedia': 'Verbetopedia',
   'Conscienciogramopedia': 'Conscienciogramopedia',
-  'ICGE': 'ICGE',
   'Pesquisa Léxica': 'Pesquisa Literal',
 };
 
