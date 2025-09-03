@@ -88,7 +88,7 @@
     --simple-bg: #fffef0; /* soft warm light */
 
     /* Attention accent */
-    --pulse-yellow: #fff3c4; /* soft light yellow for subtle pulse */
+    --pulse-yellow: #ffff00; /* soft light yellow for subtle pulse */
 }
 
 /* ===== DARK MODE TOKENS ===== */
@@ -843,14 +843,24 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     transform: translateY(-1px);
 }
 
-/* Subtle pulsing for module config buttons */
+
+
+
+/* Subtle pulsing background for the info-toggle on homepage */
 @keyframes configPulse {
-    0%   { background-color: var(--white); box-shadow: none; }
-    50%  { background-color: var(--pulse-yellow); box-shadow: 0 0 0 6px rgba(255, 221, 128, 0.06); }
-    100% { background-color: var(--white); box-shadow: none; }
+    0%   { background-color: var(--gray-100); }
+    12.5% { background-color: var(--gray-100); }
+    25%  { background-color: var(--gray-100); }
+    37.5% { background-color: var(--gray-100); }
+    50%  { background-color: var(--gray-100); }
+    62.5% { background-color: var(--pulse-yellow); }
+    75%  { background-color: var(--pulse-yellow); }
+    87.5% { background-color: var(--pulse-yellow); }
+    100% { background-color: var(--pulse-yellow); }
 }
 
-.options-trigger.pulsing { animation: configPulse 3s ease-in-out infinite; }
+
+.options-trigger.pulsing { animation: configPulse 1s ease-in-out infinite; }
 .options-trigger.pulsing:hover,
 .options-trigger.pulsing:focus-visible { animation: none; }
 html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
