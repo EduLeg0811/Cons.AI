@@ -488,6 +488,7 @@ body {
     color: var(--white);
     font-size: var(--text-lg);
     flex-shrink: 0;
+    transition: opacity var(--transition-fast), transform var(--transition-fast), width var(--transition-fast), height var(--transition-fast), margin var(--transition-fast);
 }
 
 .tool-icon.lexical {
@@ -540,6 +541,17 @@ body {
 
 [data-show-info="true"] .tool-card .tool-info-extra {
     display: block;
+}
+
+/* When showing info, smoothly hide module icons on homepage cards */
+[data-show-info="true"] .tool-card { gap: var(--space-2); }
+[data-show-info="true"] .tool-card .tool-icon {
+    opacity: 0;
+    transform: scale(0.9);
+    width: 0;
+    height: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 .tool-info h3 {
@@ -1693,8 +1705,9 @@ body {
         padding: 0 var(--space-4);
     }
     
+    /* Keep subtitle visible on small screens */
     .navbar-subtitle {
-        display: none;
+        display: block;
     }
     
     .options-content {
@@ -1776,13 +1789,20 @@ body {
     .tool-card.compact .tool-info p {
         margin: 0;
         font-size: var(--text-xs);
-        line-height: 1.2;
+        line-height: 1.3;
         color: var(--gray-600);
-        display: -webkit-box;
-        -webkit-line-clamp: 1; /* keep to a single line */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: block;            /* allow normal flow */
+        -webkit-line-clamp: unset; /* no truncation on phones */
+        -webkit-box-orient: initial;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;       /* wrap lines normally */
+    }
+
+    /* Slightly smaller subtitle to fit phones */
+    .navbar-subtitle {
+        font-size: var(--text-xs);
+        line-height: 1.1;
     }
     
     .page-title {
