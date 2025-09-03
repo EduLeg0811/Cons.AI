@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Definition - RAGbot
                 // _________________________________________________________________________________
 
-                insertLoading(resultsDiv, "Formulating a synthesis or definition");
+                insertLoading(resultsDiv, "Sintetizando os neologismos...");
 
              
                 //call_ragbot
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Searching for semantical similarities...");
+            insertLoading(resultsDiv, "Buscando as questões afins...");
 
             
             //call_semantical
