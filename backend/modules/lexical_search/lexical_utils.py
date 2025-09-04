@@ -3,57 +3,55 @@ import logging
 import os
 import re
 from typing import Any, DefaultDict, Dict, List
+from typing import Dict, List
 import unicodedata
 
+import pandas as pd
+
 from utils.config import FILES_SEARCH_DIR
+
 
 
 # =============================================================================================
 # Função principal: Lexical Search
 # =============================================================================================
-def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[str, Any]]:
+def lexical_search_in_files(search_term: str, source: List[str], file_type: str) -> List[Dict[str, Any]]:
     """
+    Estrutura padronizada de saída:
+
     results = [
-    {
-        "paragraph": "Texto do parágrafo encontrado",
-        "paragraph_number": 12,
-        "book": "LivroA.md"
-    },
-    {
-        "paragraph": "Outro parágrafo com o termo buscado",
-        "paragraph_number": 25,
-        "book": "LivroA.md"
-    },
-    {
-        "paragraph": "Mais um exemplo",
-        "paragraph_number": 7,
-        "book": "LivroB.md"
-    }
+        {
+            "book": "LivroA",
+            "paragraph": "Texto do parágrafo encontrado",
+            "paragraph_number": 12,   # ou None
+            "metadata": {...}         # dicionário com campos extras (Excel) ou None
+        },
     ]
-
-    Extrair apenas o texto dos parágrafos
-    paragraphs = [item["paragraph"] for item in results]
-
-    Extrair apenas os números de parágrafo (ignorando None)
-    numbers = [item["paragraph_number"] for item in results if item["paragraph_number"] is not None]
-
-    Extrair todos os livros distintos
-    books = list({item["book"] for item in results})
-
     """
     results: List[Dict[str, Any]] = []
     found_books = set()
 
-    # Lista todos os arquivos .md disponíveis
-    all_files = _list_markdown_files(FILES_SEARCH_DIR)
+    # Lista todos os arquivos disponíveis
+    all_files = (
+        _list_files(FILES_SEARCH_DIR, "md")
+        + _list_files(FILES_SEARCH_DIR, "txt")
+        + _list_files(FILES_SEARCH_DIR, "xlsx")
+    )
     file_map = {os.path.splitext(os.path.basename(f))[0].upper(): f for f in all_files}
+
+    logging.info(f"All files: {all_files}")
+    logging.info(f"Source: {source}")
+    logging.info(f"File type: {file_type}")
+  
 
     # Seleciona apenas os arquivos pedidos pelo usuário
     matching_files = []
     for book in source:
         book_upper = book.upper()
+        logging.info(f"Book: {book_upper}")
         if book_upper in file_map:
             matching_files.append(file_map[book_upper])
+            logging.info(f"Found file: {file_map[book_upper]}")
             found_books.add(book_upper)
 
     if not matching_files:
@@ -69,23 +67,122 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
     # Processa cada arquivo
     for file_path in matching_files:
         try:
-            content = _read_markdown_file(file_path)
             book = os.path.splitext(os.path.basename(file_path))[0]
-            # Use substring matching to avoid word-boundary issues with punctuation/diacritics
-            matches = _search_in_content(content, search_term, match_mode="substring")
 
-            for match in matches or []:
-                results.append({
-                    "markdown": match.get("paragraph_text"),
-                    "number": match.get("paragraph_number"),
-                    "source": book,
-                })
+            # ______________________________________________________________________
+            # 1. Texto ou Markdown
+            # ______________________________________________________________________
+            if file_type in ["text", "md"]:
+                content = _read_markdown_file(file_path)
+                # substring matching (mais tolerante com pontuação e acentos)
+                matches = _search_in_content(content, search_term, match_mode="substring")
+
+                for match in matches or []:
+                    results.append({
+                        "book": book,
+                        "paragraph": match.get("paragraph_text"),
+                        "paragraph_number": match.get("paragraph_number"),
+                        "metadata": None
+                    })
+
+            # ______________________________________________________________________
+            # 2. Excel
+            # ______________________________________________________________________
+            elif file_type == "excel":
+                content = _read_excel_file(file_path)  # lista de dicionários
+
+                if not content:
+                    continue
+
+                # primeira coluna do Excel
+                first_row = content[0]
+                col_names_in_order = list(first_row.keys())
+                texto_key = col_names_in_order[0]
+
+                term = search_term.strip().lower()
+                for row in content:
+                    texto = str(row.get(texto_key, "")).lower()
+                    if term in texto:
+                        results.append({
+                            "book": book,
+                            "paragraph": row.get(texto_key, ""),
+                            "paragraph_number": None,
+                            "metadata": row
+                        })
 
         except Exception as e:
             logging.error(f"Error processing file {file_path}: {str(e)}")
 
-    logging.info(f"<<<<<lexical_search_in_files>>>>> Found {len(results)} matches for '{search_term}'")
     return results
+
+
+
+
+
+# =============================================================================================
+# Função auxiliar: Ler arquivo .md
+# =============================================================================================
+def _read_markdown_file(path: str, encodings: tuple = ("utf-8", "cp1252")) -> str:
+    """
+    Lê o conteúdo de um arquivo markdown, testando múltiplos encodings.
+    Args:
+        path (str): Caminho do arquivo.
+        encodings (tuple): Encodings a testar em sequência.
+    Returns:
+        str: Conteúdo do arquivo como string.
+    Raises:
+        Exception: Se nenhum encoding funcionar.
+    """
+    for enc in encodings:
+        try:
+            with open(path, "r", encoding=enc) as f:
+                return f.read()
+        except UnicodeDecodeError:
+            logging.error(f"<<<<<_read_markdown_file>>>>> Error decoding {path} with encoding {enc}")
+            continue
+    raise Exception(f"Não foi possível decodificar {path} com os encodings {encodings}")
+
+
+
+
+
+# =============================================================================================
+# Função auxiliar: Ler arquivo .xlsx
+# =============================================================================================
+# data = [
+#   {"texto": "Frase A", "autor": "João", "ano": "2020"},
+#   {"texto": "Frase B", "autor": "Maria", "ano": "2021"},
+#   {"texto": "Frase C", "autor": "Pedro", "ano": "2022"}
+# ]
+# A segunda linha está no índice 1 (porque em Python começa do zero).
+# Então, para recuperar texto e autor da 2ª linha:
+# linha2 = data[1]              # pega o dicionário da segunda linha
+# texto = linha2["texto"]       # acessa o campo "texto"
+# autor = linha2["autor"]       # acessa o campo "autor"
+# print(texto, autor)
+
+
+def _read_excel_file(path: str) -> List[Dict[str, str]]:
+    # 1) Ler o arquivo Excel (primeira aba por padrão)
+    df = pd.read_excel(path, sheet_name=0, dtype=str)  # lê tudo como string
+
+    # 2) Substituir NaN por string vazia
+    df = df.fillna("")
+
+    # 3) Converter cada linha em dicionário e incluir número da linha (Excel)
+    data = []
+    for idx, row in enumerate(df.to_dict(orient="records"), start=2):  # linha 2 = primeira linha de dados
+        row["paragraph_number"] = idx-1
+        data.append(row)
+
+    return data
+
+
+
+
+
+
+
 
 
 # =============================================================================================
@@ -142,12 +239,13 @@ def process_found_paragraph(paragraph: str, search_term: str) -> str:
 # =============================================================================================
 # Função auxiliar: Listar arquivos .md
 # =============================================================================================
-def _list_markdown_files(source_dir: str = FILES_SEARCH_DIR) -> List[str]:
+def _list_files(source_dir: str = FILES_SEARCH_DIR, file_type: str = "md") -> List[str]:
     """
     Lista todos os arquivos .md no diretório especificado.
 
     Args:
         source_dir (str): Caminho da pasta onde procurar arquivos markdown.
+        file_type (str): Tipo de arquivo a ser listado ("md" ou "xlsx").
 
     Returns:
         List[str]: Lista com paths completos dos arquivos encontrados.
@@ -158,44 +256,34 @@ def _list_markdown_files(source_dir: str = FILES_SEARCH_DIR) -> List[str]:
         files = [
             os.path.join(md_path, f)
             for f in os.listdir(md_path)
-            if f.lower().endswith(".md")
+            if f.lower().endswith("." + file_type)
         ]
 
         all_files = os.listdir(md_path)
-        logging.info(f"<<<<<_list_markdown_files>>>>> All files in directory ({len(all_files)}): {all_files}")
+        logging.info(f"<<<<<_list_files>>>>> All files in directory ({len(all_files)}): {all_files}")
 
         return files
 
     except Exception as e:
-        logging.error(f"Error in _list_markdown_files: {str(e)}")
+        logging.error(f"Error in _list_files: {str(e)}")
         raise
 
 
-# =============================================================================================
-# Função auxiliar: Ler arquivo .md
-# =============================================================================================
-def _read_markdown_file(path: str, encodings: tuple = ("utf-8", "cp1252")) -> str:
-    """
-    Lê o conteúdo de um arquivo markdown, testando múltiplos encodings.
 
-    Args:
-        path (str): Caminho do arquivo.
-        encodings (tuple): Encodings a testar em sequência.
 
-    Returns:
-        str: Conteúdo do arquivo como string.
 
-    Raises:
-        Exception: Se nenhum encoding funcionar.
-    """
-    for enc in encodings:
-        try:
-            with open(path, "r", encoding=enc) as f:
-                return f.read()
-        except UnicodeDecodeError:
-            logging.error(f"<<<<<_read_markdown_file>>>>> Error decoding {path} with encoding {enc}")
-            continue
-    raise Exception(f"Não foi possível decodificar {path} com os encodings {encodings}")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

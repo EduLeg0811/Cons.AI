@@ -338,6 +338,20 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     min-height: calc(100vh - 70px);
 }
 
+/* ===== ACCENTED ELEMENTS (use --accent-color) ===== */
+.displaybox-container.accented {
+    
+}
+
+.pill.pill-row.accented {
+    
+}
+
+.pill.pill-row.accented .count {
+    background: var(--accent-color, var(--primary-500));
+    color: #fff;
+}
+
 /* Centered hero for index page */
 .hero {
     display: flex;
@@ -1782,7 +1796,6 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 }
 
 .markdown-content blockquote {
-    border-left: 4px solid var(--primary-500);
     padding-left: var(--space-4);
     margin: var(--space-4) 0;
     color: var(--gray-600);
@@ -2179,3 +2192,89 @@ body:not([class]) .navbar .navbar-controls {
 /* Small edge spacing for buttons to match navbar rhythm */
 .navbar .navbar-controls > *:first-child { margin-left: var(--space-2); }
 .navbar .navbar-controls > *:last-child  { margin-right: var(--space-2); }
+/* Remover sombras laterais de caixas de texto e badges */
+.form-control,
+input,
+textarea,
+select {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.badge,
+.badge-pill,
+.tag,
+.pill {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Remover sombra/faixa lateral esquerda nos badges retráteis dos resultados */
+#lexicalResults .badge,
+#semanticResults .badge,
+#semanticalResults .badge,
+#results-lexical .badge,
+#results-semantical .badge,
+.lexical-results .badge,
+.semantical-results .badge,
+.result-badge,
+.badge-collapsible,
+.badge[data-bs-toggle="collapse"],
+summary .badge {
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* Remover barra/sombra azul à esquerda nos summary pills */
+summary,
+summary.pill,
+summary.pills,
+summary[class*="pill"],
+details > summary,
+details.pill > summary,
+details.pills > summary {
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+/* Caso a barra seja criada por pseudo-elemento ou marker */
+summary::before,
+summary::after,
+summary.pill::before,
+summary.pills::before,
+summary[class*="pill"]::before,
+summary.pill::after,
+summary.pills::after,
+summary[class*="pill"]::after,
+summary::marker {
+  content: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  background: none !important;
+}
+
+/* Caso exista ornamento no ::before/::after formando a barra esquerda */
+#lexicalResults .badge::before,
+#semanticResults .badge::before,
+#semanticalResults .badge::before,
+#results-lexical .badge::before,
+#results-semantical .badge::before,
+.lexical-results .badge::before,
+.semantical-results .badge::before,
+.result-badge::before,
+.badge-collapsible::before,
+summary .badge::before,
+#lexicalResults .badge::after,
+#semanticResults .badge::after,
+#semanticalResults .badge::after,
+#results-lexical .badge::after,
+#results-semantical .badge::after,
+.lexical-results .badge::after,
+.semantical-results .badge::after,
+.result-badge::after,
+.badge-collapsible::after,
+summary .badge::after {
+  content: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}

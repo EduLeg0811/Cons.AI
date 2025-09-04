@@ -45,3 +45,4 @@ python-docx
 markdown
 beautifulsoup4
 psutil
+pandas

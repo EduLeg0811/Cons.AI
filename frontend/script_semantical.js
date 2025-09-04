@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Display results
             const newTitle = `Semantical Search    ●    ${term}`;
             removeLoading(resultsDiv);
-            displayResults(resultsDiv, newTitle, 'title');
+            //displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "semantical");
 
 

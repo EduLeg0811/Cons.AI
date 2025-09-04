@@ -1,5 +1,19 @@
 // config.js
 
+// -----------------------------------------------------------
+// Cores centrais por grupo de módulos (personalizáveis)
+// Altere aqui para trocar as cores de cada grupo de forma centralizada.
+// Exemplos atuais: COLOR1 = 'green'; COLOR2 = 'blue'; etc.
+// Use nomes CSS válidos (ex.: 'green', '#0f62fe', 'rgb(0,128,0)').
+const COLOR1 = 'green';
+const COLOR2 = 'blue';
+const COLOR3 = 'purple';
+const COLOR4 = 'orange';
+const COLOR5 = 'teal';
+const COLOR6 = 'red';
+// Opcional: exposição global para fácil consumo em outras páginas/scripts
+window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
+
 
 const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbetes/';
 
@@ -80,15 +94,23 @@ Sua função é Gerar UM QUIZ INTERATIVO avançado sobre Conscienciologia, volta
 ## 1) Geração da Pergunta
 - Pergunta deve ser inteligente e não óbvia.
 - Não repita perguntas nem aborde temas semelhantes em sequência.
-- As opções precisam ser discriminantes, sem pistas ou termos marcadores fáceis e óbvios.
-- Para responder à pergunta, o usuário deve ter conhecimentos de Conscienciologia, e não apenas se guiar pela opção mais óbvia.
 - Comece em nível MÉDIO; aumente a dificuldade a cada nova questão (sequência: Médio → Médio-Alto → Alto → Muito Alto → Especialista).
-- Sempre utilize múltipla escolha com 4 opções numeradas (1, 2, 3, 4), todas plausíveis e exigindo leitura atenta, com apenas uma correta.
 - Nunca revele a alternativa correta ao apresentar a pergunta.
-- Ao receber o pedido para formular pergunta, gere exatamente 1 pergunta com 4 opções.
 
-## 2) Formato Estrito da Pergunta
-- Use sempre Markdown limpo apenas no enunciado da pergunta, mas nunca no texto das opções.
+## 2) Geração das Opções de Resposta
+- Ao receber o pedido para formular pergunta, gere exatamente 1 pergunta com 4 opções.
+- Sempre utilize múltipla escolha com 4 opções numeradas (1, 2, 3, 4), com apenas uma mais correta em relação às demais.
+- Não use pistas ou termos marcadores fáceis e óbvios.
+- Explore as nuances da pergunta, em vez de criar opções óbvias.
+- As 3 opções incorretas não podem ser evidentes em si mesmas.
+- Ao elaborar as opções, certifique-se de que elas não são imbecis.
+- Seja inteligente e criativo ao elaborar as opções, o publico-alvo são especialistas inteligentes que não aceitam obviedades.
+- Crie opções que necessitem de conhecimento do tema, de reflexão e de análise crítica do enunciado.
+- Para ser capaz de responder à pergunta, o usuário deve ter conhecimentos de Conscienciologia, e não apenas se guiar pela opção mais óbvia.
+- Não use termos genéricos ou óbvios.
+
+## 2) Formato Estrito
+- Use sempre Markdown limpo apenas no enunciado da pergunta, mas nunca no texto das 4 opções de resposta.
 - Realce termos importantes utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme for relevante.
 - Apresente sempre no seguinte modelo:
 Pergunta: <1 a 3> parágrafos concisos, sem preâmbulos>
@@ -103,9 +125,10 @@ const PROMPT_QUIZ_RESPOSTA = `
 Developer: # Função e Objetivo
 - Receber e avaliar a resposta do usuário.
 - Se a resposta for correta, explique o porquê de ela estar correta pela Conscienciologia.
-- Se a resposta for incorreta, indique qual seria a correta, e explique o porquê da resposta do usuário estar errada, de acordo com a Conscienciologia.
+- Se a resposta for incorreta, indique qual seria a correta, e explique por que da resposta do usuário está errada, de acordo com a Conscienciologia.
 - Use obrigatoriamente Markdown limpo na resposta, para realçar termos importantes, utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme a relevância.
 - Títulos e sub-títulos devem sempre estar em **negrito**.
+- Não indique as referências bibliográficas na resposta.
 `;
 
 
@@ -127,7 +150,8 @@ const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Rende
 
 function resolveApiBaseUrl() {
   
-  return { base: PROD_BASE, mode: 'production' };
+  //return { base: PROD_BASE, mode: 'production' };
+  return { base: LOCAL_BASE, mode: 'development' };
 }
 
 const { base: apiBaseUrl, mode } = resolveApiBaseUrl();

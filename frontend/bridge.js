@@ -139,30 +139,68 @@ async function call_semantical(parameters) {
 //_________________________________________________________
 async function call_llm(parameters) {
 
+  // Abort any ongoing LLM request before starting a new one
   if (_llmQueryController) _llmQueryController.abort();
   _llmQueryController = new AbortController();
 
-const response = await fetch(apiBaseUrl + '/llm_query', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(parameters),
-    signal: _llmQueryController.signal
-});
+  // Allow caller to pass an external signal and/or timeout override
+  const externalSignal = parameters?.signal;
+  const timeoutMs = Number(parameters?.timeout_ms) > 0 ? Number(parameters.timeout_ms) : 60000; // default 60s
 
-if (!response.ok) {
-  const err = await response.text().catch(() => '');
-  throw new Error(`HTTP ${response.status} ${err}`);
-}
+  // If external signal aborts, propagate
+  const onExternalAbort = () => {
+    try { _llmQueryController?.abort(); } catch {}
+  };
+  if (externalSignal && typeof externalSignal.addEventListener === 'function') {
+    externalSignal.addEventListener('abort', onExternalAbort, { once: true });
+  }
 
-const responseData = await response.json();
+  // Timeout to avoid hanging requests
+  const timeoutId = setTimeout(() => {
+    try { _llmQueryController?.abort(); } catch {}
+  }, timeoutMs);
 
+  try {
+    console.log(' LLM QUERY REQUEST:', {
+      endpoint: `${apiBaseUrl}/llm_query`,
+      parameters: JSON.parse(JSON.stringify(parameters))
+    });
 
-// Transform the LLM response to match what displayResults expects
-const formattedResponse = llm_formatResponse(responseData);
+    const response = await fetch(apiBaseUrl + '/llm_query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(parameters),
+      signal: _llmQueryController.signal
+    });
 
-console.log(`********bridge.js - llm*** [formattedResponse]:`, formattedResponse);
+    if (!response.ok) {
+      const err = await response.text().catch(() => '');
+      throw new Error(`HTTP ${response.status} ${err}`);
+    }
 
-return formattedResponse;
+    const responseData = await response.json();
+
+    // Transform the LLM response to match what displayResults expects
+    const formattedResponse = llm_formatResponse(responseData);
+    console.log(`********bridge.js - llm*** [formattedResponse]:`, formattedResponse);
+    return formattedResponse;
+  } catch (error) {
+    // Normalize AbortError message for better UX
+    if (error?.name === 'AbortError') {
+      console.warn(' LLM QUERY ABORTED (timeout or new request):', error);
+      const e = new Error('Request timed out');
+      e.name = 'AbortError';
+      throw e;
+    }
+    console.error(' LLM QUERY EXCEPTION:', error);
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+    if (externalSignal && typeof externalSignal.removeEventListener === 'function') {
+      try { externalSignal.removeEventListener('abort', onExternalAbort); } catch {}
+    }
+    _llmQueryController = null;
+  }
 }
 
 

@@ -8,12 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput  = document.getElementById('searchInput');
   const resultsDiv   = document.getElementById('results');
   
-  // Initialize download buttons
-  window.downloadUtils.initDownloadButtons('lexical');
 
-  searchButton.addEventListener('click', lexical_search);
+  searchButton.addEventListener('click', lexverb);
   searchInput.addEventListener('keypress', e => {
-      if (e.key === 'Enter') lexical_search();
+      if (e.key === 'Enter') lexverb();
   });
 
 
@@ -21,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //______________________________________________________________________________________________
   // Lexical Search
   //______________________________________________________________________________________________
-  async function lexical_search() {
+  async function lexverb() {
 
 
     
@@ -63,13 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Get selected books
-        const selectedBooks = [];
-        document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
-            selectedBooks.push(checkbox.value);
-        });
-        
-        // If no books selected, select LO by default
-        const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
+        const source = ["ECALL_DEF"];
 
         // Limpa resultados anteriores
         resultsDiv.innerHTML = '';
@@ -85,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const parameters = {
             term: term,
             source: source,
-            file_type: 'md'
+            file_type: 'xlsx'
         };
         const responseData = await call_lexical (parameters);
         //*****************************************************************************************
@@ -102,13 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Display results
-        const newTitle = `Lexical Search    ●    ${term}`;
+        const newTitle = `Verbetes    ●    ${term}`;
         removeLoading(resultsDiv);
         //displayResults(resultsDiv, newTitle, 'title');
-        displayResults(resultsDiv, responseData, "lexical");
+        displayResults(resultsDiv, responseData, "lexverb");
 
         // Update results using centralized function
-        window.downloadUtils.updateResults(responseData, term, 'lexical');
+        window.downloadUtils.updateResults(responseData, term, 'lexverb');
 
         
     } catch (error) {

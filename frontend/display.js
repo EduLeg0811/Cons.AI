@@ -86,8 +86,27 @@ const renderers = {
     simple: showSimple,
     verbetopedia: showVerbetopedia,
     ccg: showCcg,
-    quiz: showQuiz
+    quiz: showQuiz,
+    lexverb: showLexverb
 };
+
+// Resolve group accent color from global constants
+function getAccentColor(type) {
+  const colors = (window && window.MODULE_COLORS) ? window.MODULE_COLORS : {};
+  // Map module types to group colors; adjust mapping as needed
+  const map = {
+    quiz: colors.COLOR1 || 'green',
+    lexical: colors.COLOR2 || 'blue',
+    semantical: colors.COLOR2 || 'blue',
+    ragbot: colors.COLOR3 || 'purple',
+    ccg: colors.COLOR4 || 'orange',
+    lexverb: colors.COLOR5 || 'teal',
+    simple: colors.COLOR6 || 'red',
+    title: colors.COLOR3 || 'purple',
+    verbetopedia: colors.COLOR2 || 'blue'
+  };
+  return map[type] || colors.COLOR1 || 'green';
+}
 
 // Helper: decide if reference badges should be shown (default: true)
 function shouldShowRefBadges() {
@@ -98,6 +117,7 @@ function shouldShowRefBadges() {
   } catch (e) {}
   return true; // fallback default
 }
+
 
 
 // ________________________________________________________________________________________
@@ -153,11 +173,11 @@ function showQuiz(container, data) {
       const box = row.closest('.quiz-box');
       if (!box) return;
 
-      // Visual feedback: highlight selected badge in green
+      // Visual feedback: highlight selected badge using module color
       try {
         const badge = row.querySelector('.metadata-badge');
         if (badge) {
-          badge.style.backgroundColor = 'var(--success)';
+          badge.style.backgroundColor = getAccentColor('quiz');
           badge.style.color = '#fff';
         }
       } catch {}
@@ -316,11 +336,14 @@ function showSearch(container, data) {
         summaryRows += groupNames.map(name => {
             const n = groups[name].length;
             const target = `group-${slug(name)}`;
-            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count">${n}</span></button>`;
+            // Aplica cor do grupo nos pills por fonte (usa mesma cor do módulo lexical)
+            const accent = getAccentColor('lexical');
+            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count" style="background:${accent};color:#fff;">${n}</span></button>`;
         }).join('');
     } else {
         // Only total row
-        summaryRows += `<button class="pill pill-row" data-target="all-results"><span class="pill-label">Total</span><span class="count">${totalCount}</span></button>`;
+        const accentTotal = getAccentColor('lexical');
+        summaryRows += `<button class="pill pill-row" data-target="all-results"><span class="pill-label">Total</span><span class="count" style="background:${accentTotal};color:#fff;">${totalCount}</span></button>`;
     }
     summaryRows += '</div>';
     container.insertAdjacentHTML('beforeend', summaryRows);
@@ -976,13 +999,14 @@ function showTitle(container, text) {
         padding: 10px 12px;
         border-radius: 8px;
         margin: 8px 0 14px 0;
+        
     ">
         <div style="font-weight: bold; color: var(--gray-900);">
            ${cleanText}
         </div>
     </div>`;
   
-   
+    
     container.insertAdjacentHTML('beforeend', html);
 }
 
@@ -1135,6 +1159,149 @@ function showVerbetopedia(container, data) {
     const _vb_count = items.length;
     const _vb_html = `
       <div class="summary-list">
+        <button class="pill pill-row accented" data-target="group-ec" style="--accent-color: ${getAccentColor('verbetopedia')}">
+          <span class="pill-label">Enciclopédia da Conscienciologia</span>
+          <span class="count">${_vb_count}</span>
+        </button>
+      </div>
+      <div id="group-ec" class="collapse-panel">
+        <div class="displaybox-container accented" style="--accent-color: ${getAccentColor('verbetopedia')}">
+          <div class="displaybox-content group-content">
+            ${contentHtml}
+          </div>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML('beforeend', _vb_html);
+
+    if (!container.__pillHandlerBound) {
+      container.addEventListener('click', function(ev) {
+          const btn = ev.target.closest('.pill');
+          if (!btn) return;
+          ev.preventDefault();
+          const targetId = btn.getAttribute('data-target');
+          if (!targetId) return;
+          const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
+          const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
+          if (!panel) return;
+          panel.classList.toggle('open');
+          if (panel.classList.contains('open')) {
+              try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+          }
+      });
+      container.__pillHandlerBound = true;
+    }
+}
+
+
+
+
+
+
+
+
+// ________________________________________________________________________________________
+// Show Lexverb
+// ________________________________________________________________________________________
+
+function showLexverb(container, data) {
+    if (!container) {
+        console.error('Results container not found');
+        return;
+    }
+
+    // 0) Garantir array de entrada
+    const arr = Array.isArray(data.results) ? data.results : [];
+    if (!arr.length) {
+        container.insertAdjacentHTML(
+            'beforeend',
+            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
+        );
+        return;
+    }
+
+    // 1) Extrair metadados antes para usar score
+    const items = arr.map(item => {
+        const metaData = extractMetadata(item, 'verbetopedia');
+        return { ...item, _meta: metaData };
+    });
+
+   
+    // 3) Gera HTML de cada item
+    const contentHtml = items.map(item => {
+        // Conteúdo principal
+        let content = (
+            (typeof item.markdown === 'string' && item.markdown) ||
+            (typeof item.page_content === 'string' && item.page_content) ||
+            (typeof item.text === 'string' && item.text) ||
+            ''
+        );
+
+        const rawHtml  = renderMarkdown(content);
+        const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+        const metaData = item._meta;
+
+        // Inclui ícone PDF após o título
+        const titleHtml = `
+        <strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  #${metaData.number}  ●  ${metaData.date}
+    `;
+
+        // 3) Monta o link para download do verbete PDF
+        let arquivo = metaData.title;
+
+        // Sanitiza: remove acentos e troca ç/Ç
+        arquivo = arquivo
+            .normalize("NFD")                // separa acentos da letra
+            .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
+            .replace(/ç/g, "c")              // troca ç
+            .replace(/Ç/g, "C");             // troca Ç
+
+        // Monta link final (com encoding seguro)
+        const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
+
+
+        const pdfLink = `
+            <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
+            title="Abrir PDF em nova aba" style="margin-left: 8px; color: red; font-size: 1.1em;">
+                <i class="fas fa-file-pdf"></i>
+            </a>`;
+
+           
+        // 4) Monta o HTML final
+        return `
+        <div class="displaybox-item">
+            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0;">
+                <span class="header-text">${titleHtml}</span>
+            </div>
+            <div class="displaybox-text">
+                <span class="displaybox-text markdown-content">${safeHtml}</span>
+                ${pdfLink}
+            </div>
+        </div>
+        `;
+    }).join('');
+
+
+
+    // 5) Bloco final (único grupo — EC)
+    const groupHtml = `
+    <div class="displaybox-group">
+        <div class="displaybox-header">
+            <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
+            <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="displaybox-content">
+            ${contentHtml}
+        </div>
+    </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', groupHtml);
+
+    // Also render collapsible badge row + panel for Verbetopedia
+    const _vb_count = items.length;
+    const _vb_html = `
+      <div class="summary-list">
         <button class="pill pill-row" data-target="group-ec">
           <span class="pill-label">Enciclopédia da Conscienciologia</span>
           <span class="count">${_vb_count}</span>
@@ -1167,6 +1334,27 @@ function showVerbetopedia(container, data) {
       container.__pillHandlerBound = true;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
