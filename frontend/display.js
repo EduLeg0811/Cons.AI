@@ -86,6 +86,7 @@ const renderers = {
     simple: showSimple,
     verbetopedia: showVerbetopedia,
     ccg: showCcg,
+    quiz: showQuiz
 };
 
 // Helper: decide if reference badges should be shown (default: true)
@@ -96,6 +97,77 @@ function shouldShowRefBadges() {
     }
   } catch (e) {}
   return true; // fallback default
+}
+
+
+// ________________________________________________________________________________________
+// Show Quiz
+// ________________________________________________________________________________________
+function showQuiz(container, data) {
+  if (!container) {
+    console.error('Results container not found');
+    return;
+  }
+
+  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta : '';
+  let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
+  while (opcoes.length < 4) opcoes.push('');
+
+  // Build HTML for quiz box
+  const optionsHtml = opcoes
+    .map((opt, idx) => {
+      const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
+      return `
+        <div class="quiz-option-row" data-index="${idx}" style="display:flex;align-items:center;gap:8px;margin:6px 0;">
+          <button type="button" class="quiz-badge-btn" data-index="${idx}" style="border:none;background:transparent;cursor:pointer;">
+            <span class="metadata-badge estilo2" style="display:inline-block;padding:4px 8px;border-radius:12px;min-width:28px;text-align:center;">${idx + 1}</span>
+          </button>
+          <div class="quiz-option-text markdown-content">${rendered}</div>
+        </div>`;
+    })
+    .join('');
+
+  const qHtml = pergunta ? `<div class="quiz-question markdown-content" style="font-weight:600;margin:6px 0 8px 0;">${renderMarkdown(pergunta)}</div>` : '';
+
+  const html = `
+    <div class="displaybox-container quiz-box">
+      <div class="displaybox-content">
+        <div class="displaybox-text">
+          ${qHtml}
+          <div class="quiz-options-list">
+            ${optionsHtml}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  container.insertAdjacentHTML('beforeend', html);
+
+  // Event delegation for option clicks (no custom event; logic handled in script_quiz.js)
+  if (!container.__quizClickBound) {
+    container.addEventListener('click', function(ev) {
+      const btn = ev.target.closest('.quiz-badge-btn');
+      const row = btn ? btn.closest('.quiz-option-row') : ev.target.closest('.quiz-option-row');
+      if (!row) return;
+
+      const box = row.closest('.quiz-box');
+      if (!box) return;
+
+      // Visual feedback: highlight selected badge in green
+      try {
+        const badge = row.querySelector('.metadata-badge');
+        if (badge) {
+          badge.style.backgroundColor = 'var(--success)';
+          badge.style.color = '#fff';
+        }
+      } catch {}
+
+      // Disable further interaction within this quiz box
+      box.querySelectorAll('button.quiz-badge-btn').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+      // No emission here; script_quiz.js listens to clicks on #results
+    });
+    container.__quizClickBound = true;
+  }
 }
 
 

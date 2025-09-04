@@ -558,6 +558,10 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
 }
 
+.tool-icon.quiz {
+    background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
+}
+
 .tool-icon.verbeto {
     background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
 }
@@ -1301,6 +1305,29 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
       background: var(--apps-secondary);
       transform: translateY(-2px);
   }
+
+
+  
+  .quiz-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-8);
+    background: var(--apps-primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-xl);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all var(--transition-fast);
+}
+
+.quiz-button:hover:not(:disabled) {
+    background: var(--apps-secondary);
+    transform: translateY(-2px);
+}
 
 /* ===== RESULTS CONTAINER ===== */
 .results-container {
