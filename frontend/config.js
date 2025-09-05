@@ -133,6 +133,8 @@ Developer: # Função e Objetivo
 
 
 
+
+
 // =================== API Configuration (DEV/PROD) ===================
 // LEMBRAR DE MUDAR TAMBÉM EM APP.PY
 // ====================================================================
@@ -150,8 +152,8 @@ const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Rende
 
 function resolveApiBaseUrl() {
   
-  //return { base: PROD_BASE, mode: 'production' };
-  return { base: LOCAL_BASE, mode: 'development' };
+  return { base: PROD_BASE, mode: 'production' };
+  //return { base: LOCAL_BASE, mode: 'development' };
 }
 
 const { base: apiBaseUrl, mode } = resolveApiBaseUrl();

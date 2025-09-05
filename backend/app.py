@@ -99,13 +99,13 @@ class LexicalSearchResource(Resource):
             # Parse input parameters with defaults
             term = safe_str(data.get("term", ""))
             source = data.get("source", [])  # lista
-            type = data.get("type", "md")
+            file_type = data.get("file_type")
 
             if not term:
                 raise ValueError("Search term is required")
 
             # Process search
-            results = lexical_search_in_files(term, source, type)
+            results = lexical_search_in_files(term, source, file_type)
 
             # Sort by source for consistent ordering
             results.sort(key=lambda x: x['source' or 'book' or 'file'])
