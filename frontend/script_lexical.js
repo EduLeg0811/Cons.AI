@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
             responseData.results = [];
         }
 
+
+        console.log('############ responseData', responseData);
+
         // Display results
         const newTitle = `Lexical Search    ●    ${term}`;
         removeLoading(resultsDiv);

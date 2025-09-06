@@ -14,6 +14,63 @@ const COLOR6 = 'red';
 // Opcional: exposição global para fácil consumo em outras páginas/scripts
 window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 
+// ========================= Group Color Strategy =========================
+// Central mapping of group -> colors (primary/secondary). Changing here updates UI theme.
+window.GROUP_COLORS = window.GROUP_COLORS || {
+  search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
+  apps:   { primary: '#f87171', secondary: '#fca5a5' }, // light red (IA Apps)
+  semantical: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
+  bots:   { primary: '#10b981', secondary: '#34d399' }, // green
+  utils:  { primary: '#7c3aed', secondary: '#a855f7' }, // purple
+};
+
+// Map module type identifiers -> group keys
+// Types come from display.js renderers (e.g., 'lexical', 'semantical', 'verbetopedia', 'ccg', 'ragbot', 'quiz', 'lexverb').
+window.MODULE_GROUPS = window.MODULE_GROUPS || {
+  // Search tools
+  lexical: 'search',
+  lexverb: 'search',
+  // Semantical apps
+  semantical: 'semantical',
+  verbetopedia: 'semantical',
+  ccg: 'semantical',
+  // Bots
+  ragbot: 'bots',
+  // Other apps
+  quiz: 'apps',
+  // Fallbacks
+  simple: 'apps',
+  title: 'apps',
+};
+
+// Apply GROUP_COLORS into CSS variables so styles pick them up
+(function applyGroupColorsToCSSVars(){
+  try {
+    const root = document.documentElement;
+    const C = window.GROUP_COLORS || {};
+    if (C.search) {
+      root.style.setProperty('--search-primary', C.search.primary);
+      root.style.setProperty('--search-secondary', C.search.secondary || C.search.primary);
+    }
+    if (C.apps) {
+      root.style.setProperty('--apps-primary', C.apps.primary);
+      root.style.setProperty('--apps-secondary', C.apps.secondary || C.apps.primary);
+    }
+    if (C.semantical) {
+      root.style.setProperty('--sem-primary', C.semantical.primary);
+      root.style.setProperty('--sem-secondary', C.semantical.secondary || C.semantical.primary);
+    }
+    if (C.bots) {
+      root.style.setProperty('--bots-primary', C.bots.primary);
+      root.style.setProperty('--bots-secondary', C.bots.secondary || C.bots.primary);
+    }
+    if (C.utils) {
+      root.style.setProperty('--utils-primary', C.utils.primary);
+      root.style.setProperty('--utils-secondary', C.utils.secondary || C.utils.primary);
+    }
+  } catch (e) { /* noop */ }
+})();
+
 
 const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbetes/';
 
@@ -90,35 +147,38 @@ Sua função é Gerar UM QUIZ INTERATIVO avançado sobre Conscienciologia, volta
 
 # Instruções Gerais
 - Tom acadêmico, objetivo e direto.
+- Utilize sempre informações provenientes dos documentos da Conscienciologia no vector store.
+- Nunca repita perguntas ou temas em sequência.
+- O nível de dificuldade deve evoluir: Médio → Médio-Alto → Alto → Muito Alto → Especialista.
 
-## 1) Geração da Pergunta
-- Pergunta deve ser inteligente e não óbvia.
-- Não repita perguntas nem aborde temas semelhantes em sequência.
-- Comece em nível MÉDIO; aumente a dificuldade a cada nova questão (sequência: Médio → Médio-Alto → Alto → Muito Alto → Especialista).
-- Nunca revele a alternativa correta ao apresentar a pergunta.
+# 1) Geração da Pergunta
+- A pergunta deve ser inteligente, não óbvia e exigir reflexão crítica do especialista.
+- Contextualize o tema em até 2 parágrafos, sem preâmbulos inúteis.
+- A resposta correta deve ser dedutível apenas por quem domina o conteúdo conscienciológico.
+- Nunca revele ou sugira qual é a opção correta.
 
-## 2) Geração das Opções de Resposta
-- Ao receber o pedido para formular pergunta, gere exatamente 1 pergunta com 4 opções.
-- Sempre utilize múltipla escolha com 4 opções numeradas (1, 2, 3, 4), com apenas uma mais correta em relação às demais.
-- Não use pistas ou termos marcadores fáceis e óbvios.
-- Explore as nuances da pergunta, em vez de criar opções óbvias.
-- As 3 opções incorretas não podem ser evidentes em si mesmas.
-- Ao elaborar as opções, certifique-se de que elas não são imbecis.
-- Seja inteligente e criativo ao elaborar as opções, o publico-alvo são especialistas inteligentes que não aceitam obviedades.
-- Crie opções que necessitem de conhecimento do tema, de reflexão e de análise crítica do enunciado.
-- Para ser capaz de responder à pergunta, o usuário deve ter conhecimentos de Conscienciologia, e não apenas se guiar pela opção mais óbvia.
-- Não use termos genéricos ou óbvios.
+# 2) Geração das Opções de Resposta
+- Crie exatamente 4 opções numeradas (1, 2, 3, 4).
+- Uma deve estar mais correta, mas as outras três precisam ser **plausíveis**, **sofisticadas** e **não descartáveis de imediato**.
+- Todas as opções devem parecer defensáveis, mas conter *um detalhe conceitual incorreto, incompleto ou deslocado*.
+- Evite usar oposições simplistas (certo/errado, positivo/negativo).
+- Cada alternativa incorreta deve representar:  
+  - uma confusão conceitual frequente,  
+  - uma interpretação reducionista,  
+  - ou uma aplicação inadequada de um conceito verdadeiro.  
+- Proíba opções genéricas, óbvias ou “imbecis”.
 
-## 2) Formato Estrito
-- Use sempre Markdown limpo apenas no enunciado da pergunta, mas nunca no texto das 4 opções de resposta.
-- Realce termos importantes utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme for relevante.
-- Apresente sempre no seguinte modelo:
-Pergunta: <1 a 3> parágrafos concisos, sem preâmbulos>
+# 3) Formato Estrito
+- Use sempre Markdown limpo no enunciado da pergunta, realçando termos importantes com *itálico*, **negrito** ou ***negrito-itálico***.
+- As opções de resposta não devem conter Markdown.
+- Estrutura final:
+Pergunta: <texto da pergunta em até 2 parágrafos>
 Opções:
 1. <Opção 1>
 2. <Opção 2>
 3. <Opção 3>
 4. <Opção 4>
+As 4 opções devem ser redigidas de forma a que todas pareçam plausíveis a um especialista, mas apenas uma resista a uma análise detalhada fundamentada nos conceitos conscienciológicos.
 `;
 
 const PROMPT_QUIZ_RESPOSTA = `
@@ -130,6 +190,27 @@ Developer: # Função e Objetivo
 - Títulos e sub-títulos devem sempre estar em **negrito**.
 - Não indique as referências bibliográficas na resposta.
 `;
+
+
+
+VERSION_DEVELOPMENT = true
+
+// =================== API Configuration (DEV/PROD) ===================
+// LEMBRAR DE MUDAR TAMBÉM EM APP.PY
+// ====================================================================
+// # Restrinja origens em produção; inclua localhost para dev
+// FRONTEND_ORIGINS = [
+//     "https://cons-ai-server.onrender.com",
+//     "http://localhost:5173",  # se usar Vite/Dev server
+//     "http://127.0.0.1:5500",  # se usar Live Server
+//     "http://localhost:5500",  # se usar Live Server
+// ]
+const LOCAL_BASE = 'http://localhost:5000';              // backend local
+const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
+
+
+if (VERSION_DEVELOPMENT) {
+
 
 
 
@@ -147,6 +228,63 @@ Developer: # Função e Objetivo
 // ]
 const LOCAL_BASE = 'http://localhost:5000';              // backend local
 const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
+
+
+
+function resolveApiBaseUrl() {
+  // Permite forçar via ?api=https://... ou via localStorage.apiBaseUrl
+  const qs = new URLSearchParams(location.search).get('api');
+  if (qs) return { base: qs, mode: 'custom' };
+
+  const saved = localStorage.getItem('apiBaseUrl');
+  if (saved) return { base: saved, mode: 'custom' };
+
+  const isFile = location.protocol === 'file:'; // se abrir via file://
+  const host = location.hostname || '';
+  const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+
+  // file:// ou localhost => DEV
+  if (isFile || isLocalHost) return { base: LOCAL_BASE, mode: 'development' };
+
+  // padrão => PROD
+  return { base: PROD_BASE, mode: 'production' };
+}
+
+const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
+
+// Log explícito do modo, base e origem da página
+const origin = location.origin || 'file://';
+console.log(`[API] mode=${mode} | base=${apiBaseUrl} | origin=${origin}`);
+
+// Badge visual DEV/PROD
+try {
+  const badge = document.createElement('div');
+  badge.textContent = (mode || 'unknown').toUpperCase();
+  badge.style.cssText = [
+    'position:fixed','right:8px','bottom:8px','padding:4px 6px',
+    'font:12px/1.2 monospace','background:#0007','color:#fff',
+    'border-radius:4px','z-index:9999','letter-spacing:0.5px'
+  ].join(';');
+  //document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
+} catch {}
+
+
+
+
+// (Opcional) “ping” para acordar backend no Render; em DEV apenas valida CORS
+window.addEventListener('load', () => {
+  fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
+});
+
+
+
+// Exporta para debug no console
+window.__API_BASE = apiBaseUrl;
+window.apiBaseUrl = apiBaseUrl;
+window.apiBaseUrl = apiBaseUrl;
+
+
+} else {
 
 
 
@@ -188,7 +326,7 @@ window.addEventListener('load', () => {
 window.__API_BASE = apiBaseUrl;
 
 
-
+}
 
 // ---------------- Chat ID helpers ----------------
 function createUuid() {

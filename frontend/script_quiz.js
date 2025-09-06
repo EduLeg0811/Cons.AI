@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (typeof insertLoading === 'function') {
-                insertLoading(resultsDiv, 'Processando resposta...');
+                insertLoading(resultsDiv, 'Analisando a resposta...');
             }
 
             console.log('Resposta do usuario:', userAnswer);

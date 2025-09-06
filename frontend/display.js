@@ -92,20 +92,18 @@ const renderers = {
 
 // Resolve group accent color from global constants
 function getAccentColor(type) {
-  const colors = (window && window.MODULE_COLORS) ? window.MODULE_COLORS : {};
-  // Map module types to group colors; adjust mapping as needed
-  const map = {
-    quiz: colors.COLOR1 || 'green',
-    lexical: colors.COLOR2 || 'blue',
-    semantical: colors.COLOR2 || 'blue',
-    ragbot: colors.COLOR3 || 'purple',
-    ccg: colors.COLOR4 || 'orange',
-    lexverb: colors.COLOR5 || 'teal',
-    simple: colors.COLOR6 || 'red',
-    title: colors.COLOR3 || 'purple',
-    verbetopedia: colors.COLOR2 || 'blue'
-  };
-  return map[type] || colors.COLOR1 || 'green';
+  try {
+    const groupMap = (window && window.MODULE_GROUPS) || {};
+    const colors = (window && window.GROUP_COLORS) || {};
+    const grp = groupMap[type];
+    const col = grp && colors[grp] && (colors[grp].primary || colors[grp].color || colors[grp]);
+    if (col) return col;
+  } catch {}
+  try {
+    const c = getComputedStyle(document.documentElement).getPropertyValue('--module-accent').trim();
+    if (c) return c;
+  } catch {}
+  return '#0ea5e9';
 }
 
 // Helper: decide if reference badges should be shown (default: true)
@@ -280,6 +278,9 @@ function removeLoading(container) {
 //______________________________________________________________________________________________
 function showSearch(container, data) {
 
+    
+console.log('showSearch', data);
+    
     if (!container) {
         console.error('Results container not found');
         return;
@@ -302,9 +303,10 @@ function showSearch(container, data) {
             if (!src) return 'Results';
             let s = String(src);
             s = s.split(/[\\/]/).pop();           // tira diretórios
-            s = s.replace(/\.(md|markdown)$/i, ''); // tira extensão
+            s = s.replace(/\.(md|markdown|txt|xlsx)$/i, ''); // tira extensão
             return s;
         };
+
 
    // 2) Agrupar por fonte normalizada
         const groups = arr.reduce((acc, it, idx) => {
@@ -336,17 +338,18 @@ function showSearch(container, data) {
         summaryRows += groupNames.map(name => {
             const n = groups[name].length;
             const target = `group-${slug(name)}`;
-            // Aplica cor do grupo nos pills por fonte (usa mesma cor do módulo lexical)
+            // Aplica cor do grupo nos pills por fonte (usa mesma cor do módulo lexical) com transparência
             const accent = getAccentColor('lexical');
-            return `<button class="pill pill-row" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count" style="background:${accent};color:#fff;">${n}</span></button>`;
+            const accentWithAlpha = `${accent}CC`; // Adiciona 80% de opacidade (CC em hex)
+            return `<button class="pill pill-row accented" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count">${n}</span></button>`;
         }).join('');
     } else {
         // Only total row
-        const accentTotal = getAccentColor('lexical');
-        summaryRows += `<button class="pill pill-row" data-target="all-results"><span class="pill-label">Total</span><span class="count" style="background:${accentTotal};color:#fff;">${totalCount}</span></button>`;
+        summaryRows += `<button class="pill pill-row accented" data-target="all-results"><span class="pill-label">Total</span><span class="count">${totalCount}</span></button>`;
     }
     summaryRows += '</div>';
     container.insertAdjacentHTML('beforeend', summaryRows);
+
 
     // Processamento GERAL
     // ===========================================================================================
@@ -397,8 +400,6 @@ function showSearch(container, data) {
         // Reunir os itens de todas as fontes em lista única
         // ===========================================================================================
         const sortedItems = [...arr].sort((b, a) => (b.score || 0) - (a.score || 0));
-
-        console.log('sortedItems', sortedItems);
 
         let groupHtml = '';
 
@@ -503,7 +504,7 @@ const format_paragraph_LO = (item) => {
     const title = item.title || '';
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || '';
+    const text = item.markdown || item.content_text || item.text || '';
     let source = item.source || '';
     source = bookName(source);
 
@@ -581,7 +582,7 @@ const format_paragraph_DAC = (item) => {
     const title = item.title || '';
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || '';
+    const text = item.markdown || item.content_text || item.text || '';
     const argumento = item.argumento || '';
     const section = item.section || '';
     let source = item.source || '';
@@ -667,7 +668,7 @@ const format_paragraph_CCG = (item) => {
     const title = item.title || '';
     const question_number = item.number || '';
     const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || '';
+    const text = item.markdown || item.content_text || item.text || '';
     const folha = item.folha || '';
     let source = item.source || '';
     source = bookName(source);
@@ -747,7 +748,7 @@ const format_paragraph_EC = (item) => {
     const title = item.title || '';
     const verbete_number = item.number || '';
     const score = item.score || 0.00;
-    const text = item.markdown || item.content.text || '';
+    const text = item.markdown || item.content.text || item.text || '';
     const area = item.area || '';
     const theme = item.theme || '';
     const author = item.author || '';
@@ -858,7 +859,7 @@ const format_paragraph_Default = (item) => {
     const title = item.title || '';
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || '';
+    const text = item.markdown || item.content_text || item.text || '';
     let source = item.source || '';
     source = bookName(source);
 
@@ -1159,13 +1160,13 @@ function showVerbetopedia(container, data) {
     const _vb_count = items.length;
     const _vb_html = `
       <div class="summary-list">
-        <button class="pill pill-row accented" data-target="group-ec" style="--accent-color: ${getAccentColor('verbetopedia')}">
+        <button class="pill pill-row accented" data-target="group-ec">
           <span class="pill-label">Enciclopédia da Conscienciologia</span>
           <span class="count">${_vb_count}</span>
         </button>
       </div>
       <div id="group-ec" class="collapse-panel">
-        <div class="displaybox-container accented" style="--accent-color: ${getAccentColor('verbetopedia')}">
+        <div class="displaybox-container">
           <div class="displaybox-content group-content">
             ${contentHtml}
           </div>
@@ -1218,36 +1219,27 @@ function showLexverb(container, data) {
         );
         return;
     }
-
-    // 1) Extrair metadados antes para usar score
-    const items = arr.map(item => {
-        const metaData = extractMetadata(item, 'verbetopedia');
-        return { ...item, _meta: metaData };
-    });
-
    
     // 3) Gera HTML de cada item
-    const contentHtml = items.map(item => {
-        // Conteúdo principal
-        let content = (
-            (typeof item.markdown === 'string' && item.markdown) ||
-            (typeof item.page_content === 'string' && item.page_content) ||
-            (typeof item.text === 'string' && item.text) ||
-            ''
-        );
+    const contentHtml = arr.map(item => {
 
+        // Conteúdo principal
+        const metaData = item.metadata;
+
+        let content = metaData.Markdown || metaData.page_content || metaData.text || metaData.paragraph || '';
         const rawHtml  = renderMarkdown(content);
         const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-        const metaData = item._meta;
-
         // Inclui ícone PDF após o título
         const titleHtml = `
-        <strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  #${metaData.number}  ●  ${metaData.date}
+        <strong>${metaData.Title}</strong> (${metaData.Area})  ●  <em>${metaData.Author}</em>  ●  #${metaData.Number}  ●  ${metaData.Date}
     `;
 
+
         // 3) Monta o link para download do verbete PDF
-        let arquivo = metaData.title;
+        let arquivo = metaData.Title;
+
+        console.log('++++++++++++++++arquivo:', arquivo);
 
         // Sanitiza: remove acentos e troca ç/Ç
         arquivo = arquivo
@@ -1288,7 +1280,7 @@ function showLexverb(container, data) {
     <div class="displaybox-group">
         <div class="displaybox-header">
             <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
-            <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
+            <span class="score-badge" style="font-size: 12px">${arr.length} resultado${arr.length !== 1 ? 's' : ''}</span>
         </div>
         <div class="displaybox-content">
             ${contentHtml}
@@ -1299,10 +1291,10 @@ function showLexverb(container, data) {
     container.insertAdjacentHTML('beforeend', groupHtml);
 
     // Also render collapsible badge row + panel for Verbetopedia
-    const _vb_count = items.length;
+    const _vb_count = arr.length;
     const _vb_html = `
       <div class="summary-list">
-        <button class="pill pill-row" data-target="group-ec">
+        <button class="pill pill-row accented" data-target="group-ec">
           <span class="pill-label">Enciclopédia da Conscienciologia</span>
           <span class="count">${_vb_count}</span>
         </button>
@@ -1455,7 +1447,7 @@ function showCcg(container, data) {
     const _vb_count = items.length;
     const _vb_html = `
       <div class="summary-list">
-        <button class="pill pill-row" data-target="group-ec">
+        <button class="pill pill-row accented" data-target="group-ec">
           <span class="pill-label">Enciclopédia da Conscienciologia</span>
           <span class="count">${_vb_count}</span>
         </button>

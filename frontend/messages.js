@@ -34,12 +34,12 @@ const TOOL_MESSAGES = {
   'ConsGPT': {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
-      'O <strong>ConsGPT</strong> Ã© provavelmente o chatbot mais <em>inteligente</em> de todos. ',
-      'Ã“timo para brainstorming, resumos e conversas em geral.<br>',
+      'O <strong>ConsGPT</strong> é provavelmente o chatbot mais <em>inteligente</em> de todos. ',
+      'Étimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Experimente enviar o texto que estÃ¡ escrevendo e pedir para ele dar <em>sugestÃµes de melhoria</em>.<br>',
-      '<strong>2.</strong> PeÃ§a a ele que formule <em>analogias</em> ou <em>metÃ¡foras</em> para algum tema.<br>',
-      '<strong>3.</strong> Se estiver no smartphone, nÃ£o deixe de conversar <em>por voz</em> com ele.',
+      '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
+      '<strong>2.</strong> Peça a ele que formule <em>analogias</em> ou <em>metáforas</em> para algum tema.<br>',
+      '<strong>3.</strong> Se estiver no smartphone, não deixe de conversar <em>por voz</em> com ele.',
     ].join('\n')
   },
 
@@ -47,11 +47,11 @@ const TOOL_MESSAGES = {
   'ConsLM': {
     short: '<em>NotebookLM da Google</em>',
     extra: [
-      'O <strong>ConsLM</strong> Ã© o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
-      'Excelente para resumos e busca de informaÃ§Ãµes em livros, pois fornece a <em>referÃªncia</em> do trecho encontrado.<br>',
+      'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
+      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Experimente a seÃ§Ã£o lateral de <em>Podcasts de Conscienciologia</em>.<br>',
-      '<strong>2.</strong> Veja tambÃ©m os <em>resumos prontos</em> e o <em>mapa de conhecimento</em> gerado por IA.'
+      '<strong>1.</strong> Experimente a seção lateral de <em>Podcasts de Conscienciologia</em>.<br>',
+      '<strong>2.</strong> Veja também os <em>resumos prontos</em> e o <em>mapa de conhecimento</em> gerado por IA.'
     ].join('\n')
   },
 
@@ -71,11 +71,11 @@ const TOOL_MESSAGES = {
   },
 
   // Tool: Lexical Search
-  'Pesquisa Léxica em Livros': {
+  'Pesquisa em Livros': {
     short: '<em>Busca de termos exatos em livros</em>',
     extra: [
       'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
-      'Étil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
+      'Útil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
@@ -87,11 +87,11 @@ const TOOL_MESSAGES = {
 
 
   // Tool: Lexical Verbetes
-  'Pesquisa Léxica em Verbetes': {
+  'Definologia de Verbetes': {
     short: '<em>Busca de termos exatos em verbetes</em>',
     extra: [
       'Encontra os parágrafos de verbetes que contenham os termos exatos (literais). ',
-      'Étil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
+      'Útil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>verbetes</em> em que deseja buscar.<br>',
@@ -109,7 +109,7 @@ const TOOL_MESSAGES = {
     short: '<em>Busca semântica por afinidade</em>',
     extra: [
       'Encontra os parágrafos de livros que são <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
-      'Étima para pesquisar temas e ideias correlatas ou afins.<br>',
+      'Útil para pesquisar temas e ideias correlatas ou afins.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
@@ -154,7 +154,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: '<em>Sorteio de ortopenata do LO</em>',
+    short: '<em>Sorteio de Ortopensata do LO</em>',
     extra: [
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
       'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir aleatoriamente uma página de um livro para alimentar a autopesquisa.<br>',
@@ -206,28 +206,39 @@ const TOOL_MESSAGES = {
 
 // Map visible H3 titles in index.html to canonical keys in TOOL_MESSAGES
 const TOOL_ALIASES = {
-  'OpenAI ConsGPT': 'ConsGPT',
-  'Google ConsLM': 'ConsLM',
-  'Lexical Verbetes': 'Pesquisa Léxica em Verbetes',
-  'Lexical Livros': 'Pesquisa Léxica em Livros',
-  'Semantic Verbetes': 'Pesquisa Semântica em Verbetes',
-  'Semantic Livros': 'Pesquisa Semântica',
-  'Verbetopedia': 'Enciclopédia da Conscienciologia',
+  'OpenAI ConsGPT':        'ConsGPT',
+  'Google ConsLM':         'ConsLM',
+  'Definologia de Verbetes': 'Lexical Search',
+  'Pesquisa em Livros':     'Lexical Search',
+  'Pesquisa Semântica em Livros': 'Semantical Search',
+  'Verbetopedia':           'Semantical Search',
+  'Conscienciogramopedia':  'Semantical Search',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
-  'Bibliomancia Digital': 'Bibliomancia Digital',
+  'Bibliomancia Digital':   'Bibliomancia Digital'
 };
 
 // Apply messages to the DOM
 // Finds panels and tool cards and injects the corresponding text.
 function applyMessages() {
   try {
-    // Panels: set description under each h2
+    // Panels: set description under each h2 (robust by panel group class)
     document.querySelectorAll('.tool-panel .panel-header .panel-info').forEach(info => {
-      const h2 = info.querySelector('h2');
       const p = info.querySelector('p');
-      if (!h2 || !p) return;
-      const key = h2.textContent.trim();
-      const descr = PANEL_DESCRIPTIONS[key];
+      if (!p) return;
+      const panel = info.closest('.tool-panel');
+      if (!panel) return;
+      let descr = '';
+      if (panel.classList.contains('bots')) {
+        descr = 'Assistentes de Conversação por IA';
+      } else if (panel.classList.contains('search')) {
+        descr = 'Pesquisa léxica por termos exatos';
+      } else if (panel.classList.contains('sem')) {
+        descr = 'Pesquisa semântica por afinidade';
+      } else if (panel.classList.contains('apps')) {
+        descr = 'Aplicativos de IA para Pesquisa';
+      } else if (panel.classList.contains('utils')) {
+        descr = 'Links e Recursos Úteis';
+      }
       if (descr) p.textContent = descr;
     });
 
@@ -236,8 +247,39 @@ function applyMessages() {
       const titleEl = card.querySelector('.tool-info h3');
       if (!titleEl) return;
       const key = titleEl.textContent.trim();
-      const canonical = (typeof TOOL_ALIASES === 'object' && TOOL_ALIASES[key]) || key;
-      const msg = TOOL_MESSAGES[canonical];
+      let canonical = (typeof TOOL_ALIASES === 'object' && TOOL_ALIASES[key]) || key;
+
+      // Disambiguate by href when titles are reused (e.g., "Livros & Tratados")
+      try {
+        const href = (card.getAttribute('href') || '').toLowerCase();
+        if (href.includes('index_lexical.html')) {
+          canonical = 'Pesquisa em Livros';
+        } else if (href.includes('index_lexverb.html')) {
+          canonical = 'Definologia de Verbetes';
+        } else if (href.includes('index_semantical.html')) {
+          canonical = 'Pesquisa Semântica em Livros';
+        } else if (href.includes('index_verbetopedia.html')) {
+          canonical = 'Verbetopedia';
+        } else if (href.includes('index_ccg.html')) {
+          canonical = 'Conscienciogramopedia';
+        } else if (href.includes('index_mancia.html')) {
+          canonical = 'Bibliomancia Digital';
+        } else if (href.includes('index_quiz.html')) {
+          canonical = 'Quiz Conscienciológico';
+        }
+      } catch (e) { /* ignore */ }
+
+      let msg = TOOL_MESSAGES[canonical];
+      // Fallbacks for encoding-mangled keys based on href
+      try {
+        const href2 = (card.getAttribute('href') || '').toLowerCase();
+        if (!msg && href2.includes('index_quiz.html')) {
+          msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;
+        }
+        if (!msg && href2.includes('index_semantical.html')) {
+          msg = TOOL_MESSAGES['Pesquisa Semântica em Livros'] || msg;
+        }
+      } catch (e) { /* ignore */ }
       if (!msg) return;
 
       // Native tooltip: use a plain-text version of title/short/extra
@@ -272,4 +314,3 @@ function applyMessages() {
 document.addEventListener('DOMContentLoaded', applyMessages);
 
 // Removed page-specific Verbetopedia message injection; page now contains static labels
-

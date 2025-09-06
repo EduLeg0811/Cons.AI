@@ -21,9 +21,9 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
 
     results = [
         {
-            "book": "LivroA",
-            "paragraph": "Texto do parágrafo encontrado",
-            "paragraph_number": 12,   # ou None
+            "source": "LivroA",
+            "text": "Texto do parágrafo encontrado",
+            "number": 12,   # ou None
             "metadata": {...}         # dicionário com campos extras (Excel) ou None
         },
     ]
@@ -39,19 +39,12 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
     )
     file_map = {os.path.splitext(os.path.basename(f))[0].upper(): f for f in all_files}
 
-    logging.info(f"All files: {all_files}")
-    logging.info(f"Source: {source}")
-    logging.info(f"File type: {file_type}")
-  
-
     # Seleciona apenas os arquivos pedidos pelo usuário
     matching_files = []
     for book in source:
         book_upper = book.upper()
-        logging.info(f"Book: {book_upper}")
         if book_upper in file_map:
             matching_files.append(file_map[book_upper])
-            logging.info(f"Found file: {file_map[book_upper]}")
             found_books.add(book_upper)
 
     if not matching_files:
@@ -72,23 +65,23 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
             # ______________________________________________________________________
             # 1. Texto ou Markdown
             # ______________________________________________________________________
-            if file_type in ["text", "md"]:
+            if file_type in ["txt", "md"]:
                 content = _read_markdown_file(file_path)
                 # substring matching (mais tolerante com pontuação e acentos)
                 matches = _search_in_content(content, search_term, match_mode="substring")
 
                 for match in matches or []:
                     results.append({
-                        "book": book,
-                        "paragraph": match.get("paragraph_text"),
-                        "paragraph_number": match.get("paragraph_number"),
+                        "source": book,
+                        "text": match.get("paragraph_text"),
+                        "number": match.get("paragraph_number"),
                         "metadata": None
                     })
 
             # ______________________________________________________________________
             # 2. Excel
             # ______________________________________________________________________
-            elif file_type == "excel":
+            elif file_type == "xlsx":
                 content = _read_excel_file(file_path)  # lista de dicionários
 
                 if not content:
@@ -98,15 +91,24 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
                 first_row = content[0]
                 col_names_in_order = list(first_row.keys())
                 texto_key = col_names_in_order[0]
-
                 term = search_term.strip().lower()
+
+                logging.info(f"\n\n")
+                logging.info(f"<<<<<lexical_search_in_files>>>>> col_names_in_order: {col_names_in_order}")
+                logging.info(f"<<<<<lexical_search_in_files>>>>> texto_key: {texto_key}")
+                logging.info(f"<<<<<lexical_search_in_files>>>>> term: {term}")
+                
+
+
                 for row in content:
+                    i_row = row.get("paragraph_number")
                     texto = str(row.get(texto_key, "")).lower()
+                   
                     if term in texto:
                         results.append({
-                            "book": book,
-                            "paragraph": row.get(texto_key, ""),
-                            "paragraph_number": None,
+                            "source": book,
+                            "text": row.get(texto_key, ""),
+                            "number": i_row,
                             "metadata": row
                         })
 
@@ -260,7 +262,7 @@ def _list_files(source_dir: str = FILES_SEARCH_DIR, file_type: str = "md") -> Li
         ]
 
         all_files = os.listdir(md_path)
-        logging.info(f"<<<<<_list_files>>>>> All files in directory ({len(all_files)}): {all_files}")
+        #logging.info(f"<<<<<_list_files>>>>> All files in directory ({len(all_files)}): {all_files}")
 
         return files
 

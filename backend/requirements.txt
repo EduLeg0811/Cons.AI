@@ -46,3 +46,4 @@ markdown
 beautifulsoup4
 psutil
 pandas
+openpyxl

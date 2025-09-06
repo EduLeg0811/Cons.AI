@@ -108,7 +108,7 @@ class LexicalSearchResource(Resource):
             results = lexical_search_in_files(term, source, file_type)
 
             # Sort by source for consistent ordering
-            results.sort(key=lambda x: x['source' or 'book' or 'file'])
+            #results.sort(key=lambda x: x['source' or 'book' or 'file'])
 
             # Monta a resposta diretamente
             response = {
