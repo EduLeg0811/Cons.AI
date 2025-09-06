@@ -175,7 +175,7 @@ function showQuiz(container, data) {
       try {
         const badge = row.querySelector('.metadata-badge');
         if (badge) {
-          badge.style.backgroundColor = getAccentColor('quiz');
+          badge.style.backgroundColor = '#10b981'; // Changed to green-500 color
           badge.style.color = '#fff';
         }
       } catch {}
@@ -971,7 +971,6 @@ const format_paragraph_Default = (item) => {
     <div class="metadata-container">
       <span class="metadata-badge citation">Citations: ${citations}</span>
       <span class="metadata-badge model">Model: ${model}</span>
-      <span class="metadata-badge temperature">Temperature: ${temperature}</span>
       <span class="metadata-badge tokens">Tokens: ${total_tokens_used}</span>
     </div>
     `;  

@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = 'index.html';
 
 
-                }, 60000);
+                }, 100000);
 
             }).catch((e) => {
                 // Mostra mensagem amigável e reabilita UI, mantendo a mesma pergunta
@@ -211,6 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
             quizData = firstData;
    
         // ------------------------------------------------------
+
+        console.log('>>>> Nova Pergunta Elaborada (Quiz Data): ', quizData);
 
             // Habilita botão
             if (searchButton) {

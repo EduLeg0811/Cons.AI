@@ -72,7 +72,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Lexical Search
   'Pesquisa em Livros': {
-    short: '<em>Busca de termos exatos em livros</em>',
+    short: '<em>Busca de termos exatos</em>',
     extra: [
       'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
       'Útil para listar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
@@ -124,7 +124,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Verbetopedia
   'Verbetopedia': {
-    short: '<em>Sugestão de verbetes da Enciclopédia</em>',
+    short: '<em>Verbetes da Enciclopédia</em>',
     extra: [
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
