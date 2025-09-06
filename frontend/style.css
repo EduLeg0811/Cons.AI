@@ -30,8 +30,8 @@
     --bots-primary: #10b981;
     --bots-secondary: #34d399;
     /* Swapped palettes: Apps <-> Utils */
-    --apps-primary: #f59e0b;
-    --apps-secondary: #f7c56e;
+    --apps-primary: #7c3aed;
+    --apps-secondary: #a855f7;
     --utils-primary: #7c3aed;
     --utils-secondary: #a855f7;
     
@@ -169,7 +169,7 @@ body {
     background: rgba(17, 24, 39, 0.85); /* gray-900-ish with opacity */
     border-bottom-color: var(--gray-700);
 }
-
+vermelho 
 .navbar-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -796,7 +796,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
 }
 .theme-apps .search-input-wrapper:focus-within {
     border-color: var(--apps-primary);
-    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15); /* light red glow to match group */
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15); /* violet glow to match group */
 }
 
 .theme-bots .search-button { background: var(--bots-primary); }
@@ -2234,6 +2234,9 @@ body:not([class]) .navbar .navbar-controls {
   justify-content: space-between;
   align-items: center;
 }
+
+/* Revert homepage navbar button layout to original */
+body:not([class]) .navbar .navbar-container { justify-content: space-between !important; }
 
 /* Small edge spacing for buttons to match navbar rhythm */
 .navbar .navbar-controls > *:first-child { margin-left: var(--space-2); }

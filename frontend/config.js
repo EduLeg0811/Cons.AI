@@ -18,10 +18,10 @@ window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 // Central mapping of group -> colors (primary/secondary). Changing here updates UI theme.
 window.GROUP_COLORS = window.GROUP_COLORS || {
   search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
-  apps:   { primary: '#f87171', secondary: '#fca5a5' }, // light red (IA Apps)
+  apps:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
   semantical: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
   bots:   { primary: '#10b981', secondary: '#34d399' }, // green
-  utils:  { primary: '#7c3aed', secondary: '#a855f7' }, // purple
+  utils:  { primary: '#f87171', secondary: '#fca5a5' }, // light red (Links Externos)
 };
 
 // Map module type identifiers -> group keys
