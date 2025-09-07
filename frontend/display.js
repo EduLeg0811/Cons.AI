@@ -74,9 +74,6 @@ function renderMarkdown(mdText) {
   }
 
 
-
-
-
 // ===== Handlers mapping =====
 const renderers = {
     ragbot: showRagbot,
@@ -495,10 +492,7 @@ const format_paragraphs_source = (item, sourceName) => {
 // ===========================================================================
 const format_paragraph_LO = (item) => {
 
-    console.log('Available properties:', Object.keys(item));
-    if (item.metadata) {
-        console.log('Metadata properties:', Object.keys(item.metadata));
-    }
+
 
     // Fields are directly on the item
     const title = item.title || '';
@@ -573,10 +567,6 @@ const format_paragraph_LO = (item) => {
 const format_paragraph_DAC = (item) => {
     
 
-    console.log('Available properties:', Object.keys(item));
-    if (item.metadata) {
-        console.log('Metadata properties:', Object.keys(item.metadata));
-    }
 
     // Fields are directly on the item
     const title = item.title || '';
@@ -587,13 +577,6 @@ const format_paragraph_DAC = (item) => {
     const section = item.section || '';
     let source = item.source || '';
     source = bookName(source);
-
-    // console.log('---------------[display.js] [format_paragraph_DAC] paragraph_number: ', paragraph_number);
-    // console.log('---------------[display.js] [format_paragraph_DAC] title: ', title);
-    // console.log('---------------[display.js] [format_paragraph_DAC] score: ', score);
-    // console.log('---------------[display.js] [format_paragraph_DAC] argumento: ', argumento);
-    // console.log('---------------[display.js] [format_paragraph_DAC] section: ', section);
-    // console.log('---------------[display.js] [format_paragraph_DAC] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];      
@@ -617,7 +600,11 @@ const format_paragraph_DAC = (item) => {
         if (score > 0.0) {
             badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
         }
+
+        console.log('---------------[display.js] [format_paragraph_DAC] badgeParts: ', badgeParts);
     }
+
+
 
     // Join the non-empty badges with a space
     metaBadges = badgeParts.join('');
@@ -659,11 +646,6 @@ const format_paragraph_DAC = (item) => {
 const format_paragraph_CCG = (item) => {
     
 
-    console.log('Available properties:', Object.keys(item));
-    if (item.metadata) {
-        console.log('Metadata properties:', Object.keys(item.metadata));
-    }
-
     // Fields are directly on the item
     const title = item.title || '';
     const question_number = item.number || '';
@@ -672,12 +654,6 @@ const format_paragraph_CCG = (item) => {
     const folha = item.folha || '';
     let source = item.source || '';
     source = bookName(source);
-
-    // console.log('---------------[display.js] [format_paragraph_CCG] question_number: ', question_number);
-    // console.log('---------------[display.js] [format_paragraph_CCG] title: ', title);
-    // console.log('---------------[display.js] [format_paragraph_CCG] score: ', score);
-    // console.log('---------------[display.js] [format_paragraph_CCG] folha: ', folha);
-    // console.log('---------------[display.js] [format_paragraph_CCG] source: ', source);
 
 
     // Add each field to the array only if it has a value
@@ -739,11 +715,6 @@ const format_paragraph_CCG = (item) => {
 const format_paragraph_EC = (item) => {
     
 
-    console.log('Available properties:', Object.keys(item));
-    if (item.metadata) {
-        console.log('Metadata properties:', Object.keys(item.metadata));
-    }
-
     // Fields are directly on the item
     const title = item.title || '';
     const verbete_number = item.number || '';
@@ -758,17 +729,6 @@ const format_paragraph_EC = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-
-    // console.log('---------------[display.js] [format_paragraph_EC] verbete_number: ', verbete_number);
-    // console.log('---------------[display.js] [format_paragraph_EC] title: ', title);
-    // console.log('---------------[display.js] [format_paragraph_EC] score: ', score);
-    // console.log('---------------[display.js] [format_paragraph_EC] area: ', area);
-    // console.log('---------------[display.js] [format_paragraph_EC] theme: ', theme);
-    // console.log('---------------[display.js] [format_paragraph_EC] author: ', author);
-    // console.log('---------------[display.js] [format_paragraph_EC] sigla: ', sigla);
-    // console.log('---------------[display.js] [format_paragraph_EC] date: ', date);
-    // console.log('---------------[display.js] [format_paragraph_EC] link: ', link);
-    // console.log('---------------[display.js] [format_paragraph_EC] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];   
@@ -850,10 +810,6 @@ const format_paragraph_EC = (item) => {
 // ===========================================================================
 const format_paragraph_Default = (item) => {
 
-    console.log('Available properties:', Object.keys(item));
-    if (item.metadata) {
-        console.log('Metadata properties:', Object.keys(item.metadata));
-    }
 
     // Fields are directly on the item
     const title = item.title || '';
@@ -863,13 +819,6 @@ const format_paragraph_Default = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-
-
-
-    // console.log('---------------[display.js] [format_paragraph_Default] paragraph_number: ', paragraph_number);
-    // console.log('---------------[display.js] [format_paragraph_Default] title: ', title);
-    // console.log('---------------[display.js] [format_paragraph_Default] score: ', score);
-    // console.log('---------------[display.js] [format_paragraph_Default] source: ', source);
 
     // Add each field to the array only if it has a value
     const badgeParts = [];
@@ -1204,6 +1153,8 @@ function showVerbetopedia(container, data) {
 // ________________________________________________________________________________________
 
 function showLexverb(container, data) {
+
+
     if (!container) {
         console.error('Results container not found');
         return;
@@ -1237,8 +1188,6 @@ function showLexverb(container, data) {
 
         // 3) Monta o link para download do verbete PDF
         let arquivo = metaData.Title;
-
-        console.log('++++++++++++++++arquivo:', arquivo);
 
         // Sanitiza: remove acentos e troca ç/Ç
         arquivo = arquivo
