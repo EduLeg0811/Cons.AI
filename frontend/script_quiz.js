@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!quizData) {
                 const paramQuestion = {
                     query: 'Formule uma nova pergunta sobre Conscienciologia. Não repita perguntas anteriores nem aborde temas semelhantes em sequência.',
-                    model: MODEL_LLM,
-                    temperature: TEMPERATURE,
-                    vector_store_names: OPENAI_RAGBOT,
+                    model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                    temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                    vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                     instructions: PROMPT_QUIZ_PERGUNTA,
                     use_session: true,
                     chat_id
@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // -----------------------------------------
             const respParam = {
                 query: 'Resposta do usuario: ' + userAnswer,
-                model: MODEL_LLM,
-                temperature: TEMPERATURE,
-                vector_store_names: OPENAI_RAGBOT,
+                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                 instructions: PROMPT_QUIZ_RESPOSTA,
                 use_session: true,
                 chat_id
@@ -196,9 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const paramQuestion = {
                 query: 'Formule uma nova pergunta sobre Conscienciologia. Não repita perguntas anteriores nem aborde temas semelhantes em sequência.',
-                model: MODEL_LLM,
-                temperature: TEMPERATURE,
-                vector_store_names: OPENAI_RAGBOT,
+                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                 instructions: PROMPT_QUIZ_PERGUNTA,
                 use_session: true,
                 chat_id

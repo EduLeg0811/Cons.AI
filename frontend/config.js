@@ -86,6 +86,42 @@ const OPENAI_RAGBOT='ALLWV';
 
 const FULL_BADGES = false;
 
+// ========================= Runtime Config (overrides) =========================
+// Centralized runtime config object with defaults from the constants above.
+// Values can be overridden via the Config modal and persisted in localStorage.
+(function initRuntimeConfig(){
+  const defaults = {
+    MODEL_LLM,
+    MODEL_RAGBOT,
+    TEMPERATURE,
+    MAX_RESULTS_DISPLAY,
+    OPENAI_RAGBOT,
+    FULL_BADGES,
+  };
+
+  let stored = {};
+  try {
+    const raw = localStorage.getItem('appConfig');
+    if (raw) stored = JSON.parse(raw) || {};
+  } catch (e) { /* ignore */ }
+
+  // Shallow merge (only known keys)
+  const cfg = { ...defaults };
+  for (const k of Object.keys(defaults)) {
+    if (stored[k] !== undefined && stored[k] !== null && stored[k] !== '') {
+      cfg[k] = stored[k];
+    }
+  }
+
+  // Expose globally for all modules
+  window.CONFIG_DEFAULTS = defaults;
+  window.CONFIG = cfg;
+
+  // Optional: surface some common flags for easy access in legacy code
+  try { window.USER_MAX_RESULTS = Number(cfg.MAX_RESULTS_DISPLAY) || defaults.MAX_RESULTS_DISPLAY; } catch {}
+  try { window.USER_TEMPERATURE = Number(cfg.TEMPERATURE) ?? defaults.TEMPERATURE; } catch {}
+})();
+
 const INSTRUCTIONS_RAGBOT = `
   Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia.
   # Instruções

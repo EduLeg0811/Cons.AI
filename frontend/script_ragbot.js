@@ -85,9 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const chat_id = getOrCreateChatId();
           const paramRAGbot = {
             query: term,
-            model: MODEL_RAGBOT,
-            temperature: TEMPERATURE,
-            vector_store_names: OPENAI_RAGBOT,
+            model: (window.CONFIG?.MODEL_RAGBOT ?? MODEL_RAGBOT),
+            temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+            vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: INSTRUCTIONS_RAGBOT,
             use_session: true,
             chat_id
@@ -197,8 +197,8 @@ function prepareDownloadData(response, term) {
     return {
         text: responseText,
         query: term || "",
-        model: response?.model || MODEL_LLM,
-        temperature: response?.temperature || TEMPERATURE,
+        model: response?.model || (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+        temperature: response?.temperature || (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
         citations: response?.results?.[0]?.citations || [],
         search_type: "ragbot",
     };

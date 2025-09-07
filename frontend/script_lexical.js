@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
        
 
         // Get max results from input or use default
-        const maxResults = parseInt(document.getElementById('maxResults')?.value) || MAX_RESULTS_DISPLAY;
+        const maxResults = parseInt(document.getElementById('maxResults')?.value) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY);
 
         // Restrict display to first maxResults if results exist
         if (responseData.results && Array.isArray(responseData.results)) {

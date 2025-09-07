@@ -522,7 +522,7 @@ const format_paragraph_LO = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
     }
 
-    if (FULL_BADGES) {
+    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (paragraph_number) {
             badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
         }
@@ -610,7 +610,7 @@ const format_paragraph_DAC = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> <em> ${escapeHtml(section)}</em></span>`);
     }
 
-    if (FULL_BADGES) {
+    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (paragraph_number) {
             badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
         }
@@ -695,7 +695,7 @@ const format_paragraph_CCG = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(question_number)}</span>`);
     }
 
-    if (FULL_BADGES) {
+    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (score > 0.0) {
             badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
         }
@@ -794,7 +794,7 @@ const format_paragraph_EC = (item) => {
         badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(date)}</span>`);
     }
 
-    if (FULL_BADGES) {
+    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (score > 0.0) {
             badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
         }
@@ -880,7 +880,7 @@ const format_paragraph_Default = (item) => {
          badgeParts.push(`<span class="metadata-badge estilo2"> <strong>${escapeHtml(title)}</strong></span>`);
      }
 
-     if (FULL_BADGES) {
+     if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (paragraph_number) {
             badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
         }
@@ -1131,7 +1131,7 @@ function showVerbetopedia(container, data) {
             </div>
             <div class="displaybox-text">
                 <span class="displaybox-text markdown-content">${safeHtml}</span>
-                ${FULL_BADGES ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
+                ${(window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
                 ${pdfLink}
             </div>
         </div>
@@ -1419,7 +1419,7 @@ function showCcg(container, data) {
             </div>
             <div class="displaybox-text">
                 <span class="displaybox-text markdown-content">${safeHtml}</span>
-                ${FULL_BADGES ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
+                ${(window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
             </div>
         </div>
         `;

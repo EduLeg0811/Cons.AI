@@ -95,9 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const paramRAGbot = {
             query: "Comente a seguinte Pensata: " + pensataText,
-            model: MODEL_LLM,
-            temperature: TEMPERATURE,
-            vector_store_names: OPENAI_RAGBOT,
+            model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+            temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+            vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: COMMENTARY_INSTRUCTIONS,
         use_session: true,
         chat_id                     // <<< NOVO

@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const paramRAGbot = {
                     query: "TEXTO DE ENTRADA:  " + term + ".",
-                    model: MODEL_LLM,
-                    temperature: TEMPERATURE,
-                    vector_store_id: OPENAI_RAGBOT,
+                    model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                    temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                    vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                     instructions: SEMANTICAL_INSTRUCTIONS,
                     use_session: true,
                     chat_id                 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
              const paramSem = {
                 term: term + ": " + newTerm + ".",
                 source: ["EC"],
-                model: MODEL_LLM,
+                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             };
             
             const semJson = await call_semantical(paramSem);
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
                 
             // Get max results from input or use default
-            const maxResults = parseInt(document.getElementById('maxResults')?.value) || MAX_RESULTS_DISPLAY;
+            const maxResults = parseInt(document.getElementById('maxResults')?.value) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY);
 
             // Restrict display to first maxResults if results exist
             if (semJson.results && Array.isArray(semJson.results)) {
