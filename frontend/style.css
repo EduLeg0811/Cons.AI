@@ -169,7 +169,6 @@ body {
     background: rgba(17, 24, 39, 0.85); /* gray-900-ish with opacity */
     border-bottom-color: var(--gray-700);
 }
-vermelho 
 .navbar-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -238,8 +237,8 @@ vermelho
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 8px;     /* Espaço acima */
-    margin-bottom: 8px;  /* Espaço abaixo */
+    margin-top: 4px;     /* Espaço acima */
+    margin-bottom: 2px;  /* Espaço abaixo */
 
 }
 
@@ -254,8 +253,8 @@ vermelho
 .navbar-controls {
     display: flex;
     gap: var(--space-2);
-    width: 100%;                      /* === AJUSTE: ocupar largura toda === */
-    justify-content: space-between;   /* info à esquerda, theme à direita */
+    width: auto;
+    justify-content: initial;
     align-items: center;
 }
 
@@ -279,6 +278,11 @@ vermelho
     background: var(--gray-200);
     color: var(--gray-800);
     transform: translateY(-2px);
+}
+
+/* Homepage: push config button to the right so it groups with theme */
+body:not([class]) .navbar-container .config-toggle {
+    margin-left: auto;
 }
 
 /* Subtle pulsing background for the info-toggle on homepage */
@@ -2230,8 +2234,8 @@ textarea:focus-visible {
 
 /* Homepage (no body class): stretch controls to edges */
 body:not([class]) .navbar .navbar-controls {
-  width: 100%;
-  justify-content: space-between;
+  width: auto;
+  justify-content: initial;
   align-items: center;
 }
 

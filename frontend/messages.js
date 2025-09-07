@@ -35,7 +35,7 @@ const TOOL_MESSAGES = {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       'O <strong>ConsGPT</strong> é provavelmente o chatbot mais <em>inteligente</em> de todos. ',
-      'Étimo para brainstorming, resumos e conversas em geral.<br>',
+      'Ótimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
       '<strong>2.</strong> Peça a ele que formule <em>analogias</em> ou <em>metáforas</em> para algum tema.<br>',
@@ -64,9 +64,6 @@ const TOOL_MESSAGES = {
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
-      '<strong>Observação:</strong> os sistemas RAG funcionam com busca vetorial. No momento, o ConsBOT não possui informações do <em>número da página</em> das fontes de referência. ',
-      'Para obter essa informação, é necessário consultar o livro na edição desejada. ',
-      'O ConsBOT é um <em>minimecanismo</em> de IA em evolução.',
     ].join('\n')
   },
 
@@ -102,8 +99,6 @@ const TOOL_MESSAGES = {
 
 
 
-
-
   // Tool: Semantic Search
   'Pesquisa Semântica em Livros': {
     short: '<em>Busca semântica por afinidade</em>',
@@ -132,7 +127,7 @@ const TOOL_MESSAGES = {
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
     '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
     '<strong>3.</strong> Basta clicar no ícone do PDF para baixar o verbete sugerido.<br>',
-    '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar usando frases ou parágrafos.',
+    '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.',
   ].join('\n')
 },
 
@@ -159,8 +154,9 @@ const TOOL_MESSAGES = {
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
       'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir aleatoriamente uma página de um livro para alimentar a autopesquisa.<br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Excelente para instigar as <em>sincronicidades</em> e ajudar na interpretação da pensata (hermenêutica).<br>',
-      '<strong>2.</strong> Útil também nas dinâmicas e debates.',
+      '<strong>1.</strong> Use-o para instigar as <em>sincronicidades</em>.<br>',
+      '<strong>2.</strong> Compare a sua interpretação da pensata (hermenêutica) com a da IA.<br>',
+      '<strong>2.</strong> Pode ser usado também como recurso em dinâmicas e debates.',
     ].join('\n')
   },
 
@@ -172,8 +168,8 @@ const TOOL_MESSAGES = {
       'Formula perguntas sobre temas da Conscienciologia.',
       'Você responde as perguntas e a IA avalia a resposta.',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Excelente para testar o seu conhecimento da Conscienciologia.<br>',
-      '<strong>2.</strong> Útil para ajudar no estudo e aprofundamento dos temas conscienciológicos.',
+      '<strong>1.</strong> Use-o para testar o seu conhecimento da Conscienciologia.<br>',
+      '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',
     ].join('\n')
   },
 
@@ -203,6 +199,21 @@ const TOOL_MESSAGES = {
     ].join('\\n'),
   }
 };
+
+
+
+// '<strong>Observação:</strong> os sistemas RAG funcionam com busca vetorial. No momento, o ConsBOT não possui informações do <em>número da página</em> das fontes de referência. ',
+//       'Para obter essa informação, é necessário consultar o livro na edição desejada. ',
+//       'O ConsBOT é um <em>minimecanismo</em> de IA em evolução.',
+
+
+
+
+
+
+
+
+
 
 // Map visible H3 titles in index.html to canonical keys in TOOL_MESSAGES
 const TOOL_ALIASES = {
