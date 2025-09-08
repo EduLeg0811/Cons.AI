@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Buscando os verbetes afins...");
+            insertLoading(resultsDiv, "Buscando verbetes afins...");
 
             
             //call_semantical

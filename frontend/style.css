@@ -1870,7 +1870,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     /* Keep subtitle visible on small screens */
     .navbar-subtitle {
         display: block;
-        font-size: var(--text-sm);
+        font-size: var(--text-base);
     }
     
     .options-content {

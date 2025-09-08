@@ -872,6 +872,8 @@ function showVerbetopedia(container, data) {
         return;
     }
 
+    console.log('====== showVerbetopedia [data]:', data);
+
     // 0) Garantir array de entrada
     const arr = Array.isArray(data.results) ? data.results : [];
     if (!arr.length) {
@@ -881,6 +883,8 @@ function showVerbetopedia(container, data) {
         );
         return;
     }
+
+    console.log('====== showVerbetopedia [arr]:', arr);
 
     // 1) Extrair metadados antes para usar score
     const items = arr.map(item => {
@@ -920,8 +924,13 @@ function showVerbetopedia(container, data) {
             ? `<span class="rag-badge">Score: ${metaData.score.toFixed(2)}</span>` : '';
 
 
+        console.log('====== showVerbetopedia [metaData]:', metaData);
+
+
         // 3) Monta o link para download do verbete PDF
         let arquivo = metaData.title;
+
+        console.log('====== showVerbetopedia [arquivo]:', arquivo);
 
         // Sanitiza: remove acentos e troca ç/Ç
         arquivo = arquivo

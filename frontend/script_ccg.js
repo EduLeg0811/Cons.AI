@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Buscando as questões afins...");
+            insertLoading(resultsDiv, "Buscando questões afins...");
 
             
             //call_semantical

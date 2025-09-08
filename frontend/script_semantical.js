@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Semantical Search
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Buscando as semelhanças semânticas...");
+            insertLoading(resultsDiv, "Buscando semelhanças semânticas...");
 
             
             //call_semantical

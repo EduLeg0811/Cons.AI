@@ -243,15 +243,15 @@ function applyMessages() {
       if (!panel) return;
       let descr = '';
       if (panel.classList.contains('bots')) {
-        descr = 'Assistentes de Conversação por IA';
+        descr = 'Assistentes de conversação por IA';
       } else if (panel.classList.contains('search')) {
         descr = 'Pesquisa léxica por termos exatos';
       } else if (panel.classList.contains('sem')) {
         descr = 'Pesquisa semântica por afinidade';
       } else if (panel.classList.contains('apps')) {
-        descr = 'Aplicativos de IA para Pesquisa';
+        descr = 'Aplicativos de IA para autopesquisa';
       } else if (panel.classList.contains('utils')) {
-        descr = 'Links e Recursos Úteis';
+        descr = 'Links e recursos úteis';
       }
       if (descr) p.textContent = descr;
     });
