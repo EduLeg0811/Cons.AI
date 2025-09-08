@@ -197,7 +197,17 @@ const TOOL_MESSAGES = {
     extra: [
       'Portal geral da CCCI.',
     ].join('\\n'),
+  },
+
+  // Tool: Portal de Periódicos (external)
+  'Portal de Periódicos': {
+    short: '<em>Portal de periódicos da Conscienciologia</em>',
+    extra: [
+      'Procura e download de periódicos.',
+    ].join('\\n'),
   }
+
+
 };
 
 
