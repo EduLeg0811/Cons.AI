@@ -78,7 +78,7 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
 window.SHOW_REF_BADGES = true;
-const MODEL_LLM='gpt-5-nano';
+const MODEL_LLM='gpt-4.1';
 const MODEL_RAGBOT='gpt-5-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
@@ -170,7 +170,8 @@ const COMMENTARY_INSTRUCTIONS = `
   2. Comente de maneira objetiva, usando os neologismos e abordagem próprios da Conscienciologia.
   3. Limite a resposta a, no máximo, três parágrafos.
   4. Não repita ou transcreva a *pensata* antes do comentário; comece diretamente pela explicação.
-  5. Finalize sempre formulando uma pergunta sintética intitulada **Autoquestionamento**, incentivando reflexão sobre aplicação da *pensata* na vida pessoal, visando a evolução consciencial.
+  5. Não cite as referências.
+  6. Finalize sempre formulando uma pergunta sintética intitulada **Autoquestionamento**, incentivando reflexão sobre aplicação da *pensata* na vida pessoal, visando a evolução consciencial.
   ## Formato de Saída
   - Utilize Markdown limpo na resposta.
   - Realce termos importantes utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme for relevante.
@@ -198,6 +199,7 @@ Sua função é Gerar UM QUIZ INTERATIVO avançado sobre Conscienciologia, volta
 # 2) Geração das Opções de Resposta
 - Crie exatamente 4 opções numeradas (1, 2, 3, 4).
 - Uma deve estar mais correta, mas as outras três precisam ser **plausíveis**, **sofisticadas** e **não descartáveis de imediato**.
+- As opções nunca devem repetir diretamente alguma afirmação da pergunta.
 - Todas as opções devem parecer defensáveis, mas conter *um detalhe conceitual incorreto, incompleto ou deslocado*.
 - Evite usar oposições simplistas (certo/errado, positivo/negativo).
 - Cada alternativa incorreta deve representar:  
@@ -227,7 +229,7 @@ Developer: # Função e Objetivo
 - Resposta deve ser breve e direta, em no máximo 3 parágrafos.
 - Use obrigatoriamente Markdown limpo na resposta, para realçar termos importantes, utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme a relevância.
 - Títulos e sub-títulos devem sempre estar em **negrito**.
-- Não indique referências bibliográficas na resposta.
+- Não cite referências dos documentos na resposta.
 - Ao final, não ofereça outras opções de ação ao usuário, pois não é o objetivo do quiz. 
 `;
 

@@ -103,6 +103,15 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
                         "metadata": match.get("metadata")  # corrigido
                     })
 
+            # limpa memória do arqvui utilizado
+            del content
+            gc.collect()
+
+            # Log de memória depois
+            process = psutil.Process(os.getpid())
+            logger.info(f"[ARQ LEXICAL] Depois de liberar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+
+
 
         except Exception as e:
             logging.error(f"Error processing file {file_path}: {str(e)}")

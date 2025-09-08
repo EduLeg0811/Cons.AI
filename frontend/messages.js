@@ -101,7 +101,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Semantic Search
   'Pesquisa Semântica em Livros': {
-    short: '<em>Busca semântica por afinidade</em>',
+    short: '<em>Busca semântica de parágrafos</em>',
     extra: [
       'Encontra os parágrafos de livros que são <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
       'Útil para pesquisar temas e ideias correlatas ou afins.<br>',
@@ -118,24 +118,24 @@ const TOOL_MESSAGES = {
 
 
   // Tool: Verbetopedia
-  'Definologia de Verbetes': {
-    short: '<em>Enciclopédia da Conscienciologia</em>',
+  'Verbetopedia': {
+    short: '<em>Busca semântica de verbertes</em>',
     extra: [
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
-    '<strong>Dicas:</strong><br>',
-    '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-    '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
-    '<strong>3.</strong> Basta clicar no ícone do PDF para baixar o verbete sugerido.<br>',
-    '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.',
-  ].join('\n')
-},
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
+      '<strong>3.</strong> Basta clicar no ícone do PDF para baixar o verbete sugerido.<br>',
+      '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.',
+    ].join('\n')
+  },
 
 // Tool: Conscienciogramopedia
 'Questões do Conscienciograma': {
-  short: '<em>Conscienciograma</em>',
+  short: '<em>Busca semântica de questões</em>',
   extra: [
-    'Indica questões afins ao termo de busca. ',
+    'Indica questões do Conscienciograma afins ao termo de busca. ',
     'Ótimo para sugerir questões para o aprofundamento da sua autopesquisa.<br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
@@ -193,7 +193,7 @@ const TOOL_MESSAGES = {
   
   // Tool: Portal da Conscienciologia (external)
   'Portal da Conscienciologia': {
-    short: '<em>site central da Conscienciologia</em>',
+    short: '<em>Site central da Conscienciologia</em>',
     extra: [
       'Portal geral da CCCI.',
     ].join('\\n'),
@@ -209,23 +209,16 @@ const TOOL_MESSAGES = {
 
 
 
-
-
-
-
-
-
 // Map visible H3 titles in index.html to canonical keys in TOOL_MESSAGES
 const TOOL_ALIASES = {
-  'OpenAI ConsGPT':        'ConsGPT',
-  'Google ConsLM':         'ConsLM',
-  'Definologia de Verbetes': 'Lexical Search',
-  'Pesquisa em Livros':     'Lexical Search',
-  'Pesquisa Semântica em Livros': 'Semantical Search',
-  'Verbetopedia':           'Semantical Search',
-  'Conscienciogramopedia':  'Semantical Search',
+  'OpenAI ConsGPT': 'ConsGPT',
+  'Google ConsLM': 'ConsLM',
+  'Pesquisa em Livros': 'Pesquisa em Livros',
+  'Definologia de Verbetes': 'Definologia de Verbetes',
+  'Pesquisa Semântica em Livros': 'Pesquisa Semântica em Livros',
+  'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
-  'Bibliomancia Digital':   'Bibliomancia Digital'
+  'Bibliomancia Digital': 'Bibliomancia Digital'
 };
 
 // Apply messages to the DOM
@@ -272,13 +265,17 @@ function applyMessages() {
         } else if (href.includes('index_verbetopedia.html')) {
           canonical = 'Verbetopedia';
         } else if (href.includes('index_ccg.html')) {
-          canonical = 'Conscienciogramopedia';
+          canonical = 'Questões do Conscienciograma';
         } else if (href.includes('index_mancia.html')) {
           canonical = 'Bibliomancia Digital';
         } else if (href.includes('index_quiz.html')) {
           canonical = 'Quiz Conscienciológico';
         }
-      } catch (e) { /* ignore */ }
+
+
+      } catch (e) { 
+        console.error('Error occurred while processing href:', e); 
+      }
 
       let msg = TOOL_MESSAGES[canonical];
       // Fallbacks for encoding-mangled keys based on href
@@ -290,7 +287,18 @@ function applyMessages() {
         if (!msg && href2.includes('index_semantical.html')) {
           msg = TOOL_MESSAGES['Pesquisa Semântica em Livros'] || msg;
         }
-      } catch (e) { /* ignore */ }
+
+        if (!msg && href2.includes('index_verbetopedia.html')) {
+          msg = TOOL_MESSAGES['Verbetopedia'] || msg;
+        }
+        if (!msg && href2.includes('index_ccg.html')) {
+          msg = TOOL_MESSAGES['Questões do Conscienciograma'] || msg;
+        }
+
+      } catch (e) { 
+        console.error('Error occurred while processing href2:', e); 
+      }
+
       if (!msg) return;
 
       // Native tooltip: use a plain-text version of title/short/extra
@@ -316,10 +324,13 @@ function applyMessages() {
         extraEl.innerHTML = msg.extra;
       }
     });
+
+
+    
   } catch (e) {
     console.warn('messages.js: failed to apply messages', e);
   }
-}
+} // Added the missing closing brace here
 
 // Run after DOM is ready
 document.addEventListener('DOMContentLoaded', applyMessages);

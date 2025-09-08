@@ -338,7 +338,7 @@
             function loadConfigForm() {
               const cfg = (window.CONFIG || window.CONFIG_DEFAULTS || {});
               const $ = (id) => document.getElementById(id);
-              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-5-nano';
+              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-4.1';
               if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-5-nano';
               const temp = Number(cfg.TEMPERATURE ?? 0.5);
               if ($('cfg-temperature')) $('cfg-temperature').value = temp;
@@ -358,7 +358,7 @@
             function saveConfigAndClose() {
               const $ = (id) => document.getElementById(id);
               const next = {
-                MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-5-nano',
+                MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-4.1',
                 MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-5-nano',
                 TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? 0.5),
                 MAX_RESULTS_DISPLAY: Number($('cfg-max-results')?.value ?? 10),
@@ -422,10 +422,10 @@
             <div class="config-field">
               <label for="cfg-model-llm">MODEL_LLM</label>
               <select id="cfg-model-llm">
-                <option value="gpt-5-nano">gpt-5-nano (default)</option>
+                <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="gpt-4.1">gpt-4.1 (default)</option>
               </select>
             </div>
             <div class="config-field">
