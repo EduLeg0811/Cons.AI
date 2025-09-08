@@ -8,7 +8,7 @@ import unicodedata
 
 import pandas as pd
 
-from utils.config import FILES_SEARCH_DIR
+from utils.config import FILES_SEARCH_DIR, MAX_OVERALL_SEARCH_RESULTS
 
 
 
@@ -66,9 +66,14 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
             # 1. Texto ou Markdown
             # ______________________________________________________________________
             if file_type in ["txt", "md"]:
+
                 content = _read_markdown_file(file_path)
+
+                if not content:
+                    continue
+
                 # substring matching (mais tolerante com pontuação e acentos)
-                matches = _search_in_content(content, search_term, match_mode="substring")
+                matches = _search_in_content_md(content, search_term, match_mode="substring")
 
                 for match in matches or []:
                     results.append({
@@ -82,40 +87,88 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
             # 2. Excel
             # ______________________________________________________________________
             elif file_type == "xlsx":
+
                 content = _read_excel_file(file_path)  # lista de dicionários
 
                 if not content:
                     continue
 
-                # primeira coluna do Excel
-                first_row = content[0]
-                col_names_in_order = list(first_row.keys())
-                texto_key = col_names_in_order[0]
-                term = search_term.strip().lower()
+                matches = _search_in_content_excel(content, search_term, match_mode="substring")
 
-                logging.info(f"\n\n")
-                logging.info(f"<<<<<lexical_search_in_files>>>>> col_names_in_order: {col_names_in_order}")
-                logging.info(f"<<<<<lexical_search_in_files>>>>> texto_key: {texto_key}")
-                logging.info(f"<<<<<lexical_search_in_files>>>>> term: {term}")
-                
+                for match in matches or []:
+                    results.append({
+                        "source": book,
+                        "text": match.get("paragraph_text"),
+                        "number": match.get("paragraph_number"),
+                        "metadata": match.get("metadata")  # corrigido
+                    })
 
-
-                for row in content:
-                    i_row = row.get("paragraph_number")
-                    texto = str(row.get(texto_key, "")).lower()
-                   
-                    if term in texto:
-                        results.append({
-                            "source": book,
-                            "text": row.get(texto_key, ""),
-                            "number": i_row,
-                            "metadata": row
-                        })
 
         except Exception as e:
             logging.error(f"Error processing file {file_path}: {str(e)}")
 
     return results
+
+
+
+
+# ______________________________________________________________________
+# Busca Match Excel
+# ______________________________________________________________________
+def _search_in_content_excel(content: List[Dict[str, Any]], search_term: str, match_mode: str = "word") -> List[Dict[str, Any]]:
+    if not content or not search_term:
+        return []
+
+    # converte todos os nomes de campos em minúsculas
+    content = [
+        {k.lower(): v for k, v in row.items()}
+        for row in content
+    ]
+
+    # primeira coluna do Excel
+    first_row = content[0]
+    col_names_in_order = list(first_row.keys())
+    texto_key = col_names_in_order[0]
+
+    # normalização
+    term_norm = _normalize_for_match(search_term)
+    if not term_norm:
+        return []
+
+    # função de matching
+    if match_mode == "word":
+        pattern = re.compile(rf"\b{re.escape(term_norm)}\b", flags=re.IGNORECASE)
+        def match_fun(pnorm: str) -> bool:
+            return bool(pattern.search(pnorm))
+    else:  # "substring"
+        def match_fun(pnorm: str) -> bool:
+            return term_norm in pnorm
+
+    results: List[Dict[str, Any]] = []
+    for idx, row in enumerate(content, start=1):
+        paragraph = str(row.get(texto_key, ""))
+        pnorm = _normalize_for_match(paragraph)
+
+        if match_fun(pnorm):
+            processed = process_found_paragraph(paragraph, search_term)
+
+
+            if processed and processed.strip():
+                results.append({
+                    "paragraph_text": processed,
+                    "paragraph_number": row.get("paragraph_number", idx),
+                    "metadata": row
+                })
+
+            # Restringe tamanho ao máximo de MAX_OVERALL_SEARCH_RESULTS
+            if len(results) >= MAX_OVERALL_SEARCH_RESULTS:
+                break
+
+    return results
+
+
+
+
 
 
 
@@ -262,7 +315,6 @@ def _list_files(source_dir: str = FILES_SEARCH_DIR, file_type: str = "md") -> Li
         ]
 
         all_files = os.listdir(md_path)
-        #logging.info(f"<<<<<_list_files>>>>> All files in directory ({len(all_files)}): {all_files}")
 
         return files
 
@@ -305,7 +357,7 @@ def _normalize_for_match(s: str) -> str:
     return _strip_accents(s or '').lower()
 
 
-def _search_in_content(content: str, search_term: str, match_mode: str = "word") -> List[Dict[str, Any]]:
+def _search_in_content_md(content: str, search_term: str, match_mode: str = "word") -> List[Dict[str, Any]]:
     """
     Busca termo no conteúdo, retornando parágrafos "reais" por linha não vazia,
     com número absoluto do parágrafo no arquivo (1..N).
@@ -344,6 +396,10 @@ def _search_in_content(content: str, search_term: str, match_mode: str = "word")
                     "paragraph_text": processed,   # mantém original (com acentos)
                     "paragraph_number": idx,       # número absoluto
                 })
+
+            # Restringe tamanho ao máximo de MAX_OVERALL_SEARCH_RESULTS
+            if len(results) >= MAX_OVERALL_SEARCH_RESULTS:
+                break
 
     return results
 

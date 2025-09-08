@@ -271,6 +271,7 @@ class DownloadResource(Resource):
             term = safe_str(data.get("term", "") or "")
             search_type = safe_str(data.get("type", "") or "lexical")  # Changed from 'type' to 'search_type' for consistency
             results_array = data.get("results", [])
+            details = data.get("details", False)
 
             # 1) Monta payload
             payload = {
@@ -279,6 +280,7 @@ class DownloadResource(Resource):
                 "search_type": search_type,
                 "type": search_type,
                 "format": format,
+                "details": details
             }
 
             # 2) Se markdown for pedido

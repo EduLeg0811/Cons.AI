@@ -67,7 +67,7 @@ def _sort_key(val):
 def simple_semantical_search(query, source, index_dir):
     
 
-    # Normalize query to lowercase for case-insensitive search
+     # Normalize query to lowercase for case-insensitive search
     if query and isinstance(query, str):
         query = query.lower()
 
@@ -83,15 +83,18 @@ def simple_semantical_search(query, source, index_dir):
             source.extend(["LO1", "LO2", "LO3", "LO4"])
 
              
+
         # Pesquisa em todos os vector stores
         # ****************************************************************************************************************
         vector_store_ids = get_vector_store_id(source)
+
+        logger.info(f"++++++++++ [simple_semantical_search] Vector store IDs: {vector_store_ids}")
 
         for vs_id in vector_store_ids:
 
             index_path = os.path.abspath(os.path.join(index_dir, vs_id))
             index_file = os.path.join(index_path, "index.faiss")
-
+            
             if not os.path.exists(index_file):
                continue
 
@@ -138,10 +141,13 @@ def simple_semantical_search(query, source, index_dir):
         processed_results = []
         for doc, score in all_results:
             if hasattr(doc, 'page_content') and hasattr(doc, 'metadata'):
-                # 1) score salvo como número ou None (2 difgitos decimais)
-                doc.metadata['score'] = round(_to_float_or_none(score), 2)  
+                # 1) score salvo como número ou None (4 digitos decimais)
+                doc.metadata['score'] = round(_to_float_or_none(score), 4)
+                # normalizar as chaves do metadata já aqui (minúsculas)
+                doc.metadata = {str(k).lower(): v for k, v in doc.metadata.items()}
                 processed_results.append(doc)
-                
+
+            
 
         # ------------------------------------------------------
         # Caso especial de FAISS do LO (dividido em 2 partes)
@@ -174,6 +180,7 @@ def simple_semantical_search(query, source, index_dir):
 
 
     except Exception as e:
+        logger.exception("Error during search")
         return {"error": str(e)}
     finally:
         logger.info("Search completed.")
@@ -255,10 +262,11 @@ def plain_dicts(
         if not include_page_content and "page_content" in row:
             row.pop("page_content", None)
 
-        # mesclar metadata (se houver) e NÃO manter o blob
+        # mesclar metadata (se houver) normalizando chaves para minúsculas
         md = row.pop("metadata", None)
         if isinstance(md, dict):
-            row.update(md)
+            row.update({str(k).lower(): v for k, v in md.items()})
+
 
         return row
 
@@ -343,7 +351,7 @@ def get_vector_store_id(sources):
             vector_store_ids.append(FAISS_ID_MANUAIS)
         elif source == "ECWV":
             vector_store_ids.append(FAISS_ID_ECWV)
-        elif source == "ECALL_DEF" or source == "EC" or source == "ECWV":
+        elif source == "ECALL_DEF" or source == "EC":
             vector_store_ids.append(FAISS_ID_ECALL_DEF)
         elif source == "ALLCONS":
             vector_store_ids.append(FAISS_ID_MANUAIS)

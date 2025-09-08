@@ -118,8 +118,8 @@ const TOOL_MESSAGES = {
 
 
   // Tool: Verbetopedia
-  'Verbetopedia': {
-    short: '<em>Verbetes da Enciclopédia</em>',
+  'Definologia de Verbetes': {
+    short: '<em>Enciclopédia da Conscienciologia</em>',
     extra: [
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
@@ -132,8 +132,8 @@ const TOOL_MESSAGES = {
 },
 
 // Tool: Conscienciogramopedia
-'Conscienciogramopedia': {
-  short: '<em>Questões do Conscienciograma</em>',
+'Questões do Conscienciograma': {
+  short: '<em>Conscienciograma</em>',
   extra: [
     'Indica questões afins ao termo de busca. ',
     'Ótimo para sugerir questões para o aprofundamento da sua autopesquisa.<br>',

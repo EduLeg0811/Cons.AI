@@ -115,133 +115,6 @@ function shouldShowRefBadges() {
 
 
 
-// ________________________________________________________________________________________
-// Show Quiz
-// ________________________________________________________________________________________
-function showQuiz(container, data) {
-  if (!container) {
-    console.error('Results container not found');
-    return;
-  }
-
-  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta : '';
-  let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
-  while (opcoes.length < 4) opcoes.push('');
-
-  // Build HTML for quiz box
-  const optionsHtml = opcoes
-    .map((opt, idx) => {
-      const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
-      return `
-        <div class="quiz-option-row" data-index="${idx}" style="display:flex;align-items:center;gap:8px;margin:6px 0;">
-          <button type="button" class="quiz-badge-btn" data-index="${idx}" style="border:none;background:transparent;cursor:pointer;">
-            <span class="metadata-badge estilo2" style="display:inline-block;padding:4px 8px;border-radius:12px;min-width:28px;text-align:center;">${idx + 1}</span>
-          </button>
-          <div class="quiz-option-text markdown-content">${rendered}</div>
-        </div>`;
-    })
-    .join('');
-
-  const qHtml = pergunta ? `<div class="quiz-question markdown-content" style="font-weight:600;margin:6px 0 8px 0;">${renderMarkdown(pergunta)}</div>` : '';
-
-  const html = `
-    <div class="displaybox-container quiz-box">
-      <div class="displaybox-content">
-        <div class="displaybox-text">
-          ${qHtml}
-          <div class="quiz-options-list">
-            ${optionsHtml}
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-  container.insertAdjacentHTML('beforeend', html);
-
-  // Event delegation for option clicks (no custom event; logic handled in script_quiz.js)
-  if (!container.__quizClickBound) {
-    container.addEventListener('click', function(ev) {
-      const btn = ev.target.closest('.quiz-badge-btn');
-      const row = btn ? btn.closest('.quiz-option-row') : ev.target.closest('.quiz-option-row');
-      if (!row) return;
-
-      const box = row.closest('.quiz-box');
-      if (!box) return;
-
-      // Visual feedback: highlight selected badge using module color
-      try {
-        const badge = row.querySelector('.metadata-badge');
-        if (badge) {
-          badge.style.backgroundColor = '#10b981'; // Changed to green-500 color
-          badge.style.color = '#fff';
-        }
-      } catch {}
-
-      // Disable further interaction within this quiz box
-      box.querySelectorAll('button.quiz-badge-btn').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
-      // No emission here; script_quiz.js listens to clicks on #results
-    });
-    container.__quizClickBound = true;
-  }
-}
-
-
-
-// Helper: build inline reference line like: [ Name: value; Name2: value2 ]
-function buildMetaInlineLine(pairs) {
-  try {
-    const parts = (pairs || [])
-      .filter(arr => Array.isArray(arr) && arr.length >= 2 && String(arr[1]).trim() !== '')
-      .map(([k, v]) => {
-        const key = String(k);
-        const val = escapeHtml(String(v));
-        //Se for o badge de title, coloca em negrito; se for o badge de score, coloca em italico; se for o badge de area, coloca em italico entre parênteses; se for o badge de number, coloca um caracter "#" antes do valor
-        if (/^title$/i.test(key)) return `<strong>${val}</strong>`;
-        if (/^score$/i.test(key)) return `<em>${val}</em>`;
-        if (/^area$/i.test(key)) return `<em>(${val})</em>`;
-        if (/^number$/i.test(key)) return `#${val}`;
-        return `${escapeHtml(key)}: ${val}`;
-      });
-    if (!parts.length) return '';
-    const content = `[ ${parts.join('; ')} ]`;
-    return `<div class="meta-inline" style="font-size: 80%; color: var(--gray-600); margin-top: 4px;">${content}</div>`;
-  } catch (e) {
-    return '';
-  }
-}
-
-/**
- * Displays results based on search type
- * @param {HTMLElement} container - The container element
- * @param {Object} data - The data payload
- * @param {string} type - The search type key
- */
-function displayResults(container, data, type) {
-  if (!container) {
-      console.error('Results container not found');
-      return;
-  }
-  const renderer = renderers[type];
-  if (!renderer) {
-      console.error(`Unknown search type: ${type}`);
-      return;
-  }
-  renderer(container, data);
-}
-
-// ===== Utility functions =====
-function escapeHtml(text) {
-    if (typeof text !== 'string') return text;
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-
-
 
 
 //______________________________________________________________________________________________
@@ -275,8 +148,6 @@ function removeLoading(container) {
 //______________________________________________________________________________________________
 function showSearch(container, data) {
 
-    
-console.log('showSearch', data);
     
     if (!container) {
         console.error('Results container not found');
@@ -600,8 +471,6 @@ const format_paragraph_DAC = (item) => {
         if (score > 0.0) {
             badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
         }
-
-        console.log('---------------[display.js] [format_paragraph_DAC] badgeParts: ', badgeParts);
     }
 
 
@@ -1075,7 +944,7 @@ function showVerbetopedia(container, data) {
         // 4) Monta o HTML final
         return `
         <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0;">
+            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgb(20, 30, 100)">
                 <span class="header-text">${titleHtml}</span>
             </div>
             <div class="displaybox-text">
@@ -1176,18 +1045,17 @@ function showLexverb(container, data) {
         // Conteúdo principal
         const metaData = item.metadata;
 
-        let content = metaData.Markdown || metaData.page_content || metaData.text || metaData.paragraph || '';
+        let content = metaData.markdown || metaData.page_content || metaData.text || metaData.paragraph || '';
         const rawHtml  = renderMarkdown(content);
         const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
         // Inclui ícone PDF após o título
         const titleHtml = `
-        <strong>${metaData.Title}</strong> (${metaData.Area})  ●  <em>${metaData.Author}</em>  ●  #${metaData.Number}  ●  ${metaData.Date}
+        <strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  #${metaData.number}  ●  ${metaData.date}
     `;
 
-
         // 3) Monta o link para download do verbete PDF
-        let arquivo = metaData.Title;
+        let arquivo = metaData.title;
 
         // Sanitiza: remove acentos e troca ç/Ç
         arquivo = arquivo
@@ -1210,7 +1078,7 @@ function showLexverb(container, data) {
         // 4) Monta o HTML final
         return `
         <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0;">
+            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100)">
                 <span class="header-text">${titleHtml}</span>
             </div>
             <div class="displaybox-text">
@@ -1274,17 +1142,6 @@ function showLexverb(container, data) {
       container.__pillHandlerBound = true;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1363,7 +1220,7 @@ function showCcg(container, data) {
         // 4) Monta o HTML final
         return `
         <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0;">
+            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgb(20, 30, 100)">
                 <span class="header-text">${titleHtml}</span>
             </div>
             <div class="displaybox-text">
@@ -1380,7 +1237,7 @@ function showCcg(container, data) {
     const groupHtml = `
     <div class="displaybox-group">
         <div class="displaybox-header">
-            <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
+            <span style="color: blue; font-size: 16px; font-weight: bold;">Conscienciograma</span>
             <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
         </div>
         <div class="displaybox-content">
@@ -1396,7 +1253,7 @@ function showCcg(container, data) {
     const _vb_html = `
       <div class="summary-list">
         <button class="pill pill-row accented" data-target="group-ec">
-          <span class="pill-label">Enciclopédia da Conscienciologia</span>
+          <span class="pill-label">Conscienciograma</span>
           <span class="count">${_vb_count}</span>
         </button>
       </div>
@@ -1427,3 +1284,134 @@ function showCcg(container, data) {
       container.__pillHandlerBound = true;
     }
 }
+
+
+
+
+
+
+// ________________________________________________________________________________________
+// Show Quiz
+// ________________________________________________________________________________________
+function showQuiz(container, data) {
+  if (!container) {
+    console.error('Results container not found');
+    return;
+  }
+
+  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta : '';
+  let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
+  while (opcoes.length < 4) opcoes.push('');
+
+  // Build HTML for quiz box
+  const optionsHtml = opcoes
+    .map((opt, idx) => {
+      const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
+      return `
+        <div class="quiz-option-row" data-index="${idx}" style="display:flex;align-items:center;gap:8px;margin:6px 0;">
+          <button type="button" class="quiz-badge-btn" data-index="${idx}" style="border:none;background:transparent;cursor:pointer;">
+            <span class="metadata-badge estilo2" style="display:inline-block;padding:4px 8px;border-radius:12px;min-width:28px;text-align:center;">${idx + 1}</span>
+          </button>
+          <div class="quiz-option-text markdown-content">${rendered}</div>
+        </div>`;
+    })
+    .join('');
+
+  const qHtml = pergunta ? `<div class="quiz-question markdown-content" style="font-weight:600;margin:6px 0 8px 0;">${renderMarkdown(pergunta)}</div>` : '';
+
+  const html = `
+    <div class="displaybox-container quiz-box">
+      <div class="displaybox-content">
+        <div class="displaybox-text">
+          ${qHtml}
+          <div class="quiz-options-list">
+            ${optionsHtml}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  container.insertAdjacentHTML('beforeend', html);
+
+  // Event delegation for option clicks (no custom event; logic handled in script_quiz.js)
+  if (!container.__quizClickBound) {
+    container.addEventListener('click', function(ev) {
+      const btn = ev.target.closest('.quiz-badge-btn');
+      const row = btn ? btn.closest('.quiz-option-row') : ev.target.closest('.quiz-option-row');
+      if (!row) return;
+
+      const box = row.closest('.quiz-box');
+      if (!box) return;
+
+      // Visual feedback: highlight selected badge using module color
+      try {
+        const badge = row.querySelector('.metadata-badge');
+        if (badge) {
+          badge.style.backgroundColor = '#10b981'; // Changed to green-500 color
+          badge.style.color = '#fff';
+        }
+      } catch {}
+
+      // Disable further interaction within this quiz box
+      box.querySelectorAll('button.quiz-badge-btn').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+      // No emission here; script_quiz.js listens to clicks on #results
+    });
+    container.__quizClickBound = true;
+  }
+}
+
+
+
+// Helper: build inline reference line like: [ Name: value; Name2: value2 ]
+function buildMetaInlineLine(pairs) {
+  try {
+    const parts = (pairs || [])
+      .filter(arr => Array.isArray(arr) && arr.length >= 2 && String(arr[1]).trim() !== '')
+      .map(([k, v]) => {
+        const key = String(k);
+        const val = escapeHtml(String(v));
+        //Se for o badge de title, coloca em negrito; se for o badge de score, coloca em italico; se for o badge de area, coloca em italico entre parênteses; se for o badge de number, coloca um caracter "#" antes do valor
+        if (/^title$/i.test(key)) return `<strong>${val}</strong>`;
+        if (/^score$/i.test(key)) return `<em>${val}</em>`;
+        if (/^area$/i.test(key)) return `<em>(${val})</em>`;
+        if (/^number$/i.test(key)) return `#${val}`;
+        return `${escapeHtml(key)}: ${val}`;
+      });
+    if (!parts.length) return '';
+    const content = `[ ${parts.join('; ')} ]`;
+    return `<div class="meta-inline" style="font-size: 80%; color: var(--gray-600); margin-top: 4px;">${content}</div>`;
+  } catch (e) {
+    return '';
+  }
+}
+
+/**
+ * Displays results based on search type
+ * @param {HTMLElement} container - The container element
+ * @param {Object} data - The data payload
+ * @param {string} type - The search type key
+ */
+function displayResults(container, data, type) {
+  if (!container) {
+      console.error('Results container not found');
+      return;
+  }
+  const renderer = renderers[type];
+  if (!renderer) {
+      console.error(`Unknown search type: ${type}`);
+      return;
+  }
+  renderer(container, data);
+}
+
+// ===== Utility functions =====
+function escapeHtml(text) {
+    if (typeof text !== 'string') return text;
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+

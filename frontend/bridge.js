@@ -6,7 +6,6 @@ let _randomPensataController = null;
 let _downloadController = null;  // Added download controller
 
 
-
 //_________________________________________________________
 // Lexical Search
 //_________________________________________________________
@@ -241,43 +240,52 @@ return responseData;
 // Download
 //_________________________________________________________
 async function call_download(format, resultsArray, term, type = 'none') {
-    // Abort any existing download
-    if (_downloadController) {
-        _downloadController.abort();
-    }
-    
-    _downloadController = new AbortController();
-    const timeoutId = setTimeout(() => _downloadController?.abort(), 30000); // 30s timeout
 
-    try {
-        const response = await fetch(apiBaseUrl + '/download', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/octet-stream'  // Important for file downloads
-            },
-            body: JSON.stringify({
-                format,
-                results: resultsArray,
-                term,
-                type: type || 'none'  // Include search type, default to 'none' if not provided
-            }),
-            signal: _downloadController.signal
-        });
 
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-            const errorText = await response.text().catch(() => 'Unknown error');
-            throw new Error(`Download failed: ${response.status} ${response.statusText}\n${errorText}`);
-        }
-        
-        return response;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        console.error('Download error:', error);
-        throw error;
-    } finally {
-        _downloadController = null;
-    }
+  let fullBadges = (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES);
+
+  // Abort any existing download
+  if (_downloadController) {
+      _downloadController.abort();
+  }
+  
+  _downloadController = new AbortController();
+  const timeoutId = setTimeout(() => _downloadController?.abort(), 30000); // 30s timeout
+
+  payload = {
+    format,
+    results: resultsArray,
+    term,
+    type: type || 'none',  // Include search type, default to 'none' if not provided
+    details: fullBadges || false  // Include search type, default to 'none' if not provided
+  };
+
+  console.log('********bridge.js - download*** [payload]:', payload);
+
+  try {
+      const response = await fetch(apiBaseUrl + '/download', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/octet-stream'  // Important for file downloads
+          },
+          body: JSON.stringify(payload),
+          signal: _downloadController.signal
+      });
+
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+          const errorText = await response.text().catch(() => 'Unknown error');
+          throw new Error(`Download failed: ${response.status} ${response.statusText}\n${errorText}`);
+      }
+      
+      return response;
+  } catch (error) {
+      clearTimeout(timeoutId);
+      console.error('Download error:', error);
+      throw error;
+  } finally {
+      _downloadController = null;
+  }
 }
