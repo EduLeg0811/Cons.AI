@@ -202,16 +202,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const suggestions = [
           'Sou novo no assunto, me explique o que é Conscienciologia.',
-          'O que e é Proéxis e qual a relação dela com o Curso Intermissivo?',
+          'O que e é Proéxis e qual a relação com o Curso Intermissivo?',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
-          'Será que já sou um Ser Desperto? Faça uma análise.',
-          'Ontem tive uma projeção em que me vi com roupas diferentes. Posso descrever para você me indicar a possível época e o local, para minha pesquisa retrocognitiva?',
-          'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem o o grupo a que pertence, pelo relato que vou te fazer.',
-          'O que você me sugere para eu identificar meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
+          'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
+          'Ontem tive uma projeção em que me vi com vestimentas de época. Posso descrever para você me indicar a possível período e local, para minha pesquisa retrocognitiva?',
+          'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',
+          'O que você me sugere para mapear meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me indicar possíveis abordagens conscienciológicas?',
           'Vou te passar a Definologia e a Fatuística do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
-          'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o isso que significa na Conscienciologia?',
-          'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Concienciologia.',
+          'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o que isso significa na Conscienciologia?',
+          'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Conscienciologia.',
         ];
         
         // Container principal
