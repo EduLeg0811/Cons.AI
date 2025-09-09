@@ -139,7 +139,7 @@ const INSTRUCTIONS_RAGBOT = `
     - Para explicações passo a passo, use listas numeradas; para sequências cronológicas, siga a ordem temporal.
     - Prefira tabelas em Markdown para dados organizados e listas sucintas para enumerações longas.
     - Default para Markdown.
-    - Responda habitualmente em no máximo 4 parágrafos, exceto quando o usuário solicitar de modo específico.
+    - Seja breve e objetivo nas respostas (máximo 5 parágrafos).
   4. **Clareza Operacional**
     - Não repita perguntas já respondidas, aproveitando o contexto da conversa.
     - Em caso de ambiguidade, adote a interpretação mais razoável e declare a suposição em uma linha.

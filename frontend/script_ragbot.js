@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const suggestions = [
           'Sou novo no assunto, me explique o que é Conscienciologia.',
-          'O que e é Proéxis e qual a relação com o Curso Intermissivo?',
+          'O que é Proéxis e qual a relação com o Curso Intermissivo?',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
           'Ontem tive uma projeção em que me vi com vestimentas de época. Posso descrever para você me indicar o possível período e local, para minha pesquisa retrocognitiva?',
