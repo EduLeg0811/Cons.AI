@@ -91,7 +91,7 @@ const TOOL_MESSAGES = {
   'Definologia de Verbetes': {
     short: '<em>Busca de termos em verbetes</em>',
     extra: [
-      'Encontra verbetes que possuam os termos de busca exatos na Definologia. ',
+      'Encontra verbetes que possuam os termos de busca exatos na Definologia.<br> ',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>verbetes</em> em que deseja buscar.<br>',

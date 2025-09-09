@@ -88,7 +88,7 @@
     --simple-bg: #fffef0; /* soft warm light */
 
     /* Attention accent */
-    --pulse-yellow: #ffff00; /* soft light yellow for subtle pulse */
+    --pulse-yellow: #f9f974; /* soft light yellow for subtle pulse */
 }
 
 /* ===== DARK MODE TOKENS ===== */
@@ -120,7 +120,7 @@
     --simple-bg: rgba(255, 255, 224, 0.07); /* faint warm tint */
 
     /* Attention accent (dark tuned) */
-    --pulse-yellow: rgba(255, 220, 120, 0.18);
+    --pulse-yellow: rgba(246, 255, 120, 0.18);
 }
 
 /* ===== MODULE ACCENTS (per page theme) ===== */

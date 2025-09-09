@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'O que você me sugere para eu identificar meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me indicar possíveis abordagens conscienciológicas?',
           'Vou te passar a Definologia e a Fatuística do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
-          'Outro dia ouvi a expressão "Inacabamanto a Maior", mas com uma conotação homeostática. Pode me explicar melhor o isso que significa na Conscienciologia?',
+          'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o isso que significa na Conscienciologia?',
           'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Concienciologia.',
         ];
         
