@@ -796,8 +796,7 @@ const format_paragraph_Default = (item) => {
   const html = `
     <div class="displaybox-container ragbot-box">
       <div class="displaybox-content">
-        <div class="displaybox-text markdown-content">${mdHtml}</div> <!-- <<< -->
-        ${metaInfo}
+        <div class="displaybox-text markdown-content">${mdHtml}</div>
       </div>
     </div>
   `;
