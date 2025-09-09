@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',
           'O que você me sugere para mapear meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me indicar possíveis abordagens conscienciológicas?',
-          'Vou te passar a Definologia e a Fatuística do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
+          'Vou te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
           'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o que isso significa na Conscienciologia?',
           'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Conscienciologia.',
         ];
