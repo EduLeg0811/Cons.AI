@@ -73,7 +73,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Lexical Search
   'Pesquisa em Livros': {
-    short: '<em>Busca de palavras e termos exatos</em>',
+    short: '<em>Busca de termos em livros</em>',
     extra: [
       'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
       'Útil para encontrar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
@@ -122,7 +122,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Verbetopedia
   'Verbetopedia': {
-    short: '<em>Busca contextual de verbertes</em>',
+    short: '<em>Busca contextual em verbertes</em>',
     extra: [
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
@@ -137,7 +137,7 @@ const TOOL_MESSAGES = {
 
 // Tool: Conscienciogramopedia
 'Questões do Conscienciograma': {
-  short: '<em>Busca contextual de questões</em>',
+  short: '<em>Busca contextual em questões</em>',
   extra: [
     'Indica questões do Conscienciograma afins ao termo de busca. ',
     'Ótimo para buscar questões de aprofundamento da autopesquisa.<br>',

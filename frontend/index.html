@@ -349,7 +349,7 @@
               const cfg = (window.CONFIG || window.CONFIG_DEFAULTS || {});
               const $ = (id) => document.getElementById(id);
               if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-4.1';
-              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-5-nano';
+              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-4.1';
               const temp = Number(cfg.TEMPERATURE ?? 0.5);
               if ($('cfg-temperature')) $('cfg-temperature').value = temp;
               if ($('cfg-temperature-num')) $('cfg-temperature-num').value = temp;
@@ -369,8 +369,8 @@
               const $ = (id) => document.getElementById(id);
               const next = {
                 MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-4.1',
-                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-5-nano',
-                TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? 0.5),
+                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-4.1',
+                TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? 0.3),
                 MAX_RESULTS_DISPLAY: Number($('cfg-max-results')?.value ?? 10),
                 OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLWV',
                 FULL_BADGES: !!$('cfg-full-badges')?.checked,
@@ -441,10 +441,10 @@
             <div class="config-field">
               <label for="cfg-model-ragbot">MODEL_RAGBOT</label>
               <select id="cfg-model-ragbot">
-                <option value="gpt-5-nano">gpt-5-nano (default)</option>
+                <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1</option>
+                <option value="gpt-4.1">gpt-4.1 (default)</option>
               </select>
             </div>
             <div class="config-field">

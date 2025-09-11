@@ -169,7 +169,7 @@ class LlmQueryResource(Resource):
             if not query:
                 return {"error": "Query não fornecida."}, 400
 
-            model = data.get("model", "gpt-4.1-nano")
+            model = data.get("model", "gpt-4.1")
             temperature = float(data.get("temperature", 0.3))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))

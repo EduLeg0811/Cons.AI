@@ -79,7 +79,7 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 // Whether to show reference badges under each result (fixed global setting)
 window.SHOW_REF_BADGES = true;
 const MODEL_LLM='gpt-4.1';
-const MODEL_RAGBOT='gpt-5-nano';
+const MODEL_RAGBOT='gpt-4.1';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';

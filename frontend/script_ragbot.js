@@ -201,18 +201,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatMessages && chatMessages.children && chatMessages.children.length > 0) return;
 
         const suggestions = [
-          'Sou novo no assunto, me explique o que é Conscienciologia.',
-          'O que é Proéxis e qual a relação com o Curso Intermissivo?',
+          'Sou novo no assunto, me explique o que é a Conscienciologia.',
+          'Faça uma relação entre a Proéxis e o Curso Intermissivo',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
-          'Ontem tive uma projeção em que me vi com vestimentas de época. Posso descrever para você me indicar o possível período e local, para minha pesquisa retrocognitiva?',
-          'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',
-          'O que você me sugere para mapear meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
-          'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me indicar possíveis abordagens conscienciológicas?',
+          'Tive uma projeção em que me vi com roupas de época. Posso descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva?',
+          'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
           'Vou te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
           'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o que isso significa na Conscienciologia?',
-          'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Conscienciologia.',
         ];
+
+        //'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',
+        //'O que você me sugere para mapear meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
+        //'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Conscienciologia.',
         
         // Container principal
         const wrap = document.createElement('div');
@@ -247,14 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Estilo mínimo para ficar como "pill"
           badge.style.border = '1px solid var(--gray-300)';
           // Fundo verde muito claro
-          badge.style.background = '#e8f5e9';
+          badge.style.background = '#f0faf1';
           badge.style.color = '#000000';
           badge.style.textAlign = 'left';
           badge.style.padding = '6px 10px';
           badge.style.borderRadius = '9999px';
           // Armazena a cor de fundo original e restaura no mouseleave
           // Cor base desejada (verde clarinho)
-          const baseBg = '#e8f5e9';
+          const baseBg = '#f0faf1';
           // Garante inline a cor base para não herdar cinza do CSS
           badge.style.background = baseBg;
           // Guarda também se precisar reaplicar
