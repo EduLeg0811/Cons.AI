@@ -76,7 +76,7 @@ function renderMarkdown(mdText) {
 
 // ===== Handlers mapping =====
 const renderers = {
-    ragbot: showRagbot2,
+    ragbot: showRagbot,
     lexical: showSearch,
     semantical: showSearch,
     title: showTitle,
@@ -978,6 +978,71 @@ function showVerbetopedia(container, data) {
 }
 
 
+
+
+
+
+// ________________________________________________________________________________________
+// Show RAGbot
+// ________________________________________________________________________________________
+ // Expected data format from /ragbot:
+  // {
+  //   results: [{ text: string, citations: array }],
+  //   total_tokens_used: number,
+  //   type: 'ragbot',
+  //   model: string,
+  //   temperature: number
+  // }
+  function showRagbot(container, data) {
+    const text = data?.text || 'No text available.';
+    const mdHtml = renderMarkdown(text);
+
+    // ***********************************************************************
+    // Extract metadata
+    // ***********************************************************************
+    // ragbot: {
+    //   metadataFields: ['title', 'number', 'source', 'citations', 'total_tokens_used', 'model', 'temperature']
+    // }
+    // ***********************************************************************
+    metadata = extractMetadata(data, 'ragbot');
+
+    const citations = metadata?.citations;
+    const total_tokens_used = metadata?.total_tokens_used;
+    const model = metadata?.model;
+    const temperature = metadata?.temperature;
+    
+    // Badge do número absoluto do parágrafo no arquivo (se presente)
+    const metaInfo = `
+    <div class="metadata-container">
+      <span class="metadata-badge citation">Citations: ${citations}</span>
+      <span class="metadata-badge model">Model: ${model}</span>
+      <span class="metadata-badge tokens">Tokens: ${total_tokens_used}</span>
+    </div>
+    `;  
+  
+  const html = `
+    <div class="displaybox-container ragbot-box">
+      <div class="displaybox-content">
+        <div class="displaybox-text markdown-content">${mdHtml}</div>
+      </div>
+    </div>
+  `;
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ________________________________________________________________________________________
 // Show RAGbot (inline badges only)
 // ________________________________________________________________________________________
@@ -994,6 +1059,7 @@ function showRagbot2(container, data) {
     const totalTokens = md?.total_tokens_used ?? data?.total_tokens_used;
     const model = md?.model ?? data?.model;
     const temperature = md?.temperature ?? data?.temperature;
+    const texto = md?.markdown ?? data?.markdown;
 
     const parts = [];
     if (title) parts.push(`<span class="metadata-badge title"><strong>${escapeHtml(title)}</strong></span>`);
