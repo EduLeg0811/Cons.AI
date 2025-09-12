@@ -114,7 +114,7 @@ const TOOL_MESSAGES = {
       '<strong>2.</strong> Ative <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico - isso melhora a qualidade dos resultados.<br>',
       '<strong>4.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
       '<strong>5.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.<br>',
-      '<strong>6.</strong> Ao invés de usar apenas uma palavra na busca, tente explicar sua pesquisa usando frases ou parágrafos.<br>',
+      '<strong>6.</strong> Ao invés de usar apenas um termo na busca, tente usar lista de palavras descritivas.<br>',
       '<strong>7.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
     ].join('\n')
   },

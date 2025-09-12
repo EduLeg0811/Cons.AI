@@ -1144,9 +1144,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     background: var(--primary-500);
 }
 
-.message-avatar.bot {
-    background: var(--success);
-}
+/* Bot avatar styles removed: bot no longer renders an avatar */
 
 .message-content {
     background: var(--white);
@@ -1270,7 +1268,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 
 /* ===== RAGBOT (theme-bots) OVERRIDES ===== */
 /* 1) Bot responses use full width and hide bot avatar */
-.theme-bots .chat-message.bot .message-avatar { display: none; }
+.theme-bots .chat-message.bot .message-avatar { /* removed: no bot avatar in DOM */ }
 .theme-bots .chat-message.bot {
     max-width: 100%;
     width: 100%;
@@ -1279,18 +1277,16 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .theme-bots .chat-message.bot .message-content {
     width: 100%;
     flex: 1;
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-5) var(--space-6); /* tighter now that bot has no avatar */
 }
 
-/* Show avatar only for the initial greeting (with-avatar) */
-.theme-bots .chat-message.bot.with-avatar .message-avatar { display: flex; }
-.theme-bots .chat-message.bot.with-avatar {
-    gap: var(--space-4);
-}
+/* Removed with-avatar handling for bot: avatar not used */
 
 /* 2) Keep input at the very bottom; let messages fill remaining space */
 .theme-bots .chat-messages { max-height: none; }
 .theme-bots .chat-input-wrapper { margin-top: auto; }
+/* Reduce vertical gap between messages in bots theme */
+.theme-bots .chat-messages { gap: var(--space-4); }
 /* Add horizontal breathing room for bot chat view */
 .theme-bots .chat-messages {
     padding-left: var(--space-4);

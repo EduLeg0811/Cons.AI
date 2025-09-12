@@ -30,9 +30,8 @@ FAISS_ID_ECALL_DEF="ECALL_DEF"
 # Vector Store ID - OPENAI
 OPENAI_ID_ALLWV="vs_6870595f39dc8191b364854cf46ffc74"
 OPENAI_ID_ALLCONS="vs_6870595f39dc8191b364854cf46ffc74"
-DEFAULT_VECTOR_STORE_OPENAI=OPENAI_ID_ALLCONS
-
-
+OPENAI_ID_EDUNOTES="vs_68726a6993fc8191ba63b14a9243076a"
+DEFAULT_VECTOR_STORE_OPENAI=OPENAI_ID_ALLWV
 
 # ================================================================
 # Diretórios base (relativos à pasta backend)

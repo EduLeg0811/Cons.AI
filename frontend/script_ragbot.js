@@ -72,6 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
           }
 
+          // Remove initial suggestions if present (manual message sent)
+          try {
+            const initial = document.getElementById('initial-quests');
+            if (initial) initial.remove();
+          } catch {}
+
           // Add user message to chat
           addChatMessage('user', term);
           
@@ -152,10 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.className = `chat-message ${sender}${isLoading ? ' loading' : ''}`;
         messageDiv.id = messageId;
         
-        const avatar = document.createElement('div');
-        avatar.className = `message-avatar ${sender}`;
-        avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
-        
+        // Build avatar only when needed to avoid extra left-side circles
+        let avatar = null;
+        // Show avatar only for the user; never for the bot
+        const shouldShowAvatar = (sender === 'user');
+        if (shouldShowAvatar) {
+            avatar = document.createElement('div');
+            avatar.className = `message-avatar ${sender}`;
+            avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+        }
+
         const messageContent = document.createElement('div');
         messageContent.className = `message-content${sender === 'user' ? ' user' : ''}`;
         
@@ -168,16 +180,42 @@ document.addEventListener('DOMContentLoaded', () => {
             messageContent.innerHTML = `<p>${content}</p>`;
         }
         
-        messageDiv.appendChild(avatar);
+        if (avatar) messageDiv.appendChild(avatar);
         messageDiv.appendChild(messageContent);
         
-        chatMessages.appendChild(messageDiv);
-        
-        // Scroll to bottom
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
+        // Keep chronological order: append at the bottom
+        // Insert logic: keep newest question at the top (no scroll dependency)
+        if (sender === 'user') {
+            // Always place user's question at the very top
+            if (chatMessages.firstChild) {
+                chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
+            } else {
+                chatMessages.appendChild(messageDiv);
+            }
+        } else {
+            // Bot message (including loading): place right below the latest user message at top
+            const firstEl = chatMessages.firstElementChild;
+            if (firstEl && firstEl.classList && firstEl.classList.contains('user')) {
+                // Insert after the first (top) user message
+                if (firstEl.nextSibling) {
+                    chatMessages.insertBefore(messageDiv, firstEl.nextSibling);
+                } else {
+                    chatMessages.appendChild(messageDiv);
+                }
+            } else {
+                // Fallback: if no user message found, append at top
+                if (chatMessages.firstChild) {
+                    chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
+                } else {
+                    chatMessages.appendChild(messageDiv);
+                }
+            }
+        }
+
         return messageId;
     }
+
+    // Note: removed scroll/alignment helpers to keep logic simple and robust
 
     // Expor util para adicionar mensagens externamente (ex.: boas-vindas)
     window.ragbotAddMessage = (sender, content, isLoading=false) => addChatMessage(sender, content, isLoading);
@@ -202,12 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const suggestions = [
           'Sou novo no assunto, me explique o que é a Conscienciologia.',
-          'Faça uma relação entre a Proéxis e o Curso Intermissivo',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
-          'Tive uma projeção em que me vi com roupas de época. Posso descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva?',
+          'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
-          'Vou te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos.',
+          'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos:',
           'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o que isso significa na Conscienciologia?',
         ];
 
