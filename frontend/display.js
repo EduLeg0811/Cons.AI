@@ -76,7 +76,7 @@ function renderMarkdown(mdText) {
 
 // ===== Handlers mapping =====
 const renderers = {
-    ragbot: showRagbot,
+    ragbot: showRagbot2,
     lexical: showSearch,
     semantical: showSearch,
     title: showTitle,
@@ -766,48 +766,7 @@ const format_paragraph_Default = (item) => {
   //   model: string,
   //   temperature: number
   // }
-  function showRagbot(container, data) {
-    const text = data?.text || 'No text available.';
-    const mdHtml = renderMarkdown(text);
-
-    // ***********************************************************************
-    // Extract metadata
-    // ***********************************************************************
-    // ragbot: {
-    //   metadataFields: ['title', 'number', 'source', 'citations', 'total_tokens_used', 'model', 'temperature']
-    // }
-    // ***********************************************************************
-    metadata = extractMetadata(data, 'ragbot');
-
-    const citations = metadata?.citations;
-    const total_tokens_used = metadata?.total_tokens_used;
-    const model = metadata?.model;
-    const temperature = metadata?.temperature;
-    
-    // Badge do número absoluto do parágrafo no arquivo (se presente)
-    const metaInfo = `
-    <div class="metadata-container">
-      <span class="metadata-badge citation">Citations: ${citations}</span>
-      <span class="metadata-badge model">Model: ${model}</span>
-      <span class="metadata-badge tokens">Tokens: ${total_tokens_used}</span>
-    </div>
-    `;  
-  
-  const html = `
-    <div class="displaybox-container ragbot-box">
-      <div class="displaybox-content">
-        <div class="displaybox-text markdown-content">${mdHtml}</div>
-      </div>
-    </div>
-  `;
-  container.insertAdjacentHTML('beforeend', html);
-}
-
-
-// ________________________________________________________________________________________
-// Show Title
-// ________________________________________________________________________________________
-function showTitle(container, text) {
+  function showTitle(container, text) {
     const cleanText = renderMarkdown(text);
     const html = `
     <div style="
@@ -840,7 +799,7 @@ function showTitle(container, text) {
   //    model: string,
   //    temperature: number
   // }
-  function showSimple(container, data) {
+function showSimple(container, data) {
     const text = data.text;
     const ref = data.ref || "";
     const mdHtml = renderMarkdown(text);
@@ -1016,6 +975,40 @@ function showVerbetopedia(container, data) {
       });
       container.__pillHandlerBound = true;
     }
+}
+
+
+// ________________________________________________________________________________________
+// Show RAGbot (inline badges only)
+// ________________________________________________________________________________________
+function showRagbot2(container, data) {
+  try {
+    if (!container || !data) return;
+
+    // Extract relevant metadata
+    let md = {};
+    try { md = extractMetadata(data, 'ragbot') || {}; } catch {}
+
+    const title = (md?.title || data?.title || '').toString();
+    const citations = (md?.citations || data?.citations || '').toString();
+    const totalTokens = md?.total_tokens_used ?? data?.total_tokens_used;
+    const model = md?.model ?? data?.model;
+    const temperature = md?.temperature ?? data?.temperature;
+
+    const parts = [];
+    if (title) parts.push(`<span class="metadata-badge title"><strong>${escapeHtml(title)}</strong></span>`);
+    if (citations) parts.push(`<span class="metadata-badge citation">Citations: ${escapeHtml(citations)}</span>`);
+    if (model !== undefined && model !== null && model !== '') parts.push(`<span class="metadata-badge model">Model: ${escapeHtml(String(model))}</span>`);
+    if (totalTokens !== undefined && totalTokens !== null && totalTokens !== '') parts.push(`<span class="metadata-badge tokens">Tokens: ${escapeHtml(String(totalTokens))}</span>`);
+    if (temperature !== undefined && temperature !== null && temperature !== '') parts.push(`<span class="metadata-badge temperature">Temp: ${escapeHtml(String(temperature))}</span>`);
+
+    if (!parts.length) return;
+
+    const metaHtml = `<div class="metadata-container">${parts.join('')}</div>`;
+    container.insertAdjacentHTML('beforeend', metaHtml);
+  } catch (e) {
+    console.warn('showRagbot2: failed to render badges', e);
+  }
 }
 
 
@@ -1422,4 +1415,5 @@ function escapeHtml(text) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
 

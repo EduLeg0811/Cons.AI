@@ -110,8 +110,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Remove loading message and add bot response
           removeChatMessage(loadingId);
-          addChatMessage('bot', response.text || 'Sorry, I could not generate a response.');
-          
+          addChatMessage('bot', response.text);
+
+          // Mostra os metadados do response em Badges, logo após o texto da resposta
+          // ------------------------------------------------------------------------      
+          if (window.CONFIG.FULL_BADGES) {
+            metaData = extractMetadata(response, 'ragbot');
+            const citations = metaData?.citations;
+            const total_tokens_used = metaData?.total_tokens_used;
+            const model = metaData?.model;
+            const temperature = metaData?.temperature;
+            const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
+
+            console.log(metaData);
+
+            // Badge do número absoluto do parágrafo no arquivo (se presente)
+            const metaInfo = `${vector_store_names}     ●     ${citations}     ●     ${model}     ●     ${temperature}     ●     ${total_tokens_used}`;
+
+            addChatMessage('bot', metaInfo, false);
+
+          }
+
           // Store in chat history
           chatHistory.push({
             user: term,
@@ -153,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //______________________________________________________________________________________________
     // Function to add chat messages
     function addChatMessage(sender, content, isLoading = false) {
+
+     
         const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${sender}${isLoading ? ' loading' : ''}`;
@@ -179,9 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             messageContent.innerHTML = `<p>${content}</p>`;
         }
-        
+
         if (avatar) messageDiv.appendChild(avatar);
         messageDiv.appendChild(messageContent);
+        
         
         // Keep chronological order: append at the bottom
         // Insert logic: keep newest question at the top (no scroll dependency)
@@ -202,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     chatMessages.appendChild(messageDiv);
                 }
+
             } else {
                 // Fallback: if no user message found, append at top
                 if (chatMessages.firstChild) {
@@ -215,10 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return messageId;
     }
 
-    // Note: removed scroll/alignment helpers to keep logic simple and robust
-
+    
     // Expor util para adicionar mensagens externamente (ex.: boas-vindas)
     window.ragbotAddMessage = (sender, content, isLoading=false) => addChatMessage(sender, content, isLoading);
+
+    
     
     // Function to remove chat message
     function removeChatMessage(messageId) {

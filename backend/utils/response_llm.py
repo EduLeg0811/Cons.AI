@@ -13,7 +13,8 @@ from utils.config import (
     TEMPERATURE, 
     INSTRUCTIONS_LLM_BACKEND,
     OPENAI_ID_ALLWV, 
-    OPENAI_ID_ALLCONS
+    OPENAI_ID_ALLCONS,
+    OPENAI_ID_EDUNOTES
 )
 
 
@@ -108,6 +109,7 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
+    logger.info(f"\n\n ------- < generate_llm_answer > ------- LLM String: {llm_str}")
 
     try:
 
@@ -118,14 +120,13 @@ def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temp
         if last_id and use_session:
             _conversation_last_id[chat_id] = last_id
 
+        logger.info(f"\n\n ------- < generate_llm_answer > ------- Response: {response}")
 
         return format_llm_response(response)
 
     except Exception as e:
         logger.error(f"Erro ao gerar resposta LLM: {str(e)}")
         return {"error": f"Falha ao gerar resposta: {str(e)}"}
-
-
 
 
 
@@ -136,6 +137,8 @@ def get_vector_store_ids(vector_store_names):
         vector_store_ids.append(OPENAI_ID_ALLWV)
     elif vector_store_names == "ALLCONS":
         vector_store_ids.append(OPENAI_ID_ALLCONS)
+    elif vector_store_names == "EDUNOTES":
+        vector_store_ids.append(OPENAI_ID_EDUNOTES)
     else:
         vector_store_ids.append(DEFAULT_VECTOR_STORE_OPENAI)
 

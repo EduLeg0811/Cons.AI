@@ -83,7 +83,6 @@ const MODEL_RAGBOT='gpt-4.1';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';
-
 const FULL_BADGES = false;
 
 // ========================= Runtime Config (overrides) =========================

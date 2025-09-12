@@ -378,7 +378,7 @@
               try { localStorage.setItem('appConfig', JSON.stringify(next)); } catch {}
               window.CONFIG = { ...(window.CONFIG || {}), ...next };
               try { window.USER_MAX_RESULTS = Number(window.CONFIG.MAX_RESULTS_DISPLAY) || 10; } catch {}
-              try { window.USER_TEMPERATURE = Number(window.CONFIG.TEMPERATURE) ?? 0.5; } catch {}
+              try { window.USER_TEMPERATURE = Number(window.CONFIG.TEMPERATURE) ?? 0.3; } catch {}
               closeConfigModal();
             }
 
@@ -463,6 +463,7 @@
               <select id="cfg-openai-ragbot">
                 <option value="ALLWV">ALLWV (default)</option>
                 <option value="ALLCONS">ALLCONS</option>
+                <option value="EDUNOTES">EDUNOTES</option>
               </select>
             </div>
             <div class="config-field full">
