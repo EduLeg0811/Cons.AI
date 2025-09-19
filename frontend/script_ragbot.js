@@ -34,10 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function ragbot() {
 
 
-      // Reset LLM data
-      resetLLM();
-
-
       // Save original button state for restoration
       const originalButtonState = {
         html: searchButton.innerHTML,
