@@ -66,18 +66,7 @@ def serve_static(path):
     return "File not found", 404
 
 # Restrinja origens em produÃ§Ã£o; inclua localhost para dev
-CORS_ALLOWED_ORIGINS = [
-    "https://cons-ai.onrender.com",
-    "https://cons-ia.org",
-    "http://localhost:5173",  # Vite/Dev server
-    "http://127.0.0.1:5500",  # Live Server
-    "http://localhost:5500",  # Live Server
-    "https://cons-ai-server.onrender.com",
-    r"http://localhost:\d+",  # Allow all localhost ports
-    r"http://127\.0\.0\.1:\d+",  # Allow all 127.0.0.1 ports
-    r"https://.*\.webcontainer-api\.io",  # WebContainer domains
-    r"https://.*\.local-credentialless\.webcontainer-api\.io",  # WebContainer pattern
-]
+CORS_ALLOWED_ORIGINS = "*"
 
 # Configure CORS
 CORS(app, resources={
@@ -402,4 +391,5 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
 
