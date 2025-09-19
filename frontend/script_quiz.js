@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function quiz() {
 
 
+        // Reset LLM data
+        resetLLM();
+
         // Salva estado original do botão
         const originalButtonState = {
             html: searchButton?.innerHTML,

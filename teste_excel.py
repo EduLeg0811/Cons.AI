@@ -39,13 +39,13 @@ def lexical_search_in_excel_files(search_term: str, source: List[str]) -> List[D
                              col_names_in_order[0])
 
             # Percorrer as linhas e buscar SOMENTE em texto_key (coluna A)
-            term = search_term.strip().lower()
-            if not term:
+            cleanTerm = search_term.strip().lower()
+            if not cleanTerm:
                 continue
 
             for row in content:
                 cell_val = str(row.get(texto_key, "")).lower()
-                if term in cell_val:
+                if cleanTerm in cell_val:
                     # Incluir TODOS os campos da linha + o nome do arquivo
                     result_entry = {"book": book}
                     result_entry.update(row)

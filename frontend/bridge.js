@@ -60,7 +60,7 @@ async function call_lexical(parameters) {
 
       // Formatt lexical response 
       const formattedResponse = lexical_formatResponse(responseData);
-      console.log(`********bridge.js - lexical*** [formattedResponse]:`, formattedResponse);
+      console.log(`********bridge.js - call_lexical*** [formattedResponse]:`, formattedResponse);
 
       return formattedResponse;
 
@@ -120,7 +120,7 @@ async function call_semantical(parameters) {
 
         // Formatt semantical response 
         const formattedResponse = semantical_formatResponse(responseData);
-        console.log(`********bridge.js - semantical*** [formattedResponse]:`, formattedResponse);
+        console.log(`********bridge.js - call_semantical*** [formattedResponse]:`, formattedResponse);
 
         return formattedResponse;
 
@@ -181,7 +181,9 @@ async function call_llm(parameters) {
 
     // Transform the LLM response to match what displayResults expects
     const formattedResponse = llm_formatResponse(responseData);
-    console.log(`********bridge.js - llm*** [formattedResponse]:`, formattedResponse);
+
+    console.log(`********bridge.js - call_llm*** [formattedResponse]:`, formattedResponse);
+
     return formattedResponse;
   } catch (error) {
     // Normalize AbortError message for better UX
@@ -227,7 +229,7 @@ if (!response.ok) {
 
 const responseData = await response.json();
 
-console.log(`********bridge.js - random_pensata*** [responseData]:`, responseData);
+console.log(`********bridge.js - call_random_pensata*** [responseData]:`, responseData);
 
 return responseData;
 }
@@ -239,10 +241,9 @@ return responseData;
 //_________________________________________________________
 // Download
 //_________________________________________________________
-async function call_download(format, resultsArray, term, type = 'none') {
+async function call_download(format, payload) {
 
-
-  let fullBadges = (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES);
+ const fullBadges = (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES);
 
   // Abort any existing download
   if (_downloadController) {
@@ -252,15 +253,7 @@ async function call_download(format, resultsArray, term, type = 'none') {
   _downloadController = new AbortController();
   const timeoutId = setTimeout(() => _downloadController?.abort(), 30000); // 30s timeout
 
-  payload = {
-    format,
-    results: resultsArray,
-    term,
-    type: type || 'none',  // Include search type, default to 'none' if not provided
-    details: fullBadges || false  // Include search type, default to 'none' if not provided
-  };
-
-  console.log('********bridge.js - download*** [payload]:', payload);
+  console.log('********bridge.js - call_download*** [payload]:', payload);
 
   try {
       const response = await fetch(apiBaseUrl + '/download', {

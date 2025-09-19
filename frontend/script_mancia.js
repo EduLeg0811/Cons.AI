@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 //______________________________________________________________________________________________
     async function mancia() {
 
-       
+       // Reset LLM data
+       resetLLM();
                
 
         // Save original button state for restoration

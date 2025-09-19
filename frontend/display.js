@@ -142,185 +142,144 @@ function removeLoading(container) {
 
 
 
-
 //______________________________________________________________________________________________
-// showSearch
+// showSearch (corrigido com IDs únicos)
 //______________________________________________________________________________________________
 function showSearch(container, data) {
 
-    
-    if (!container) {
-        console.error('Results container not found');
-        return;
-    }
+  if (!container) {
+      console.error('Results container not found');
+      return;
+  }
 
-    // 0) Garantir array de entrada
-    const arr = Array.isArray(data.results) ? data.results : [];
-    if (!arr.length) {
-        container.insertAdjacentHTML(
-            'beforeend',
-            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-        );
-        return;
-    }
+  // 0) Garantir array de entrada
+  const arr = Array.isArray(data.results) ? data.results : [];
+  if (!arr.length) {
+      container.insertAdjacentHTML(
+          'beforeend',
+          '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
+      );
+      return;
+  }
 
-    // 1) Normalizador de fonte/livro para exibição (remove diretórios e .md)
-    const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
-        ? window.normSourceName
-        : function _fallbackNormSourceName(src) {
-            if (!src) return 'Results';
-            let s = String(src);
-            s = s.split(/[\\/]/).pop();           // tira diretórios
-            s = s.replace(/\.(md|markdown|txt|xlsx)$/i, ''); // tira extensão
-            return s;
-        };
+  // 1) Normalizador de fonte/livro para exibição
+  const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
+      ? window.normSourceName
+      : function _fallbackNormSourceName(src) {
+          if (!src) return 'Results';
+          let s = String(src);
+          s = s.split(/[\\/]/).pop();
+          s = s.replace(/\.(md|markdown|txt|xlsx)$/i, '');
+          return s;
+      };
 
+  // 2) Agrupar por fonte normalizada
+  const groups = arr.reduce((acc, it, idx) => {
+      const raw = it?.book || it?.source || it?.file || 'Results';
+      const key = normSourceName(raw);
+      if (!acc[key]) acc[key] = [];
+      acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
+      return acc;
+  }, {});
+  const groupNames = Object.keys(groups);
 
-   // 2) Agrupar por fonte normalizada
-        const groups = arr.reduce((acc, it, idx) => {
-            const raw = it?.book || it?.source || it?.file || 'Results';
-            const key = normSourceName(raw);
-            if (!acc[key]) acc[key] = [];
-            acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
-            return acc;
-        }, {});
-        const groupNames = Object.keys(groups);
+  // 3) Summary badges (rows)
+  const totalCount = arr.length;
+  const slug = (s) => String(s || 'all')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
 
+  const flag_grouping = document.getElementById('groupResults')?.checked ?? true;
 
-    // 3) Summary badges (rows) and rendering
-    // ===========================================================================================
+  let summaryRows = '<div class="summary-list">';
+  if (flag_grouping) {
+      summaryRows += groupNames.map((name, idx) => {
+          const n = groups[name].length;
+          const target = `group-${slug(name)}-${idx}`; // ID único com índice
+          const accent = getAccentColor('lexical');
+          const accentWithAlpha = `${accent}CC`;
+          return `<button class="pill pill-row accented" data-target="${target}">
+                    <span class="pill-label">${escapeHtml(bookName(name))}</span>
+                    <span class="count">${n}</span>
+                  </button>`;
+      }).join('');
+  } else {
+      summaryRows += `<button class="pill pill-row accented" data-target="all-results">
+                        <span class="pill-label">Total</span>
+                        <span class="count">${totalCount}</span>
+                      </button>`;
+  }
+  summaryRows += '</div>';
+  container.insertAdjacentHTML('beforeend', summaryRows);
 
-    const totalCount = arr.length;
-    const slug = (s) => String(s || 'all')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+  // 4) Renderização dos painéis
+  if (flag_grouping) {
+      groupNames.forEach((groupName, groupIndex) => {   // <--- agora usamos groupIndex corretamente
+          const groupItems = groups[groupName];
+          let groupHtml = '';
 
-    // Get the checkbox state
-    const flag_grouping = document.getElementById('groupResults')?.checked ?? true;
+          groupItems.forEach((item) => {
+              const sourceName = item.source || item.file || item.book || 'Unknown';
+              groupHtml += format_paragraphs_source(item, sourceName);
+          });
 
-    // Build summary rows according to grouping toggle
-    let summaryRows = '<div class="summary-list">';
-    if (flag_grouping) {
-        // Only per-source rows
-        summaryRows += groupNames.map(name => {
-            const n = groups[name].length;
-            const target = `group-${slug(name)}`;
-            // Aplica cor do grupo nos pills por fonte (usa mesma cor do módulo lexical) com transparência
-            const accent = getAccentColor('lexical');
-            const accentWithAlpha = `${accent}CC`; // Adiciona 80% de opacidade (CC em hex)
-            return `<button class="pill pill-row accented" data-target="${target}"><span class="pill-label">${escapeHtml(bookName(name))}</span><span class="count">${n}</span></button>`;
-        }).join('');
-    } else {
-        // Only total row
-        summaryRows += `<button class="pill pill-row accented" data-target="all-results"><span class="pill-label">Total</span><span class="count">${totalCount}</span></button>`;
-    }
-    summaryRows += '</div>';
-    container.insertAdjacentHTML('beforeend', summaryRows);
+          const panelId = `group-${slug(groupName)}-${groupIndex}`;
+          const groupPanel = `
+              <div id="${panelId}" class="collapse-panel">
+                  <div class="displaybox-container">
+                      <div class="displaybox-content group-content">
+                          ${groupHtml}
+                      </div>
+                  </div>
+              </div>
+          `;
+          container.insertAdjacentHTML('beforeend', groupPanel);
+      });
+  } else {
+      const sortedItems = [...arr].sort((b, a) => (b.score || 0) - (a.score || 0));
+      let groupHtml = '';
+      sortedItems.forEach((item) => {
+          const sourceName = item.source || item.file || item.book || 'Unknown';
+          groupHtml += format_paragraphs_source(item, sourceName);
+      });
 
+      const groupPanel = `
+          <div id="all-results" class="collapse-panel">
+              <div class="displaybox-container">
+                  <div class="displaybox-content group-content">
+                      ${groupHtml}
+                  </div>
+              </div>
+          </div>
+      `;
+      container.insertAdjacentHTML('beforeend', groupPanel);
+  }
 
-    // Processamento GERAL
-    // ===========================================================================================
+  // 5) Event delegation para toggle dos pills
+if (!container.__pillHandlerBound) {
+  container.addEventListener('click', function(ev) {
+      const btn = ev.target.closest('.pill');
+      if (!btn) return;
+      ev.preventDefault();
+      const targetId = btn.getAttribute('data-target');
+      if (!targetId) return;
+      const safeId = `#${targetId.replace(/[^a-z0-9\\-_:]/gi, '')}`;
+      const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
+      if (!panel) return;
 
-    if (flag_grouping) {
+      const isOpen = panel.classList.toggle('open');
 
-            
-        // 4) Render por GRUPOS (cada source name)
-        // ===========================================================================================
-        groupNames.forEach(groupName => {
-
-            const groupItems = groups[groupName];
-            let groupHtml = '';
-
-            // Processa cada item agrupado
-            groupItems.forEach((item, idx) => {
-                
-                const markerHtml = `<span class="paragraph-marker" style="font-size: 10px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
-                const sourceName = item.source || item.file || item.book || 'Unknown';
-
-                let itemHtml = '';
-                itemHtml = format_paragraphs_source (item, sourceName);
-
-                groupHtml += itemHtml;
-            });
-
-
-            // 5) HTML final do grupo
-            // =======================================
-            const panelId = 'group-' + slug(groupName);
-            const groupPanel = `
-                <div id="${panelId}" class="collapse-panel">
-                    <div class="displaybox-container">
-                        <div class="displaybox-content group-content">
-                            ${groupHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', groupPanel);
-
-        });
-
-
-
-    } else {
-
-        // Reunir os itens de todas as fontes em lista única
-        // ===========================================================================================
-        const sortedItems = [...arr].sort((b, a) => (b.score || 0) - (a.score || 0));
-
-        let groupHtml = '';
-
-        // Renderizar os itens ordenados
-        // ===========================================================================================
-        sortedItems.forEach((item, idx) => {
-
-            const markerHtml = `<span class="paragraph-marker" style="font-size: 10px; color: gray; font-weight: bold; display: inline-block; margin-right: 4px;">[${idx + 1}]</span>`;
-            const sourceName = item.source || item.file || item.book || 'Unknown';
-        
-
-            let itemHtml = '';
-            itemHtml = format_paragraphs_source (item, sourceName);
-
-            groupHtml += itemHtml;
-        });
-
-       
-         // 5) HTML final do grupo
-        // =======================================
-        const groupPanel = `
-            <div id="all-results" class="collapse-panel">
-                <div class="displaybox-container">
-                    <div class="displaybox-content group-content">
-                        ${groupHtml}
-                    </div>
-                </div>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', groupPanel);
-
-    };
-
-    // Attach toggle behavior for summary pills (event delegation inside container)
-    // Bind click handler once per container to avoid double toggles after new queries
-    if (!container.__pillHandlerBound) {
-        container.addEventListener('click', function(ev) {
-            const btn = ev.target.closest('.pill');
-            if (!btn) return;
-            ev.preventDefault();
-            const targetId = btn.getAttribute('data-target');
-            if (!targetId) return;
-            const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
-            const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
-            if (!panel) return;
-            panel.classList.toggle('open');
-            if (panel.classList.contains('open')) {
-                try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-            }
-        });
-        // mark bound
-        container.__pillHandlerBound = true;
-    }
+      // Adiciona/Remove classe .active para mudar cor do botão
+      if (isOpen) {
+          btn.classList.add('active');
+          try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+      } else {
+          btn.classList.remove('active');
+      }
+  });
+  container.__pillHandlerBound = true;
+}
 
 }
 
@@ -756,28 +715,21 @@ const format_paragraph_Default = (item) => {
 
 
 // ________________________________________________________________________________________
-// Show RAGbot
+// Show Title
 // ________________________________________________________________________________________
- // Expected data format from /ragbot:
-  // {
-  //   results: [{ text: string, citations: array }],
-  //   total_tokens_used: number,
-  //   type: 'ragbot',
-  //   model: string,
-  //   temperature: number
-  // }
+ 
   function showTitle(container, text) {
     const cleanText = renderMarkdown(text);
     const html = `
     <div style="
         border: 1px solid var(--gray-200);
-        background-color: var(--gray-100);
+        background-color: rgba(255, 255, 255, 0.73);
         padding: 10px 12px;
         border-radius: 8px;
         margin: 8px 0 14px 0;
         
     ">
-        <div style="font-weight: bold; color: var(--gray-900);">
+        <div style="font-weight: bold; color: rgb(65, 67, 179);">
            ${cleanText}
         </div>
     </div>`;
@@ -830,7 +782,7 @@ function showVerbetopedia(container, data) {
         return;
     }
 
-    console.log('====== showVerbetopedia [data]:', data);
+    //console.log('====== showVerbetopedia [data]:', data);
 
     // 0) Garantir array de entrada
     const arr = Array.isArray(data.results) ? data.results : [];
@@ -842,7 +794,7 @@ function showVerbetopedia(container, data) {
         return;
     }
 
-    console.log('====== showVerbetopedia [arr]:', arr);
+    //console.log('====== showVerbetopedia [arr]:', arr);
 
     // 1) Extrair metadados antes para usar score
     const items = arr.map(item => {
@@ -882,13 +834,13 @@ function showVerbetopedia(container, data) {
             ? `<span class="rag-badge">Score: ${metaData.score.toFixed(2)}</span>` : '';
 
 
-        console.log('====== showVerbetopedia [metaData]:', metaData);
+        //console.log('====== showVerbetopedia [metaData]:', metaData);
 
 
         // 3) Monta o link para download do verbete PDF
         let arquivo = metaData.title;
 
-        console.log('====== showVerbetopedia [arquivo]:', arquivo);
+        //console.log('====== showVerbetopedia [arquivo]:', arquivo);
 
         // Sanitiza: remove acentos e troca ç/Ç
         arquivo = arquivo
@@ -1274,7 +1226,7 @@ function showCcg(container, data) {
         const metaData = item._meta;
 
 
-        console.log(`********display.js - ccg*** [metaData]:`, metaData);
+        //console.log(`********display.js - ccg*** [metaData]:`, metaData);
 
         const titleHtml = `
         <strong>${metaData.title}</strong>  ●  ${metaData.folha}  ●  #${metaData.number}

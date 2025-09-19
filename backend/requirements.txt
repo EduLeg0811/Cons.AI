@@ -42,7 +42,7 @@ python-slugify==8.0.1  # For URL-safe strings
 
 html2docx
 python-docx
-markdown
+markdown2
 beautifulsoup4
 psutil
 pandas

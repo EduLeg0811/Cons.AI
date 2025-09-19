@@ -93,8 +93,8 @@ const TOOL_MESSAGES = {
     extra: [
       'Encontra verbetes que possuam os termos de busca exatos na Definologia.<br> ',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Selecione os <em>verbetes</em> em que deseja buscar.<br>',
+      '<strong>1.</strong> Baixe o PDF para ter acesso ao vebete completo.<br>',
+      '<strong>2.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
       '<strong>4.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
     ].join('\n')
@@ -111,11 +111,10 @@ const TOOL_MESSAGES = {
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
-      '<strong>2.</strong> Ative <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico - isso melhora a qualidade dos resultados.<br>',
-      '<strong>4.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>5.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.<br>',
-      '<strong>6.</strong> Ao invés de usar apenas um termo na busca, tente usar lista de palavras descritivas.<br>',
-      '<strong>7.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
+      '<strong>4.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.<br>',
+      '<strong>5.</strong> Ao invés de usar apenas um termo na busca, tente usar lista de palavras descritivas.<br>',
+      '<strong>6.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
     ].join('\n')
   },
 
@@ -127,11 +126,9 @@ const TOOL_MESSAGES = {
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
-      '<strong>3.</strong> Basta clicar no ícone do PDF para baixar o verbete sugerido.<br>',
-      '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.',
-      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>1.</strong> Baixe o PDF para ter acesso ao vebete completo.<br>',
+      '<strong>2.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.<br>',
+      '<strong>3.</strong> Ao final, clique no ícone do Word para baixar a listagem dos resultados.',
     ].join('\n')
   },
 
@@ -143,17 +140,30 @@ const TOOL_MESSAGES = {
     'Ótimo para buscar questões de aprofundamento da autopesquisa.<br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-    '<strong>2.</strong> Selecione <em>Neologismo</em> para a IA interpretar o termo de busca no sentido conscienciológico.<br>',
-    '<strong>3.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
-    '<strong>4.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
+    '<strong>2.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
+    '<strong>3.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
   ].join('\n')
 },
 
-
+// Tool: Caderno de Estudos
+'Caderno de Estudos': {
+  short: '<em>Pesquisa profunda (deep research)</em>',
+  extra: [
+    'Realiza pesquisa profunda em livros, tratados e verbetes.<br>',
+    'Monta um Caderno de Estudos completo sobre o tema.<br>',
+    'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica.<br>',
+    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.',
+    '<strong>Dicas:</strong><br>',
+    '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+    '<strong>2.</strong> Selecione se deseja listagem contínua ou agrupada por livros.<br>',
+    '<strong>3.</strong> Experimente combinações e variações de termos para obter melhores resultados.<br>',
+    '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem dos resultados.',
+  ].join('\n')
+},
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: '<em>Sorteio de Ortopensata do LO</em>',
+    short: '<em>Sorteio de ortopensata do LO</em>',
     extra: [
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
       'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br>',
@@ -167,7 +177,7 @@ const TOOL_MESSAGES = {
   
   // Tool: Quiz Conscienciológico
   'Quiz Conscienciológico': {
-    short: '<em>Quiz de Perguntas & Respostas</em>',
+    short: '<em>Quiz de perguntas & respostas</em>',
     extra: [
       'Formula perguntas sobre temas da Conscienciologia.',
       'Você responde as perguntas e a IA avalia a resposta.<br>',
@@ -232,7 +242,8 @@ const TOOL_ALIASES = {
   'Pesquisa Semântica em Livros': 'Pesquisa Semântica em Livros',
   'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
-  'Bibliomancia Digital': 'Bibliomancia Digital'
+  'Bibliomancia Digital': 'Bibliomancia Digital',
+  'Caderno de Estudos': 'Caderno de Estudos'
 };
 
 // Apply messages to the DOM
@@ -251,7 +262,7 @@ function applyMessages() {
       } else if (panel.classList.contains('search')) {
         descr = 'Pesquisa por termos exatos';
       } else if (panel.classList.contains('sem')) {
-        descr = 'Pesquisa por afinidade';
+        descr = 'Pesquisa por termos afins';
       } else if (panel.classList.contains('apps')) {
         descr = 'Aplicativos para autopesquisa';
       } else if (panel.classList.contains('utils')) {
@@ -284,7 +295,10 @@ function applyMessages() {
           canonical = 'Bibliomancia Digital';
         } else if (href.includes('index_quiz.html')) {
           canonical = 'Quiz Conscienciológico';
+        } else if (href.includes('index_deepdive.html')) {
+          canonical = 'Caderno de Estudos';
         }
+
 
 
       } catch (e) { 
@@ -307,6 +321,12 @@ function applyMessages() {
         }
         if (!msg && href2.includes('index_ccg.html')) {
           msg = TOOL_MESSAGES['Questões do Conscienciograma'] || msg;
+        }
+        if (!msg && href2.includes('index_mancia.html')) {
+          msg = TOOL_MESSAGES['Bibliomancia Digital'] || msg;
+        }
+        if (!msg && href2.includes('index_deepdive.html')) {
+          msg = TOOL_MESSAGES['Caderno de Estudos'] || msg;
         }
 
       } catch (e) { 

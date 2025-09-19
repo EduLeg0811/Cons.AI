@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="theme-sem">
     <!-- Navbar -->
@@ -20,14 +21,14 @@
             </div>
 
 
-            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+            <div class="navbar-center">
 
                 
                 <!-- <div class="navbar-icon">
                     <i class="fas fa-brain"></i>
                 </div> -->
                 <div class="navbar-text">
-                    <div class="navbar-title">Busca Semântica</div>
+                    <div class="navbar-title">Busca SemÃ¢ntica</div>
                     <div class="navbar-subtitle">Pesquisa Contextual com IA</div>
                 </div>
             </div>
@@ -83,9 +84,9 @@
                 <div class="option-group">
 
 
-                    <!--CONFIGURAÇÕES DE PESQUISA!-->
+                    <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
 
-                    <div class="option-group-label">Selecione os livros para pesquisa:</div>
+                    <div class="option-group-label">Selecione os livros para busca:</div>
                     <div class="book-checkboxes">
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="LO" checked>
@@ -102,25 +103,16 @@
                 <div class="option-group">
 
 
-                    <!--CONFIGURAÇÕES DE PESQUISA!-->
+                    <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
 
                     <div class="option-grid">
 
                         <div class="option-column">
 
-                            <!-- Toggle 1: Neologism synthesis -->
-                            <div class="toggle-option">
-                                <label class="switch">
-                                  <input type="checkbox" id="enableDefinition" unchecked>
-                                  <span class="slider"></span>
-                                </label>
-                                <label class="toggle-label" for="enableDefinition">Define os Neologismos</label>
-                            </div>
-
                             <!-- Max Results -->
                             <div class="row max-results">
-                                <label for="maxResults">Máximo de Resultados</label>
-                                <input type="number" id="maxResults" min="1" max="100" value="10">
+                                <label for="maxResults">Máximo de Resultados (por livro)</label>
+                                <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
                             </div>
                           
                             <!-- Toggle 2: Agrupa por livro -->
@@ -252,11 +244,7 @@
                         const chk = document.getElementById('groupResults');
                         if (chk) chk.checked = saved.groupResults;
                     }
-                    if (typeof saved.enableDefinition === 'boolean') {
-                        const chk2 = document.getElementById('enableDefinition');
-                        if (chk2) chk2.checked = saved.enableDefinition;
-                    }
-                    // removed: saved.ref_badges handling
+                  
                 } catch(e) { console.warn('Failed to apply semantical settings', e); }
             })();
 
@@ -292,7 +280,8 @@
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
-                    const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
+                    const maxInput = document.getElementById('maxResults');
+                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 10);
                     const groupResults = !!document.getElementById('groupResults')?.checked;
                     const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
                     const settings = { books, maxResults, groupResults, enableDefinition };
@@ -306,3 +295,6 @@
     </script>
 </body>
 </html>
+
+
+

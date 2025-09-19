@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="theme-search">
     <!-- Navbar -->
@@ -24,13 +25,13 @@
                     </a>
                 </div>
 
-               <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+               <div class="navbar-center">
                     <!-- <div class="navbar-icon">
                         <i class="fas fa-spell-check"></i>
                     </div> -->
                     <div class="navbar-text">
                         <div class="navbar-title">Busca de Verbetes</div>
-                        <div class="navbar-subtitle">Termos Exatos na Definologia</div>
+                        <div class="navbar-subtitle">Termos exatos na Definologia de Verbetes</div>
                     </div>
                 </div>
 
@@ -73,7 +74,7 @@
                 <div class="options-content" id="optionsContent">
 
                     <div class="option-group">
-                        <div class="option-group-label" style="text-align: center; font-size: 1rem; font-weight: bold; margin-bottom: 0rem;">Enciclopédia da Conscienciologia</div>
+                        <div class="option-group-label center">Enciclopédia da Conscienciologia</div>
                     </div>
     
                     <!--CONFIGURAÇÕES DE PESQUISA!-->
@@ -84,7 +85,7 @@
                          <!-- Max Results -->
                          <div class="row max-results">
                             <label for="maxResults">Máximo de Resultados</label>
-                            <input type="number" id="maxResults" min="1" max="100" value="10">
+                            <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
                           </div>
        
                         <!-- Botão -->
@@ -179,9 +180,9 @@
             if (content) content.style.display = 'grid';
 
             // Apply saved settings
-            (function applyLexicalSavedSettings(){
+            (function applyLexverbSavedSettings(){
                 try {
-                    const raw = localStorage.getItem('settings_lexical');
+                    const raw = localStorage.getItem('settings_lexverb');
                     if (!raw) return;
                     const saved = JSON.parse(raw);
                     if (Array.isArray(saved.books)) {
@@ -206,8 +207,8 @@
                     panel.classList.toggle('open');
                     // On first user interaction with config, stop pulsing for this module
                     try {
-                        if (!localStorage.getItem('configPulseSeen_lexical')) {
-                            localStorage.setItem('configPulseSeen_lexical', 'true');
+                        if (!localStorage.getItem('configPulseSeen_lexverb')) {
+                            localStorage.setItem('configPulseSeen_lexverb', 'true');
                         }
                     } catch (err) { /* ignore */ }
                     document.documentElement.setAttribute('data-config-pulse', 'off');
@@ -222,7 +223,7 @@
 
             // Disable pulse if user already interacted before
             try {
-                if (localStorage.getItem('configPulseSeen_lexical') === 'true') {
+                if (localStorage.getItem('configPulseSeen_lexverb') === 'true') {
                     document.documentElement.setAttribute('data-config-pulse', 'off');
                 }
             } catch (err) { /* ignore */ }
@@ -232,10 +233,11 @@
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
-                    const maxResults = parseInt(document.getElementById('maxResults')?.value) || 5;
+                    const maxInput = document.getElementById('maxResults');
+                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 5);
                     const groupResults = !!document.getElementById('groupResults')?.checked;
                     const settings = { books, maxResults, groupResults };
-                    localStorage.setItem('settings_lexical', JSON.stringify(settings));
+                    localStorage.setItem('settings_lexverb', JSON.stringify(settings));
                     if (panel) panel.classList.remove('open');
                 });
             }
@@ -245,3 +247,6 @@
     </script>
 </body>
 </html>
+
+
+

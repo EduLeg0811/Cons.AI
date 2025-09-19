@@ -1,4 +1,4 @@
-// script_ccg.js
+﻿// script_ccg.js
 
 let controller = null;
 
@@ -26,10 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //______________________________________________________________________________________________
     async function Conscienciogramopedia() {
 
+        // Reset LLM data
+        resetLLM();
 
-
-         // Save original button state for restoration
-         const originalButtonState = {
+        // Save original button state for restoration
+        const originalButtonState = {
             html: searchButton.innerHTML,
             opacity: searchButton.style.opacity,
             cursor: searchButton.style.cursor
@@ -74,57 +75,51 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsDiv.innerHTML = '';
 
             // Get the checkbox state
-            const flag_definition = document.getElementById('enableDefinition')?.checked ?? true;
             let newTerm = '';
+            let defJson = null;
 
-            if (flag_definition) {
-                // _________________________________________________________________________________
-                // Definition - RAGbot
-                // _________________________________________________________________________________
+        
+            // _________________________________________________________________________________
+            // Definition - RAGbot
+            // _________________________________________________________________________________
 
-                insertLoading(resultsDiv, "Sintetizando os neologismos...");
+            insertLoading(resultsDiv, "Sintetizando os neologismos...");
 
-             
-                //call_ragbot
-                //*****************************************************************************************
-                // 
-                const chat_id = getOrCreateChatId();
-                
-                const paramRAGbot = {
-                    query: "TEXTO DE ENTRADA:  " + term + ".",
-                    model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-                    temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
-                    vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-                    instructions: SEMANTICAL_INSTRUCTIONS,
-                    use_session: true,
-                    chat_id                 
-                };
-               
-                const defJson = await call_llm(paramRAGbot);
-                if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
+            
+            //call_ragbot
+            //*****************************************************************************************
+            // 
+            const chat_id = getOrCreateChatId();
+            
+            const paramRAGbot = {
+                query: "TEXTO DE ENTRADA:  " + term + ".",
+                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
+                instructions: SEMANTICAL_INSTRUCTIONS,
+                use_session: true,
+                chat_id                 
+            };
+            
+            defJson = await call_llm(paramRAGbot);
+            if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
-                //*****************************************************************************************
+            //*****************************************************************************************
 
-                defJson.ref = "Descritivos"
+            defJson.ref = "Descritivos"
 
-                // Display results
-                // ================
-                removeLoading(resultsDiv);
-                //displayResults(resultsDiv, "Synthesis", 'title');
-                displayResults(resultsDiv, defJson, 'simple');
+            // Display results
+            // ================
+            removeLoading(resultsDiv);
+            //displayResults(resultsDiv, "Synthesis", 'title');
+            displayResults(resultsDiv, defJson, 'simple');
 
-                // If the synthesis is empty, we don't proceed to semantic search
-                newTerm = (defJson?.text || '').trim();
-                if (!newTerm) {
-                    insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
-                    return;
-                }
-
-            } else {
-                newTerm = term;
-            }   
-
-
+            // If the synthesis is empty, we don't proceed to semantic search
+            newTerm = (defJson?.text || '').trim();
+            if (!newTerm) {
+                insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
+                return;
+            }
 
 
             // _________________________________________________________________________________
@@ -147,7 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
                 
             // Get max results from input or use default
-            const maxResults = parseInt(document.getElementById('maxResults')?.value) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY);
+            const rawMaxResults = document.getElementById('maxResults')?.value;
+        const maxResults = window.normalizeMaxResults
+            ? window.normalizeMaxResults(rawMaxResults)
+            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
 
             // Restrict display to first maxResults if results exist
             if (semJson.results && Array.isArray(semJson.results)) {
@@ -157,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Display results
-            const newTitle = `Conscienciogramopedia    ●    ${term}`;
+            const newTitle = `Questões do Conscienciograma     ●     ${term}`;
             removeLoading(resultsDiv);
 
             //displayResults(resultsDiv, newTitle, 'title');
@@ -165,10 +163,36 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, semJson, "ccg");
 
 
-            // Update results using centralized function (show download when ready)
-            if (window.downloadUtils && window.downloadUtils.updateResults) {
-                window.downloadUtils.updateResults(semJson, term, 'ccg');
-            }
+          
+            // =======================================================================================
+            // Assemble Download Data
+            // =======================================================================================
+            // Extrair as fontes Ãºnicas
+            let uniqueSources = semJson.results.map(result => result.source);
+            uniqueSources = [...new Set(uniqueSources)];
+
+            const downloadData = {
+                search_term: term,
+                search_type: 'semantical',
+                source_array: uniqueSources,
+                max_results: maxResults,
+                display_option: 'simple',
+                definologia: null,
+                descritivo: {
+                    text: defJson.text, 
+                    citations: defJson.citations, 
+                    model: defJson.model, 
+                    temperature: defJson.temperature, 
+                    tokens: defJson.total_tokens_used
+                },
+                lexical: null,
+                semantical: semJson.results
+            };
+
+            // Update results using centralized function
+            window.downloadUtils.updateResults(downloadData);
+
+            // =======================================================================================
 
         } catch (error) {
             console.error('Search error:', error);
@@ -188,3 +212,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+

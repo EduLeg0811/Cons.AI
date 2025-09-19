@@ -23,12 +23,18 @@ function initDownloadButtons(searchType, searchTerm = '') {
         btn.addEventListener('click', handleDocxDownload);
     }
 
-    // Determine if there are results (array, object.results, or text-only payloads)
-    const hasResults = !!(lastResults && (
-        (Array.isArray(lastResults) && lastResults.length > 0) ||
-        (Array.isArray(lastResults?.results) && lastResults.results.length > 0) ||
-        (typeof lastResults?.text === 'string' && lastResults.text.trim().length > 0)
-    ));
+    // Normaliza lastResults (se for string JSON, faz parse)
+    let normalized = lastResults;
+    if (typeof lastResults === "string") {
+        try {
+            normalized = JSON.parse(lastResults);
+        } catch (e) {
+            console.error("Erro ao parsear lastResults:", e);
+            normalized = null;
+        }
+    }
+    const hasResults = lastResults != null;
+
 
     // Toggle visibility for container and/or icon button
     if (downloadButtons) {
@@ -39,15 +45,14 @@ function initDownloadButtons(searchType, searchTerm = '') {
     }
 }
 
+
+
 /**
  * Handle DOCX download button click
  */
 async function handleDocxDownload() {
-    if (!lastResults || (Array.isArray(lastResults) ? lastResults.length === 0 : !lastResults.results || lastResults.results.length === 0)) {
-        alert("No results to download.");
-        return;
-    }
-    
+   
+      
     const button = this;
     const originalHtml = button?.innerHTML;
     
@@ -87,13 +92,47 @@ async function handleDocxDownload() {
  * @param {string} searchType - Type of search
  * @returns {Object} The stored results
  */
-function updateResults(data, term, searchType) {
-    lastResults = data;
-    currentSearchTerm = term;
-    currentSearchType = searchType;
-    initDownloadButtons(searchType, term);
-    return lastResults;
+function updateResults(data) {
+    const term = data.search_term;
+    const searchType = data.search_type;
+
+
+    // Verificar data contém dados em lexical ou semantical, e apenas se houver dados inicializa o botão de download
+    // const data = {
+    //     search_term: term,
+    //     search_type: 'lexical',
+    //     source_array: uniqueSources,
+    //     max_results: maxResults,
+    //     group_results_by_book: groupResults,
+    //     definologia: null,
+    //     descritivo: null,
+    //     lexical: responseData.results,
+    //     semantical: null
+    // };
+
+   // Verificar se há resultados em lexical ou semantical antes de inicializar o botão de download
+    if ((data.lexical && data.lexical.length > 0) || (data.semantical && data.semantical.length > 0)) {
+
+        lastResults = data;
+        currentSearchTerm = term;
+        currentSearchType = searchType;
+        initDownloadButtons(searchType, term);
+        return lastResults;
+
+    } else {
+        return null;
+    }
+
 }
+
+
+
+
+
+
+
+
+
 
 // Initialize download buttons when DOM is loaded
 if (document.readyState === 'loading') {
@@ -122,6 +161,7 @@ window.downloadUtils = {
 
 
 
+
 /**
  * Sends the processed results to the backend and triggers a download.
  * 
@@ -130,19 +170,18 @@ window.downloadUtils = {
  * @param {string} searchTerm - The original search term
  * @param {string} searchType - The type of search
  */
-async function downloadResults(format, resultsData, searchTerm, searchType) {
+async function downloadResults(format, payload, searchTerm, searchType) {
   // Handle different result structures - could be direct array or object with results array
-  const term = resultsData?.term || searchTerm || 'results';
-  const type = resultsData?.search_type || searchType || '';
-  const resultsArray = Array.isArray(resultsData) ? resultsData : (resultsData?.results || []);
+  const search_term = payload?.term || searchTerm || 'results';
+  const search_type = payload?.search_type || searchType || '';
   
-  if (resultsArray.length === 0) {
-    alert("No results to download.");
-    return;
-  }
 
+  console.log('********bridge.js - download*** [payload]:', payload);
+  console.log('********bridge.js - download*** [search_term]:', search_term);
+  console.log('********bridge.js - download*** [search_type]:', search_type);
+ 
   // Sanitize and trim the search term for the filename
-  let safeTerm = (term || 'results')
+  let safeTerm = (search_term || 'results')
     .trim()
     .replace(/[^\w\s-]/g, '')  // Remove special characters
     .replace(/\s+/g, '-')        // Replace spaces with dashes
@@ -163,7 +202,7 @@ async function downloadResults(format, resultsData, searchTerm, searchType) {
     // ***************************************************************************************
     // Call Download with the search type
     // ***************************************************************************************
-    const response = await call_download(format, resultsArray, term, type);
+    const response = await call_download(format, payload);
     
     // ***************************************************************************************
         

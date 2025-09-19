@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
@@ -14,12 +15,12 @@
     <nav class="navbar">
         <div class="navbar-container">
           
-          <!-- Botão esquerdo -->
-          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
+          <!-- BotÃ£o esquerdo -->
+          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descriÃ§Ãµes" onclick="toggleInfo()">
             <i class="fas fa-circle-info"></i>
           </button>
       
-          <!-- Título central -->
+          <!-- TÃ­tulo central -->
           <a href="#" class="navbar-brand">
             <div class="navbar-text">
               <div class="navbar-title">Cons.IA</div>
@@ -27,12 +28,12 @@
             </div>
           </a>
 
-          <!-- Botão de Configuração
-          <button class="navbar-control-btn config-toggle" title="Configurações" onclick="toggleConfig()">
+          <!-- BotÃ£o de ConfiguraÃ§Ã£o
+          <button class="navbar-control-btn config-toggle" title="ConfiguraÃ§Ãµes" onclick="toggleConfig()">
             <i class="fas fa-cog"></i>
           </button> -->
       
-          <!-- Botão direito -->
+          <!-- BotÃ£o direito -->
           <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
             <i class="fas fa-moon"></i>
             <i class="fas fa-sun"></i>
@@ -61,7 +62,7 @@
 
                         <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card compact" target="_blank" rel="noopener noreferrer">
                             <div class="tool-icon openai">
-                                <img src="https://cdn.simpleicons.org/openai/FFFFFF" alt="OpenAI" style="width:26px;height:26px;display:block;" />
+                                <img src="https://cdn.simpleicons.org/openai/FFFFFF" alt="OpenAI" class="icon-26" />
                             </div>
                             <div class="tool-info">
                                 <h3>ConsGPT</h3>
@@ -178,6 +179,21 @@
                             </div>
                         </a>
 
+                        
+                        <a href="index_deepdive.html" class="tool-card compact">
+                            <div class="tool-icon semantic">
+                                <i class="fa-solid fa-book-open-reader"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Caderno de Estudos</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+
+
+
                     </div>
                 </div>
 
@@ -216,7 +232,6 @@
                                 <div class="tool-info-extra"></div>
                             </div>
                         </a>
-
 
                     </div>
                 </div>
@@ -285,19 +300,20 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-text">
-                © 2025 Cons.IA - Toolbox de IA da Conscienciologia.
+                Â© 2025 Cons.IA - Toolbox de IA da Conscienciologia.
             </div>
             <div class="footer-contact">
                 <span>Fale com o Diretor:</span>
                 <a href="mailto:eduardo.azevedo.ccci@gmail.com">
                     <i class="fas fa-envelope"></i>
-                    <span style="color: var(--gray-700);"><em>transmentor@interludium.ccce</em></span>
+                    <span class="email"><em>transmentor@interludium.ccce</em></span>
                 </a>
             </div>
         </div>
     </footer>
 
     <script src="config.js"></script>
+    <script src="utils.js"></script>
     <script src="messages.js"></script>
     <script>
             // Info toggle (expand/collapse badge descriptions)
@@ -348,8 +364,8 @@
             function loadConfigForm() {
               const cfg = (window.CONFIG || window.CONFIG_DEFAULTS || {});
               const $ = (id) => document.getElementById(id);
-              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-4.1';
-              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-4.1';
+              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-4.1-nano';
+              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-4.1-nano';
               const temp = Number(cfg.TEMPERATURE ?? 0.5);
               if ($('cfg-temperature')) $('cfg-temperature').value = temp;
               if ($('cfg-temperature-num')) $('cfg-temperature-num').value = temp;
@@ -368,8 +384,8 @@
             function saveConfigAndClose() {
               const $ = (id) => document.getElementById(id);
               const next = {
-                MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-4.1',
-                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-4.1',
+                MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-4.1-nano',
+                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-4.1-nano',
                 TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? 0.3),
                 MAX_RESULTS_DISPLAY: Number($('cfg-max-results')?.value ?? 10),
                 OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLWV',
@@ -400,32 +416,11 @@
 
         </script>
 
-    <!-- Config Modal Styles and Markup -->
-    <style>
-      .config-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 1000; }
-      .config-modal { width: min(560px, 92vw); background: var(--bg, #fff); color: var(--fg, #111); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); overflow: hidden; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-      .config-modal header { display:flex; align-items:center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--gray-200, #e5e7eb); background: var(--gray-50, #f9fafb); font-weight: 600; }
-      .config-modal .content { padding: 16px; max-height: min(70vh, 640px); overflow: auto; }
-      .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
-      .config-grid .full { grid-column: 1 / -1; }
-      .config-field { display: flex; flex-direction: column; gap: 6px; }
-      .config-field label { font-size: 12px; color: var(--gray-600, #4b5563); font-weight: 600; letter-spacing: .02em; }
-      .config-field input[type="number"], .config-field input[type="text"], .config-field select { padding: 8px 10px; border: 1px solid var(--gray-300, #d1d5db); border-radius: 8px; background: #fff; color: #111; }
-      .config-field input[type="range"] { width: 100%; }
-      .config-actions { display:flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--gray-200, #e5e7eb); background: var(--gray-50, #f9fafb); }
-      .btn { border: 1px solid var(--gray-300, #d1d5db); background: #fff; color: #111; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-      .btn.primary { background: var(--bots-primary, #10b981); color: #fff; border-color: transparent; }
-      .config-inline { display:flex; align-items:center; gap: 10px; }
-      .config-help { font-size: 11px; color: var(--gray-500, #6b7280); }
-      html[data-theme="dark"] .config-modal { --bg:#111827; --fg:#e5e7eb; }
-      html[data-theme="dark"] .config-field input, html[data-theme="dark"] .config-field select { background:#111827; color:#e5e7eb; border-color:#374151; }
-      html[data-theme="dark"] .btn { background: #1f2937; color:#e5e7eb; border-color:#374151; }
-    </style>
-    <div id="config-backdrop" class="config-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <!-- Config Modal Styles and Markup --><div id="config-backdrop" class="config-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="config-modal" role="document">
         <header>
-          <span>Configurações do Sistema</span>
-          <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">✕</button>
+          <span>ConfiguraÃ§Ãµes do Sistema</span>
+          <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">âœ•</button>
         </header>
         <div class="content">
           <div class="config-grid">
@@ -448,15 +443,15 @@
               </select>
             </div>
             <div class="config-field">
-              <label for="cfg-temperature">TEMPERATURE <span class="config-help">0.0 – 1.0 (step 0.1)</span></label>
+              <label for="cfg-temperature">TEMPERATURE <span class="config-help">0.0 â€“ 1.0 (step 0.1)</span></label>
               <div class="config-inline">
                 <input id="cfg-temperature" type="range" min="0" max="1" step="0.1" />
-                <input id="cfg-temperature-num" type="number" min="0" max="1" step="0.1" style="width:90px" />
+                <input id="cfg-temperature-num" type="number" min="0" max="1" step="0.1"  />
               </div>
             </div>
             <div class="config-field">
-              <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help">10 – 200 (step 10)</span></label>
-              <input id="cfg-max-results" type="number" min="10" max="200" step="10" />
+              <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help">10 â€“ 200 (step 10)</span></label>
+              <input id="cfg-max-results" type="number" min="10" max="10000" step="10" />
             </div>
             <div class="config-field">
               <label for="cfg-openai-ragbot">OPENAI_RAGBOT</label>
@@ -483,3 +478,8 @@
     </div>
 </body>
 </html>
+
+
+
+
+

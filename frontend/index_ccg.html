@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="theme-sem page-ccg">
     <!-- Navbar -->
@@ -20,7 +21,7 @@
             </div>
 
 
-            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+            <div class="navbar-center">
 
                 
                 <!-- <div class="navbar-icon">
@@ -87,19 +88,10 @@
 
                         <div class="option-column">
 
-                            <!-- Toggle 1: Neologism synthesis -->
-                            <div class="toggle-option">
-                                <label class="switch">
-                                    <input type="checkbox" id="enableDefinition" unchecked>
-                                    <span class="slider"></span>
-                                </label>
-                                <label class="toggle-label" for="enableDefinition">Define os Neologismos</label>
-                            </div>
-
                             <!-- Max Results -->
                             <div class="row max-results">
                                 <label for="maxResults">Máximo de Resultados</label>
-                                <input type="number" id="maxResults" min="1" max="20" value="10">
+                                <input type="number" id="maxResults" min="1" max="MAX_RESULTS_DISPLAY" value="10">
                             </div>
                             
                             
@@ -206,10 +198,6 @@
                         const inp = document.getElementById('maxResults');
                         if (inp) inp.value = saved.maxResults;
                     }
-                    if (typeof saved.enableDefinition === 'boolean') {
-                        const chk = document.getElementById('enableDefinition');
-                        if (chk) chk.checked = saved.enableDefinition;
-                    }
                 } catch(e) { console.warn('Failed to apply Conscienciogramopedia settings', e); }
             })();
 
@@ -257,3 +245,4 @@
     </script>
 </body>
 </html>
+

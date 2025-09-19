@@ -50,14 +50,7 @@ def _to_float_or_none(val):
     except (TypeError, ValueError):
         return None
 
-def _sort_key(val):
-    """Converte para float para ordenação; valores inválidos viram +inf (vão para o fim)."""
-    try:
-        v = float(val)
-        # opcional: garantir finito
-        return v if v == v and v not in (float("inf"), float("-inf")) else float("inf")
-    except (TypeError, ValueError):
-        return float("inf")
+# (removido) _sort_key não é utilizado
 
 
 # _________________________________________________________________________________________
@@ -100,7 +93,7 @@ def simple_semantical_search(query, source, index_dir):
 
             # Log de memória antes
             process = psutil.Process(os.getpid())
-            logger.info(f"[FAISS] Antes de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+            #logger.info(f"[FAISS] Antes de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
             # Carrega o índice FAISS
             #------------------------------------------------------
@@ -112,7 +105,7 @@ def simple_semantical_search(query, source, index_dir):
 
             # Log de memória antes
             process = psutil.Process(os.getpid())
-            logger.info(f"[FAISS] Depois de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+            #logger.info(f"[FAISS] Depois de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
             # k-NN clássico com fetch_k=150
             #------------------------------------------------------
@@ -129,7 +122,7 @@ def simple_semantical_search(query, source, index_dir):
 
             # Log de memória depois
             process = psutil.Process(os.getpid())
-            logger.info(f"[FAISS] Depois de liberar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
+            #logger.info(f"[FAISS] Depois de liberar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
 
         # ****************************************************************************************************************
@@ -370,4 +363,3 @@ def get_vector_store_id(sources):
         logger.warning("Some vector store IDs are not defined in .env")
 
     return vector_store_ids
-

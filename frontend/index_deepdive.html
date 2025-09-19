@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
-<body class="theme-search">
+<body class="theme-sem">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -30,8 +30,8 @@
                         <i class="fas fa-spell-check"></i>
                     </div> -->
                     <div class="navbar-text">
-                        <div class="navbar-title">Pesquisa Léxica</div>
-                        <div class="navbar-subtitle">Termos exatos em livros</div>
+                        <div class="navbar-title">Caderno de Estudos</div>
+                        <div class="navbar-subtitle">Pesquisa Profunda - Deep Research</div>
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@
 
 
                 <div class="option-group">
-                    <div class="option-group-label">Selecione os livros para busca:</div>
+                    <div class="option-group-label">Selecione os livros para pesquisar:</div>
                     <div class="book-checkboxes">
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="LO" checked>
@@ -113,7 +113,7 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="TEMAS">
-                            <span>Temas da Cosnscienciologia</span>
+                            <span>Temas</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="CCG">
@@ -121,18 +121,38 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="HSR">
-                            <span>Homo sapiens reurbanisatus</span>
+                            <span>Reurbanisatus</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="HSP">
-                            <span>Homo sapiens pacificus</span>
+                            <span>Pacificus</span>
                         </label>
                     </div>
                 </div>
 
-                
+                <!-- <div class="option-group">
+                    <div class="option-group-label">ParÃ¢metros Deep Search:</div>
+                    <div class="book-checkboxes">
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="deepsearch" value="LEX" checked>
+                            <span>Léxica</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="deepsearch" value="SEM" checked>
+                            <span>SemÃ¢ntica</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="deepsearch" value="DEF" checked>
+                            <span>DefiniÃ§Ã£o</span>
+                        </label>
+                        <label class="book-checkbox">
+                            <input type="checkbox" name="deepsearch" value="DESCR" checked>
+                            <span>Descritivos</span>
+                        </label>
+                    </div>
+                </div> -->
 
-                <!--CONFIGURAÇÕES DE PESQUISA!-->
+                <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
 
                 <div class="option-column">
 
@@ -167,30 +187,17 @@
                     </div>
                   
                 </div>
-                  
-                  
-                  
-                  
-                  
-                  
-
-
-
-
-
-
-
-
-
-                
-                
-
 
 
             </div>
                        
            
         </div>
+
+
+
+
+
 
         <!-- Search Container -->
         <div class="search-container">
@@ -221,7 +228,7 @@
     <script src="display.js"></script>
     <script src="bridge.js"></script>
     <script src="download.js"></script>
-    <script src="script_lexical.js"></script>
+    <script src="script_deepdive.js"></script>
 
     <script>
         // Auto-resize textarea for search input
@@ -236,104 +243,110 @@
         });
     </script>
 
-    <script>
-        function toggleOptions() {
-            const content = document.getElementById('optionsContent');
-            const toggle = document.getElementById('optionsToggle');
-            const icon = toggle.querySelector('i');
-            
-            if (content.style.display === 'none' || !content.style.display) {
-                content.style.display = 'grid';
-                icon.className = 'fas fa-chevron-up';
-            } else {
-                content.style.display = 'none';
-                icon.className = 'fas fa-chevron-down';
-            }
+
+
+
+
+<script>
+    function toggleOptions() {
+        const content = document.getElementById('optionsContent');
+        const toggle = document.getElementById('optionsToggle');
+        const icon = toggle.querySelector('i');
+        
+        if (content.style.display === 'none' || !content.style.display) {
+            content.style.display = 'grid';
+            icon.className = 'fas fa-chevron-up';
+        } else {
+            content.style.display = 'none';
+            icon.className = 'fas fa-chevron-down';
         }
+    }
 
-        function toggleSwitch(element) {
-            const checkbox = document.getElementById(element.dataset.target);
-            checkbox.checked = !checkbox.checked;
-            element.classList.toggle('active', checkbox.checked);
-        }
+    function toggleSwitch(element) {
+        const checkbox = document.getElementById(element.dataset.target);
+        checkbox.checked = !checkbox.checked;
+        element.classList.toggle('active', checkbox.checked);
+    }
 
-        // Initialize theme and bind options dropdown
-        document.addEventListener('DOMContentLoaded', function() {
-            initTheme();
+    // Initialize theme and bind options dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        initTheme();
 
-            const trigger = document.getElementById('optionsTrigger');
-            const panel = document.getElementById('optionsPanel');
-            const content = document.getElementById('optionsContent');
-            if (content) content.style.display = 'grid';
+        const trigger = document.getElementById('optionsTrigger');
+        const panel = document.getElementById('optionsPanel');
+        const content = document.getElementById('optionsContent');
+        if (content) content.style.display = 'grid';
 
-            // Apply saved settings
-            (function applyLexicalSavedSettings(){
-                try {
-                    const raw = localStorage.getItem('settings_lexical');
-                    if (!raw) return;
-                    const saved = JSON.parse(raw);
-                    if (Array.isArray(saved.books)) {
-                        const set = new Set(saved.books);
-                        document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
-                    }
-                    if (typeof saved.maxResults === 'number') {
-                        const inp = document.getElementById('maxResults');
-                        if (inp) inp.value = saved.maxResults;
-                    }
-                    if (typeof saved.groupResults === 'boolean') {
-                        const chk = document.getElementById('groupResults');
-                        if (chk) chk.checked = saved.groupResults;
-                    }
-                    // removed: saved.ref_badges handling
-                } catch(e) { console.warn('Failed to apply lexical settings', e); }
-            })();
-
-            if (trigger && panel) {
-                trigger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    panel.classList.toggle('open');
-                    // On first user interaction with config, stop pulsing for this module
-                    try {
-                        if (!localStorage.getItem('configPulseSeen_lexical')) {
-                            localStorage.setItem('configPulseSeen_lexical', 'true');
-                        }
-                    } catch (err) { /* ignore */ }
-                    document.documentElement.setAttribute('data-config-pulse', 'off');
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
-                        panel.classList.remove('open');
-                    }
-                });
-            }
-
-            // Disable pulse if user already interacted before
+        // Apply saved settings for semantical module
+        (function applyDeepdiveSavedSettings(){
             try {
-                if (localStorage.getItem('configPulseSeen_lexical') === 'true') {
-                    document.documentElement.setAttribute('data-config-pulse', 'off');
+                const raw = localStorage.getItem('settings_deepdive');
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+                if (Array.isArray(saved.books)) {
+                    const set = new Set(saved.books);
+                    document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
                 }
-            } catch (err) { /* ignore */ }
+                if (typeof saved.maxResults === 'number') {
+                    const inp = document.getElementById('maxResults');
+                    if (inp) inp.value = saved.maxResults;
+                }
+                if (typeof saved.groupResults === 'boolean') {
+                    const chk = document.getElementById('groupResults');
+                    if (chk) chk.checked = saved.groupResults;
+                }
+                // removed: saved.ref_badges handling
+            } catch(e) { console.warn('Failed to apply deepdive settings', e); }
+        })();
 
-            // Save settings button
-            const saveBtn = document.querySelector('.save-btn');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function() {
-                    const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
-                    const maxInput = document.getElementById('maxResults');
-                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 5);
-                    const groupResults = !!document.getElementById('groupResults')?.checked;
-                    const settings = { books, maxResults, groupResults };
-                    localStorage.setItem('settings_lexical', JSON.stringify(settings));
-                    if (panel) panel.classList.remove('open');
-                });
+        if (trigger && panel) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                panel.classList.toggle('open');
+                // On first user interaction with config, stop pulsing for this module
+                try {
+                    if (!localStorage.getItem('configPulseSeen_semantical')) {
+                        localStorage.setItem('configPulseSeen_semantical', 'true');
+                    }
+                } catch (err) { /* ignore */ }
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
+                    panel.classList.remove('open');
+                }
+            });
+        }
+
+        // Disable pulse if user already interacted before
+        try {
+            if (localStorage.getItem('configPulseSeen_deepdive') === 'true') {
+                document.documentElement.setAttribute('data-config-pulse', 'off');
             }
-        });
+        } catch (err) { /* ignore */ }
 
-        // Theme is provided by config.js (initTheme/toggleTheme)
-    </script>
+        // Save settings button
+        const saveBtn = document.querySelector('.save-btn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
+                const maxInput = document.getElementById('maxResults');
+                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 10);
+                const groupResults = !!document.getElementById('groupResults')?.checked;
+                const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
+                const settings = { books, maxResults, groupResults, enableDefinition };
+                localStorage.setItem('settings_deepdive', JSON.stringify(settings));
+                if (panel) panel.classList.remove('open');
+            });
+        }
+    });
+
+    // Theme is provided by config.js (initTheme/toggleTheme)
+</script>
 </body>
 </html>
+
 
 
 

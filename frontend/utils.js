@@ -1,3 +1,48 @@
+// Runtime helpers for MAX_RESULTS_DISPLAY
+function getMaxResultsCap() {
+  const fallback = typeof MAX_RESULTS_DISPLAY === 'number' ? MAX_RESULTS_DISPLAY : 200;
+  const cfgValue = Number(window.CONFIG?.MAX_RESULTS_DISPLAY);
+  return Number.isFinite(cfgValue) && cfgValue > 0 ? cfgValue : fallback;
+}
+window.getMaxResultsCap = getMaxResultsCap;
+
+function normalizeMaxResults(value) {
+  const cap = getMaxResultsCap();
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return cap;
+  return Math.min(parsed, cap);
+}
+window.normalizeMaxResults = normalizeMaxResults;
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const cap = getMaxResultsCap();
+    document.querySelectorAll('input[data-max-config]').forEach(input => {
+      input.setAttribute('max', String(cap));
+      input.value = String(normalizeMaxResults(input.value));
+    });
+  } catch (err) {
+    console.error('Failed to apply MAX_RESULTS_DISPLAY cap:', err);
+  }
+});
+
+
+
+// ===================================================================
+// Função utilitária: limitar resultados por fonte
+// ===================================================================
+function limitResultsPerSource(results, maxPerSource) {
+  if (!Array.isArray(results)) return [];
+  const grouped = results.reduce((acc, item) => {
+      const src = item.source || 'Unknown';
+      if (!acc[src]) acc[src] = [];
+      acc[src].push(item);
+      return acc;
+  }, {});
+  return Object.values(grouped).flatMap(arr => arr.slice(0, maxPerSource));
+}
+
+
 
 
 //______________________________________________________________________________________________
@@ -29,7 +74,6 @@ return formattedResponse;
 
 
 
-
 //______________________________________________________________________________________________
 // lexical_formatResponse  --- call from [bridge.js] <call_lexical>
 //______________________________________________________________________________________________
@@ -40,7 +84,6 @@ function lexical_formatResponse(responseData, term) {
 return formattedResponse;
 
 }
-
 
 
 
@@ -212,3 +255,150 @@ function extractMetadata(data, type) {
   }
   
   
+
+
+
+
+  
+// ---------------- Chat ID helpers ----------------
+function createUuid() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+function getOrCreateChatId() {
+  let id = localStorage.getItem('cons_chat_id');
+  if (!id) {
+    id = createUuid();
+    localStorage.setItem('cons_chat_id', id);
+  }
+  return id;
+}
+
+function newConversationId() {
+  const id = createUuid();
+  localStorage.setItem('cons_chat_id', id);
+  return id;
+}
+
+
+
+// Reset LLM
+async function resetLLM() {
+  // Abort a requisição ativa (se houver)
+  if (window.abortRagbot) {
+    try { window.abortRagbot(); } catch {}
+  }
+  const chat_id = getOrCreateChatId();
+  try {
+    await fetch(apiBaseUrl + '/ragbot_reset', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id })
+    });
+  } catch (e) {
+    console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
+  }
+  newConversationId();
+ 
+  // Zera histórico em memória (se exposto)
+  if (window.chatHistory && Array.isArray(window.chatHistory)) {
+    try { window.chatHistory.length = 0; } catch {}
+  }
+}
+
+
+
+
+// Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset (limpa tambem Search Box)
+async function resetConversation() {
+  // Abort a requisição ativa (se houver)
+  if (window.abortRagbot) {
+    try { window.abortRagbot(); } catch {}
+  }
+  const chat_id = getOrCreateChatId();
+  try {
+    await fetch(apiBaseUrl + '/ragbot_reset', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id })
+    });
+  } catch (e) {
+    console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
+  }
+  newConversationId();
+  // Limpeza básica de UI se existir
+  const container = document.querySelector('#results');
+  if (container) container.innerHTML = '';
+  // Limpa mensagens do chat
+  const chat = document.getElementById('chatMessages');
+  if (chat) chat.innerHTML = '';
+  // Zera histórico em memória (se exposto)
+  if (window.chatHistory && Array.isArray(window.chatHistory)) {
+    try { window.chatHistory.length = 0; } catch {}
+  }
+  const input = document.getElementById('searchInput');
+  if (input) input.value = '';
+
+  // Mensagem de boas-vindas
+  if (window.ragbotAddMessage) {
+    window.ragbotAddMessage('bot', 'Nova conversa iniciada. Como posso ajudar?');
+  }
+}
+
+// Se existir um botão com este id, liga automaticamente
+document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
+
+
+// ---------------- Theme (Light/Dark) ----------------
+// Centralized theme handling to keep all pages consistent
+// Applies `data-theme` on <html> and persists in localStorage
+(function setupTheme() {
+  function setTheme(theme) {
+    const t = theme === 'dark' ? 'dark' : 'light';
+    const root = document.documentElement;
+    root.setAttribute('data-theme', t);
+    // Hint to UA for built-in widgets (scrollbar, form controls)
+    try { root.style.colorScheme = t; } catch {}
+    try { localStorage.setItem('theme', t); } catch {}
+  }
+
+  function detectInitialTheme() {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch {}
+    // fallback to system preference
+    try { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch {}
+    return 'light';
+  }
+
+  function initTheme() {
+    setTheme(detectInitialTheme());
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Expose globally for inline handlers
+  window.initTheme = initTheme;
+  window.toggleTheme = toggleTheme;
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+  } else {
+    initTheme();
+  }
+
+  // Cross-tab sync
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'theme' && e.newValue) setTheme(e.newValue);
+  });
+})();

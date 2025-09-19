@@ -1,8 +1,8 @@
-// script_lexical.js
+﻿// script_lexical.js
 
 let controller = null;
       
-// registra os listeners UMA única vez
+// registra os listeners UMA Ãºnica vez
 document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('searchButton');
   const searchInput  = document.getElementById('searchInput');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cursor: searchButton.style.cursor
     };
 
-    // Se já estiver desabilitado, evita reentrância por clique/Enter
+    // Se já estiver desabilitado, evita reentrÃ¢ncia por clique/Enter
     if (searchButton?.disabled) return;
 
     // Desabilita e mostra "searching"
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
 
-    // Cancela requisição anterior, se houver
+    // Cancela requisiÃ§Ã£o anterior, se houver
     if (controller) controller.abort();
     controller = new AbortController();
     let timeoutId = null;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // =================
         const term = searchInput.value.trim();
         
-        // Validação de termo — sai cedo, mas ainda passa pelo finally
+        // ValidaÃ§Ã£o de termo â€” sai cedo, mas ainda passa pelo finally
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
             return;
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //call_lexical
         //*****************************************************************************************
-       // Sua lógica original de chamada
+       // Sua lÃ³gica original de chamada
         const parameters = {
             term: term,
             source: source,
@@ -92,23 +92,60 @@ document.addEventListener('DOMContentLoaded', () => {
        
 
         // Get max results from input or use default
-        const maxResults = parseInt(document.getElementById('maxResults')?.value) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY);
+        const rawMaxResults = document.getElementById('maxResults')?.value;
+        const maxResults = window.normalizeMaxResults
+            ? window.normalizeMaxResults(rawMaxResults)
+            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
 
-        // Restrict display to first maxResults if results exist
+
+       // Restrict display to first maxResults PER SOURCE (NEW)
         if (responseData.results && Array.isArray(responseData.results)) {
-            responseData.results = responseData.results.slice(0, maxResults);
+            responseData.results = limitResultsPerSource(responseData.results, maxResults);
         } else {
             responseData.results = [];
         }
 
+       
         // Display results
-        const newTitle = `Lexical Search    ●    ${term}`;
+        const newTitle = `Lexical Search    â—    ${term}`;
         removeLoading(resultsDiv);
         //displayResults(resultsDiv, newTitle, 'title');
         displayResults(resultsDiv, responseData, "lexical");
 
+
+        console.log('********script_lexical.js - lexical*** [responseData]:', responseData);
+
+
+
+
+
+        // =======================================================================================
+        // Assemble Download Data
+        // =======================================================================================
+
+        // Extrair as fontes Ãºnicas
+        let uniqueSources = responseData.results.map(result => result.source);
+        uniqueSources = [...new Set(uniqueSources)];
+
+        const groupResults = document.getElementById('groupResults').checked;
+
+        const downloadData = {
+            search_term: term,
+            search_type: 'lexical',
+            source_array: uniqueSources,
+            max_results: maxResults,
+            group_results_by_book: groupResults,
+            definologia: null,
+            descritivo: null,
+            lexical: responseData.results,
+            semantical: null
+        };
+
         // Update results using centralized function
-        window.downloadUtils.updateResults(responseData, term, 'lexical');
+        window.downloadUtils.updateResults(downloadData);
+
+         // =======================================================================================
+
 
         
     } catch (error) {
@@ -127,3 +164,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+

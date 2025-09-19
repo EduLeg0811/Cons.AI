@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function ragbot() {
 
 
+      // Reset LLM data
+      resetLLM();
+
+
       // Save original button state for restoration
       const originalButtonState = {
         html: searchButton.innerHTML,
@@ -85,7 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
           searchInput.value = '';
           searchInput.style.height = 'auto';
 
+
+
           // Add loading message
+          cleanChat();
           const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
 
              
@@ -108,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // *****************************************************************************************
 
 
-          // Remove loading message and add bot response
           removeChatMessage(loadingId);
+          console.log("Chat cleaned");
           addChatMessage('bot', response.text);
 
           // Mostra os metadados do response em Badges, logo após o texto da resposta
@@ -236,6 +243,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return messageId;
+    }
+
+
+
+    // Remove old chat messages while keeping the latest user question at top
+    function cleanChat() {
+        try {
+            // Remove initial suggestions if still present
+            const initial = document.getElementById('initial-quests');
+            if (initial) initial.remove();
+        } catch {}
+
+        if (!chatMessages) return;
+
+        const first = chatMessages.firstElementChild;
+        // If the first element is the latest user message, keep it and remove the rest
+        if (first && first.classList && first.classList.contains('user')) {
+            let node = first.nextSibling;
+            while (node) {
+                const next = node.nextSibling;
+                chatMessages.removeChild(node);
+                node = next;
+            }
+        } else {
+            // Otherwise, clear everything for a clean slate
+            chatMessages.textContent = '';
+        }
     }
 
     

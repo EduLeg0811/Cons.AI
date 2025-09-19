@@ -4,16 +4,24 @@ API Response Structures
 """
 
 # Import required libraries
+import os
+import sys
+from pathlib import Path
 from io import BytesIO
 import logging
-import os
+import re
 from typing import Any, Dict, Tuple
 import uuid
 
-from flask import Flask, jsonify, request, send_file, Response
+from flask import Flask, jsonify, request, send_file, Response, send_from_directory
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
+# Add backend directory to Python path
+BACKEND_DIR = Path(__file__).parent.resolve()
+sys.path.insert(0, str(BACKEND_DIR))
+
+# Now import local modules
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
 from modules.semantical_search.search_operations import simple_semantical_search
@@ -22,7 +30,7 @@ from utils.config import (
     FILES_SEARCH_DIR,
     INSTRUCTIONS_LLM_BACKEND
 )
-from utils.docx_export import build_docx_bytes
+from utils.docx_export import build_docx
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
     
 
@@ -39,32 +47,46 @@ except Exception as e:
 
 # SERVER CONFIGURATION
 # =========================================================
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)  # Disable default static folder
 api = Api(app)
 
+# Configure static file serving
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
+app.static_folder = frontend_path
+
+# Serve frontend files
+@app.route('/')
+def serve_frontend():
+    return send_from_directory(frontend_path, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join(frontend_path, path)):
+        return send_from_directory(frontend_path, path)
+    return "File not found", 404
+
 # Restrinja origens em produção; inclua localhost para dev
-FRONTEND_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [
     "https://cons-ai.onrender.com",
-    "http://localhost:5173",  # se usar Vite/Dev server
-    "http://127.0.0.1:5500",  # se usar Live Server
-    "http://localhost:5500",  # se usar Live Server
-    "https://cons-ai-server\.onrender\.com",
-    "http://localhost:\d+",
-    "http://127\.0\.0\.1:\d+",
-    "https://.*\.webcontainer-api\.io",  # Allow all WebContainer domains
-    "https://.*\.local-credentialless\.webcontainer-api\.io",  # Specific WebContainer pattern
+    "http://localhost:5173",  # Vite/Dev server
+    "http://127.0.0.1:5500",  # Live Server
+    "http://localhost:5500",  # Live Server
+    "https://cons-ai-server.onrender.com",
+    r"http://localhost:\d+",  # Allow all localhost ports
+    r"http://127\.0\.0\.1:\d+",  # Allow all 127.0.0.1 ports
+    r"https://.*\.webcontainer-api\.io",  # WebContainer domains
+    r"https://.*\.local-credentialless\.webcontainer-api\.io",  # WebContainer pattern
 ]
 
-
-# CORS(
-#     app,
-#     origins=FRONTEND_ORIGINS,
-#     supports_credentials=True,
-#     methods=["GET", "POST", "OPTIONS"],
-#     allow_headers=["Content-Type", "Authorization"],
-# )
-
-CORS(app)  # This will allow all origins with default settings
+# Configure CORS
+CORS(app, resources={
+    r"/*": {
+        "origins": CORS_ALLOWED_ORIGINS,
+        "supports_credentials": True,
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 # Loga um banner de inicialização
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
@@ -73,14 +95,12 @@ logger.info(
     "Boot API | env=%s | base_url=%s | cors_origins=%s | files=%s | faiss=%s",
     "render" if IS_RENDER else "local",
     backend_url,
-    FRONTEND_ORIGINS,
+    CORS_ALLOWED_ORIGINS,
     FILES_SEARCH_DIR, FAISS_INDEX_DIR
 )
 
 
-@app.route("/health")
-def health():
-    return "OK", 200
+# (removido) rota duplicada de health; manteremos a versão JSON abaixo
 
 
 # Helper to safely strip values
@@ -260,42 +280,29 @@ class RAGbotResetResource(Resource):
             return {"error": str(e)}, 500
 
 
+
+
+
+
+
+
 # ______________________________________________________________________
 # 7. Download — ponto de entrada enxuto (usa docx_export.py)
 # ______________________________________________________________________
 class DownloadResource(Resource):
     def post(self):
+
         try:
             data = request.get_json(force=True) or {}
-            format = (data.get("format") or "docx").lower().strip()
-            term = safe_str(data.get("term", "") or "")
-            search_type = safe_str(data.get("type", "") or "lexical")  # Changed from 'type' to 'search_type' for consistency
-            results_array = data.get("results", [])
-            details = data.get("details", False)
-
-            # 1) Monta payload
-            payload = {
-                "term": term,
-                "results": results_array,
-                "search_type": search_type,
-                "type": search_type,
-                "format": format,
-                "details": details
-            }
-
-            # 2) Se markdown for pedido
-            if format in ("md", "markdown"):
-                md = build_grouped_markdown(payload)   # você pode manter essa função para MD
-                return Response(
-                    md,
-                    mimetype="text/markdown",
-                    headers={"Content-Disposition": f"attachment; filename=results_{search_type}.md"}
-                )
-
-            # 3) Se DOCX for pedido → usa versão nova
-            docx_bytes = build_docx_bytes(payload)
-            filename = f"{term or 'resultados'}_{search_type}.docx"
-            filename = filename.replace(' ', '_')[:50]
+            group_results_by_book = data.get("group_results_by_book", False)
+           
+            #Extrai variáveis
+            search_term = data.get("search_term")
+        
+            docx_bytes = build_docx(data, group_results_by_book)
+            filename = f"{search_term}"
+            filename = filename[:30]
+            filename = filename + '.' + ".docx"
 
             return send_file(
                 BytesIO(docx_bytes),
@@ -305,9 +312,11 @@ class DownloadResource(Resource):
             )
 
 
+
         except Exception as e:
             logger.error(f"Error in DownloadResource: {str(e)}", exc_info=True)
             return {"error": "Internal server error"}, 500
+
 
 
 
@@ -378,21 +387,6 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ====================== Routes ======================
 api.add_resource(LlmQueryResource, '/llm_query')
 api.add_resource(LexicalSearchResource, '/lexical_search')
@@ -400,10 +394,6 @@ api.add_resource(SemanticalSearchResource, '/semantical_search')
 api.add_resource(RandomPensataResource, '/random_pensata')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')
-
-@app.route('/')
-def home():
-    return {"status": "success", "message": "Welcome to the Search API"}
 
 @app.route('/health')
 def health_check():

@@ -3,7 +3,6 @@ import logging
 import os
 import re
 from typing import Any, DefaultDict, Dict, List
-from typing import Dict, List
 import unicodedata
 
 import pandas as pd
@@ -103,13 +102,9 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
                         "metadata": match.get("metadata")  # corrigido
                     })
 
-            # limpa memória do arqvui utilizado
+            # libera memória do arquivo utilizado
             del content
-            gc.collect()
 
-            # Log de memória depois
-            process = psutil.Process(os.getpid())
-            logger.info(f"[ARQ LEXICAL] Depois de liberar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
 
 
@@ -466,5 +461,3 @@ def group_lexical(results: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any
         grouped[book].append(item)
 
     return dict(grouped)
-
-

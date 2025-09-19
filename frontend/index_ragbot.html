@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="theme-bots">
     <!-- Navbar -->
@@ -19,7 +20,7 @@
                 </a>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1;">
+            <div class="navbar-center">
 
                 
                 <!-- <div class="navbar-icon">
@@ -58,7 +59,7 @@
         <!-- Chat Input (moved to top) -->
         <!-- <div class="chat-input-container"> -->
         <div class="chat-input-wrapper">
-            <textarea id="searchInput" placeholder="Olá conscienciólogo!" class="chat-input" rows="1"></textarea>
+            <textarea id="searchInput" placeholder="Olá conscienciÃ³logo!" class="chat-input" rows="1"></textarea>
             <button id="searchButton" class="chat-send-btn" aria-label="Send Message">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -70,7 +71,7 @@
         <!-- Chat Messages -->
         <div class="chat-messages" id="chatMessages"></div>
 
-        <div id="results" class="results" style="display: none;">
+        <div id="results" class="results hidden">
             <!-- Results will be displayed here for download functionality -->
         </div>
     </div>
@@ -109,3 +110,4 @@
     </script>
 </body>
 </html>
+

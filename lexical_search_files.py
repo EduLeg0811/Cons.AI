@@ -36,11 +36,11 @@ def lexical_search_in_files(search_term: str, file_paths: List[str], file_type: 
                 continue
 
             texto_key = list(content[0].keys())[0]  # sempre primeira coluna
-            term = search_term.lower().strip()
+            cleanTerm = search_term.lower().strip()
 
             for idx, row in enumerate(content, start=2):  # começa em 2 porque linha 1 = cabeçalho
                 texto = str(row.get(texto_key, "")).lower()
-                if term in texto:
+                if cleanTerm in texto:
                     results.append({
                         "book": book,
                         "paragraph": row.get(texto_key, ""),
@@ -50,11 +50,11 @@ def lexical_search_in_files(search_term: str, file_paths: List[str], file_type: 
 
         elif file_type in ["md", "text"]:
             content = read_text_file(file_path)
-            term = search_term.lower().strip()
+            cleanTerm = search_term.lower().strip()
 
             for row in content:
                 texto = row.get("paragraph_text", "").lower()
-                if term in texto:
+                if cleanTerm in texto:
                     results.append({
                         "book": book,
                         "paragraph": row.get("paragraph_text"),

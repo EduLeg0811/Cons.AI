@@ -1,5 +1,54 @@
 // config.js
 
+// Global Parameters
+// UI toggles and defaults
+// Whether to show reference badges under each result (fixed global setting)
+window.SHOW_REF_BADGES = true;
+const MODEL_LLM='gpt-4.1';
+const MODEL_RAGBOT='gpt-4.1';
+const TEMPERATURE=0.3;
+const MAX_RESULTS_DISPLAY=200;
+const OPENAI_RAGBOT='ALLWV';
+const FULL_BADGES = false;
+
+// ========================= Runtime Config (overrides) =========================
+// Centralized runtime config object with defaults from the constants above.
+// Values can be overridden via the Config modal and persisted in localStorage.
+(function initRuntimeConfig(){
+  const defaults = {
+    MODEL_LLM,
+    MODEL_RAGBOT,
+    TEMPERATURE,
+    MAX_RESULTS_DISPLAY,
+    OPENAI_RAGBOT,
+    FULL_BADGES,
+  };
+
+  let stored = {};
+  try {
+    const raw = localStorage.getItem('appConfig');
+    if (raw) stored = JSON.parse(raw) || {};
+  } catch (e) { /* ignore */ }
+
+  // Shallow merge (only known keys)
+  const cfg = { ...defaults };
+  for (const k of Object.keys(defaults)) {
+    if (stored[k] !== undefined && stored[k] !== null && stored[k] !== '') {
+      cfg[k] = stored[k];
+    }
+  }
+
+  // Expose globally for all modules
+  window.CONFIG_DEFAULTS = defaults;
+  window.CONFIG = cfg;
+
+  // Optional: surface some common flags for easy access in legacy code
+  try { window.USER_MAX_RESULTS = Number(cfg.MAX_RESULTS_DISPLAY) || defaults.MAX_RESULTS_DISPLAY; } catch {}
+  try { window.USER_TEMPERATURE = Number(cfg.TEMPERATURE) ?? defaults.TEMPERATURE; } catch {}
+})();
+
+
+
 // -----------------------------------------------------------
 // Cores centrais por grupo de módulos (personalizáveis)
 // Altere aqui para trocar as cores de cada grupo de forma centralizada.
@@ -34,6 +83,7 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
   semantical: 'semantical',
   verbetopedia: 'semantical',
   ccg: 'semantical',
+  deepdive: 'semantical',
   // Bots
   ragbot: 'bots',
   // Other apps
@@ -74,52 +124,10 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
 
 const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbetes/';
 
-// Global Parameters
-// UI toggles and defaults
-// Whether to show reference badges under each result (fixed global setting)
-window.SHOW_REF_BADGES = true;
-const MODEL_LLM='gpt-4.1';
-const MODEL_RAGBOT='gpt-4.1';
-const TEMPERATURE=0.3;
-const MAX_RESULTS_DISPLAY=10;
-const OPENAI_RAGBOT='ALLWV';
-const FULL_BADGES = false;
 
-// ========================= Runtime Config (overrides) =========================
-// Centralized runtime config object with defaults from the constants above.
-// Values can be overridden via the Config modal and persisted in localStorage.
-(function initRuntimeConfig(){
-  const defaults = {
-    MODEL_LLM,
-    MODEL_RAGBOT,
-    TEMPERATURE,
-    MAX_RESULTS_DISPLAY,
-    OPENAI_RAGBOT,
-    FULL_BADGES,
-  };
 
-  let stored = {};
-  try {
-    const raw = localStorage.getItem('appConfig');
-    if (raw) stored = JSON.parse(raw) || {};
-  } catch (e) { /* ignore */ }
 
-  // Shallow merge (only known keys)
-  const cfg = { ...defaults };
-  for (const k of Object.keys(defaults)) {
-    if (stored[k] !== undefined && stored[k] !== null && stored[k] !== '') {
-      cfg[k] = stored[k];
-    }
-  }
 
-  // Expose globally for all modules
-  window.CONFIG_DEFAULTS = defaults;
-  window.CONFIG = cfg;
-
-  // Optional: surface some common flags for easy access in legacy code
-  try { window.USER_MAX_RESULTS = Number(cfg.MAX_RESULTS_DISPLAY) || defaults.MAX_RESULTS_DISPLAY; } catch {}
-  try { window.USER_TEMPERATURE = Number(cfg.TEMPERATURE) ?? defaults.TEMPERATURE; } catch {}
-})();
 
 const INSTRUCTIONS_RAGBOT = `
   Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia.
@@ -153,14 +161,13 @@ const SEMANTICAL_INSTRUCTIONS = `
 Você é um assistente especialista em Conscienciologia.
 Sua resposta à consulta será usada para formular uma pesquisa semântica.
 Instruções:
-1. Entenda o significado específico da consulta no contexto da Conscienciologia, não apenas no português comum.
-2. Elabore uma lista de termos que expressem o significado denotativo da consulta, semânticamente, como termos-chave ou sinônimos, dentro da Conscienciologia.
+1. Entenda o significado específico da consulta no contexto da Conscienciologia, e não apenas no português comum.
+2. Elabore uma lista de 4 termos que expressem o significado denotativo da consulta, semânticamente, como descritores, termos-chave ou sinônimos, na Conscienciologia.
 3. Não use elementos de ligação, como artigos, preposições ou conjunções.
-4. Não utilize repetições, preâmbulos ou explicações como 'significa' ou 'é'.
-5. Forneça como resposta apenas a lista limpa de 5 palavras ou expressões compostas, separadas por ponto-e-vírgula (;). 
-Exemplo: Termo1; Termo2; Termo3; Termo4; Termo5.
+4. Não utilize repetições, preâmbulos ou explicações, como 'o termo X significa' ou 'é'.
+5. A saída deve ser apenas uma lista limpa de 4 palavras ou expressões compostas, separadas por ponto-e-vírgula (;). Exemplo: Termo1; Termo2; Termo3; Termo4; Termo5.
+6. Caso não encontre nenhum termo que expresse o significado denotativo da consulta, retorne apenas a mensagem **nenhum resultado**.
 `;
-
 
 const COMMENTARY_INSTRUCTIONS = `
   Developer: Você é um assistente especialista em Conscienciologia, focado em responder perguntas relacionadas ao livro Léxico de Ortopensatas, de Waldo Vieira, utilizando documentos de referência.
@@ -369,117 +376,3 @@ window.__API_BASE = apiBaseUrl;
 
 
 }
-
-// ---------------- Chat ID helpers ----------------
-function createUuid() {
-  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function getOrCreateChatId() {
-  let id = localStorage.getItem('cons_chat_id');
-  if (!id) {
-    id = createUuid();
-    localStorage.setItem('cons_chat_id', id);
-  }
-  return id;
-}
-
-function newConversationId() {
-  const id = createUuid();
-  localStorage.setItem('cons_chat_id', id);
-  return id;
-}
-
-// Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset
-async function resetConversation() {
-  // Abort a requisição ativa (se houver)
-  if (window.abortRagbot) {
-    try { window.abortRagbot(); } catch {}
-  }
-  const chat_id = getOrCreateChatId();
-  try {
-    await fetch(apiBaseUrl + '/ragbot_reset', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id })
-    });
-  } catch (e) {
-    console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
-  }
-  newConversationId();
-  // Limpeza básica de UI se existir
-  const container = document.querySelector('#results');
-  if (container) container.innerHTML = '';
-  // Limpa mensagens do chat
-  const chat = document.getElementById('chatMessages');
-  if (chat) chat.innerHTML = '';
-  // Zera histórico em memória (se exposto)
-  if (window.chatHistory && Array.isArray(window.chatHistory)) {
-    try { window.chatHistory.length = 0; } catch {}
-  }
-  const input = document.getElementById('searchInput');
-  if (input) input.value = '';
-
-  // Mensagem de boas-vindas
-  if (window.ragbotAddMessage) {
-    window.ragbotAddMessage('bot', 'Nova conversa iniciada. Como posso ajudar?');
-  }
-}
-
-// Se existir um botão com este id, liga automaticamente
-document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
-
-
-// ---------------- Theme (Light/Dark) ----------------
-// Centralized theme handling to keep all pages consistent
-// Applies `data-theme` on <html> and persists in localStorage
-(function setupTheme() {
-  function setTheme(theme) {
-    const t = theme === 'dark' ? 'dark' : 'light';
-    const root = document.documentElement;
-    root.setAttribute('data-theme', t);
-    // Hint to UA for built-in widgets (scrollbar, form controls)
-    try { root.style.colorScheme = t; } catch {}
-    try { localStorage.setItem('theme', t); } catch {}
-  }
-
-  function detectInitialTheme() {
-    try {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark' || saved === 'light') return saved;
-    } catch {}
-    // fallback to system preference
-    try { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch {}
-    return 'light';
-  }
-
-  function initTheme() {
-    setTheme(detectInitialTheme());
-  }
-
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    setTheme(current === 'dark' ? 'light' : 'dark');
-  }
-
-  // Expose globally for inline handlers
-  window.initTheme = initTheme;
-  window.toggleTheme = toggleTheme;
-
-  // Initialize on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTheme);
-  } else {
-    initTheme();
-  }
-
-  // Cross-tab sync
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'theme' && e.newValue) setTheme(e.newValue);
-  });
-})();

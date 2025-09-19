@@ -32,8 +32,7 @@ logger = logging.getLogger(__name__)
 #................................................
 # Controle de sessão
 #................................................
-_llm_initialized = False
-_llm_session_id = None
+# removidos: variáveis de sessão não são utilizadas
 
 
 # Memória simples por conversa (somente em memória / por processo)
@@ -41,18 +40,7 @@ _conversation_last_id = {}  # chat_id -> último response.id
 
 
 
-# =============================================================================
-# Inicializa sessão do LLM (apenas uma vez)
-# =============================================================================
-def get_llm_session():
-    """
-    Retorna o último response.id usado para encadear a conversa (se houver).
-    Não dispara chamada à API.
-    """
-    global _llm_initialized, _llm_session_id
-    if not _llm_initialized:
-        _llm_initialized = True
-    return _llm_session_id
+# (removido) get_llm_session estava definido mas não era utilizado
 
 
 
