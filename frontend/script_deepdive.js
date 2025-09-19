@@ -103,7 +103,7 @@ async function deepdive_search() {
         insertLoading(resultsDiv, "Definindo o termo: " + term);   
 
         const paramRAGbotDef = {
-            query: 'Escreva 1 parágrafo explicando a definição de '+ term + ' no contexto da Conscienciologia. A saída deve ser fornecida no formato: O (A) X é ...',
+            query: 'Escreva 1 parágrafo explicando a definição de '+ term + ' no contexto da Conscienciologia. A saída deve ser fornecida no formato: X é ...',
             model: (window.CONFIG?.MODEL_RAGBOT ?? MODEL_RAGBOT),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
