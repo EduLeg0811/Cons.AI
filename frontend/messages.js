@@ -152,7 +152,7 @@ const TOOL_MESSAGES = {
     'Realiza pesquisa profunda em livros, tratados e verbetes.<br>',
     'Monta um Caderno de Estudos completo sobre o tema.<br>',
     'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica.<br>',
-    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.',
+    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.<br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
     '<strong>2.</strong> Selecione se deseja listagem contínua ou agrupada por livros.<br>',

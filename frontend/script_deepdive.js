@@ -100,7 +100,7 @@ async function deepdive_search() {
         // 2. Definologia
         // =======================================================================================
 
-        insertLoading(resultsDiv, "Definindo " + term);   
+        insertLoading(resultsDiv, "Definindo o termo: " + term);   
 
         const paramRAGbotDef = {
             query: 'Escreva 1 parágrafo explicando a definição de '+ term + ' no contexto da Conscienciologia. A saída deve ser fornecida no formato: O (A) X é ...',

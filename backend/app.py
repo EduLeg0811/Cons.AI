@@ -1,4 +1,4 @@
-"""
+﻿"""
 API Response Structures
 ======================
 """
@@ -65,9 +65,10 @@ def serve_static(path):
         return send_from_directory(frontend_path, path)
     return "File not found", 404
 
-# Restrinja origens em produção; inclua localhost para dev
+# Restrinja origens em produÃ§Ã£o; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = [
     "https://cons-ai.onrender.com",
+    "https://cons-ia.org",
     "http://localhost:5173",  # Vite/Dev server
     "http://127.0.0.1:5500",  # Live Server
     "http://localhost:5500",  # Live Server
@@ -88,7 +89,7 @@ CORS(app, resources={
     }
 })
 
-# Loga um banner de inicialização
+# Loga um banner de inicializaÃ§Ã£o
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
 backend_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:5000")
 logger.info(
@@ -100,7 +101,7 @@ logger.info(
 )
 
 
-# (removido) rota duplicada de health; manteremos a versão JSON abaixo
+# (removido) rota duplicada de health; manteremos a versÃ£o JSON abaixo
 
 
 # Helper to safely strip values
@@ -187,14 +188,14 @@ class LlmQueryResource(Resource):
 
             query = safe_str(data.get("query", ""))
             if not query:
-                return {"error": "Query não fornecida."}, 400
+                return {"error": "Query nÃ£o fornecida."}, 400
 
             model = data.get("model", "gpt-4.1")
             temperature = float(data.get("temperature", 0.3))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
 
-            # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
+            # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou Ã© criado)
             chat_id = safe_str(data.get("chat_id", "")) \
                        or safe_str(request.headers.get("X-Chat-Id", "")) \
                        or str(uuid.uuid4())
@@ -272,7 +273,7 @@ class RAGbotResetResource(Resource):
             data = request.get_json(silent=True) or {}
             chat_id = safe_str(data.get("chat_id", "")) or safe_str(request.args.get("chat_id", ""))
             if not chat_id:
-                return {"error": "chat_id é obrigatório"}, 400
+                return {"error": "chat_id Ã© obrigatÃ³rio"}, 400
             reset_conversation_memory(chat_id)
             return {"status": "ok", "chat_id": chat_id}, 200
         except Exception as e:
@@ -287,7 +288,7 @@ class RAGbotResetResource(Resource):
 
 
 # ______________________________________________________________________
-# 7. Download — ponto de entrada enxuto (usa docx_export.py)
+# 7. Download â€” ponto de entrada enxuto (usa docx_export.py)
 # ______________________________________________________________________
 class DownloadResource(Resource):
     def post(self):
@@ -296,7 +297,7 @@ class DownloadResource(Resource):
             data = request.get_json(force=True) or {}
             group_results_by_book = data.get("group_results_by_book", False)
            
-            #Extrai variáveis
+            #Extrai variÃ¡veis
             search_term = data.get("search_term")
         
             docx_bytes = build_docx(data, group_results_by_book)
@@ -401,3 +402,4 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
