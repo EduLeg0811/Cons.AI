@@ -1,4 +1,4 @@
-﻿// script_verbetopedia.js
+// script_verbetopedia.js
 
 let controller = null;
 
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // =================
             const term = searchInput.value.trim();
             
-            // Validação de termo — sai cedo, mas ainda passa pelo finally
+            // Validação de termo - sai cedo, mas ainda passa pelo finally
             if (!term) {
                 resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
                 if (downloadButtons) downloadButtons.style.display = 'none';
@@ -83,26 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Definition - RAGbot
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Descritivos dos neologismos...");
+            insertLoading(resultsDiv, "Definindo neologismos...");
 
             
             //call_ragbot
             //*****************************************************************************************
             // 
-            const chat_id = getOrCreateChatId();
             
             const paramRAGbot = {
                 query: "TEXTO DE ENTRADA:  " + term + ".",
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
                 temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
                 vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-                instructions: SEMANTICAL_INSTRUCTIONS,
-                use_session: true,
-                chat_id                 
+                instructions: SEMANTICAL_DESCRIPTION,             
             };
             
             defJson = await call_llm(paramRAGbot);
-            if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
 
             //*****************************************************************************************
 
@@ -122,8 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
    
-
-
             // _________________________________________________________________________________
             // Semantical Search
             // _________________________________________________________________________________
@@ -144,10 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
                 
             // Get max results from input or use default
-            const rawMaxResults = document.getElementById('maxResults')?.value;
-        const maxResults = window.normalizeMaxResults
-            ? window.normalizeMaxResults(rawMaxResults)
-            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
+            const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+            const maxResults = normalizeMaxResults(rawMaxResults);
 
             // Restrict display to first maxResults if results exist
             if (semJson.results && Array.isArray(semJson.results)) {

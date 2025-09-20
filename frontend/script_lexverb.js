@@ -1,4 +1,4 @@
-﻿// script_lexical.js
+// script_lexical.js
 
 let controller = null;
       
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
 
-    // Cancela requisiÃ§Ã£o anterior, se houver
+    // Cancela requisição anterior, se houver
     if (controller) controller.abort();
     controller = new AbortController();
     let timeoutId = null;
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // =================
         const term = searchInput.value.trim();
         
-        // ValidaÃ§Ã£o de termo â€” sai cedo, mas ainda passa pelo finally
+        // Validação de termo - sai cedo, mas ainda passa pelo finally
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
             return;
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //call_lexical
         //*****************************************************************************************
-       // Sua lÃ³gica original de chamada
+       // Sua lógica original de chamada
         const parameters = {
             term: term,
             source: source,
@@ -84,10 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
        
 
         // Get max results from input or use default
-        const rawMaxResults = document.getElementById('maxResults')?.value;
-        const maxResults = window.normalizeMaxResults
-            ? window.normalizeMaxResults(rawMaxResults)
-            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
+        const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+        const maxResults = normalizeMaxResults(rawMaxResults);
 
         // Restrict display to first maxResults if results exist
         if (responseData.results && Array.isArray(responseData.results)) {
@@ -97,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Display results
-        const newTitle = `Verbetes    â—    ${term}`;
+        const newTitle = `Verbetes    ●    ${term}`;
         removeLoading(resultsDiv);
         //displayResults(resultsDiv, newTitle, 'title');
         displayResults(resultsDiv, responseData, "lexverb");
@@ -107,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Assemble Download Data
         // =======================================================================================
 
-        // Extrair as fontes Ãºnicas
+        // Extrair as fontes únicas
         let uniqueSources = responseData.results.map(result => result.source);
         uniqueSources = [...new Set(uniqueSources)];
 

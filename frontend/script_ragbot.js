@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
           //*****************************************************************************************
           // 
           const chat_id = getOrCreateChatId();
+
           const paramRAGbot = {
             query: term,
             model: (window.CONFIG?.MODEL_RAGBOT ?? MODEL_RAGBOT),
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: INSTRUCTIONS_RAGBOT,
             use_session: true,
-            chat_id
+            chat_id: chat_id
           };
           
           const response = await call_llm(paramRAGbot);
@@ -299,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
           'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
           'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos:',
-          'Outro dia ouvi a expressão "Inacabamento a Maior". Pode me explicar melhor o que isso significa na Conscienciologia?',
         ];
 
         //'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',

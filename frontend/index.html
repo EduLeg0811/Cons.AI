@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="icon.png">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
@@ -52,12 +52,16 @@
 
                 <!-- Bots Panel -->
                 <div class="tool-panel bots">
+
+                    <!-- Panel Header -->
                     <div class="panel-header">
                         <div class="panel-info">
                             <h2>Bots IA</h2>
                             <p></p>
                         </div>
                     </div>
+
+                    <!-- Tools List -->
                     <div class="tools-list">
 
                         <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card compact" target="_blank" rel="noopener noreferrer">
@@ -120,7 +124,7 @@
 
                         <a href="index_lexverb.html" class="tool-card lexical-compact compact">
                             <div class="tool-icon lexical">
-                                <i class="fas fa-search"></i>
+                                <i class="fas fa-book"></i>
                             </div>
                             <div class="tool-info">
                                 <h3>Definologia de Verbetes</h3>
@@ -364,12 +368,23 @@
             function loadConfigForm() {
               const cfg = (window.CONFIG || window.CONFIG_DEFAULTS || {});
               const $ = (id) => document.getElementById(id);
-              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || 'gpt-4.1-nano';
-              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || 'gpt-4.1-nano';
+              if ($('cfg-model-llm')) $('cfg-model-llm').value = cfg.MODEL_LLM || MODEL_LLM;
+              if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = cfg.MODEL_RAGBOT || MODEL_RAGBOT;
               const temp = Number(cfg.TEMPERATURE ?? 0.5);
               if ($('cfg-temperature')) $('cfg-temperature').value = temp;
               if ($('cfg-temperature-num')) $('cfg-temperature-num').value = temp;
-              if ($('cfg-max-results')) $('cfg-max-results').value = Number(cfg.MAX_RESULTS_DISPLAY ?? 10);
+              const cap = getMaxResultsCap();
+              const floor = getMinResultsFloor();
+              const maxInput = $('cfg-max-results');
+              if (maxInput) {
+                maxInput.setAttribute('data-max-config', 'true');
+                maxInput.setAttribute('min', String(floor));
+                maxInput.setAttribute('max', String(cap));
+                const desired = cfg.MAX_RESULTS_DISPLAY ?? cap;
+                maxInput.value = String(normalizeMaxResults(desired));
+              }
+              const rangeLabel = document.querySelector('[data-max-results-range]');
+              if (rangeLabel) rangeLabel.textContent = `${floor} - ${cap} (step 10)`;
               if ($('cfg-openai-ragbot')) $('cfg-openai-ragbot').value = cfg.OPENAI_RAGBOT || 'ALLWV';
               if ($('cfg-full-badges')) $('cfg-full-badges').checked = !!cfg.FULL_BADGES;
 
@@ -384,17 +399,17 @@
             function saveConfigAndClose() {
               const $ = (id) => document.getElementById(id);
               const next = {
-                MODEL_LLM: $('cfg-model-llm')?.value || 'gpt-4.1-nano',
-                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || 'gpt-4.1-nano',
-                TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? 0.3),
-                MAX_RESULTS_DISPLAY: Number($('cfg-max-results')?.value ?? 10),
+                MODEL_LLM: $('cfg-model-llm')?.value || MODEL_LLM,
+                MODEL_RAGBOT: $('cfg-model-ragbot')?.value || MODEL_RAGBOT,
+                TEMPERATURE: Number($('cfg-temperature-num')?.value ?? $('cfg-temperature')?.value ?? TEMPERATURE),
+                MAX_RESULTS_DISPLAY: normalizeMaxResults($('cfg-max-results')?.value ?? getMaxResultsCap()),
                 OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLWV',
                 FULL_BADGES: !!$('cfg-full-badges')?.checked,
               };
               try { localStorage.setItem('appConfig', JSON.stringify(next)); } catch {}
               window.CONFIG = { ...(window.CONFIG || {}), ...next };
-              try { window.USER_MAX_RESULTS = Number(window.CONFIG.MAX_RESULTS_DISPLAY) || 10; } catch {}
-              try { window.USER_TEMPERATURE = Number(window.CONFIG.TEMPERATURE) ?? 0.3; } catch {}
+              try { window.USER_MAX_RESULTS = getMaxResultsCap(); } catch {}
+              try { window.USER_TEMPERATURE = Number(window.CONFIG.TEMPERATURE) ?? TEMPERATURE; } catch {}
               closeConfigModal();
             }
 
@@ -419,7 +434,7 @@
     <!-- Config Modal Styles and Markup --><div id="config-backdrop" class="config-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="config-modal" role="document">
         <header>
-          <span>ConfiguraÃ§Ãµes do Sistema</span>
+          <span>Configurações do Sistema</span>
           <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">âœ•</button>
         </header>
         <div class="content">
@@ -430,7 +445,7 @@
                 <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1 (default)</option>
+                <option value="gpt-4.1">gpt-4.1</option>
               </select>
             </div>
             <div class="config-field">
@@ -438,25 +453,25 @@
               <select id="cfg-model-ragbot">
                 <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
-                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1 (default)</option>
+                <option value="gpt-4.1-nano">gpt-nano</option>
+                <option value="gpt-4.1">gpt-4.1</option>
               </select>
             </div>
             <div class="config-field">
-              <label for="cfg-temperature">TEMPERATURE <span class="config-help">0.0 â€“ 1.0 (step 0.1)</span></label>
+              <label for="cfg-temperature">TEMPERATURE <span class="config-help">0.0  1.0 (step 0.1)</span></label>
               <div class="config-inline">
                 <input id="cfg-temperature" type="range" min="0" max="1" step="0.1" />
                 <input id="cfg-temperature-num" type="number" min="0" max="1" step="0.1"  />
               </div>
             </div>
             <div class="config-field">
-              <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help">10 â€“ 200 (step 10)</span></label>
-              <input id="cfg-max-results" type="number" min="10" max="10000" step="10" />
+              <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help" data-max-results-range></span></label>
+              <input id="cfg-max-results" type="number" data-max-config="true" step="10" />
             </div>
             <div class="config-field">
               <label for="cfg-openai-ragbot">OPENAI_RAGBOT</label>
               <select id="cfg-openai-ragbot">
-                <option value="ALLWV">ALLWV (default)</option>
+                <option value="ALLWV">ALLWV</option>
                 <option value="ALLCONS">ALLCONS</option>
                 <option value="EDUNOTES">EDUNOTES</option>
               </select>

@@ -1,4 +1,4 @@
-﻿// script_semantical.js
+// script_semantical.js
 
 let controller = null;
 
@@ -77,61 +77,48 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear previous results
             resultsDiv.innerHTML = '';
 
-            let newTerm = '';
-            let defJson = null;   // <<< declarar fora
-
            
             // _________________________________________________________________________________
-            // Definition - RAGbot
+            // Descritivos - RAGbot
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Sintetizando os neologismos...");
+            insertLoading(resultsDiv, "Definindo neologismos...");
 
             
 
             //call_ragbot
             //*****************************************************************************************
             // 
-            const chat_id = getOrCreateChatId();
             
             const paramRAGbot = {
-                query: "TEXTO DE ENTRADA: " + term + ".",
+                query: term,
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
                 temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
                 vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT), 
-                instructions: SEMANTICAL_INSTRUCTIONS,
-                use_session: true,
-                chat_id
+                instructions: SEMANTICAL_DESCRIPTION,
             };
             
-            defJson = await call_llm(paramRAGbot);
-            if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
-
+            const descJson = await call_llm(paramRAGbot);
+          
             //*****************************************************************************************
 
-            defJson.ref = "Descritivos"
+            descJson.ref = "Descritivos"
 
             // Display results
             // ================
             removeLoading(resultsDiv);
             //displayResults(resultsDiv, "Synthesis", 'title');
-            displayResults(resultsDiv, defJson, 'simple');
+            displayResults(resultsDiv, descJson, 'simple');
 
             // If the synthesis is empty, we don't proceed to semantic search
-            newTerm = (defJson?.text || '').trim();
-            if (!newTerm) {
+            if (!descJson?.text) {
                 removeLoading(resultsDiv);
                 console.error('Neologism definition error:');
                 return;
             }
 
-            // If response did not encounter any description, we don't proceed to semantic search
-            if (defJson.text.includes('nenhum resultado')) {
-                removeLoading(resultsDiv);
-                console.error('Termo não encontrado:');
-                return;
-            }
-
+            // Assemble new term from synthesis
+            const newTerm = term + ": " + descJson?.text.trim();
 
             // _________________________________________________________________________________
             // Semantical Search
@@ -143,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //call_semantical
             //*****************************************************************************************
              const paramSem = {
-                term: term + ": " + newTerm + ".",
+                term: newTerm,
                 source: source,
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             };
@@ -153,22 +140,20 @@ document.addEventListener('DOMContentLoaded', () => {
             //*****************************************************************************************
                 
             // Get max results from input or use default
-            const rawMaxResults = document.getElementById('maxResults')?.value;
-        const maxResults = window.normalizeMaxResults
-            ? window.normalizeMaxResults(rawMaxResults)
-            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
+            const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+            const maxResults = normalizeMaxResults(rawMaxResults);
             
            
-       // Restrict display to first maxResults PER SOURCE (NEW)
-        if (semJson.results && Array.isArray(semJson.results)) {
-            semJson.results = limitResultsPerSource(semJson.results, maxResults);
-        } else {
-            semJson.results = [];
-        }
+            // Restrict display to first maxResults PER SOURCE (NEW)
+            if (semJson.results && Array.isArray(semJson.results)) {
+                semJson.results = limitResultsPerSource(semJson.results, maxResults);
+            } else {
+                semJson.results = [];
+            }
 
 
             // Display results
-            const newTitle = `Semantical Search    â—    ${term}`;
+            const newTitle = `Semantical Search    ●    ${term}`;
             removeLoading(resultsDiv);
             //displayResults(resultsDiv, newTitle, 'title');
             displayResults(resultsDiv, semJson, "semantical");
@@ -178,11 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // =======================================================================================
             // Assemble Download Data
             // =======================================================================================
-            // Extrair as fontes Ãºnicas
+            // Extrair as fontes únicas
             let uniqueSources = semJson.results.map(result => result.source);
             uniqueSources = [...new Set(uniqueSources)];
 
-            const groupResults = document.getElementById('groupResults').checked;
+            //const groupResults = document.getElementById('groupResults').checked || false;
+            const groupResults = false;
 
             const downloadData = {
                 search_term: term,
@@ -192,11 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 group_results_by_book: groupResults,
                 definologia: null,
                 descritivo: {
-                    text: defJson.text, 
-                    citations: defJson.citations, 
-                    model: defJson.model, 
-                    temperature: defJson.temperature, 
-                    tokens: defJson.total_tokens_used
+                    text: descJson.text, 
+                    citations: descJson.citations, 
+                    model: descJson.model, 
+                    temperature: descJson.temperature, 
+                    tokens: descJson.total_tokens_used
                 },
                 lexical: null,
                 semantical: semJson.results

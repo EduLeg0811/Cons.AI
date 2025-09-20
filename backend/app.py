@@ -28,7 +28,8 @@ from modules.semantical_search.search_operations import simple_semantical_search
 from utils.config import (
     FAISS_INDEX_DIR,
     FILES_SEARCH_DIR,
-    INSTRUCTIONS_LLM_BACKEND
+    INSTRUCTIONS_LLM_BACKEND,
+    MODEL_LLM
 )
 from utils.docx_export import build_docx
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
@@ -65,7 +66,7 @@ def serve_static(path):
         return send_from_directory(frontend_path, path)
     return "File not found", 404
 
-# Restrinja origens em produÃ§Ã£o; inclua localhost para dev
+# Restrinja origens em produção; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = "*"
 
 # Configure CORS
@@ -73,12 +74,12 @@ CORS(app, resources={
     r"/*": {
         "origins": CORS_ALLOWED_ORIGINS,
         "supports_credentials": True,
-        "methods": ["GET", "POST", "OPTIONS"],
+        "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
 
-# Loga um banner de inicializaÃ§Ã£o
+# Loga um banner de inicialização
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
 backend_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:5000")
 logger.info(
@@ -90,7 +91,7 @@ logger.info(
 )
 
 
-# (removido) rota duplicada de health; manteremos a versÃ£o JSON abaixo
+# (removido) rota duplicada de health; manteremos a versão JSON abaixo
 
 
 # Helper to safely strip values
@@ -177,14 +178,14 @@ class LlmQueryResource(Resource):
 
             query = safe_str(data.get("query", ""))
             if not query:
-                return {"error": "Query nÃ£o fornecida."}, 400
+                return {"error": "Query não fornecida."}, 400
 
-            model = data.get("model", "gpt-4.1")
+            model = data.get("model", MODEL_LLM)
             temperature = float(data.get("temperature", 0.3))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
 
-            # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou Ã© criado)
+            # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
             chat_id = safe_str(data.get("chat_id", "")) \
                        or safe_str(request.headers.get("X-Chat-Id", "")) \
                        or str(uuid.uuid4())
@@ -262,7 +263,7 @@ class RAGbotResetResource(Resource):
             data = request.get_json(silent=True) or {}
             chat_id = safe_str(data.get("chat_id", "")) or safe_str(request.args.get("chat_id", ""))
             if not chat_id:
-                return {"error": "chat_id Ã© obrigatÃ³rio"}, 400
+                return {"error": "chat_id é obrigatório"}, 400
             reset_conversation_memory(chat_id)
             return {"status": "ok", "chat_id": chat_id}, 200
         except Exception as e:
@@ -272,12 +273,8 @@ class RAGbotResetResource(Resource):
 
 
 
-
-
-
-
 # ______________________________________________________________________
-# 7. Download â€” ponto de entrada enxuto (usa docx_export.py)
+# 7. Download ponto de entrada enxuto (usa docx_export.py)
 # ______________________________________________________________________
 class DownloadResource(Resource):
     def post(self):
@@ -286,7 +283,7 @@ class DownloadResource(Resource):
             data = request.get_json(force=True) or {}
             group_results_by_book = data.get("group_results_by_book", False)
            
-            #Extrai variÃ¡veis
+            #Extrai variáveis
             search_term = data.get("search_term")
         
             docx_bytes = build_docx(data, group_results_by_book)

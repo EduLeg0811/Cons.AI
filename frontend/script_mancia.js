@@ -80,9 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-
         // _________________________________________________________________________________
         // 2. Commentary   
         // _________________________________________________________________________________         
@@ -92,20 +89,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //call_ragbot   
         //***************************************************************************************** 
-        const chat_id = getOrCreateChatId();
-
+    
         const paramRAGbot = {
             query: "Comente a seguinte Pensata: " + pensataText,
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: COMMENTARY_INSTRUCTIONS,
-        use_session: true,
-        chat_id                     // <<< NOVO
+            instructions: COMMENTARY_INSTRUCTIONS,               
         };
 
          const commentaryData = await call_llm(paramRAGbot);
-        if (commentaryData.chat_id) localStorage.setItem('cons_chat_id', commentaryData.chat_id); // <<< NOVO
+        if (commentaryData.chat_id) localStorage.setItem('cons_chat_id', commentaryData.chat_id); 
         
         //***************************************************************************************** 
        

@@ -1,4 +1,4 @@
-﻿// script_ccg.js
+// script_ccg.js
 
 let controller = null;
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // =================
             const term = searchInput.value.trim();
             
-            // Validação de termo — sai cedo, mas ainda passa pelo finally
+            // Validação de termo - sai cedo, mas ainda passa pelo finally
             if (!term) {
                 resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
                 const downloadButtons = document.querySelector('.download-buttons');
@@ -74,16 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear previous results
             resultsDiv.innerHTML = '';
 
-            // Get the checkbox state
-            let newTerm = '';
-            let defJson = null;
-
-        
+                  
             // _________________________________________________________________________________
             // Definition - RAGbot
             // _________________________________________________________________________________
 
-            insertLoading(resultsDiv, "Sintetizando os neologismos...");
+            insertLoading(resultsDiv, "Definindo neologismos...");
 
             
             //call_ragbot
@@ -96,13 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
                 temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
                 vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-                instructions: SEMANTICAL_INSTRUCTIONS,
-                use_session: true,
-                chat_id                 
+                instructions: SEMANTICAL_DESCRIPTION,         
             };
             
-            defJson = await call_llm(paramRAGbot);
-            if (defJson.chat_id) localStorage.setItem('cons_chat_id', defJson.chat_id);
+            const defJson = await call_llm(paramRAGbot);
 
             //*****************************************************************************************
 
@@ -115,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, defJson, 'simple');
 
             // If the synthesis is empty, we don't proceed to semantic search
-            newTerm = (defJson?.text || '').trim();
-            if (!newTerm) {
+            if (!defJson?.text) {
                 insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
                 return;
             }
 
+            const newTerm = term + ": " + defJson.text + ".";
 
             // _________________________________________________________________________________
             // Semantical Search
@@ -132,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //call_semantical
             //*****************************************************************************************
              const paramSem = {
-                term: term + ": " + newTerm + ".",
+                term: newTerm,
                 source: ["CCG"],
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             };
@@ -141,11 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             //*****************************************************************************************
                 
-            // Get max results from input or use default
-            const rawMaxResults = document.getElementById('maxResults')?.value;
-        const maxResults = window.normalizeMaxResults
-            ? window.normalizeMaxResults(rawMaxResults)
-            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
+            // Get max results from input
+            const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+            const maxResults = normalizeMaxResults(rawMaxResults);
+        
 
             // Restrict display to first maxResults if results exist
             if (semJson.results && Array.isArray(semJson.results)) {
@@ -167,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // =======================================================================================
             // Assemble Download Data
             // =======================================================================================
-            // Extrair as fontes Ãºnicas
+            // Extrair as fontes únicas
             let uniqueSources = semJson.results.map(result => result.source);
             uniqueSources = [...new Set(uniqueSources)];
 

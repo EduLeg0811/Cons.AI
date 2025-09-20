@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body class="theme-sem page-verbetopedia">
     <!-- Navbar -->
@@ -28,8 +28,8 @@
                     <i class="fas fa-book"></i>
                 </div> -->
                 <div class="navbar-text">
-                    <div class="navbar-title">Busca de Verbetes</div>
-                    <div class="navbar-subtitle">Pesquisa SemÃ¢ntica na Definologia</div>
+                    <div class="navbar-title-modules">Busca de Verbetes</div>
+                    <div class="navbar-subtitle-modules">Pesquisa Semântica na Definologia</div>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@
                 <div class="option-group">
 
 
-                    <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
+                    <!--CONFIGURAÇÕES DE PESQUISA!-->
 
                     <div class="option-grid">
 
@@ -242,7 +242,8 @@
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     const maxInput = document.getElementById('maxResults');
-                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 5);
+                const rawMax = maxInput?.value ?? getMaxResultsCap();
+                const maxResults = normalizeMaxResults(rawMax);
                     const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
                     const settings = { maxResults, enableDefinition };
                     localStorage.setItem('settings_verbetopedia', JSON.stringify(settings));

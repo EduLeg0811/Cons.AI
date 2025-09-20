@@ -1,4 +1,4 @@
-﻿let controller = null;
+let controller = null;
 let chat_id = null;
 let quizData = null; // guarda a próxima pergunta pré-carregada
 
@@ -18,14 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         searchButton.setAttribute('type', 'button');
     }
 
-
-
-
-
-
-
-
-
+    // Initialize LLM
+    resetLLM();
 
 
 
@@ -34,9 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //_________________________________________________________
     async function quiz() {
 
-
-        // Reset LLM data
-        resetLLM();
 
         // Salva estado original do botão
         const originalButtonState = {
@@ -83,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                     instructions: PROMPT_QUIZ_PERGUNTA,
                     use_session: true,
-                    chat_id
+                    chat_id: chat_id
                 };
                 const firstData = await call_llm({ ...paramQuestion, timeout_ms: 60000 });
                 if (firstData?.chat_id) {
@@ -171,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                 instructions: PROMPT_QUIZ_RESPOSTA,
                 use_session: true,
-                chat_id
+                chat_id: chat_id
             };
             const respComment = await call_llm({ ...respParam, timeout_ms: 60000 });
             if (respComment?.chat_id) {
@@ -204,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
                 instructions: PROMPT_QUIZ_PERGUNTA,
                 use_session: true,
-                chat_id
+                chat_id: chat_id
             };
             const firstData = await call_llm({ ...paramQuestion, timeout_ms: 60000 });
             if (firstData?.chat_id) {
@@ -242,13 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-
-
-
-
-
-
-
 
 
 

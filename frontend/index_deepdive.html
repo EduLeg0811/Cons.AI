@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body class="theme-sem">
     <!-- Navbar -->
@@ -18,7 +18,6 @@
         <div class="navbar-container">
             
             
-
                 <div class="navbar-controls">
                     <a href="index.html" class="back-button" title="Back to Home">
                         <i class="fas fa-home"></i>
@@ -30,8 +29,8 @@
                         <i class="fas fa-spell-check"></i>
                     </div> -->
                     <div class="navbar-text">
-                        <div class="navbar-title">Caderno de Estudos</div>
-                        <div class="navbar-subtitle">Pesquisa Profunda - Deep Research</div>
+                        <div class="navbar-title-modules">Caderno de Estudos</div>
+                        <div class="navbar-subtitle-modules">Pesquisa Profunda - Deep Research</div>
                     </div>
                 </div>
 
@@ -101,7 +100,7 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="200TEAT">
-                            <span>200 Teáticas</span>
+                            <span>200 Técnicas</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="PROEXIS">
@@ -113,7 +112,7 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="TEMAS">
-                            <span>Temas</span>
+                            <span>Temas da Consc.</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="book" value="CCG">
@@ -131,7 +130,7 @@
                 </div>
 
                 <!-- <div class="option-group">
-                    <div class="option-group-label">ParÃ¢metros Deep Search:</div>
+                    <div class="option-group-label">Parâmetros Deep Search:</div>
                     <div class="book-checkboxes">
                         <label class="book-checkbox">
                             <input type="checkbox" name="deepsearch" value="LEX" checked>
@@ -139,11 +138,11 @@
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="deepsearch" value="SEM" checked>
-                            <span>SemÃ¢ntica</span>
+                            <span>Semântica</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="deepsearch" value="DEF" checked>
-                            <span>DefiniÃ§Ã£o</span>
+                            <span>Definição</span>
                         </label>
                         <label class="book-checkbox">
                             <input type="checkbox" name="deepsearch" value="DESCR" checked>
@@ -152,41 +151,49 @@
                     </div>
                 </div> -->
 
-                <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
+               
+                    <!-- CONFIGURAÇÕES DE PESQUISA -->
+                    <div class="option-group">
 
-                <div class="option-column">
+                        <div class="option-grid">
 
-                    <!-- Max Results -->
-                     <!-- Max Results -->
-                     <div class="row max-results">
-                        <label for="maxResults">Máximo de Resultados (por livro)</label>
-                        <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
-                      </div>
-                  
-                    <!-- Toggle -->
-                    <div class="row toggle-option">
-                      <label class="switch">
-                        <input type="checkbox" id="groupResults" checked>
-                        <span class="slider"></span>
-                      </label>
-                      <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                            <div class="option-column">
+
+                                <!-- Max Results -->
+                                <div class="row max-results">
+                                    <label for="maxResults">Máximo de Resultados (por livro)</label>
+                                    <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
+                                </div>
+                            
+                                <!-- Toggle 2: Agrupa por livro -->
+                                <div class="toggle-option">
+                                    <label class="switch">
+                                    <input type="checkbox" id="groupResults" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                                </div>
+
+                                <!-- removed: ref_badges toggle
+                                <div class="row toggle-option">
+                                    <label class="switch">
+                                    <input type="checkbox" id="ref_badges" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="ref_badges">Badges Referências</label>
+                                </div>
+                                -->
+                            
+                            </div>
+                            
+                        </div>
+                    
                     </div>
 
-                    <!-- <div class="row toggle-option">
-                        <label class="switch">
-                          <input type="checkbox" id="ref_badges" checked>
-                          <span class="slider"></span>
-                        </label>
-                        <label class="toggle-label" for="ref_badges">Badges Referências</label>
-                      </div>
-                    -->
-                  
                     <!-- Botão -->
                     <div class="row">
-                      <button class="save-btn">Salvar Ajustes</button>
+                        <button class="save-btn">Salvar Ajustes</button>
                     </div>
-                  
-                </div>
 
 
             </div>
@@ -332,7 +339,8 @@
             saveBtn.addEventListener('click', function() {
                 const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
                 const maxInput = document.getElementById('maxResults');
-                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 10);
+                const rawMax = maxInput?.value ?? getMaxResultsCap();
+                const maxResults = normalizeMaxResults(rawMax);
                 const groupResults = !!document.getElementById('groupResults')?.checked;
                 const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
                 const settings = { books, maxResults, groupResults, enableDefinition };

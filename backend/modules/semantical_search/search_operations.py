@@ -95,6 +95,10 @@ def simple_semantical_search(query, source, index_dir):
             process = psutil.Process(os.getpid())
             #logger.info(f"[FAISS] Antes de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
+            logger.info(f"\n\n++++++++++ [simple_semantical_search] index_path: {index_path}")
+            logger.info(f"++++++++++ [simple_semantical_search] index_file: {index_file}")
+            logger.info(f"++++++++++ [simple_semantical_search] vs_id: {vs_id}")
+
             # Carrega o índice FAISS
             #------------------------------------------------------
             vectorstore = FAISS.load_local(

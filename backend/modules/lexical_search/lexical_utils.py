@@ -79,6 +79,7 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
                         "source": book,
                         "text": match.get("paragraph_text"),
                         "number": match.get("paragraph_number"),
+                        "score": 0.0,   # Sinaliza para ordenação posterior no display e no docx
                         "metadata": None
                     })
 
@@ -99,6 +100,7 @@ def lexical_search_in_files(search_term: str, source: List[str], file_type: str)
                         "source": book,
                         "text": match.get("paragraph_text"),
                         "number": match.get("paragraph_number"),
+                        "score": 0.0,   # Sinaliza para ordenação posterior no display e no docx
                         "metadata": match.get("metadata")  # corrigido
                     })
 

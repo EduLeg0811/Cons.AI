@@ -1,4 +1,4 @@
-﻿// script_deepdive.js
+// script_deepdive.js
 
 
 let controller = null;
@@ -61,7 +61,7 @@ async function deepdive_search() {
         // =================
         const term = searchInput.value.trim();
         
-        // Validação de termo — sai cedo, mas ainda passa pelo finally
+        // Validação de termo - sai cedo, mas ainda passa pelo finally
         if (!term) {
             resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
             return;
@@ -75,26 +75,25 @@ async function deepdive_search() {
             semantical: []
         };
 
-        //Lê parametros iniciais
-        const rawMaxResults = document.getElementById('maxResults')?.value;
-        const maxResults = window.normalizeMaxResults
-            ? window.normalizeMaxResults(rawMaxResults)
-            : (parseInt(rawMaxResults, 10) || (window.CONFIG?.MAX_RESULTS_DISPLAY ?? MAX_RESULTS_DISPLAY));
+        // Lê parâmetros iniciais
+        const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+        const maxResults = normalizeMaxResults(rawMaxResults);
 
-        const selectedBooks = [];
-        document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
-            selectedBooks.push(checkbox.value);
-        });
-        const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
+        // 
+
+        // FIXED SELECTED BOOKS
+        // const selectedBooks = [];
+        // document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
+        //     selectedBooks.push(checkbox.value);
+        // });
+        // const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
+        const source = ['LO','DAC','EC','CCG', '700EXP','PROJ','TNP','DUPLA','PROEXIS','200TEAT', 'TEMAS','HSR', 'HSP'];
 
 
         // Inicializa display
         resultsDiv.innerHTML = '';
 
-        
-
-
-
+        let chat_id = null;
 
         // =======================================================================================
         // 2. Definologia
@@ -103,14 +102,17 @@ async function deepdive_search() {
         insertLoading(resultsDiv, "Definindo o termo: " + term);   
 
         const paramRAGbotDef = {
-            query: 'Escreva 1 parágrafo explicando a definição de '+ term + ' no contexto da Conscienciologia. A saída deve ser fornecida no formato: X é ...',
+            query: 'Escreva 1 parágrafo com a Definologia, no contexto da Conscienciologia, do termo: *'+ term + '*. A saída deve ser fornecida no formato: *X* é ...',
             model: (window.CONFIG?.MODEL_RAGBOT ?? MODEL_RAGBOT),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: INSTRUCTIONS_RAGBOT,                 
+            instructions: INSTRUCTIONS_DEFINITION,                 
         };
        
         const defJson = await call_llm(paramRAGbotDef);
+        
+        if (defJson.chat_id) chat_id = defJson.chat_id;
+
 
         // Exibe definologia
         removeLoading(resultsDiv);
@@ -138,10 +140,14 @@ async function deepdive_search() {
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: SEMANTICAL_INSTRUCTIONS,         
+            instructions: SEMANTICAL_DESCRIPTION,
+            use_session: true,
+            chat_id: chat_id        
         };
        
         const descJson = await call_llm(paramRAGbotDesc);
+        
+        if (descJson.chat_id) chat_id = descJson.chat_id;
         
         // Monta termo expandido (Descritivos)
         newTerm = term + ': ' + descJson.text;
@@ -191,8 +197,6 @@ async function deepdive_search() {
         displayResults(resultsDiv, respLexical, 'lexical');
 
 
-
-
         // =======================================================================================
         // 4. Semantical
         // =======================================================================================
@@ -231,7 +235,7 @@ async function deepdive_search() {
         // Assemble Download Data
         // =======================================================================================
 
-        // Extrair as fontes Ãºnicas
+        // Extrair as fontes únicas
         let uniqueSources = respHistory.semantical.map(result => result.source);
         uniqueSources = [...new Set(uniqueSources)];
 

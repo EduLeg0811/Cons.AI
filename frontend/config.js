@@ -4,10 +4,11 @@
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
 window.SHOW_REF_BADGES = true;
-const MODEL_LLM='gpt-4.1';
-const MODEL_RAGBOT='gpt-4.1';
+const MODEL_LLM='gpt-4.1-nano';
+const MODEL_RAGBOT='gpt-4.1-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=200;
+const MIN_RESULTS_DISPLAY=10;
 const OPENAI_RAGBOT='ALLWV';
 const FULL_BADGES = false;
 
@@ -20,6 +21,7 @@ const FULL_BADGES = false;
     MODEL_RAGBOT,
     TEMPERATURE,
     MAX_RESULTS_DISPLAY,
+    MIN_RESULTS_DISPLAY,
     OPENAI_RAGBOT,
     FULL_BADGES,
   };
@@ -157,16 +159,31 @@ const INSTRUCTIONS_RAGBOT = `
     - Inclua um bloco com sugestões de aprofundamento, como recomendações de leitura, ou temas a serem explorados.
 `;
 
-const SEMANTICAL_INSTRUCTIONS = `
+
+const INSTRUCTIONS_DEFINITION = `
+  Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia. 
+  # Instruções gerais:
+  - Sua função é responder perguntas sobre definições de termos, sempre no contexto da Conscienciologia.
+  - Priorize termos próprios e neologismos da Conscienciologia.
+  - Seja direto e selecione apenas os trechos mais relevantes para a resposta.
+  - Utilize os documentos de referência fornecidos.
+  - Mantenha um tom acadêmico, claro, objetivo e sem floreios.
+  - Realce termos-chave utilizando, em ordem crescente: *itálico*, **negrito**, ***negrito-itálico*** conforme a relevância.
+  - Coloque títulos ou cabeçalhos em **negrito**.
+  - Default para Markdown limpo.
+`;
+
+    
+
+const SEMANTICAL_DESCRIPTION = `
 Você é um assistente especialista em Conscienciologia.
 Sua resposta à consulta será usada para formular uma pesquisa semântica.
 Instruções:
-1. Entenda o significado específico da consulta no contexto da Conscienciologia, e não apenas no português comum.
-2. Elabore uma lista de 4 termos que expressem o significado denotativo da consulta, semânticamente, como descritores, termos-chave ou sinônimos, na Conscienciologia.
+1. Entenda o significado específico da consulta no contexto da Conscienciologia, e não no contexto comum.
+2. Elabore uma lista de até 3 termos que expressem o significado denotativo da consulta na Conscienciologia, como descritores, termos-chave ou sinônimos.
 3. Não use elementos de ligação, como artigos, preposições ou conjunções.
 4. Não utilize repetições, preâmbulos ou explicações, como 'o termo X significa' ou 'é'.
-5. A saída deve ser apenas uma lista limpa de 4 palavras ou expressões compostas, separadas por ponto-e-vírgula (;). Exemplo: Termo1; Termo2; Termo3; Termo4; Termo5.
-6. Caso não encontre nenhum termo que expresse o significado denotativo da consulta, retorne apenas a mensagem **nenhum resultado**.
+5. A saída deve ser apenas uma lista limpa de palavras ou expressões compostas, separadas por ponto-e-vírgula (;). Exemplo: Termo1; Termo2; Termo3.
 `;
 
 const COMMENTARY_INSTRUCTIONS = `

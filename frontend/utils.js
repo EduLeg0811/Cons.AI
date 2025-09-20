@@ -6,19 +6,31 @@ function getMaxResultsCap() {
 }
 window.getMaxResultsCap = getMaxResultsCap;
 
+function getMinResultsFloor() {
+  const fallback = typeof MIN_RESULTS_DISPLAY === "number" ? MIN_RESULTS_DISPLAY : 1;
+  const cfgValue = Number(window.CONFIG?.MIN_RESULTS_DISPLAY);
+  const floor = Number.isFinite(cfgValue) && cfgValue > 0 ? cfgValue : fallback;
+  return floor;
+}
+window.getMinResultsFloor = getMinResultsFloor;
+
 function normalizeMaxResults(value) {
   const cap = getMaxResultsCap();
+  const floor = getMinResultsFloor();
   const parsed = Number.parseInt(value, 10);
-  if (!Number.isFinite(parsed) || parsed < 1) return cap;
-  return Math.min(parsed, cap);
+  if (!Number.isFinite(parsed)) return floor;
+  const bounded = Math.min(Math.max(parsed, floor), cap);
+  return bounded;
 }
 window.normalizeMaxResults = normalizeMaxResults;
 
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const cap = getMaxResultsCap();
+    const floor = getMinResultsFloor();
     document.querySelectorAll('input[data-max-config]').forEach(input => {
       input.setAttribute('max', String(cap));
+      input.setAttribute('min', String(floor));
       input.value = String(normalizeMaxResults(input.value));
     });
   } catch (err) {
@@ -80,7 +92,7 @@ return formattedResponse;
 function lexical_formatResponse(responseData, term) {
     
   const formattedResponse = responseData;
-
+  
 return formattedResponse;
 
 }

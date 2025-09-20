@@ -1,4 +1,4 @@
-﻿// Centralized explanatory texts for index.html
+// Centralized explanatory texts for index.html
 // The goal: keep all user-visible explanatory messages in one place.
 // This file sets panel descriptions, tool short descriptions, extra help texts,
 // and link titles based on the card/panel names present in index.html.

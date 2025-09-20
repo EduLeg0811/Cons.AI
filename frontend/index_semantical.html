@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body class="theme-sem">
     <!-- Navbar -->
@@ -28,8 +28,8 @@
                     <i class="fas fa-brain"></i>
                 </div> -->
                 <div class="navbar-text">
-                    <div class="navbar-title">Busca SemÃ¢ntica</div>
-                    <div class="navbar-subtitle">Pesquisa Contextual com IA</div>
+                    <div class="navbar-title-modules">Busca Semântica</div>
+                    <div class="navbar-subtitle-modules">Pesquisa Contextual com IA</div>
                 </div>
             </div>
             <div class="navbar-controls">
@@ -81,70 +81,97 @@
 
                 <div class="options-content" id="optionsContent">
 
-                <div class="option-group">
-
-
-                    <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
-
-                    <div class="option-group-label">Selecione os livros para busca:</div>
-                    <div class="book-checkboxes">
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="LO" checked>
-                            <span>LO</span>
-                        </label>
-                        <label class="book-checkbox">
-                            <input type="checkbox" name="book" value="DAC">
-                            <span>DAC</span>
-                        </label>
-                    </div>
-                </div>
-
-                
-                <div class="option-group">
-
-
-                    <!--CONFIGURAÃ‡Ã•ES DE PESQUISA!-->
-
-                    <div class="option-grid">
-
-                        <div class="option-column">
-
-                            <!-- Max Results -->
-                            <div class="row max-results">
-                                <label for="maxResults">Máximo de Resultados (por livro)</label>
-                                <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
-                            </div>
-                          
-                            <!-- Toggle 2: Agrupa por livro -->
-                            <div class="toggle-option">
-                                <label class="switch">
-                                  <input type="checkbox" id="groupResults" checked>
-                                  <span class="slider"></span>
-                                </label>
-                                <label class="toggle-label" for="groupResults">Agrupa por livro</label>
-                            </div>
-
-                            <!-- removed: ref_badges toggle
-                            <div class="row toggle-option">
-                                <label class="switch">
-                                  <input type="checkbox" id="ref_badges" checked>
-                                  <span class="slider"></span>
-                                </label>
-                                <label class="toggle-label" for="ref_badges">Badges Referências</label>
-                              </div>
-                            -->
-                          
-                            <!-- Botão -->
-                            <div class="row">
-                              <button class="save-btn">Salvar Ajustes</button>
-                            </div>
-                          
+                    <div class="option-group">
+                        <div class="option-group-label">Selecione os livros para pesquisar:</div>
+                        <div class="book-checkboxes">
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="LO" checked>
+                                <span>LO</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="DAC">
+                                <span>DAC</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="TNP">
+                                <span>Manual da Tenepes</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="DUPLA">
+                                <span>Manual da Dupla</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="200TEAT">
+                                <span>200 Técnicas</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="PROEXIS">
+                                <span>Manual da Proéxis</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="700EXP">
+                                <span>700 Experimentos</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="TEMAS">
+                                <span>Temas da Consc.</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="HSR">
+                                <span>Reurbanisatus</span>
+                            </label>
+                            <label class="book-checkbox">
+                                <input type="checkbox" name="book" value="HSP">
+                                <span>Pacificus</span>
+                            </label>
                         </div>
-                          
                     </div>
-                  
-                </div>
 
+
+                    <!-- CONFIGURAÇÕES DE PESQUISA -->
+                    <div class="option-group">
+
+                        <div class="option-grid">
+
+                            <div class="option-column">
+
+                                <!-- Max Results -->
+                                <div class="row max-results">
+                                    <label for="maxResults">Máximo de Resultados (por livro)</label>
+                                    <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
+                                </div>
+                            
+                                <!-- Toggle 2: Agrupa por livro 
+                                <div class="toggle-option">
+                                    <label class="switch">
+                                    <input type="checkbox" id="groupResults" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                                </div> -->  
+
+                                <!-- removed: ref_badges toggle
+                                <div class="row toggle-option">
+                                    <label class="switch">
+                                    <input type="checkbox" id="ref_badges" checked>
+                                    <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="ref_badges">Badges Referências</label>
+                                </div>
+                                -->
+                            
+                            </div>
+                            
+                        </div>
+                    
+                    </div>
+
+                    <!-- Botão -->
+                    <div class="row">
+                        <button class="save-btn">Salvar Ajustes</button>
+                    </div>
+                
+                </div>
             </div>
 
          
@@ -156,7 +183,7 @@
                 <div class="search-input-wrapper">
                     <textarea id="searchInput" placeholder="Digite a sua pesquisa..." class="search-input" rows="1"></textarea>
                     <button id="searchButton" class="search-button" aria-label="Search">
-                        <i class="fas fa-brain"></i>
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
                 
@@ -281,7 +308,8 @@
                 saveBtn.addEventListener('click', function() {
                     const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
                     const maxInput = document.getElementById('maxResults');
-                    const maxResults = window.normalizeMaxResults ? window.normalizeMaxResults(maxInput?.value) : (parseInt(maxInput?.value) || 10);
+                const rawMax = maxInput?.value ?? getMaxResultsCap();
+                const maxResults = normalizeMaxResults(rawMax);
                     const groupResults = !!document.getElementById('groupResults')?.checked;
                     const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
                     const settings = { books, maxResults, groupResults, enableDefinition };
