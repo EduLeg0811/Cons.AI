@@ -1074,7 +1074,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     box-shadow: var(--shadow-sm);
 /* Ajuste do espacamento das linhas nos paragrafos renderizados via Markdown */
     /* ============================================================================== */
-    line-height: 1.5;
+    line-height: 1.2;
 }
 .message-content.user {
     background: var(--primary-500);
@@ -1084,7 +1084,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 /* RagBot user question bubble: slightly tighter vertical spacing */
 .theme-bots .chat-message.user .message-content {
     padding: var(--space-3) var(--space-4);
-    line-height: 1.5;
+    line-height: 1.1;
 }
 .theme-bots .chat-message.user .message-content p {
     margin: 0;
@@ -1339,7 +1339,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .displaybox-group { display: none; }
 .displaybox-content {
     padding: var(--space-6);
-    line-height: 1.7;
+    line-height: 1.5;
 }
 /* RagBot response box: add a bit more breathing room */
 .displaybox-container.ragbot-box .displaybox-content {
@@ -1440,7 +1440,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .metadata-badge {
     display: inline-flex;
     align-items: center;
-    padding: 2px var(--space-1);
+    padding: 2px var(--space-2);
     background: var(--gray-100);
     color: var(--gray-600);
     border-radius: var(--radius-sm);
@@ -1448,6 +1448,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     line-height: 1.1;
     font-weight: 500;
     border: 1px solid var(--gray-100);
+    margin: 0;
 }
 .metadata-badge.estilo1 {
     background: #fef3c7;
@@ -1599,19 +1600,22 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-    margin: 1em 0 0.5em;
-    line-height: 1.5;
+    margin: 0.8em 0 0.5em;
+    line-height: 1.2;
     font-weight: 600;
 }
-/* /* /* Ajuste do espacamento das linhas nos paragrafos renderizados via Markdown */
+/* /* /* Ajuste tamanho letra e espacamento das linhas nos paragrafos renderizados via Markdown */
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 .markdown-content p {
-    margin: 0.5em 0;
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.2;
+    font-size: var(--text-sm);
+    padding: 0;
 }
 .markdown-content ul,
 .markdown-content ol {
-    margin: 0.5em 0;
-    padding-left: 1.5em;
+    margin: 0;
+    padding-left: 1.2em;
 }
 .markdown-content li {
     margin: 0.25em 0;
