@@ -193,7 +193,7 @@ async function deepdive_search() {
 
         // Exibe lexical
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, 'Lexical Search    ●    ' + term, 'title');
+        displayResults(resultsDiv, 'Busca Léxica    ●    ' + term, 'title');
         displayResults(resultsDiv, respLexical, 'lexical');
 
 
@@ -225,7 +225,7 @@ async function deepdive_search() {
 
         // Exibe semantical
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, `Semantical Search    ●    ${term}`, 'title');
+        displayResults(resultsDiv, `Busca Semântica    ●    ${term}`, 'title');
         displayResults(resultsDiv, semJson, 'semantical');
 
 

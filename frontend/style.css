@@ -212,14 +212,37 @@ body {
 .navbar-text {
     display: flex;
     flex-direction: column;
-    align-self: center;
     align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    align-self: center;
     text-align: center;
 /* Centraliza titulo e subtitulo quando o painel de informacoes esta ativado */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;             /* acima do fundo */
     position: absolute;
+}
+.navbar-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.navbar-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-right: var(--space-2);
+}
+
+body:not([class]) .navbar-text {
+    flex-direction: row;
+    gap: var(--space-2);
+}
+
+body:not([class]) .navbar-heading {
+    align-items: center;
 }
 .navbar-title {
     font-size: var(--text-2xl);
@@ -249,7 +272,7 @@ body {
     align-self: center;
     text-align: center;
     margin-top: 4px;     /* Espaço acima */
-    margin-bottom: 4px;  /* Espaço abaixo */
+    margin-bottom: 2px;  /* Espaço abaixo */
     margin: 4px;
     line-height: 1;
 }
@@ -259,7 +282,7 @@ body {
     font-weight: 500;
     align-self: center;
     text-align: center; 
-    margin: 4px;
+    margin: 2px;
     line-height: 1;
 }
 .navbar-controls {
@@ -430,6 +453,11 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
         var(--utils-primary) 20%, 
         var(--utils-primary) 80%, 
         rgba(255, 255, 255, 0) 100%);
+}
+.panel-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .panel-header {
     display: flex;
@@ -1681,10 +1709,15 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
         margin: 0 auto;
     }
     
+    /* Mobile: manter t�tulo centralizado sem bloquear bot�es */
     .navbar-text {
+        position: static;
+        transform: none;
         align-items: center;
+        justify-content: center;
         text-align: center;
-        width: 100%;
+        width: auto;
+        gap: var(--space-1);
     }
 
      /* Slightly smaller subtitle to fit phones */
@@ -2327,6 +2360,11 @@ select {
     border-color: rgba(252, 165, 165, 0.35);
     color: var(--gray-900);
 }
+
+
+
+
+
 
 
 
