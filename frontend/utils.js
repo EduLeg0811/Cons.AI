@@ -185,7 +185,10 @@ function bookName(source) {
     }        
     if (source === 'PROJ') {
         realName = 'Projeciologia';
-    }        
+    }
+    if (source === 'CCG') {
+        realName = 'Conscienciograma';
+    }       
     return realName;
 }
 

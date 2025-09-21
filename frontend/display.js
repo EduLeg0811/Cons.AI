@@ -294,6 +294,9 @@ if (!container.__pillHandlerBound) {
 const format_paragraphs_source = (item, sourceName) => {
 
     let itemHtml = '';
+
+    console.log('---------------[display.js] [format_paragraphs_source] sourceName: ', sourceName);
+    console.log('---------------[display.js] [format_paragraphs_source] item: ', item);
     
     if (sourceName === 'LO') {
         itemHtml = format_paragraph_LO(item);
@@ -400,11 +403,13 @@ const format_paragraph_DAC = (item) => {
 
     // Fields are directly on the item
     const title = item.title || '';
-    const paragraph_number = item.number || '';
     const score = item.score || 0.00;
+    const paragraph_number = item.number || '';
     const text = item.markdown || item.content_text || item.text || '';
     const argumento = item.argumento || '';
     const section = item.section || '';
+
+
     let source = item.source || '';
     source = bookName(source);
 
@@ -476,13 +481,19 @@ const format_paragraph_CCG = (item) => {
 
     // Fields are directly on the item
     const title = item.title || '';
-    const question_number = item.number || '';
     const score = item.score || 0.00;
     const text = item.markdown || item.content_text || item.text || '';
     const folha = item.folha || '';
     let source = item.source || '';
     source = bookName(source);
 
+    
+    // Se for Lexical Search, add paragraph number = item.number
+    // Se for Semantical Search, add num da Questao CCG = item.number
+    let question_number = '';
+    if (score > 0.0) {
+        question_number = item.number || '';
+    }
 
     // Add each field to the array only if it has a value
     const badgeParts = [];   
@@ -498,6 +509,8 @@ const format_paragraph_CCG = (item) => {
     if (question_number) {
         badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(question_number)}</span>`);
     }
+
+    console.log("display.js <<<format_paragraph_CCG>>> ---- badgeParts: ", badgeParts);
 
     if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
         if (score > 0.0) {
@@ -623,13 +636,6 @@ const format_paragraph_EC = (item) => {
 }
 
   
-
-
-
-
-
-
-
 
 
 

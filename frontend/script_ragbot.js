@@ -288,11 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // - Mostra perguntas iniciais como badges no topo do chat.
     // - Cada badge é clicável e envia a pergunta para o chat.
     // ----------------------------------------------------------------------------
+
+
     function initialQuests() {
       try {
         // Não mostrar se já houver mensagens
         if (chatMessages && chatMessages.children && chatMessages.children.length > 0) return;
-
+    
         const suggestions = [
           'Sou novo no assunto, me explique o que é a Conscienciologia.',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
@@ -301,71 +303,31 @@ document.addEventListener('DOMContentLoaded', () => {
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
           'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos:',
         ];
-
-        //'Na dinâmica parapsíquica, vi uma consciex com fisionomia bem característica. Veja se pode identificar a origem e grupo a que pertence, pelo relato que vou te fazer.',
-        //'O que você me sugere para mapear meus possíveis trafares e trafores? Faça uma lista com 10 itens para eu observar no meu comportamento.',
-        //'Escreva um pequeno texto de 5 parágrafos sobre como desenvolver o autodomínio energético, segundo a Conscienciologia.',
-        
+    
         // Container principal
         const wrap = document.createElement('div');
         wrap.id = 'initial-quests';
-        wrap.style.display = 'flex';
-        wrap.style.flexDirection = 'column';
-        wrap.style.gap = '8px';
-        wrap.style.margin = '12px';
-
+        wrap.className = 'initial-quests';
+    
         // Título sutil
         const title = document.createElement('div');
         title.textContent = 'Sugestões de perguntas:';
-        title.style.fontSize = '0.9rem';
-        title.style.color = 'var(--gray-600)';
-        title.style.fontStyle = 'italic';
-        title.style.fontWeight = 'bold';
-        title.style.marginBottom = '2px';
-
+        title.className = 'initial-quests-title';
+    
         // Linha de badges
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.flexDirection = 'column';
-        row.style.alignItems = 'flex-start';
-        row.style.gap = '8px';
-
+        row.className = 'initial-quests-row';
+    
         suggestions.forEach((q) => {
           const badge = document.createElement('button');
           badge.type = 'button';
-          badge.className = 'badge';
+          badge.className = 'badge initial-quests-badge';
           badge.textContent = q;
-
-          // Estilo mínimo para ficar como "pill"
-          badge.style.border = '1px solid var(--gray-300)';
-          // Fundo verde muito claro
-          badge.style.background = '#f0faf1';
-          badge.style.color = '#000000';
-          badge.style.textAlign = 'left';
-          badge.style.padding = '6px 10px';
-          badge.style.borderRadius = '9999px';
-          // Armazena a cor de fundo original e restaura no mouseleave
-          // Cor base desejada (verde clarinho)
-          const baseBg = '#f0faf1';
-          // Garante inline a cor base para não herdar cinza do CSS
-          badge.style.background = baseBg;
-          // Guarda também se precisar reaplicar
-          badge.dataset.originalBg = baseBg;
-          badge.addEventListener('mouseenter', () => {
-            // Hover: verde um pouco mais escuro
-            badge.style.background = '#d0edd6';
-          });
-          badge.addEventListener('mouseleave', () => {
-            // Volta sempre para o verde clarinho
-            badge.style.background = badge.dataset.originalBg || baseBg;
-          });
-
-          
+    
           badge.addEventListener('click', () => {
             // Preenche input e envia
             if (searchInput) {
               searchInput.value = q;
-              // Ajusta altura do textarea
               try {
                 searchInput.style.height = 'auto';
                 searchInput.style.height = Math.min(searchInput.scrollHeight, 120) + 'px';
@@ -375,15 +337,17 @@ document.addEventListener('DOMContentLoaded', () => {
               searchButton.click();
             }
             // Remove sugestões após primeiro clique
-            try { wrap.remove(); } catch {}
+            try {
+              wrap.remove();
+            } catch {}
           });
-
+    
           row.appendChild(badge);
         });
-
+    
         wrap.appendChild(title);
         wrap.appendChild(row);
-
+    
         // Inserir no topo do chat
         if (chatMessages && chatMessages.firstChild) {
           chatMessages.insertBefore(wrap, chatMessages.firstChild);
@@ -395,9 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('initialQuests: falha ao renderizar sugestões', e);
       }
     }
-});
-
-
+    
 
 
 
@@ -417,3 +379,10 @@ function prepareDownloadData(response, term) {
         search_type: "ragbot",
     };
 }
+
+
+});
+
+
+
+
