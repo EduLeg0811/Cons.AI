@@ -1,4 +1,4 @@
-/* ===== DESIGN SYSTEM TOKENS ===== */
+﻿/* ===== DESIGN SYSTEM TOKENS ===== */
 :root {
     /* Primary Colors */
     --primary-400: #38bdf8;
@@ -36,6 +36,9 @@
     --utils-secondary: #a855f7;
     --deep-primary: #e9e774;
     --deep-secondary: #eae9a9;
+    --module-accent: var(--primary-500);
+    --module-accent-secondary: var(--primary-600);
+    --module-accent-contrast: #ffffff;
     
     
     /* Typography */
@@ -124,10 +127,10 @@
 }
 /* ===== MODULE ACCENTS (per page theme) ===== */
 /* Assign module accent color used by summary pills and panels */
-.theme-search { --module-accent: var(--search-primary); }
-.theme-sem { --module-accent: var(--sem-primary); }
-.theme-apps { --module-accent: var(--apps-primary); }
-.theme-bots { --module-accent: var(--bots-primary); }
+.theme-search { --module-accent: var(--search-primary); --module-accent-secondary: var(--search-secondary, var(--search-primary)); }
+.theme-sem { --module-accent: var(--sem-primary); --module-accent-secondary: var(--sem-secondary, var(--sem-primary)); }
+.theme-apps { --module-accent: var(--apps-primary); --module-accent-secondary: var(--apps-secondary, var(--apps-primary)); }
+.theme-bots { --module-accent: var(--bots-primary); --module-accent-secondary: var(--bots-secondary, var(--bots-primary)); }
 /* ===== RESET & BASE STYLES ===== */
 * {
     margin: 0;
@@ -251,8 +254,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* Espaço acima */
-    margin-bottom: 2px;  /* Espaço abaixo */
+    margin-top: 4px;     /* EspaÃ§o acima */
+    margin-bottom: 2px;  /* EspaÃ§o abaixo */
     line-height: 1.2;
 }
 .navbar-subtitle {
@@ -271,8 +274,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* Espaço acima */
-    margin-bottom: 2px;  /* Espaço abaixo */
+    margin-top: 4px;     /* EspaÃ§o acima */
+    margin-bottom: 2px;  /* EspaÃ§o abaixo */
     margin: 4px;
     line-height: 1;
 }
@@ -373,7 +376,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     color: #fff;
 }
 .pill.pill-row {
-    background-color: #f3f4f6; /* cinza claro padrão */
+    background-color: #f3f4f6; /* cinza claro padrÃ£o */
     transition: background-color 0.2s;
   }
   
@@ -488,7 +491,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     align-self: center;
     justify-self: center;
 }
-/* <<<<< Espaço entre as pills dos modulos >>>>> */
+/* <<<<< EspaÃ§o entre as pills dos modulos >>>>> */
 /* ============================================= */
 .tools-list {
     display: grid;
@@ -956,56 +959,77 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     font-size: var(--text-sm);
     font-family: var(--font-family);
 }
+
+
+
+
+
 /* ===== BOOK SELECTION ===== */
 .book-checkboxes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: var(--space-1);
+    display: flex;                 /* define como flex container */
+    flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
+    gap: 8px;                      /* espaÃ§o vertical entre os pills */
+    width: 100%;                   /* ocupa toda a largura disponÃ­vel do container pai */
+    /* max-width: 200px; limita a largura máxima da coluna (pode remover se quiser flexÃ­vel) */
+    margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
 }
-.book-checkbox {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    padding: var(--space-1);
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all var(--transition-fast);
+  
+.book-pill {
+    width: 100%;                   /* faz o pill ocupar toda a largura do container */
+    height: 36px;                  /* altura fixa de cada pill */
+    text-align: center;            /* centraliza o texto na horizontal */
+    padding: 8px;                  /* espaÃ§o interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padrÃ£o (cinza claro) */
+    color: #374151;                /* cor do texto (cinza escuro) */
+    font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
+    font-weight: 500;              /* peso da fonte (semibold) */
+    cursor: pointer;               /* cursor de â€œmÃ£ozinhaâ€ ao passar por cima */
+    transition: background 0.2s ease, color 0.2s ease; /* transiÃ§Ã£o suave ao mudar cor de fundo e texto */
+    user-select: none;             /* evita seleÃ§Ã£o de texto ao clicar */
+    box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
+    border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
+    border-radius: var(--radius-full); /* arredondamento completo (variável global) */
 }
-.book-checkbox:hover {
-    background: var(--gray-50);
-    border-color: var(--gray-300);
+  
+.book-pill.active {
+    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do módulo */
+    color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
 }
-.book-checkbox input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--gray-300);
-    border-radius: var(--space-1);
-    appearance: none;
-    cursor: pointer;
-    position: relative;
-    transition: all var(--transition-fast);
+
+/* ====== Modo Escuro ====== */
+body.dark .book-pill {
+    background: #1f2937;           /* fundo cinza bem escuro */
+    color: #e5e7eb;                /* texto cinza claro */
+    border: 1px solid #374151;     /* borda escura */
+    box-shadow: none;              /* sem sombra (opcional no dark) */
 }
-.book-checkbox input[type="checkbox"]:checked {
-    background: var(--primary-500);
-    border-color: var(--primary-500);
+
+body.dark .book-pill:hover {
+    background: #374151;           /* muda levemente no hover */
 }
-.book-checkbox input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--white);
-    font-size: 10px;
-    font-weight: bold;
+
+body.dark .book-pill.active {
+    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do módulo */
+    color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
 }
-.book-checkbox span {
-    font-size: var(--text-xs); /* aqui você ajusta menor, ex: 12px */
-    font-weight: 500;
-    color: var(--gray-700);
-}
+
+
+@media (max-width: 480px) {
+    .book-checkboxes {
+      max-width: 100%;        /* ocupa a tela inteira no mobile */
+      gap: 8px;              /* espaÃ§o maior entre pills para toque */
+    }
+  
+    .book-pill {
+        padding: 6px 14px;     /* 6px em cima/baixo, 14px nas laterais */
+        font-size: var(--text-sm);        /* fonte um pouco maior */
+    }
+  }
+  
+
+
+
+
 /* ===== TOGGLE SWITCHES ===== */
 .toggle-option {
     display: flex;
@@ -1083,7 +1107,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 }
 /* RagBot user question bubble: slightly tighter vertical spacing */
 .theme-bots .chat-message.user .message-content {
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-3);
     line-height: 1.1;
 }
 .theme-bots .chat-message.user .message-content p {
@@ -1302,7 +1326,8 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     border-top: 1px solid var(--gray-200); /* add top border */
     color: var(--gray-900);        /* adapt to light/dark via tokens */
     padding-bottom: 0;             /* remove bottom padding to tighten spacing */
-    margin-bottom: 0.5em;          /* half-line spacing to next paragraph */
+    margin-bottom: 0.2em;          /* half-line spacing to next paragraph */
+    font-size: var(--text-base);
 }
 /* Remove extra top margin from the first paragraph after the verbetopedia header */
 .verbetopedia-header + .displaybox-text .markdown-content p:first-child {
@@ -1312,6 +1337,8 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .page-verbetopedia .verbetopedia-header .header-text,
 .page-ccg .verbetopedia-header .header-text {
     color: #1e3a8a; /* dark blue */
+    font-size: var(--text-base);
+    margin-bottom: 0.2em;
 }
 /* Add horizontal separators between search results (lexical/semantical) */
 .theme-search .group-content .displaybox-item {
@@ -1343,18 +1370,25 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 }
 /* RagBot response box: add a bit more breathing room */
 .displaybox-container.ragbot-box .displaybox-content {
-    padding: var(--space-8);
+    padding: var(--space-6);
 }
 @media (max-width: 480px) {
     .displaybox-container.ragbot-box .displaybox-content {
-        padding: var(--space-6);
+        padding: var(--space-4);
+    }
+    /* Tighten spacing between text and metadata badges on small screens */
+    .displaybox-text {
+        margin-bottom: var(--space-1);
+    }
+    .metadata-container {
+        margin-top: var(--space-1);
     }
 }
 .displaybox-item {
     margin-bottom: var(--space-4);
 }
 .displaybox-text {
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-1);
 }
 /* Reference line for showSimple */
 .simple-ref {
@@ -1374,7 +1408,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
-    margin-top: var(--space-3);
+    margin-top: var(--space-1);
 }
 /* ===== COLLAPSIBLE SUMMARIES ===== */
 /* Full-width summary rows (used in search views) */
@@ -1460,11 +1494,11 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     color: #333764;
     border-color: #cacaca;
 }
-/* Removed unused metadata-badge estilos 3–9 */
+/* Removed unused metadata-badge estilos 3â€“9 */
 /* Dark theme tuning for metadata badges */
 [data-theme="dark"] .metadata-badge.estilo1 { background: rgba(136, 86, 0, 0.18); color: #fbbf24; border-color: rgba(181, 114, 0, 0.35); }
 [data-theme="dark"] .metadata-badge.estilo2 { background: rgba(115, 115, 115, 0.332); color: #ffffff; border-color: rgba(181, 114, 0, 0.35); }
-/* Removed dark theme overrides for unused estilos 3–9 */
+/* Removed dark theme overrides for unused estilos 3â€“9 */
 /* ===== LOADING STATES ===== */
 .loading-container {
     display: flex;
@@ -1713,7 +1747,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
         margin: 0 auto;
     }
     
-    /* Mobile: manter t�tulo centralizado sem bloquear bot�es */
+    /* Mobile: manter tï¿½tulo centralizado sem bloquear botï¿½es */
     .navbar-text {
         position: static;
         transform: none;
@@ -1783,8 +1817,8 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
         line-height: 1;
         align-self: center;
         text-align: center;
-        margin-top: 2px;     /* Espaço acima */
-        margin-bottom: 2px;  /* Espaço abaixo */
+        margin-top: 2px;     /* EspaÃ§o acima */
+        margin-bottom: 2px;  /* EspaÃ§o abaixo */
         margin: 2px;
         line-height: 1;
     }
@@ -1800,7 +1834,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 
     
     /* Lexical: compact single-row badge on small screens */
-    /* Ajusta o espaçamento entre os cards para que sejam mais compactos */
+    /* Ajusta o espaÃ§amento entre os cards para que sejam mais compactos */
     /* =================================================== */
     .tool-card.lexical-compact,
     /* Generic compact style for all module badges */
@@ -1875,29 +1909,23 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     }
     /* Tighter spacing between cards on small screens */
     .tools-list { gap: var(--space-2); }
+
+    .verbetopedia-header {
+        padding-bottom: 0;             /* remove bottom padding to tighten spacing */
+        margin-bottom: 0.2em;          /* half-line spacing to next paragraph */
+        font-size: var(--text-sm);
+    }
+
+    /* Title text color for Verbetopedia and CCG pages */
+    .page-verbetopedia .verbetopedia-header .header-text,
+    .page-ccg .verbetopedia-header .header-text {
+        margin-bottom: 0.2em;
+        font-size: var(--text-sm);
+    }
+
+
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1947,7 +1975,7 @@ textarea:focus-visible {
   color: var(--gray-800) !important;
   border-color: var(--gray-300) !important;
 }
-/* Coluna única */
+/* Coluna Ãºnica */
 /*==============================================================================*/
 .option-column {
     display: flex;
@@ -1965,39 +1993,44 @@ textarea:focus-visible {
   overflow: visible;
   text-overflow: clip;
 }
+
+
+
+
   /* Linha base */
   .row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    margin-bottom: 8px; 
   }
   
   /* Max Results */
   .max-results label {
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: 500;
     color: #000; /* ensure black label */
     white-space: nowrap;
   }
   
   .max-results input {
-    width: 80px;
+    width: 50px;
     flex: none;
-    padding: 6px 8px;
+    padding: 4px 6px;
     border: 1px solid var(--gray-300, #ccc);
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--text-sm);
     background: #fff;
     color: #000;
-    text-align: right;
+    text-align: center;
   }
   
   /* Toggle moderno */
   .switch {
     position: relative;
     display: inline-block;
-    width: 42px;
-    height: 24px;
+    width: 36px;
+    height: 20px;
   }
   
   .switch input {
@@ -2009,7 +2042,7 @@ textarea:focus-visible {
   .slider {
     position: absolute;
     cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0; left: 0px; right: 0; bottom: 0;
     background-color: #ccc;
     transition: 0.3s;
     border-radius: 24px;
@@ -2018,86 +2051,97 @@ textarea:focus-visible {
   .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
     background-color: var(--white);
     transition: 0.3s;
     border-radius: 50%;
   }
   
   .switch input:checked + .slider {
-    background-color: var(--primary, #007bff);
+    background-color: var(--module-accent, var(--primary-500));
   }
   
   .switch input:checked + .slider:before {
-    transform: translateX(18px);
+    transform: translateX(16px);
   }
   
   .toggle-label {
-    font-size: 15px;
+    font-size: var(--text-sm);
     font-weight: 500;
     color: var(--gray-800);
     cursor: pointer;
     user-select: none;
   }
+
+
+
+ /* Linha dos botÃµes */
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* espaÃ§o entre os botÃµes */
+    margin-top: 12px;
+  }
   
-  /* Botão */
+  /* BotÃ£o salvar */
   .save-btn {
-    padding: 12px 24px;
-    background: var(--primary, #b3b3b3);
+width: 44px;
+height: 44px;
+border-radius: 50%;
+border: none;
+background: var(--module-accent, var(--primary-500));
+color: var(--module-accent-contrast, #fff);
+font-size: 18px;
+cursor: pointer;
+transition: background var(--transition-fast);
+}
+  .save-btn:hover {
+background: var(--module-accent-secondary, var(--primary-600));
+}
+  .save-btn i { font-size: 20px; }
+  
+  /* BotÃ£o sair */
+  .exit-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: #f87171; /* vermelho claro */
     color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    border: none; border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background 0.2s ease;
-    display: block;
-    margin-left: auto;   /* centraliza */
-    margin-right: auto;  /* centraliza */
-    width: auto;         
-    min-width: 140px;    
-    text-align: justify;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .exit-btn:hover { background: #ef4444; transform: scale(1.05); }
+  .exit-btn i { font-size: 20px; }
+  
+  /* Tema escuro */
+  [data-theme="dark"] .save-btn {
+    background: var(--module-accent, var(--primary-500));
+    color: var(--module-accent-contrast, #fff);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+  [data-theme="dark"] .save-btn:hover {
+    background: var(--module-accent-secondary, var(--primary-600));
   }
   
-  .save-btn:hover {
-    background: #898989;
+  [data-theme="dark"] .exit-btn {
+    background: #dc2626;
+    color: #fef2f2;
   }
-  
-  /* Theme-specific identity for Save button */
-  .theme-search .save-btn { background: var(--search-primary); }
-  .theme-search .save-btn:hover { background: var(--search-secondary); }
-  
-  .theme-sem .save-btn { background: var(--sem-primary); }
-  .theme-sem .save-btn:hover { background: var(--sem-secondary); }
-  
-  .theme-apps .save-btn { background: var(--apps-primary); }
-  .theme-apps .save-btn:hover { background: var(--apps-secondary); }
-  
-  .theme-bots .save-btn { background: var(--bots-primary); }
-  .theme-bots .save-btn:hover { background: var(--bots-secondary); }
+  [data-theme="dark"] .exit-btn:hover { background: #b91c1c; }
   
   
-  
-  /* Base toggle/inputs (theme-aware via CSS variables) */
-  .max-results label,
-  .toggle-label { color: var(--gray-800); }
-  .max-results input {
-    background: var(--white);
-    color: var(--gray-800);
-    border: 1px solid var(--gray-400);
-  }
-  .slider { background-color: var(--gray-300); }
-  .switch input:checked + .slider { background-color: var(--primary-500); }
-  
+  /* Theme-specific identity for Save button handled via module accent variables */
   /* Module-themed toggle ON colors (override) */
-  .theme-search .switch input:checked + .slider { background-color: var(--search-primary) !important; }
-  .theme-sem   .switch input:checked + .slider { background-color: var(--sem-primary)   !important; }
-  .theme-bots   .switch input:checked + .slider { background-color: var(--bots-primary)   !important; }
-  .theme-apps   .switch input:checked + .slider { background-color: var(--apps-primary)   !important; }
+  .theme-search .switch input:checked + .slider,
+  .theme-sem .switch input:checked + .slider,
+  .theme-bots .switch input:checked + .slider,
+  .theme-apps .switch input:checked + .slider {
+    background-color: var(--module-accent, var(--primary-500));
+  }
   
   /* Removed legacy .toggle-switch overrides (unused) */
   
@@ -2155,7 +2199,7 @@ select {
     margin: 12px;
   }
   
-  /* Título */
+  /* TÃ­tulo */
   .initial-quests-title {
     font-size: 0.9rem;
     color: var(--gray-600);
@@ -2172,7 +2216,7 @@ select {
     gap: 8px;
   }
   
-  /* Estilo dos botões ("pills") */
+  /* Estilo dos botÃµes ("pills") */
   .initial-quests-badge {
     border: 1px solid var(--gray-300);
     background: #f0faf1; /* verde clarinho */
@@ -2243,7 +2287,7 @@ select {
         color: #ffffff;
     }
   
-    /* Tema Dark - título */
+    /* Tema Dark - tÃ­tulo */
     [data-theme="dark"] .initial-quests-title {
         color: #b0b0b0;   /* cinza claro, suave */
     }
@@ -2259,7 +2303,7 @@ select {
     [data-theme="dark"] .initial-quests-badge:active,
     [data-theme="dark"] .initial-quests-badge:focus {
         background: #3a4d40;   /* verde intermediário no hover */
-        color: #ffffff;        /* texto mais nítido */
+        color: #ffffff;        /* texto mais nÃ­tido */
     }
   
 
@@ -2353,8 +2397,8 @@ select {
 }
 
 [data-theme="dark"] .switch input:checked + .slider {
-    background-color: rgba(94, 234, 212, 0.45);
-}
+    background-color: var(--module-accent, var(--primary-500));
+  }
 [data-theme="dark"] .page-verbetopedia .verbetopedia-header .header-text,
 [data-theme="dark"] .page-ccg .verbetopedia-header .header-text {
     color: var(--gray-800);
@@ -2367,6 +2411,130 @@ select {
 
 
 
+
+.config-container {
+    display: flex;             /* duas colunas */
+    align-items: flex-start;   /* itens no topo */
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.config-options {
+flex: 1;                   /* ocupa a coluna da esquerda */
+display: flex;
+flex-direction: column;
+gap: 12px;                 /* espaÃ§o entre linhas */
+}
+
+.config-options .row {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.config-actions {
+display: flex;
+align-items: flex-start;   /* botÃ£o alinhado no topo */
+}
+
+.save-btn {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+border: none;
+background: var(--module-accent, var(--primary-500));
+color: var(--module-accent-contrast, #fff);
+font-size: 18px;
+cursor: pointer;
+transition: background var(--transition-fast);
+}
+
+.save-btn:hover {
+background: var(--module-accent-secondary, var(--primary-600));
+}
+  
+.select-books-text {
+    font-weight: bold;   /* negrito */
+    font-size: var(--text-base);     /* tamanho fixo */
+    color: var(--module-accent, var(--gray-600));         /* cor do módulo */
+    text-align: center;  /* centralizado */
+    margin-bottom: 8px;
+    margin-top: 8px;
+    
+  }
+  
+
+/* Container das linhas */
+.summary-list-deepdive {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;           /* espaçamento mínimo entre os pills */
+    max-width: 400px;
+    width: 100%; /* pills expandem até a borda do container */
+    padding: 4px;
+  }
+  
+  /* Cada pill */
+  .pill-row-deepdive {
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    padding: 4px 8px;   /* 🔹 padding menor -> reduz altura */
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #000000;
+    font-size: var(--text-base);
+    font-weight: normal;
+    margin: 1px 0;      /* 🔹 quase sem margem vertical */
+  }
+  
+  .pill-label-deepdive {
+    flex: 1;
+    text-align: left;
+    font-size: var(--text-base);
+  }
+  
+  .pill-count-deepdive {
+    font-weight: normal;
+    margin-left: 6px;   /* 🔹 um pouco menor */
+    font-size: var(--text-base);
+  }
+  
+  /* -------- DARK MODE -------- */
+  body.dark .pill-row-deepdive {
+    background: #1f2937;
+    color: #f3f4f6;
+  }
+  
+  /* -------- RESPONSIVO -------- */
+  @media (max-width: 480px) {
+    .summary-list-deepdive {
+      max-width: 100%;
+      padding: 6px;
+      gap: 1px;   /* 🔹 ainda mais compacto no mobile */
+    }
+    .pill-row-deepdive {
+      font-size: var(--text-xs);
+      padding: 3px 6px; /* 🔹 ainda menor no mobile */
+    }
+  }
+  
+
+
+   
+.book-pill-static {
+    width: 100%;                   /* faz o pill ocupar toda a largura do container */
+    height: 36px;                  /* altura fixa de cada pill */
+    text-align: center;            /* centraliza o texto na horizontal */
+    padding: 8px;                  /* espaÃ§o interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padrÃ£o (cinza claro) */
+    color: #374151;                /* cor do texto (cinza escuro) */
+    font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
+    font-weight: 500;              /* peso da fonte (semibold) */
+    box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
+    border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
+    border-radius: var(--radius-full); /* arredondamento completo (variável global) */
+}
 
 
 

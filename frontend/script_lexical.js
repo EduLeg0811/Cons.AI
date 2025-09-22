@@ -62,14 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Get selected books
-        const selectedBooks = [];
-        document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
-            selectedBooks.push(checkbox.value);
-        });
-        
-        // If no books selected, select LO by default
-        const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
+       // Livros selecionados do módulo Lexical
+       const settings = getLexicalSettings();
+       const books = settings.books || [];
+       console.log("<<<script_lexical.js - lexical*** [books]:", books); 
+       // → ["EC", "DAC"]
+       
+       // If no books selected, select LO by default
+       const source = books.length > 0 ? books : ['LO'];
+
 
         // Limpa resultados anteriores
         resultsDiv.innerHTML = '';
@@ -132,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             search_type: 'lexical',
             source_array: uniqueSources,
             max_results: maxResults,
+            display_option: 'simple',
             group_results_by_book: groupResults,
             definologia: null,
             descritivo: null,

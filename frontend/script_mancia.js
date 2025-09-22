@@ -12,16 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Garante que nunca dispare submit se for parar dentro de <form>
     searchButton.setAttribute('type', 'button');
 
-
+    // Reset LLM data
+    resetLLM();
 
 //______________________________________________________________________________________________
 // Mancia
 //______________________________________________________________________________________________
     async function mancia() {
 
-       // Reset LLM data
-       resetLLM();
-               
+       
 
         // Save original button state for restoration
         const originalButtonState = {

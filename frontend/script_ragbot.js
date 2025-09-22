@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') ragbot();
     });
 
+
+    // Clean chat on load
+    resetLLM();
+
     // Apresenta perguntas iniciais como sugestão (badges clicáveis)
     initialQuests();
 
@@ -88,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
           // Add loading message
-          cleanChat();
+         
           const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
 
              
@@ -113,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
           removeChatMessage(loadingId);
-          console.log("Chat cleaned");
+          cleanChat();
           addChatMessage('bot', response.text);
 
           // Mostra os metadados do response em Badges, logo após o texto da resposta
@@ -202,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const safeHtml = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml;
             messageContent.innerHTML = `<div class="markdown-content">${safeHtml}</div>`;
         } else {
-            messageContent.innerHTML = `<p>${content}</p>`;
+            messageContent.innerHTML = `${content}`;
         }
 
         if (avatar) messageDiv.appendChild(avatar);

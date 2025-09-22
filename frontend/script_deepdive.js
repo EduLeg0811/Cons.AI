@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function deepdive_search() {
 
     // Reset LLM data
-    resetLLM();
+    await resetLLM();
 
     // Save original button state for restoration
     const originalButtonState = {
@@ -81,14 +81,25 @@ async function deepdive_search() {
 
         // 
 
+
+        // Livros selecionados do módulo Deepdive
+        const settings = getDeepdiveSettings();
+        const books = settings.books || [];
+        console.log("<<<script_deepdive.js - deepdive*** [books]:", books); 
+        // → ["EC", "DAC"]
+        
+        // If no books selected, select LO by default
+        // const source = books.length > 0 ? books : ['LO'];
+
         // FIXED SELECTED BOOKS
         // const selectedBooks = [];
         // document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
         //     selectedBooks.push(checkbox.value);
         // });
         // const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
-        const source = ['LO','DAC','EC','CCG', '700EXP','PROJ','TNP','DUPLA','PROEXIS','200TEAT', 'TEMAS','HSR', 'HSP'];
-
+        const source = ['LO','DAC','EC','CCG', '700EXP','DUPLA','PROEXIS'];
+        
+        
 
         // Inicializa display
         resultsDiv.innerHTML = '';
@@ -169,7 +180,6 @@ async function deepdive_search() {
 
       
 
-
         // =======================================================================================
         // 3. Lexical
         // =======================================================================================
@@ -178,23 +188,24 @@ async function deepdive_search() {
         // Busca lexical
         const respLexical = await call_lexical({ term, source, file_type: 'md' });
 
+       
         // Restrict display to first maxResults PER SOURCE (NEW)
         if (respLexical.results && Array.isArray(respLexical.results)) {
             respLexical.results = limitResultsPerSource(respLexical.results, maxResults);
         } else {
             respLexical.results = [];
-       }
+        }
 
-        // Monta respHistory.lexical
+        // Monta respHistory.lexical (já limitado por fonte)
         respHistory.lexical = Array.isArray(respLexical.results) 
-            ? respLexical.results.slice(0, maxResults) 
+            ? respLexical.results 
             : [];
-
 
         // Exibe lexical
         removeLoading(resultsDiv);
         displayResults(resultsDiv, 'Busca Léxica    ●    ' + term, 'title');
-        displayResults(resultsDiv, respLexical, 'lexical');
+        displayResults(resultsDiv, respLexical, 'deepdive');
+
 
 
         // =======================================================================================
@@ -210,23 +221,22 @@ async function deepdive_search() {
         });
 
         
-       // Restrict display to first maxResults PER SOURCE (NEW)
-       if (semJson.results && Array.isArray(semJson.results)) {
-        semJson.results = limitResultsPerSource(semJson.results, maxResults);
-       } else {
+        // Restrict display to first maxResults PER SOURCE (NEW)
+        if (semJson.results && Array.isArray(semJson.results)) {
+            semJson.results = limitResultsPerSource(semJson.results, maxResults);
+        } else {
             semJson.results = [];
-       }
+        }
 
-
-        // Monta respHistory.semantical
+        // Monta respHistory.semantical (já limitado por fonte)
         respHistory.semantical = Array.isArray(semJson.results) 
-            ? semJson.results.slice(0, maxResults) 
+            ? semJson.results 
             : [];
 
         // Exibe semantical
         removeLoading(resultsDiv);
         displayResults(resultsDiv, `Busca Semântica    ●    ${term}`, 'title');
-        displayResults(resultsDiv, semJson, 'semantical');
+        displayResults(resultsDiv, semJson, 'deepdive');
 
 
 
@@ -247,6 +257,7 @@ async function deepdive_search() {
             source_array: uniqueSources,
             max_results: maxResults,
             group_results_by_book: groupResults,
+            display_option: 'unified',
             definologia: respHistory.definologia,
             descritivo: respHistory.descritivo,
             lexical: respHistory.lexical,
@@ -276,3 +287,20 @@ async function deepdive_search() {
 
 
 
+//______________________________________________________________________________________________
+// Limita resultados por fonte
+//______________________________________________________________________________________________
+ function limitResultsPerSource(results, maxResults) {
+    const grouped = {};
+    const limited = [];
+
+    for (const item of results) {
+        const src = item.source || "Unknown";
+        if (!grouped[src]) grouped[src] = [];
+        if (grouped[src].length < maxResults) {
+            grouped[src].push(item);
+            limited.push(item);
+        }
+    }
+    return limited;
+}

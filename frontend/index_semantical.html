@@ -3,62 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semantic Search - Cons.AI</title>
+    <title>Semantic Search ● Cons-AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="icon.png">
 </head>
+
 <body class="theme-sem">
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-container">
 
+        <div class="navbar-container">
             <div class="navbar-controls">
                 <a href="index.html" class="back-button" title="Back to Home">
                     <i class="fas fa-home"></i>
                 </a>
             </div>
 
-
             <div class="navbar-center">
-
-                
-                <!-- <div class="navbar-icon">
-                    <i class="fas fa-brain"></i>
-                </div> -->
                 <div class="navbar-text">
                     <div class="navbar-title-modules">Busca Semântica</div>
                     <div class="navbar-subtitle-modules">Pesquisa Contextual com IA</div>
                 </div>
             </div>
+
             <div class="navbar-controls">
-                <!-- <button class="navbar-control-btn" title="Settings">
-                    <i class="fas fa-cog"></i>
-                </button> -->
                 <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
                 </button>
             </div>
+
         </div>
     </nav>
 
 
 
-
-
-
-
-
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <div class="container">
-
-
+        
         <!-- Options Trigger + Panel (dropdown) -->
         <div class="options-wrapper">
-
-
             <div class="search-toolbar">
                 <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
                     <i class="fas fa-file-word fa-2x"></i>
@@ -68,9 +58,19 @@
                 </button>
             </div>
 
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <textarea id="searchInput" placeholder="Digite o termo para pesquisar..." class="search-input" rows="1"></textarea>
+                        <button id="searchButton" class="search-button" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <div class="options-panel" id="optionsPanel">
-
 
                 <div class="options-header" onclick="toggleOptions()">
                     <h3 class="options-title">Search Options</h3>
@@ -80,122 +80,59 @@
                 </div>
 
                 <div class="options-content" id="optionsContent">
+                    <!-- Config do MÃ³dulo (pills + opÃ§Ãµes) -->
+                    <div class="book-checkboxes" data-module="semantical" data-mode="multi">
+                        <div class="book-pill" data-value="LO">Léxico de Ortopensatas</div>
+                        <div class="book-pill" data-value="DAC">Dicionário de Argumentos da Conscienciologia</div>
+                        <div class="book-pill" data-value="TNP">Manual da Tenepes</div>
+                        <div class="book-pill" data-value="DUPLA">Manual da Dupla Evolutiva</div>
+                        <div class="book-pill" data-value="200TEAT">200 Teáticas da Conscienciologia</div>
+                        <div class="book-pill" data-value="PROEXIS">Manual da Proéxis</div>
+                        <div class="book-pill" data-value="700EXP">700 Experimentos</div>
+                        <div class="book-pill" data-value="TEMAS">Temas da Conscienciologia</div>
+                        <div class="book-pill" data-value="HSR">Homo sapiens reurbanisatus</div>
+                        <div class="book-pill" data-value="HSP">Homo sapiens pacificus</div>
 
-                    <div class="option-group">
-                        <div class="option-group-label">Selecione os livros para pesquisar:</div>
-                        <div class="book-checkboxes">
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="LO" checked>
-                                <span>LO</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="DAC">
-                                <span>DAC</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="TNP">
-                                <span>Manual da Tenepes</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="DUPLA">
-                                <span>Manual da Dupla</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="200TEAT">
-                                <span>200 Técnicas</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="PROEXIS">
-                                <span>Manual da Proéxis</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="700EXP">
-                                <span>700 Experimentos</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="TEMAS">
-                                <span>Temas da Consc.</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="HSR">
-                                <span>Reurbanisatus</span>
-                            </label>
-                            <label class="book-checkbox">
-                                <input type="checkbox" name="book" value="HSP">
-                                <span>Pacificus</span>
-                            </label>
-                        </div>
-                    </div>
+                        <br>
 
-
-                    <!-- CONFIGURAÇÕES DE PESQUISA -->
-                    <div class="option-group">
-
-                        <div class="option-grid">
-
-                            <div class="option-column">
-
+                        <div class="config-container">
+                            <div class="config-options">
                                 <!-- Max Results -->
                                 <div class="row max-results">
-                                    <label for="maxResults">Máximo de Resultados (por livro)</label>
+                                    <label for="maxResults">Resultados (máximo por livro)</label>
                                     <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
                                 </div>
-                            
-                                <!-- Toggle 2: Agrupa por livro 
-                                <div class="toggle-option">
-                                    <label class="switch">
-                                    <input type="checkbox" id="groupResults" checked>
-                                    <span class="slider"></span>
-                                    </label>
-                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
-                                </div> -->  
-
-                                <!-- removed: ref_badges toggle
+                                <!-- Toggle -->
                                 <div class="row toggle-option">
                                     <label class="switch">
-                                    <input type="checkbox" id="ref_badges" checked>
-                                    <span class="slider"></span>
+                                        <input type="checkbox" id="groupResults" checked>
+                                        <span class="slider"></span>
                                     </label>
-                                    <label class="toggle-label" for="ref_badges">Badges Referências</label>
+                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
                                 </div>
-                                -->
-                            
                             </div>
-                            
+
+                            <div class="config-actions">
+                                <!-- BotÃ£o salvar -->
+                                <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </div>
                         </div>
-                    
                     </div>
-
-                    <!-- Botão -->
-                    <div class="row">
-                        <button class="save-btn">Salvar Ajustes</button>
-                    </div>
-                
                 </div>
             </div>
-
-         
         </div>
 
-        <!-- Search Container -->
-        <div class="search-container">
-            <div class="search-row">
-                <div class="search-input-wrapper">
-                    <textarea id="searchInput" placeholder="Digite o termo para pesquisar..." class="search-input" rows="1"></textarea>
-                    <button id="searchButton" class="search-button" aria-label="Search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                
-            </div>
-        </div>
+        <div id="results" class="results"></div>
 
-
-        <div id="results" class="results">
-            <!-- Results will be displayed here -->
-        </div>
     </div>
-    
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+
+
     <!-- Dependencies -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
@@ -210,8 +147,13 @@
     <script src="download.js"></script>
     <script src="script_semantical.js"></script>
 
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
     <script>
-        // Auto-resize textarea for search input
+        // Auto-resize textarea
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
@@ -221,14 +163,11 @@
                 });
             }
         });
-    </script>
 
-    <script>
         function toggleOptions() {
             const content = document.getElementById('optionsContent');
             const toggle = document.getElementById('optionsToggle');
             const icon = toggle.querySelector('i');
-            
             if (content.style.display === 'none' || !content.style.display) {
                 content.style.display = 'grid';
                 icon.className = 'fas fa-chevron-up';
@@ -238,53 +177,33 @@
             }
         }
 
-        function toggleSwitch(element) {
-            const checkbox = document.getElementById(element.dataset.target);
-            checkbox.checked = !checkbox.checked;
-            element.classList.toggle('active', checkbox.checked);
-        }
-
-        // Initialize theme and bind options dropdown
+        // InicializaÃ§Ã£o + salvar/restaurar configs
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
 
             const trigger = document.getElementById('optionsTrigger');
             const panel = document.getElementById('optionsPanel');
-            const content = document.getElementById('optionsContent');
-            if (content) content.style.display = 'grid';
+            const saveBtn = document.querySelector('.save-btn');
+            const STORAGE_KEY = 'settings_semantical';
 
-            // Apply saved settings for semantical module
-            (function applySemanticalSavedSettings(){
-                try {
-                    const raw = localStorage.getItem('settings_semantical');
-                    if (!raw) return;
-                    const saved = JSON.parse(raw);
-                    if (Array.isArray(saved.books)) {
-                        const set = new Set(saved.books);
-                        document.querySelectorAll('input[name="book"]').forEach(cb => cb.checked = set.has(cb.value));
-                    }
-                    if (typeof saved.maxResults === 'number') {
-                        const inp = document.getElementById('maxResults');
-                        if (inp) inp.value = saved.maxResults;
-                    }
-                    if (typeof saved.groupResults === 'boolean') {
-                        const chk = document.getElementById('groupResults');
-                        if (chk) chk.checked = saved.groupResults;
-                    }
-                  
-                } catch(e) { console.warn('Failed to apply semantical settings', e); }
-            })();
+            // Toggle pills
+            document.querySelectorAll('.book-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    pill.classList.toggle('active');
+                });
+            });
 
+            // Abrir/fechar painel
             if (trigger && panel) {
                 trigger.addEventListener('click', function(e) {
                     e.stopPropagation();
+
                     panel.classList.toggle('open');
-                    // On first user interaction with config, stop pulsing for this module
                     try {
                         if (!localStorage.getItem('configPulseSeen_semantical')) {
                             localStorage.setItem('configPulseSeen_semantical', 'true');
                         }
-                    } catch (err) { /* ignore */ }
+                    } catch (err) {}
                     document.documentElement.setAttribute('data-config-pulse', 'off');
                 });
 
@@ -295,34 +214,80 @@
                 });
             }
 
-            // Disable pulse if user already interacted before
-            try {
-                if (localStorage.getItem('configPulseSeen_semantical') === 'true') {
-                    document.documentElement.setAttribute('data-config-pulse', 'off');
-                }
-            } catch (err) { /* ignore */ }
+            // Restaurar configs
+            (function applySaved() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return;
+                    const saved = JSON.parse(raw);
 
-            // Save settings button
-            const saveBtn = document.querySelector('.save-btn');
+                    if (Array.isArray(saved.books)) {
+                        const set = new Set(saved.books);
+                        document.querySelectorAll('.book-pill').forEach(pill => {
+                            pill.classList.toggle('active', set.has(pill.dataset.value));
+                        });
+                    }
+                    if (typeof saved.maxResults === 'number') {
+                        const inp = document.getElementById('maxResults');
+                        if (inp) inp.value = saved.maxResults;
+                    }
+                    if (typeof saved.groupResults === 'boolean') {
+                        const chk = document.getElementById('groupResults');
+                        if (chk) chk.checked = saved.groupResults;
+                    }
+                } catch (e) { console.warn('Failed to apply saved settings', e); }
+            })();
+
+            function disableConfigPulse() {
+                trigger?.classList.remove('pulsing');
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+            }
+
+            (function initializePulse() {
+                try {
+                    const rawSettings = localStorage.getItem(STORAGE_KEY);
+                    if (!rawSettings) return;
+                    const parsed = JSON.parse(rawSettings);
+                    const hasBooks = Array.isArray(parsed.books) && parsed.books.length > 0;
+                    const hasOtherSettings = Object.keys(parsed || {}).length > 0;
+                    if (hasBooks || hasOtherSettings) {
+                        disableConfigPulse();
+                    }
+                } catch (err) {
+                    console.warn('Failed to check stored settings for pulse control', err);
+                }
+            })();
+
+
+            // BotÃ£o salvar â†’ grava tudo junto
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
-                    const books = Array.from(document.querySelectorAll('input[name="book"]:checked')).map(cb => cb.value);
+                    const books = Array.from(document.querySelectorAll('.book-pill.active'))
+                        .map(p => p.dataset.value);
                     const maxInput = document.getElementById('maxResults');
-                const rawMax = maxInput?.value ?? getMaxResultsCap();
-                const maxResults = normalizeMaxResults(rawMax);
+                    const rawMax = maxInput?.value ?? 10;
+                    const maxResults = normalizeMaxResults(rawMax);
                     const groupResults = !!document.getElementById('groupResults')?.checked;
-                    const enableDefinition = !!document.getElementById('enableDefinition')?.checked;
-                    const settings = { books, maxResults, groupResults, enableDefinition };
-                    localStorage.setItem('settings_semantical', JSON.stringify(settings));
+
+                    const settings = { books, maxResults, groupResults };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
                     if (panel) panel.classList.remove('open');
                 });
             }
-        });
 
-        // Theme is provided by config.js (initTheme/toggleTheme)
+            // FunÃ§Ã£o global para recuperar configs
+            window.getSemanticalSettings = function() {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+            };
+
+        });
     </script>
+
+
 </body>
 </html>
+
+
 
 
 

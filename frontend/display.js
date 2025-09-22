@@ -74,6 +74,14 @@ function renderMarkdown(mdText) {
   }
 
 
+// Collapse all open result panels and reset pill state when needed
+function collapseAllPills() {
+    document.querySelectorAll('.collapse-panel.open').forEach(panel => panel.classList.remove('open'));
+    document.querySelectorAll('.pill.active').forEach(pill => pill.classList.remove('active'));
+}
+
+window.collapseAllPills = collapseAllPills;
+
 // ===== Handlers mapping =====
 const renderers = {
     ragbot: showRagbot,
@@ -84,7 +92,8 @@ const renderers = {
     verbetopedia: showVerbetopedia,
     ccg: showCcg,
     quiz: showQuiz,
-    lexverb: showLexverb
+    lexverb: showLexverb,
+    deepdive: showDeepdive
 };
 
 // Resolve group accent color from global constants
@@ -139,6 +148,86 @@ function removeLoading(container) {
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+//______________________________________________________________________________________________
+// showDeepdive (corrigido com IDs únicos)
+//______________________________________________________________________________________________
+function showDeepdive(container, data) {
+
+  if (!container) {
+      console.error('Results container not found');
+      return;
+  }
+
+  // 0) Garantir array de entrada
+  const arr = Array.isArray(data.results) ? data.results : [];
+  if (!arr.length) {
+      container.insertAdjacentHTML(
+          'beforeend',
+          '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
+      );
+      return;
+  }
+
+  // 1) Normalizador de fonte/livro para exibição
+  const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
+      ? window.normSourceName
+      : function _fallbackNormSourceName(src) {
+          if (!src) return 'Results';
+          let s = String(src);
+          s = s.split(/[\\/]/).pop();
+          s = s.replace(/\.(md|markdown|txt|xlsx)$/i, '');
+          return s;
+      };
+
+  // 2) Agrupar por fonte normalizada
+  const groups = arr.reduce((acc, it, idx) => {
+      const raw = it?.book || it?.source || it?.file || 'Results';
+      const key = normSourceName(raw);
+      if (!acc[key]) acc[key] = [];
+      acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
+      return acc;
+  }, {});
+  const groupNames = Object.keys(groups);
+
+
+
+  // 3) Summary badges (rows)
+  const totalCount = arr.length;
+  const slug = (s) => String(s || 'all')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+      let summaryRows = '<div class="summary-list-deepdive">';
+
+      summaryRows += groupNames.map((name, idx) => {
+        const n = groups[name].length;
+        const target = `group-${slug(name)}-${idx}`;
+        const accent = getAccentColor('lexical');
+      
+        return `
+          <div class="pill-row-deepdive" data-target="${target}">
+            <span class="pill-label-deepdive">${escapeHtml(bookName(name))}</span>
+            <span class="pill-count-deepdive">${n}</span>
+          </div>
+        `;
+
+      }).join('');
+      
+      summaryRows += '</div>';
+      
+  container.insertAdjacentHTML('beforeend', summaryRows);
+}
+
+
+
+
+
+
 
 
 
@@ -294,9 +383,6 @@ if (!container.__pillHandlerBound) {
 const format_paragraphs_source = (item, sourceName) => {
 
     let itemHtml = '';
-
-    console.log('---------------[display.js] [format_paragraphs_source] sourceName: ', sourceName);
-    console.log('---------------[display.js] [format_paragraphs_source] item: ', item);
     
     if (sourceName === 'LO') {
         itemHtml = format_paragraph_LO(item);

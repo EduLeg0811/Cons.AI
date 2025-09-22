@@ -3,6 +3,8 @@
 let controller = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const resultsDiv = document.getElementById('results');
@@ -18,18 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') Conscienciogramopedia();
     });
 
-
-
+    
 
     //______________________________________________________________________________________________
     // Conscienciogramopedia
     //______________________________________________________________________________________________
     async function Conscienciogramopedia() {
 
-        // Reset LLM data
-        resetLLM();
-
-        // Save original button state for restoration
+              // Save original button state for restoration
         const originalButtonState = {
             html: searchButton.innerHTML,
             opacity: searchButton.style.opacity,
@@ -113,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const newTerm = term + ": " + defJson.text + ".";
+            const newTerm = term + ": " + defJson.text.trim().toLowerCase() + ".";
+
 
             // _________________________________________________________________________________
             // Semantical Search

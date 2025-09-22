@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') verbetopedia();
     });
 
-
+    // Reset LLM data
+    resetLLM();
 
 
     //______________________________________________________________________________________________
@@ -25,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //______________________________________________________________________________________________
     async function verbetopedia() {
 
-        // Reset LLM data
-        resetLLM();
+       
 
          // Save original button state for restoration
          const originalButtonState = {
@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsDiv.innerHTML = '';
 
             // Get the checkbox state
-            let newTerm = '';
             let defJson = null;
 
             
@@ -111,13 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(resultsDiv, defJson, 'simple');
 
             // If the synthesis is empty, we don't proceed to semantic search
-            newTerm = (defJson?.text || '').trim();
-            if (!newTerm) {
+            if (!defJson?.text) {
                 insertLoading(resultsDiv, "Sem síntese suficiente para buscar semelhanças.");
                 return;
             }
+            const newTerm = term + ": " + defJson.text.trim().toLowerCase() + ".";
+
+            //console.log("<<script_verbetopedia.js>> newTerm: " + newTerm);
 
    
+
             // _________________________________________________________________________________
             // Semantical Search
             // _________________________________________________________________________________
@@ -128,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //call_semantical
             //*****************************************************************************************
              const paramSem = {
-                term: term + ": " + newTerm + ".",
+                term: newTerm,
                 source: ["EC"],
                 model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             };

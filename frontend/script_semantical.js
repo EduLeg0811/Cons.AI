@@ -18,15 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') semantical_search();
     });
 
-   
+    // Reset LLM data
+    resetLLM();
 
     //______________________________________________________________________________________________
     // Semantical Search
     //______________________________________________________________________________________________
     async function semantical_search() {
 
-        // Reset LLM data
-        resetLLM();
+        
 
         // Save original button state for restoration
         const originalButtonState = {
@@ -64,15 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
                 return;
             }
+           
             
-            // Get selected books
-            let selectedBooks = [];
-            document.querySelectorAll('input[name="book"]:checked').forEach(checkbox => {
-                selectedBooks.push(checkbox.value);
-            });
+            // Livros selecionados do módulo Semantical
+            const settings = getSemanticalSettings();
+            const books = settings.books || [];
+            console.log("<<<script_semantical.js - semantical*** [books]:", books); 
+            // → ["EC", "DAC"]
             
             // If no books selected, select LO by default
-            const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
+            const source = books.length > 0 ? books : ['LO'];
+
+            console.log("<<<script_semantical.js - semantical*** [source]:", source); 
 
             // Clear previous results
             resultsDiv.innerHTML = '';
@@ -118,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Assemble new term from synthesis
-            const newTerm = term + ": " + descJson?.text.trim();
+            const newTerm = term + ": " + descJson?.text.trim().toLowerCase() + ".";
 
             // _________________________________________________________________________________
             // Semantical Search
@@ -175,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 search_type: 'semantical',
                 source_array: uniqueSources,
                 max_results: maxResults,
+                display_option: 'simple',
                 group_results_by_book: groupResults,
                 definologia: null,
                 descritivo: {

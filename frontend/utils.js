@@ -24,6 +24,25 @@ function normalizeMaxResults(value) {
 }
 window.normalizeMaxResults = normalizeMaxResults;
 
+function clearModuleSelectionPills() {
+  document.querySelectorAll('.book-pill.active').forEach(pill => {
+    pill.classList.remove('active');
+  });
+
+  const collapseFn = typeof window.collapseAllPills === 'function' ? window.collapseAllPills : null;
+  if (collapseFn) {
+    collapseFn();
+  } else {
+    document.querySelectorAll('.pill.active').forEach(pill => {
+      pill.classList.remove('active');
+    });
+    document.querySelectorAll('.collapse-panel.open').forEach(panel => {
+      panel.classList.remove('open');
+    });
+  }
+}
+window.clearModuleSelectionPills = clearModuleSelectionPills;
+
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const cap = getMaxResultsCap();
@@ -36,12 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (err) {
     console.error('Failed to apply MAX_RESULTS_DISPLAY cap:', err);
   }
+
+  try {
+    document.querySelectorAll('.options-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const panel = document.getElementById('optionsPanel');
+        if (!panel) return;
+        const isOpening = !panel.classList.contains('open');
+        const shouldReset = panel.dataset.resetOnOpen === 'true';
+        if (isOpening && shouldReset && typeof clearModuleSelectionPills === 'function') {
+          clearModuleSelectionPills();
+        }
+      }, true);
+    });
+  } catch (err) {
+    console.warn('Failed to bind options trigger listener', err);
+  }
 });
 
 
 
 // ===================================================================
-// Função utilitária: limitar resultados por fonte
+// FunÃ§Ã£o utilitária: limitar resultados por fonte
 // ===================================================================
 function limitResultsPerSource(results, maxPerSource) {
   if (!Array.isArray(results)) return [];
@@ -304,7 +339,7 @@ function newConversationId() {
 
 // Reset LLM
 async function resetLLM() {
-  // Abort a requisição ativa (se houver)
+  // Abort a requisiÃ§Ã£o ativa (se houver)
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }
@@ -320,7 +355,7 @@ async function resetLLM() {
   }
   newConversationId();
  
-  // Zera histórico em memória (se exposto)
+  // Zera histÃ³rico em memÃ³ria (se exposto)
   if (window.chatHistory && Array.isArray(window.chatHistory)) {
     try { window.chatHistory.length = 0; } catch {}
   }
@@ -331,7 +366,7 @@ async function resetLLM() {
 
 // Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset (limpa tambem Search Box)
 async function resetConversation() {
-  // Abort a requisição ativa (se houver)
+  // Abort a requisiÃ§Ã£o ativa (se houver)
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }
@@ -352,7 +387,7 @@ async function resetConversation() {
   // Limpa mensagens do chat
   const chat = document.getElementById('chatMessages');
   if (chat) chat.innerHTML = '';
-  // Zera histórico em memória (se exposto)
+  // Zera histÃ³rico em memÃ³ria (se exposto)
   if (window.chatHistory && Array.isArray(window.chatHistory)) {
     try { window.chatHistory.length = 0; } catch {}
   }
@@ -365,7 +400,7 @@ async function resetConversation() {
   }
 }
 
-// Se existir um botão com este id, liga automaticamente
+// Se existir um botÃ£o com este id, liga automaticamente
 document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
 
 
@@ -417,3 +452,11 @@ document.getElementById('btn-new-conv')?.addEventListener('click', resetConversa
     if (e.key === 'theme' && e.newValue) setTheme(e.newValue);
   });
 })();
+
+
+
+
+
+
+
+
