@@ -109,6 +109,14 @@ def build_docx(data, group_results_by_book):
         searchTypeTxt = "Deep Research"
 
 
+    # Monta array com nomes reais dos livros em "source"
+    source_array = [bookName(src) for src in source_array]
+    txt_source = ", ".join(source_array).capitalize()
+    if len(source_array) > 1:
+        txt_source = " e ".join(source_array).capitalize()
+    else:
+        txt_source = source_array[0].capitalize()
+   
 
     # Criação do documento
     # =============================================================
@@ -143,56 +151,119 @@ def build_docx(data, group_results_by_book):
     doc.add_paragraph("")
     doc.add_paragraph("")
 
-    # Tipo de pesquisa
-    p = doc.add_paragraph()
-    p.add_run("Tipo de pesquisa: ").bold = True
-    p.add_run(searchTypeTxt)
-    doc.add_paragraph("")
-
     # Termo
     p = doc.add_paragraph()
     p.add_run("Termo de pesquisa: ").bold = True
     p.add_run(str(search_term).capitalize())
     doc.add_paragraph("")
-
-    # Source array
+  
+    # Tipo de pesquisa
     p = doc.add_paragraph()
-    p.add_run("Livros pesquisados: ").bold = True
-    p.add_run(str(source_array))
+    p.add_run("Tipo de pesquisa: ").bold = True
+    p.add_run(searchTypeTxt)
     doc.add_paragraph("")
-
+    
     # Display Option
     p = doc.add_paragraph()
     p.add_run("Display Option: ").bold = True
-    p.add_run(display_option)
+    if display_option == "simple" and group_results_by_book:
+        p.add_run("Simples, agrupado por fonte")
+    else:
+        p.add_run(str(display_option).capitalize())
+
     doc.add_paragraph("")
 
   
     # 2. Estatística geral
     # =============================================================
-    stats = {}
+     
+    # Reutiliza o agrupamento do display_results_unified
+    array_data_lexical = flatten_data(data, fields=["lexical"], sort_fields=[("number", "crescent")])
+    array_data_semantical = flatten_data(data, fields=["semantical"], sort_fields=[("score", "decrescent")])
 
-    logger.info("data.items(): " + str(data.items()))
+    newData = {}
+    def _normalize_source(value):
+        if isinstance(value, list):
+            for candidate in value:
+                if candidate:
+                    return str(candidate)
+            return "Unknown"
+        if value in (None, ""):
+            return "Unknown"
 
-    for key, value in data.items():
-        if isinstance(value, list) and key in ("lexical", "semantical") and len(value) > 0:
-            stats[key] = len(value)
-            logger.info("stats[key]: " + str(stats[key]))
+        return str(value)
 
-    total_count = sum(stats.values())
+    def _normalize_text(txt):
+        if not txt:
+            return ""
+        return " ".join(txt.lower().split())
+
+    def _add_items(items, field):
+        for original in items or []:
+            if not isinstance(original, dict):
+                continue
+            src_value = original.get("source") or original.get("source_array")
+            src = _normalize_source(src_value)
+            obj = dict(original)
+            obj.setdefault("source", src)
+            obj.setdefault("field", field)
+            newData.setdefault(src, {"lexical": [], "semantical": []})[field].append(obj)
+
+    # Agrupar lexical e semantical
+    _add_items(array_data_lexical, "lexical")
+    _add_items(array_data_semantical, "semantical")
+
+    # Remover duplicados por texto
+    for src, groups in newData.items():
+        for field in ["lexical", "semantical"]:
+            seen = set()
+            unique_items = []
+            for it in groups[field]:
+                txt = (
+                    it.get("text")
+                    or it.get("content_text")
+                    or it.get("markdown")
+                    or (it.get("metadata") or {}).get("markdown")
+                    or ""
+                )
+                norm = _normalize_text(txt)
+                if norm not in seen:
+                    seen.add(norm)
+                    unique_items.append(it)
+            newData[src][field] = unique_items
+
+
+    # calcula total geral de resultados
+    #total_results = len(newData)
     p = doc.add_paragraph()
-    p.add_run("Estatística de Resultados: ").bold = True
-    p.add_run(str(total_count))
-    for src, items in stats.items():
-        if items > 0:
-            doc.add_paragraph(f"• {src}: {items}")
+    p.add_run("Estatística de Resultados:").bold = True
+    
 
-            logger.info("Estatística de Resultados: " + str(items))
+    # Impressão final por fonte
+    for src, groups in newData.items():
+        n_lex = len(groups["lexical"])
+        n_sem = len(groups["semantical"])
+        livro = bookName(src)
+
+        # cria um novo parágrafo
+        p = doc.add_paragraph()
+        run1 = p.add_run(f"●   {livro}:   ")
+        run1.bold = True
+
+        if search_type == "deepdive":
+            run2 = p.add_run(f"Léxica = {n_lex}    |    Semântica = {n_sem}")
+        elif search_type == "lexical":
+            run2 = p.add_run(f"{n_lex}")
+        elif search_type == "semantical":
+            run2 = p.add_run(f"{n_sem}")
+
+        # espaçamento antes e depois
+        p.paragraph_format.space_before = Pt(3)
+        p.paragraph_format.space_after = Pt(3)
 
     doc.add_paragraph("")
     doc.add_paragraph("")
-   
-    logger.info("Estatística de Resultados (total): " + str(total_count))
+
 
 
 
@@ -243,7 +314,7 @@ def build_docx(data, group_results_by_book):
 
 
 
-    # 6. Referências
+        # 6. Referências
     # =============================================================
     doc.add_paragraph("")
 
@@ -251,17 +322,27 @@ def build_docx(data, group_results_by_book):
     divider_ref = doc.add_paragraph()
     _add_bottom_border(divider_ref)
     
-
     # título da legenda
-    p = doc.add_paragraph()
-    p.add_run("\nLegenda:\n").bold = True
+    p = doc.add_paragraph("Legenda:")
+    p.runs[0].bold = True
+    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_after = Pt(6)
 
-    if search_type == "semantical" or search_type == "deepdive":
-        p.add_run("@ :  ").bold = True 
-        p.add_run("score de similaridade semântica (0 = máxima correspondência)\n")
-    
-    p.add_run("# :  ").bold = True 
-    p.add_run("nº do parágrafo (Livros); nº do verbete (EC); nº da questão (Conscienciograma)")
+    if search_type in ("semantical", "deepdive"):
+        p1 = doc.add_paragraph()
+        run1 = p1.add_run("@ :  ")
+        run1.bold = True
+        p1.add_run("score de similaridade semântica (0 = máxima correspondência)")
+        p1.paragraph_format.space_before = Pt(6)
+        p1.paragraph_format.space_after = Pt(6)
+
+    p2 = doc.add_paragraph()
+    run2 = p2.add_run("# :  ")
+    run2.bold = True
+    p2.add_run("nº do parágrafo (Livros); nº do verbete (EC); nº da questão (Conscienciograma)")
+    p2.paragraph_format.space_before = Pt(3)
+    p2.paragraph_format.space_after = Pt(3)
+
 
     doc.add_paragraph("")
 
@@ -273,12 +354,26 @@ def build_docx(data, group_results_by_book):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 #_________________________________________________________
 # display_results_unified       
 #_________________________________________________________
 def display_results_unified(doc, data, search_type):
 
+
+
     # 1. Extrai arrays já ordenados separadamente
+    # ==========================================
     array_data_lexical = flatten_data(
         data, fields=["lexical"], sort_fields=[("number", "crescent")]
     )
@@ -286,6 +381,10 @@ def display_results_unified(doc, data, search_type):
         data, fields=["semantical"], sort_fields=[("score", "decrescent")]
     )
 
+
+
+    # 2. Agrupa lexical e semantical por fonte
+    # =======================================
     newData = {}
 
     def _normalize_source(value):
@@ -351,7 +450,6 @@ def display_results_unified(doc, data, search_type):
         run.font.color.rgb = RGBColor(0, 100, 200)
         src_title.alignment = WD_ALIGN_PARAGRAPH.LEFT
         doc.add_paragraph("")
-        doc.add_paragraph("")
 
         counter = 0
 
@@ -383,13 +481,19 @@ def display_results_unified(doc, data, search_type):
 
             doc.add_paragraph("")
 
+          
+
+
         # Linha divisória entre lexical e semantical
         if groups["lexical"] and groups["semantical"]:
+            last_p = doc.paragraphs[-1]  # pega o último
+            last_p._element.getparent().remove(last_p._element)  # remove inline
             divider_p = doc.add_paragraph()
             _add_bottom_border(divider_p, color="888888", size_eights_pt=8)
             doc.add_paragraph("")
         else:
             doc.add_paragraph("")
+
 
         # Depois semantical
         for it in groups["semantical"]:
@@ -445,11 +549,14 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
         array_search_loop = ["lexical", "semantical"]
 
 
+
     # Itera nos modos de pesquisa (lexical, semantical) ou ambos (deepdive)
     for current_search_mode in array_search_loop:
 
         doc.add_paragraph("")
-        doc.add_paragraph("")
+
+    # Initialize counter for all cases
+    counter = 1 
 
 
     # ---------------------------------------------------------
@@ -479,11 +586,8 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
             doc.add_paragraph("")
             doc.add_paragraph("")
 
-
-
+           
             if (group_results_by_book):
-
-                counter = 1
                 
                 # Agrupar resultados por source
                 # -----------------------------
@@ -556,7 +660,6 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
             else:
 
                 doc.add_paragraph("")
-                doc.add_paragraph("")
                 
 
                 for it in array_data:
@@ -622,7 +725,6 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
             divider_p = doc.add_paragraph()
             _add_bottom_border(divider_p, size_eights_pt=10)
 
-            doc.add_paragraph("")
             doc.add_paragraph("")
             
 
@@ -698,7 +800,6 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
             # ---------------------
             else:
 
-                doc.add_paragraph("")
                 doc.add_paragraph("")
                 
 

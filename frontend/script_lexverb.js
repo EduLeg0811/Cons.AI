@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const downloadData = {
             search_term: term,
-            search_type: 'lexverb',
+            search_type: 'lexical',
             source_array: uniqueSources,
             max_results: maxResults,
             display_option: 'simple',

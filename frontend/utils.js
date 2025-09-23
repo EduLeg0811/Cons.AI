@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ===================================================================
-// FunÃ§Ã£o utilitária: limitar resultados por fonte
+// Função utilitária: limitar resultados por fonte
 // ===================================================================
 function limitResultsPerSource(results, maxPerSource) {
   if (!Array.isArray(results)) return [];
@@ -339,7 +339,7 @@ function newConversationId() {
 
 // Reset LLM
 async function resetLLM() {
-  // Abort a requisiÃ§Ã£o ativa (se houver)
+  // Abort a requisição ativa (se houver)
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }

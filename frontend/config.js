@@ -192,7 +192,7 @@ const COMMENTARY_INSTRUCTIONS = `
   # Instruções
   1. Analise o significado da *pensata* à luz do paradigma conscienciológico.
   2. Comente de maneira objetiva, usando os neologismos e abordagem próprios da Conscienciologia.
-  3. Limite a resposta a, no máximo, três parágrafos.
+  3. Limite a resposta a, no máximo, 2 parágrafos breves.
   4. Não repita ou transcreva a *pensata* antes do comentário; comece diretamente pela explicação.
   5. Não cite as referências.
   6. Finalize sempre formulando uma pergunta sintética intitulada **Autoquestionamento**, incentivando reflexão sobre aplicação da *pensata* na vida pessoal, visando a evolução consciencial.

@@ -72,24 +72,20 @@ async function deepdive_search() {
             definologia: {},
             descritivo: {},
             lexical: [],
-            semantical: []
+            semantical: [],
         };
 
         // Lê parâmetros iniciais
         const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
         const maxResults = normalizeMaxResults(rawMaxResults);
 
-        // 
-
-
         // Livros selecionados do módulo Deepdive
         const settings = getDeepdiveSettings();
         const books = settings.books || [];
-        console.log("<<<script_deepdive.js - deepdive*** [books]:", books); 
-        // → ["EC", "DAC"]
         
         // If no books selected, select LO by default
-        // const source = books.length > 0 ? books : ['LO'];
+        const source = books.length > 0 ? books : ['LO'];
+        
 
         // FIXED SELECTED BOOKS
         // const selectedBooks = [];
@@ -97,8 +93,9 @@ async function deepdive_search() {
         //     selectedBooks.push(checkbox.value);
         // });
         // const source = selectedBooks.length > 0 ? selectedBooks : ['LO'];
-        const source = ['LO','DAC','EC','CCG', '700EXP','DUPLA','PROEXIS'];
-        
+        // const source = ['LO','DAC','EC','CCG'];
+
+        console.log("<<<script_deepdive.js - deepdive*** [books]:", source); 
         
 
         // Inicializa display
@@ -185,10 +182,19 @@ async function deepdive_search() {
         // =======================================================================================
         insertLoading(resultsDiv, "Busca Léxica");
 
-        // Busca lexical
-        const respLexical = await call_lexical({ term, source, file_type: 'md' });
-
        
+
+        //call_lexical
+        //***************************************************
+        // Sua lógica original de chamada
+        const parameters = {
+            term: term,
+            source: source,
+            file_type: 'md'
+        };
+        const respLexical = await call_lexical (parameters);
+        //***************************************************
+
         // Restrict display to first maxResults PER SOURCE (NEW)
         if (respLexical.results && Array.isArray(respLexical.results)) {
             respLexical.results = limitResultsPerSource(respLexical.results, maxResults);
@@ -201,10 +207,55 @@ async function deepdive_search() {
             ? respLexical.results 
             : [];
 
+
+
+ 
+        
+        // // CASO ESPECIAL TEMPORÁRIO : EC lexical = ECALL_DEF.xlsx
+        // // ------------------------------------------------------
+
+        // if (source.includes('EC')) {
+            
+
+        //     //call_lexical (lexverb)
+        //     //*****************************************************************************************
+        //     const paramLexverb = {
+        //         term: term,
+        //         source: ["ECALL_DEF"],
+        //         file_type: 'xlsx'
+        //     };
+        //     const respLexverb = await call_lexical (paramLexverb);
+        //     //*****************************************************************************************
+
+        //     // Get max results from input or use default
+        //     const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
+        //     const maxResults = normalizeMaxResults(rawMaxResults);
+
+        //     // Restrict display to first maxResults if results exist
+        //     if (respLexverb.results && Array.isArray(respLexverb.results)) {
+        //         respLexverb.results = respLexverb.results.slice(0, maxResults);
+        //     } else {
+        //         respLexverb.results = [];
+        //     }
+
+        //     // Une os resultados de respLexical e respLexverb
+        //     respLexical.results = [...respLexical.results, ...respLexverb.results];
+
+        // }
+
+        console.log('<<< script_deepdive.js ---- respLexical: ', respLexical);
+
         // Exibe lexical
         removeLoading(resultsDiv);
         displayResults(resultsDiv, 'Busca Léxica    ●    ' + term, 'title');
         displayResults(resultsDiv, respLexical, 'deepdive');
+
+        
+        // Monta respHistory.lexical (já limitado por fonte)
+        respHistory.lexical = Array.isArray(respLexical.results) 
+        ? respLexical.results 
+        : [];
+
 
 
 
@@ -213,12 +264,15 @@ async function deepdive_search() {
         // =======================================================================================
         insertLoading(resultsDiv, "Busca Semantica");
 
-        // Busca semantical
-        const semJson = await call_semantical({
+        //call_semantical
+        //*************************************************
+        const paramSem = {
             term: newTerm,
-            source,
+            source: source,
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-        });
+        };
+        const semJson = await call_semantical(paramSem);
+        //*************************************************
 
         
         // Restrict display to first maxResults PER SOURCE (NEW)
@@ -240,7 +294,6 @@ async function deepdive_search() {
 
 
 
-
         // =======================================================================================
         // Assemble Download Data
         // =======================================================================================
@@ -249,14 +302,12 @@ async function deepdive_search() {
         let uniqueSources = respHistory.semantical.map(result => result.source);
         uniqueSources = [...new Set(uniqueSources)];
 
-        const groupResults = document.getElementById('groupResults').checked;
-
         const downloadData = {
             search_term: term,
             search_type: 'deepdive',
             source_array: uniqueSources,
             max_results: maxResults,
-            group_results_by_book: groupResults,
+            group_results_by_book: false,
             display_option: 'unified',
             definologia: respHistory.definologia,
             descritivo: respHistory.descritivo,
