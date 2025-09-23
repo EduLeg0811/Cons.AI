@@ -30,7 +30,7 @@
             <div class="navbar-center">
                 <div class="navbar-text">
                     <div class="navbar-title-modules">Conscienciograma</div>
-                    <div class="navbar-subtitle-modules">Pesquisa Contextual em QuestÃµes</div>
+                    <div class="navbar-subtitle-modules">Pesquisa Contextual em Questões</div>
                 </div>
             </div>
 
@@ -173,7 +173,7 @@
             }
         }
 
-        // InicializaÃ§Ã£o + salvar/restaurar configs
+        // Inicialização + salvar/restaurar configs
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
 
@@ -258,7 +258,7 @@
             })();
 
 
-            // BotÃ£o salvar â†’ grava tudo junto
+            // Botão salvar â†’ grava tudo junto
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
 
@@ -277,7 +277,7 @@
                 });
             }
 
-            // FunÃ§Ã£o global para recuperar configs
+            // Função global para recuperar configs
             window.getCCGSettings = function() {
                 return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
             };

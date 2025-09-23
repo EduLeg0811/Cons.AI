@@ -91,49 +91,6 @@ function limitResultsPerSource(results, maxPerSource) {
 
 
 
-
-//______________________________________________________________________________________________
-// semantical_formatResponse  --- call from [bridge.js] <call_semantical>
-//______________________________________________________________________________________________
-function semantical_formatResponse(responseData, term) {
-    
-  const count = responseData.length;
-  const search_type = "semantical";
-
-  //if source contains "ECALL_DEF", change it to "EC"
-  responseData.forEach(item => {
-    if (item.source === "ECALL_DEF") {
-        item.source = "EC";
-    }            
-  });
-
-  const formattedResponse = {
-    count: count,
-    search_type: search_type,
-    term: term,
-    results: responseData,
-  };
-
-return formattedResponse;
-
-}
-
-
-
-
-//______________________________________________________________________________________________
-// lexical_formatResponse  --- call from [bridge.js] <call_lexical>
-//______________________________________________________________________________________________
-function lexical_formatResponse(responseData, term) {
-    
-  const formattedResponse = responseData;
-  
-return formattedResponse;
-
-}
-
-
-
 //______________________________________________________________________________________________
 // llm_formatResponse  --- call from [bridge.js] <call_llm>
 //______________________________________________________________________________________________
@@ -366,7 +323,7 @@ async function resetLLM() {
 
 // Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset (limpa tambem Search Box)
 async function resetConversation() {
-  // Abort a requisiÃ§Ã£o ativa (se houver)
+  // Abort a requisição ativa (se houver)
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }
@@ -400,7 +357,7 @@ async function resetConversation() {
   }
 }
 
-// Se existir um botÃ£o com este id, liga automaticamente
+// Se existir um botão com este id, liga automaticamente
 document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
 
 

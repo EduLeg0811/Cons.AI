@@ -58,8 +58,8 @@ async function call_lexical(parameters) {
       }
 
 
-      // Formatt lexical response 
-      const formattedResponse = lexical_formatResponse(responseData);
+      // Formatt lexical response (none in this case Lexical)
+      const formattedResponse = responseData;
       console.log(`********bridge.js - call_lexical*** [formattedResponse]:`, formattedResponse);
 
       return formattedResponse;
@@ -118,8 +118,21 @@ async function call_semantical(parameters) {
             });
         }
 
-        // Formatt semantical response 
-        const formattedResponse = semantical_formatResponse(responseData);
+          //if source contains "ECALL_DEF", change it to "EC"
+          responseData.forEach(item => {
+            if (item.source === "ECALL_DEF") {
+                item.source = "EC";
+            }            
+          });
+
+          // Format response
+          const formattedResponse = {
+            count: responseData.length,
+            search_type: "semantical",
+            term: parameters.term,
+            results: responseData,
+          };
+
         console.log(`********bridge.js - call_semantical*** [formattedResponse]:`, formattedResponse);
 
         return formattedResponse;

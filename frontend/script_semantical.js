@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 semJson.results = [];
             }
 
+            console.log("<<<script_semantical.js - semantical*** [semJson]:", semJson); 
 
             // Display results
             const newTitle = `Semantical Search    ●    ${term}`;

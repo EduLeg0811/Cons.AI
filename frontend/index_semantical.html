@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="options-content" id="optionsContent">
-                    <!-- Config do MÃ³dulo (pills + opÃ§Ãµes) -->
+                    <!-- Config do MÃ³dulo (pills + opções) -->
                     <div class="book-checkboxes" data-module="semantical" data-mode="multi">
                         <div class="book-pill" data-value="LO">Léxico de Ortopensatas</div>
                         <div class="book-pill" data-value="DAC">Dicionário de Argumentos da Conscienciologia</div>
@@ -113,7 +113,7 @@
                             </div>
 
                             <div class="config-actions">
-                                <!-- BotÃ£o salvar -->
+                                <!-- Botão salvar -->
                                 <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
@@ -177,7 +177,7 @@
             }
         }
 
-        // InicializaÃ§Ã£o + salvar/restaurar configs
+        // Inicialização + salvar/restaurar configs
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
 
@@ -259,7 +259,7 @@
             })();
 
 
-            // BotÃ£o salvar â†’ grava tudo junto
+            // Botão salvar â†’ grava tudo junto
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     const books = Array.from(document.querySelectorAll('.book-pill.active'))
@@ -275,7 +275,7 @@
                 });
             }
 
-            // FunÃ§Ã£o global para recuperar configs
+            // Função global para recuperar configs
             window.getSemanticalSettings = function() {
                 return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
             };

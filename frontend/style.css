@@ -254,8 +254,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* EspaÃ§o acima */
-    margin-bottom: 2px;  /* EspaÃ§o abaixo */
+    margin-top: 4px;     /* Espaço acima */
+    margin-bottom: 2px;  /* Espaço abaixo */
     line-height: 1.2;
 }
 .navbar-subtitle {
@@ -274,8 +274,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* EspaÃ§o acima */
-    margin-bottom: 2px;  /* EspaÃ§o abaixo */
+    margin-top: 4px;     /* Espaço acima */
+    margin-bottom: 2px;  /* Espaço abaixo */
     margin: 4px;
     line-height: 1;
 }
@@ -376,7 +376,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     color: #fff;
 }
 .pill.pill-row {
-    background-color: #f3f4f6; /* cinza claro padrÃ£o */
+    background-color: #f3f4f6; /* cinza claro padrão */
     transition: background-color 0.2s;
   }
   
@@ -491,7 +491,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     align-self: center;
     justify-self: center;
 }
-/* <<<<< EspaÃ§o entre as pills dos modulos >>>>> */
+/* <<<<< Espaço entre as pills dos modulos >>>>> */
 /* ============================================= */
 .tools-list {
     display: grid;
@@ -968,7 +968,7 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .book-checkboxes {
     display: flex;                 /* define como flex container */
     flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
-    gap: 8px;                      /* espaÃ§o vertical entre os pills */
+    gap: 8px;                      /* espaço vertical entre os pills */
     width: 100%;                   /* ocupa toda a largura disponÃ­vel do container pai */
     /* max-width: 200px; limita a largura máxima da coluna (pode remover se quiser flexÃ­vel) */
     margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
@@ -978,14 +978,14 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espaÃ§o interno (topo/baixo/laterais) */   
-    background: #f3f4f6;           /* cor de fundo padrÃ£o (cinza claro) */
+    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padrão (cinza claro) */
     color: #374151;                /* cor do texto (cinza escuro) */
     font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
     font-weight: 500;              /* peso da fonte (semibold) */
-    cursor: pointer;               /* cursor de â€œmÃ£ozinhaâ€ ao passar por cima */
-    transition: background 0.2s ease, color 0.2s ease; /* transiÃ§Ã£o suave ao mudar cor de fundo e texto */
-    user-select: none;             /* evita seleÃ§Ã£o de texto ao clicar */
+    cursor: pointer;               /* cursor de â€œmãozinhaâ€ ao passar por cima */
+    transition: background 0.2s ease, color 0.2s ease; /* transição suave ao mudar cor de fundo e texto */
+    user-select: none;             /* evita seleção de texto ao clicar */
     box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
     border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
     border-radius: var(--radius-full); /* arredondamento completo (variável global) */
@@ -1017,7 +1017,7 @@ body.dark .book-pill.active {
 @media (max-width: 480px) {
     .book-checkboxes {
       max-width: 100%;        /* ocupa a tela inteira no mobile */
-      gap: 8px;              /* espaÃ§o maior entre pills para toque */
+      gap: 8px;              /* espaço maior entre pills para toque */
     }
   
     .book-pill {
@@ -1485,7 +1485,7 @@ body.dark .book-pill.active {
     margin: 0;
 }
 .metadata-badge.estilo1 {
-    background: #fef3c7;
+    background: #e4ecff;
     color: #333764;
     border-color: #cacaca;
 }
@@ -1817,8 +1817,8 @@ body.dark .book-pill.active {
         line-height: 1;
         align-self: center;
         text-align: center;
-        margin-top: 2px;     /* EspaÃ§o acima */
-        margin-bottom: 2px;  /* EspaÃ§o abaixo */
+        margin-top: 2px;     /* Espaço acima */
+        margin-bottom: 2px;  /* Espaço abaixo */
         margin: 2px;
         line-height: 1;
     }
@@ -1834,7 +1834,7 @@ body.dark .book-pill.active {
 
     
     /* Lexical: compact single-row badge on small screens */
-    /* Ajusta o espaÃ§amento entre os cards para que sejam mais compactos */
+    /* Ajusta o espaçamento entre os cards para que sejam mais compactos */
     /* =================================================== */
     .tool-card.lexical-compact,
     /* Generic compact style for all module badges */
@@ -2078,15 +2078,15 @@ textarea:focus-visible {
 
 
 
- /* Linha dos botÃµes */
+ /* Linha dos botões */
 .button-row {
     display: flex;
     justify-content: center;
-    gap: 12px; /* espaÃ§o entre os botÃµes */
+    gap: 12px; /* espaço entre os botões */
     margin-top: 12px;
   }
   
-  /* BotÃ£o salvar */
+  /* Botão salvar */
   .save-btn {
 width: 44px;
 height: 44px;
@@ -2103,7 +2103,7 @@ background: var(--module-accent-secondary, var(--primary-600));
 }
   .save-btn i { font-size: 20px; }
   
-  /* BotÃ£o sair */
+  /* Botão sair */
   .exit-btn {
     display: flex; align-items: center; justify-content: center;
     width: 36px; height: 36px;
@@ -2216,7 +2216,7 @@ select {
     gap: 8px;
   }
   
-  /* Estilo dos botÃµes ("pills") */
+  /* Estilo dos botões ("pills") */
   .initial-quests-badge {
     border: 1px solid var(--gray-300);
     background: #f0faf1; /* verde clarinho */
@@ -2423,7 +2423,7 @@ select {
 flex: 1;                   /* ocupa a coluna da esquerda */
 display: flex;
 flex-direction: column;
-gap: 12px;                 /* espaÃ§o entre linhas */
+gap: 12px;                 /* espaço entre linhas */
 }
 
 .config-options .row {
@@ -2434,7 +2434,7 @@ gap: 8px;
 
 .config-actions {
 display: flex;
-align-items: flex-start;   /* botÃ£o alinhado no topo */
+align-items: flex-start;   /* botão alinhado no topo */
 }
 
 .save-btn {
@@ -2526,8 +2526,8 @@ background: var(--module-accent-secondary, var(--primary-600));
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espaÃ§o interno (topo/baixo/laterais) */   
-    background: #f3f4f6;           /* cor de fundo padrÃ£o (cinza claro) */
+    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padrão (cinza claro) */
     color: #374151;                /* cor do texto (cinza escuro) */
     font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
     font-weight: 500;              /* peso da fonte (semibold) */
@@ -2540,4 +2540,5 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 
 
-
+/* Cor Highlight */
+.hl { background: #fff59d; padding: 0 1px; border-radius: 2px; }
