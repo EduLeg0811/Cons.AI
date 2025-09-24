@@ -97,7 +97,7 @@ const TOOL_MESSAGES = {
       '<strong>1.</strong> Use caracteres especiais (&, |, !, *) para busca lógica avançada.<br>',
       '<strong>2.</strong> Entre em <em>configurações</em>.<br>',
       '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar os resultados.<br>',
       '<strong>5.</strong> Também é possível baixar o PDF do verbete completo.<br>',
     ].join('\n')
   },
@@ -128,7 +128,7 @@ const TOOL_MESSAGES = {
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br><br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Baixe o PDF para ter acesso ao vebete completo.<br>',
+      '<strong>1.</strong> Para ter acesso ao verbete completo, basta clicar no ícone do PDF indicado.<br>',
       '<strong>2.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.<br>',
       '<strong>3.</strong> Ao final, clique no ícone do Word para baixar a listagem dos resultados.',
     ].join('\n')

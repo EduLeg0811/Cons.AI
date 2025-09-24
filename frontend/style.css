@@ -2095,15 +2095,15 @@ textarea:focus-visible {
 
 
 
- /* Linha dos bot�es */
+ /* Linha dos botões */
 .button-row {
     display: flex;
     justify-content: center;
-    gap: 12px; /* espa�o entre os bot�es */
+    gap: 12px; /* espaço entre os botões */
     margin-top: 12px;
   }
   
-  /* Bot�o salvar */
+  /* Botão salvar */
   .save-btn {
 width: 40px;
 height: 40px;
@@ -2120,7 +2120,7 @@ background: var(--module-accent-secondary, var(--primary-600));
 }
   .save-btn i { font-size: 20px; }
   
-  /* Bot�o sair */
+  /* Botão sair */
   .exit-btn {
     display: flex; align-items: center; justify-content: center;
     width: 36px; height: 36px;
