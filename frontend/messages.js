@@ -34,6 +34,7 @@ const TOOL_MESSAGES = {
   'ConsGPT': {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
+      '<br>',
       'O <strong>ConsGPT</strong> é o chatbot mais <em>inteligente</em> de todos. ',
       'Ótimo para brainstorming, resumos e conversas em geral.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -47,6 +48,7 @@ const TOOL_MESSAGES = {
   'ConsLM': {
     short: '<em>NotebookLM da Google</em>',
     extra: [
+      '<br>',
       'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
       'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -59,6 +61,7 @@ const TOOL_MESSAGES = {
   'ConsBOT': {
     short: '<em>Chatbot experimental</em>',
     extra: [
+      '<br>',
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
       'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br><br>', 
       '<strong>Dicas:</strong><br>',
@@ -75,6 +78,7 @@ const TOOL_MESSAGES = {
   'Pesquisa em Livros': {
     short: '<em>Busca exata em livros</em>',
     extra: [
+      '<br>',
       'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
       'Útil para buscar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -92,7 +96,8 @@ const TOOL_MESSAGES = {
   'Definologia de Verbetes': {
     short: '<em>Busca exata em verbetes</em>',
     extra: [
-      'Encontra verbetes que possuam os termos de busca exatos na Definologia.<br><br>',
+      '<br>',
+      'Encontra verbetes que possuam os termos de busca exatos na <em>Definologia</em>, e não apenas no título.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use caracteres especiais (&, |, !, *) para busca lógica avançada.<br>',
       '<strong>2.</strong> Entre em <em>configurações</em>.<br>',
@@ -108,6 +113,7 @@ const TOOL_MESSAGES = {
   'Pesquisa Semântica em Livros': {
     short: '<em>Busca contextual em livros</em>',
     extra: [
+      '<br>',
       'Encontra os parágrafos de livros <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
       'Útil para pesquisar temas e ideias correlatas ou afins.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -125,6 +131,7 @@ const TOOL_MESSAGES = {
   'Verbetopedia': {
     short: '<em>Busca contextual em verbertes</em>',
     extra: [
+      '<br>',
       'Indica verbetes afins ao termo de busca. ',
       'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -138,6 +145,7 @@ const TOOL_MESSAGES = {
 'Questões do Conscienciograma': {
   short: '<em>Busca contextual em questões</em>',
   extra: [
+    '<br>',
     'Indica questões do Conscienciograma afins ao termo de busca. ',
     'Ótimo para buscar questões de aprofundamento da autopesquisa.<br><br>',
     '<strong>Dicas:</strong><br>',
@@ -151,9 +159,10 @@ const TOOL_MESSAGES = {
 'Caderno de Estudos': {
   short: '<em>Pesquisa profunda (deep research)</em>',
   extra: [
-    'Realiza pesquisa profunda em livros, tratados e verbetes.<br>',
-    'Monta um Caderno de Estudos completo sobre o tema.<br>',
-    'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica.<br>',
+    '<br>',
+    'Realiza pesquisa profunda em livros, tratados e verbetes. ',
+    'Monta um Caderno de Estudos completo sobre o tema. ',
+    'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica. ',
     'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.<br><br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
@@ -167,6 +176,7 @@ const TOOL_MESSAGES = {
   'Bibliomancia Digital': {
     short: '<em>Sorteio de ortopensata do LO</em>',
     extra: [
+      '<br>',
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
       'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br><br>',
       '<strong>Dicas:</strong><br>',
@@ -181,6 +191,7 @@ const TOOL_MESSAGES = {
   'Quiz Conscienciológico': {
     short: '<em>Quiz de perguntas & respostas</em>',
     extra: [
+      '<br>',
       'Formula perguntas sobre temas da Conscienciologia.',
       'Você responde as perguntas e a IA avalia a resposta.<br><br>',
       '<strong>Dicas:</strong><br>',
