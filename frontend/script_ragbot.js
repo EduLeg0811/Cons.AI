@@ -2,7 +2,7 @@
 
 let controller = null;
 let chatHistory = [];
-// Expor refs no escopo global para integrações (reset, etc.)
+// Expor refs no escopo global para integraÃ§Ãµes (reset, etc.)
 window.chatHistory = chatHistory;
 window.abortRagbot = function abortRagbot() {
   try { if (controller) controller.abort(); } catch {}
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Disable and show "searching"
         searchButton.disabled = true;
-        //searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         searchButton.style.opacity = '0.7';
         searchButton.style.cursor = 'not-allowed'
 
@@ -82,6 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (initial) initial.remove();
           } catch {}
 
+
+          
+          //removeChatMessage(loadingId);
+          cleanChat();
+          
           // Add user message to chat
           addChatMessage('user', term);
           
@@ -93,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Add loading message
          
-          const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
+          //const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
 
              
           //call_ragbot
@@ -115,12 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (response.chat_id) localStorage.setItem('cons_chat_id', response.chat_id); // <<< NOVO
           // *****************************************************************************************
 
-
-          removeChatMessage(loadingId);
-          cleanChat();
+          // Add bot message
           addChatMessage('bot', response.text);
 
-          // Mostra os metadados do response em Badges, logo após o texto da resposta
+          // Mostra os metadados do response em Badges, logo apÃ³s o texto da resposta
           // ------------------------------------------------------------------------      
           if (window.CONFIG.FULL_BADGES) {
             metaData = extractMetadata(response, 'ragbot');
@@ -156,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error in ragbot:', error);
+
             // Remove loading message and show error
             const loadingMessages = document.querySelectorAll('.chat-message.loading');
             loadingMessages.forEach(msg => msg.remove());
@@ -305,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
           'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
-          'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos:',
+          'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos?',
         ];
     
         // Container principal
@@ -386,6 +390,7 @@ function prepareDownloadData(response, term) {
 
 
 });
+
 
 
 

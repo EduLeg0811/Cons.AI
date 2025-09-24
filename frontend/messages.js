@@ -34,8 +34,8 @@ const TOOL_MESSAGES = {
   'ConsGPT': {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
-      'O <strong>ConsGPT</strong> é provavelmente o chatbot mais <em>inteligente</em> de todos. ',
-      'Ótimo para brainstorming, resumos e conversas em geral.<br>',
+      'O <strong>ConsGPT</strong> é o chatbot mais <em>inteligente</em> de todos. ',
+      'Ótimo para brainstorming, resumos e conversas em geral.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
       '<strong>2.</strong> Peça a ele que formule <em>analogias</em> ou <em>metáforas</em> para algum tema.<br>',
@@ -48,7 +48,7 @@ const TOOL_MESSAGES = {
     short: '<em>NotebookLM da Google</em>',
     extra: [
       'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
-      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
+      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente a seção lateral do <em>studio</em>, com Podcasts e tutoriais de Conscienciologia.<br>',
       '<strong>2.</strong> Veja também os <em>resumos prontos</em> e o <em>mapa de conhecimento</em> gerado por IA.'
@@ -60,7 +60,7 @@ const TOOL_MESSAGES = {
     short: '<em>Chatbot experimental</em>',
     extra: [
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
-      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>',
+      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br><br>', 
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
@@ -76,13 +76,14 @@ const TOOL_MESSAGES = {
     short: '<em>Busca exata em livros</em>',
     extra: [
       'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
-      'Útil para encontrar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br>',
+      'Útil para buscar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br><br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
-      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>4.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.<br>',
-      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>1.</strong> Use caracteres especiais para busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
+      '<strong>2.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>3.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
+      '<strong>4.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
+      '<strong>5.</strong> Escolha também se quer a saída em lista corrida ou <em>agrupada por livro</em>.<br>',
+      '<strong>6.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
     ].join('\n')
   },
 
@@ -91,12 +92,13 @@ const TOOL_MESSAGES = {
   'Definologia de Verbetes': {
     short: '<em>Busca exata em verbetes</em>',
     extra: [
-      'Encontra verbetes que possuam os termos de busca exatos na Definologia.<br> ',
+      'Encontra verbetes que possuam os termos de busca exatos na Definologia.<br><br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Baixe o PDF para ter acesso ao vebete completo.<br>',
-      '<strong>2.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>1.</strong> Use caracteres especiais (&, |, !, *) para busca lógica avançada.<br>',
+      '<strong>2.</strong> Entre em <em>configurações</em>.<br>',
       '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
       '<strong>4.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>5.</strong> Também é possível baixar o PDF do verbete completo.<br>',
     ].join('\n')
   },
 
@@ -107,7 +109,7 @@ const TOOL_MESSAGES = {
     short: '<em>Busca contextual em livros</em>',
     extra: [
       'Encontra os parágrafos de livros <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
-      'Útil para pesquisar temas e ideias correlatas ou afins.<br>',
+      'Útil para pesquisar temas e ideias correlatas ou afins.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
@@ -124,7 +126,7 @@ const TOOL_MESSAGES = {
     short: '<em>Busca contextual em verbertes</em>',
     extra: [
       'Indica verbetes afins ao termo de busca. ',
-      'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br>',
+      'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Baixe o PDF para ter acesso ao vebete completo.<br>',
       '<strong>2.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.<br>',
@@ -137,7 +139,7 @@ const TOOL_MESSAGES = {
   short: '<em>Busca contextual em questões</em>',
   extra: [
     'Indica questões do Conscienciograma afins ao termo de busca. ',
-    'Ótimo para buscar questões de aprofundamento da autopesquisa.<br>',
+    'Ótimo para buscar questões de aprofundamento da autopesquisa.<br><br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
     '<strong>2.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
@@ -152,7 +154,7 @@ const TOOL_MESSAGES = {
     'Realiza pesquisa profunda em livros, tratados e verbetes.<br>',
     'Monta um Caderno de Estudos completo sobre o tema.<br>',
     'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica.<br>',
-    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.<br>',
+    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.<br><br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
     '<strong>2.</strong> Selecione se deseja listagem contínua ou agrupada por livros.<br>',
@@ -166,7 +168,7 @@ const TOOL_MESSAGES = {
     short: '<em>Sorteio de ortopensata do LO</em>',
     extra: [
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
-      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br>',
+      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para instigar as <em>sincronicidades</em>.<br>',
       '<strong>2.</strong> Compare a sua interpretação da pensata (hermenêutica) com a da IA.<br>',
@@ -180,7 +182,7 @@ const TOOL_MESSAGES = {
     short: '<em>Quiz de perguntas & respostas</em>',
     extra: [
       'Formula perguntas sobre temas da Conscienciologia.',
-      'Você responde as perguntas e a IA avalia a resposta.<br>',
+      'Você responde as perguntas e a IA avalia a resposta.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para testar o seu conhecimento da Conscienciologia.<br>',
       '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',

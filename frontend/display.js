@@ -1242,9 +1242,7 @@ function insertLoading(container, message = 'Carregando…') {
       <div class="loading" aria-live="polite" aria-busy="true">
         ${escapeHtml(String(message))}
       </div>
-      <div class="spinner" style="
-          width:16px;height:16px;border:2px solid #ddd;border-top-color:#999;border-radius:50%;
-          animation: spin .8s linear infinite;"></div>
+
     </div>
   `);
 }

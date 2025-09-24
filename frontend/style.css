@@ -1,4 +1,4 @@
-﻿/* ===== DESIGN SYSTEM TOKENS ===== */
+/* ===== DESIGN SYSTEM TOKENS ===== */
 :root {
     /* Primary Colors */
     --primary-400: #38bdf8;
@@ -254,8 +254,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* Espaço acima */
-    margin-bottom: 2px;  /* Espaço abaixo */
+    margin-top: 4px;     /* Espa�o acima */
+    margin-bottom: 2px;  /* Espa�o abaixo */
     line-height: 1.2;
 }
 .navbar-subtitle {
@@ -274,8 +274,8 @@ body:not([class]) .navbar-heading {
     line-height: 1;
     align-self: center;
     text-align: center;
-    margin-top: 4px;     /* Espaço acima */
-    margin-bottom: 2px;  /* Espaço abaixo */
+    margin-top: 4px;     /* Espa�o acima */
+    margin-bottom: 2px;  /* Espa�o abaixo */
     margin: 4px;
     line-height: 1;
 }
@@ -376,7 +376,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     color: #fff;
 }
 .pill.pill-row {
-    background-color: #f3f4f6; /* cinza claro padrão */
+    background-color: #f3f4f6; /* cinza claro padr�o */
     transition: background-color 0.2s;
   }
   
@@ -385,7 +385,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
   }
   
   .pill.pill-row.active {
-    background-color: #d1d5db; /* mantém cinza escuro quando ativo */
+    background-color: #d1d5db; /* mant�m cinza escuro quando ativo */
   }
   
 /* Centered hero for index page */
@@ -393,7 +393,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     max-width: 1400px;
     margin: 0 auto;
 }
-/* Espacos entre o containers maiores da página principal */
+/* Espacos entre o containers maiores da p�gina principal */
 /* ====================================================== */
 .tools-grid {
     display: grid;
@@ -491,7 +491,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
     align-self: center;
     justify-self: center;
 }
-/* <<<<< Espaço entre as pills dos modulos >>>>> */
+/* <<<<< Espa�o entre as pills dos modulos >>>>> */
 /* ============================================= */
 .tools-list {
     display: grid;
@@ -968,9 +968,9 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .book-checkboxes {
     display: flex;                 /* define como flex container */
     flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
-    gap: 8px;                      /* espaço vertical entre os pills */
-    width: 100%;                   /* ocupa toda a largura disponÃ­vel do container pai */
-    /* max-width: 200px; limita a largura máxima da coluna (pode remover se quiser flexÃ­vel) */
+    gap: 8px;                      /* espa�o vertical entre os pills */
+    width: 100%;                   /* ocupa toda a largura disponível do container pai */
+    /* max-width: 200px; limita a largura m�xima da coluna (pode remover se quiser flexível) */
     margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
 }
   
@@ -978,21 +978,21 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
-    background: #f3f4f6;           /* cor de fundo padrão (cinza claro) */
+    padding: 8px;                  /* espa�o interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padr�o (cinza claro) */
     color: #374151;                /* cor do texto (cinza escuro) */
-    font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
+    font-size: var(--text-sm);     /* tamanho da fonte (pega da vari�vel global) */
     font-weight: 500;              /* peso da fonte (semibold) */
-    cursor: pointer;               /* cursor de â€œmãozinhaâ€ ao passar por cima */
-    transition: background 0.2s ease, color 0.2s ease; /* transição suave ao mudar cor de fundo e texto */
-    user-select: none;             /* evita seleção de texto ao clicar */
+    cursor: pointer;               /* cursor de “m�ozinha” ao passar por cima */
+    transition: background 0.2s ease, color 0.2s ease; /* transi��o suave ao mudar cor de fundo e texto */
+    user-select: none;             /* evita sele��o de texto ao clicar */
     box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
     border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
-    border-radius: var(--radius-full); /* arredondamento completo (variável global) */
+    border-radius: var(--radius-full); /* arredondamento completo (vari�vel global) */
 }
   
 .book-pill.active {
-    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do módulo */
+    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do m�dulo */
     color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
 }
 
@@ -1009,7 +1009,7 @@ body.dark .book-pill:hover {
 }
 
 body.dark .book-pill.active {
-    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do módulo */
+    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do m�dulo */
     color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
 }
 
@@ -1017,7 +1017,7 @@ body.dark .book-pill.active {
 @media (max-width: 480px) {
     .book-checkboxes {
       max-width: 100%;        /* ocupa a tela inteira no mobile */
-      gap: 8px;              /* espaço maior entre pills para toque */
+      gap: 8px;              /* espa�o maior entre pills para toque */
     }
   
     .book-pill {
@@ -1230,6 +1230,23 @@ body.dark .book-pill.active {
     border-color: var(--bots-primary);
     box-shadow: 0 0 0 3px rgb(16 185 129 / 0.12); /* subtle green glow */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ===== BIBLIOMANCIA ===== */
 .action-container {
     max-width: 600px;
@@ -1351,7 +1368,7 @@ body.dark .book-pill.active {
     margin-top: 0;
     padding-top: 0;
 }
-/* Same separators for Semântica group */
+/* Same separators for Sem�ntica group */
 .theme-sem .group-content .displaybox-item {
     border-top: 1px solid var(--gray-200);
     padding-top: var(--space-3);
@@ -1494,11 +1511,11 @@ body.dark .book-pill.active {
     color: #333764;
     border-color: #cacaca;
 }
-/* Removed unused metadata-badge estilos 3â€“9 */
+/* Removed unused metadata-badge estilos 3–9 */
 /* Dark theme tuning for metadata badges */
 [data-theme="dark"] .metadata-badge.estilo1 { background: rgba(136, 86, 0, 0.18); color: #fbbf24; border-color: rgba(181, 114, 0, 0.35); }
 [data-theme="dark"] .metadata-badge.estilo2 { background: rgba(115, 115, 115, 0.332); color: #ffffff; border-color: rgba(181, 114, 0, 0.35); }
-/* Removed dark theme overrides for unused estilos 3â€“9 */
+/* Removed dark theme overrides for unused estilos 3–9 */
 /* ===== LOADING STATES ===== */
 .loading-container {
     display: flex;
@@ -1747,7 +1764,7 @@ body.dark .book-pill.active {
         margin: 0 auto;
     }
     
-    /* Mobile: manter tï¿½tulo centralizado sem bloquear botï¿½es */
+    /* Mobile: manter t�tulo centralizado sem bloquear bot�es */
     .navbar-text {
         position: static;
         transform: none;
@@ -1817,8 +1834,8 @@ body.dark .book-pill.active {
         line-height: 1;
         align-self: center;
         text-align: center;
-        margin-top: 2px;     /* Espaço acima */
-        margin-bottom: 2px;  /* Espaço abaixo */
+        margin-top: 2px;     /* Espa�o acima */
+        margin-bottom: 2px;  /* Espa�o abaixo */
         margin: 2px;
         line-height: 1;
     }
@@ -1834,7 +1851,7 @@ body.dark .book-pill.active {
 
     
     /* Lexical: compact single-row badge on small screens */
-    /* Ajusta o espaçamento entre os cards para que sejam mais compactos */
+    /* Ajusta o espa�amento entre os cards para que sejam mais compactos */
     /* =================================================== */
     .tool-card.lexical-compact,
     /* Generic compact style for all module badges */
@@ -1975,14 +1992,14 @@ textarea:focus-visible {
   color: var(--gray-800) !important;
   border-color: var(--gray-300) !important;
 }
-/* Coluna Ãºnica */
+/* Coluna única */
 /*==============================================================================*/
 .option-column {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    max-width: none; /* largura máxima agradável */
+    max-width: none; /* largura m�xima agrad�vel */
   }
   
 /* ===== HOMEPAGE INFO TOGGLE (expand descriptions) ===== */
@@ -2078,18 +2095,18 @@ textarea:focus-visible {
 
 
 
- /* Linha dos botões */
+ /* Linha dos bot�es */
 .button-row {
     display: flex;
     justify-content: center;
-    gap: 12px; /* espaço entre os botões */
+    gap: 12px; /* espa�o entre os bot�es */
     margin-top: 12px;
   }
   
-  /* Botão salvar */
+  /* Bot�o salvar */
   .save-btn {
-width: 44px;
-height: 44px;
+width: 40px;
+height: 40px;
 border-radius: 50%;
 border: none;
 background: var(--module-accent, var(--primary-500));
@@ -2103,7 +2120,7 @@ background: var(--module-accent-secondary, var(--primary-600));
 }
   .save-btn i { font-size: 20px; }
   
-  /* Botão sair */
+  /* Bot�o sair */
   .exit-btn {
     display: flex; align-items: center; justify-content: center;
     width: 36px; height: 36px;
@@ -2199,7 +2216,7 @@ select {
     margin: 12px;
   }
   
-  /* TÃ­tulo */
+  /* Título */
   .initial-quests-title {
     font-size: 0.9rem;
     color: var(--gray-600);
@@ -2216,7 +2233,7 @@ select {
     gap: 8px;
   }
   
-  /* Estilo dos botões ("pills") */
+  /* Estilo dos bot�es ("pills") */
   .initial-quests-badge {
     border: 1px solid var(--gray-300);
     background: #f0faf1; /* verde clarinho */
@@ -2242,7 +2259,7 @@ select {
   
 
 
-  /* Ajustes para smartphones até 480px */
+  /* Ajustes para smartphones at� 480px */
   @media (max-width: 480px) {
     #initial-quests {
       margin: 8px;
@@ -2283,11 +2300,11 @@ select {
     [data-theme="dark"] .initial-quests-badge:hover,
     [data-theme="dark"] .initial-quests-badge:active,
     [data-theme="dark"] .initial-quests-badge:focus {
-        background: #3a4d40;   /* verde intermediário no hover */
+        background: #3a4d40;   /* verde intermedi�rio no hover */
         color: #ffffff;
     }
   
-    /* Tema Dark - tÃ­tulo */
+    /* Tema Dark - título */
     [data-theme="dark"] .initial-quests-title {
         color: #b0b0b0;   /* cinza claro, suave */
     }
@@ -2302,8 +2319,8 @@ select {
     [data-theme="dark"] .initial-quests-badge:hover,
     [data-theme="dark"] .initial-quests-badge:active,
     [data-theme="dark"] .initial-quests-badge:focus {
-        background: #3a4d40;   /* verde intermediário no hover */
-        color: #ffffff;        /* texto mais nÃ­tido */
+        background: #3a4d40;   /* verde intermedi�rio no hover */
+        color: #ffffff;        /* texto mais nítido */
     }
   
 
@@ -2423,7 +2440,7 @@ select {
 flex: 1;                   /* ocupa a coluna da esquerda */
 display: flex;
 flex-direction: column;
-gap: 12px;                 /* espaço entre linhas */
+gap: 12px;                 /* espa�o entre linhas */
 }
 
 .config-options .row {
@@ -2434,7 +2451,13 @@ gap: 8px;
 
 .config-actions {
 display: flex;
-align-items: flex-start;   /* botão alinhado no topo */
+align-items: flex-start;   /* bot�o alinhado no topo */
+}
+
+.config-container .config-actions {
+    padding: 0;
+    border-top: none;
+    background: transparent;
 }
 
 .save-btn {
@@ -2456,7 +2479,7 @@ background: var(--module-accent-secondary, var(--primary-600));
 .select-books-text {
     font-weight: bold;   /* negrito */
     font-size: var(--text-base);     /* tamanho fixo */
-    color: var(--module-accent, var(--gray-600));         /* cor do módulo */
+    color: var(--module-accent, var(--gray-600));         /* cor do m�dulo */
     text-align: center;  /* centralizado */
     margin-bottom: 8px;
     margin-top: 8px;
@@ -2468,9 +2491,9 @@ background: var(--module-accent-secondary, var(--primary-600));
 .summary-list-deepdive {
     display: flex;
     flex-direction: column;
-    gap: 2px;           /* espaçamento mínimo entre os pills */
+    gap: 2px;           /* espa�amento m�nimo entre os pills */
     max-width: 400px;
-    width: 100%; /* pills expandem até a borda do container */
+    width: 100%; /* pills expandem at� a borda do container */
     padding: 4px;
   }
   
@@ -2479,13 +2502,13 @@ background: var(--module-accent-secondary, var(--primary-600));
     display: flex;
     justify-content: space-between;
     align-items: left;
-    padding: 4px 8px;   /* 🔹 padding menor -> reduz altura */
+    padding: 4px 8px;   /* ?? padding menor -> reduz altura */
     border-radius: 9999px;
     background: #ffffff;
     color: #000000;
     font-size: var(--text-base);
     font-weight: normal;
-    margin: 1px 0;      /* 🔹 quase sem margem vertical */
+    margin: 1px 0;      /* ?? quase sem margem vertical */
   }
   
   .pill-label-deepdive {
@@ -2496,7 +2519,7 @@ background: var(--module-accent-secondary, var(--primary-600));
   
   .pill-count-deepdive {
     font-weight: normal;
-    margin-left: 6px;   /* 🔹 um pouco menor */
+    margin-left: 6px;   /* ?? um pouco menor */
     font-size: var(--text-base);
   }
   
@@ -2511,11 +2534,11 @@ background: var(--module-accent-secondary, var(--primary-600));
     .summary-list-deepdive {
       max-width: 100%;
       padding: 6px;
-      gap: 1px;   /* 🔹 ainda mais compacto no mobile */
+      gap: 1px;   /* ?? ainda mais compacto no mobile */
     }
     .pill-row-deepdive {
       font-size: var(--text-xs);
-      padding: 3px 6px; /* 🔹 ainda menor no mobile */
+      padding: 3px 6px; /* ?? ainda menor no mobile */
     }
   }
   
@@ -2526,14 +2549,14 @@ background: var(--module-accent-secondary, var(--primary-600));
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
-    background: #f3f4f6;           /* cor de fundo padrão (cinza claro) */
+    padding: 8px;                  /* espa�o interno (topo/baixo/laterais) */   
+    background: #f3f4f6;           /* cor de fundo padr�o (cinza claro) */
     color: #374151;                /* cor do texto (cinza escuro) */
-    font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
+    font-size: var(--text-sm);     /* tamanho da fonte (pega da vari�vel global) */
     font-weight: 500;              /* peso da fonte (semibold) */
     box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
     border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
-    border-radius: var(--radius-full); /* arredondamento completo (variável global) */
+    border-radius: var(--radius-full); /* arredondamento completo (vari�vel global) */
 }
 
 

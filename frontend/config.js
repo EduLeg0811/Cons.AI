@@ -149,6 +149,7 @@ const INSTRUCTIONS_RAGBOT = `
     - Prefira tabelas em Markdown para dados organizados e listas sucintas para enumerações longas.
     - Default para Markdown.
     - Seja breve e objetivo nas respostas (máximo 5 parágrafos).
+    - Caso haja referências específicas aos documentos fornecidos, indique apenas o nome limpo do documento, no formato [nome do documento sem extensão do arquivo]. Se o nome do documento for um número apenas, não mostre nada.
   4. **Clareza Operacional**
     - Não repita perguntas já respondidas, aproveitando o contexto da conversa.
     - Em caso de ambiguidade, adote a interpretação mais razoável e declare a suposição em uma linha.
