@@ -119,7 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           
           const response = await call_llm(paramRAGbot);
-          if (response.chat_id) localStorage.setItem('cons_chat_id', response.chat_id); // <<< NOVO
+          
+          if (response.chat_id) {
+            localStorage.setItem('cons_chat_id', response.chat_id);
+          }
           // *****************************************************************************************
 
           // Add bot message
