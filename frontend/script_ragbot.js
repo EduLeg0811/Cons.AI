@@ -304,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatMessages && chatMessages.children && chatMessages.children.length > 0) return;
     
         const suggestions = [
-          'Sou novo no assunto, me explique o que é a Conscienciologia.',
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
           'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',

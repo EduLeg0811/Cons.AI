@@ -361,6 +361,10 @@ function showDeepdive(container, data) {
 
 
 
+
+
+
+
 // ===========================================================================
 // showSearch (corrigido com IDs únicos) + HIGHLIGHT
 // ===========================================================================
@@ -839,8 +843,14 @@ console.log('||| Display.js|||  showVerbetopedia data:', data);
             (typeof item.text === 'string' && item.text) ||
             ''
         );
+
+        content = '**Definologia.** ' + content;
         const rawHtml  = renderMarkdown(content);
         const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+
+        console.log('||| Display.js|||  showVerbetopedia content:', content);
+        console.log('||| Display.js|||  showVerbetopedia rawHtml:', rawHtml);
+        console.log('||| Display.js|||  showVerbetopedia safeHtml:', safeHtml);
 
         // >>> HIGHLIGHT <<<
         const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
@@ -887,6 +897,8 @@ console.log('||| Display.js|||  showVerbetopedia data:', data);
     </div>`;
     container.insertAdjacentHTML('beforeend', groupHtml);
 
+
+    
     // Badge + painel colapsável
     const _vb_count = items.length;
     const _vb_html = `
@@ -949,39 +961,6 @@ function showRagbot(container, data) {
 
 
 // ________________________________________________________________________________________
-// Show RAGbot (inline badges only)
-// ________________________________________________________________________________________
-function showRagbot2(container, data) {
-  try {
-    if (!container || !data) return;
-
-    let md = {};
-    try { md = extractMetadata(data, 'ragbot') || {}; } catch {}
-
-    const title = (md?.title || data?.title || '').toString();
-    const citations = (md?.citations || data?.citations || '').toString();
-    const totalTokens = md?.total_tokens_used ?? data?.total_tokens_used;
-    const model = md?.model ?? data?.model;
-    const temperature = md?.temperature ?? data?.temperature;
-
-    const parts = [];
-    if (title) parts.push(`<span class="metadata-badge title"><strong>${escapeHtml(title)}</strong></span>`);
-    if (citations) parts.push(`<span class="metadata-badge citation">Citations: ${escapeHtml(citations)}</span>`);
-    if (model !== undefined && model !== null && model !== '') parts.push(`<span class="metadata-badge model">Model: ${escapeHtml(String(model))}</span>`);
-    if (totalTokens !== undefined && totalTokens !== null && totalTokens !== '') parts.push(`<span class="metadata-badge tokens">Tokens: ${escapeHtml(String(totalTokens))}</span>`);
-    if (temperature !== undefined && temperature !== null && temperature !== '') parts.push(`<span class="metadata-badge temperature">Temp: ${escapeHtml(String(temperature))}</span>`);
-
-    if (!parts.length) return;
-
-    const metaHtml = `<div class="metadata-container">${parts.join('')}</div>`;
-    container.insertAdjacentHTML('beforeend', metaHtml);
-  } catch (e) {
-    console.warn('showRagbot2: failed to render badges', e);
-  }
-}
-
-
-// ________________________________________________________________________________________
 // Show Quiz (stub seguro; remova do assign final se não usar)
 // ________________________________________________________________________________________
 function showQuiz(container, data) {
@@ -1034,6 +1013,7 @@ function showLexverb(container, data) {
     const contentHtml = arr.map(item => {
         const metaData = item.metadata;
         let content = metaData.markdown || metaData.page_content || metaData.text || metaData.paragraph || '';
+        content = '**Definologia.** ' + content;
         const rawHtml  = renderMarkdown(content);
         const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 

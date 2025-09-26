@@ -360,11 +360,6 @@ def build_docx(data, group_results_by_book):
 
 
 
-
-
-
-
-
 #_________________________________________________________
 # display_results_unified       
 #_________________________________________________________
@@ -441,6 +436,7 @@ def display_results_unified(doc, data, search_type):
         if not groups["lexical"] and not groups["semantical"]:
             continue
 
+          
         # Subtítulo da fonte
         doc.add_paragraph("")
         src_title = doc.add_paragraph()
@@ -452,6 +448,8 @@ def display_results_unified(doc, data, search_type):
         doc.add_paragraph("")
 
         counter = 0
+
+
 
         # Primeiro lexical
         for it in groups["lexical"]:
@@ -524,9 +522,6 @@ def display_results_unified(doc, data, search_type):
             metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
 
             doc.add_paragraph("")
-
-
-
 
 
 

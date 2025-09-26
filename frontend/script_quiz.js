@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // ------------------------------------------------------
             if (!quizData) {
                 const paramQuestion = {
-                    query: 'Formule uma nova pergunta sobre Conscienciologia. Não repita perguntas anteriores nem aborde temas semelhantes em sequência.',
+                    query: 'Formule uma nova pergunta sobre Conscienciologia.',
                     model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
                     temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
                     vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
