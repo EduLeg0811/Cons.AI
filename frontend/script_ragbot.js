@@ -82,19 +82,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (initial) initial.remove();
           } catch {}
 
-
+          // Remove pergunta antiga do usuário
+          removeUserMessages();
           
           //removeChatMessage(loadingId);
           cleanChat();
-          
-          // Add user message to chat
-          addChatMessage('user', term);
+
           
           // Clear input
           searchInput.value = '';
           searchInput.style.height = 'auto';
 
+          
 
+          // Add user message to chat
+          addChatMessage('user', term);
 
           // Add loading message
          
@@ -122,8 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Add bot message
           addChatMessage('bot', response.text);
-
-          // Mostra os metadados do response em Badges, logo apÃ³s o texto da resposta
+          
+          
+          // Mostra os metadados do response em Badges, logo após o texto da resposta
           // ------------------------------------------------------------------------      
           if (window.CONFIG.FULL_BADGES) {
             metaData = extractMetadata(response, 'ragbot');
@@ -250,7 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return messageId;
     }
 
-
+    function removeUserMessages() {
+      if (!chatMessages) return;
+      const userMessages = chatMessages.querySelectorAll('.chat-message.user');
+      userMessages.forEach(msg => msg.remove());
+    }
+    
 
     // Remove old chat messages while keeping the latest user question at top
     function cleanChat() {

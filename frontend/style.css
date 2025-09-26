@@ -1096,6 +1096,8 @@ body.dark .book-pill.active {
     border-radius: var(--space-6);
     padding: var(--space-5) var(--space-6);
     box-shadow: var(--shadow-sm);
+
+
 /* Ajuste do espacamento das linhas nos paragrafos renderizados via Markdown */
     /* ============================================================================== */
     line-height: 1.2;
@@ -1211,18 +1213,28 @@ body.dark .book-pill.active {
     padding-left: var(--space-4);
     padding-right: var(--space-4);
 }
-/* Improve paragraph and list spacing/alignment inside bot messages */
+/* Parágrafos com leve separação */
 .theme-bots .chat-message.bot .message-content .markdown-content p {
-    margin: 0.7em 0;
+    margin: 0.6em 0;
+    line-height: 1.4;
+    font-size: var(--text-sm);
 }
+
 .theme-bots .chat-message.bot .message-content .markdown-content ul,
 .theme-bots .chat-message.bot .message-content .markdown-content ol {
-    padding-left: 1.25em;
     margin: 0.6em 0;
+    padding-left: 0;             /* remove recuo extra */
+    list-style-position: inside; /* coloca números/bullets no mesmo alinhamento do texto */
+    font-size: var(--text-sm);
+    line-height: 1.4;
 }
-.theme-bots .chat-message.bot .message-content .markdown-content li {
-    margin: 0.35em 0;
+
+.theme-bots .chat-message.bot .message-content .markdown-content li p {
+    display: inline; /* evita quebra após o índice */
+    margin: 0;       /* remove espaçamento extra */
 }
+
+
 /* Chat input + send button in bots theme use green palette */
 .theme-bots .chat-send-btn { background: var(--bots-primary); }
 .theme-bots .chat-send-btn:hover:not(:disabled) { background: var(--bots-secondary); }
@@ -1657,20 +1669,21 @@ body.dark .book-pill.active {
 }
 /* /* /* Ajuste tamanho letra e espacamento das linhas nos paragrafos renderizados via Markdown */
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-.markdown-content p {
-    margin: 0;
-    line-height: 1.2;
-    font-size: var(--text-sm);
-    padding: 0;
-}
+/* Uniformizar listas e parágrafos */
 .markdown-content ul,
 .markdown-content ol {
     margin: 0;
-    padding-left: 1.2em;
+    padding-left: 1.2em; /* mantém leve recuo */
+    line-height: 1.2;    /* igual ao <p> */
+    font-size: var(--text-sm); /* igual ao <p> */
 }
+
 .markdown-content li {
-    margin: 0.25em 0;
+    margin: 0; /* remove espaçamento extra entre itens */
+    line-height: 1.2; /* igual ao <p> */
+    font-size: var(--text-sm); /* igual ao <p> */
 }
+
 .markdown-content code {
     font-family: var(--font-mono);
     font-size: 0.875em;
