@@ -122,7 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if (response.chat_id) {
             localStorage.setItem('cons_chat_id', response.chat_id);
+            paramRAGbot.chat_id = response.chat_id; // garante consistência
           }
+          
           // *****************************************************************************************
 
           // Add bot message
