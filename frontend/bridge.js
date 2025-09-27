@@ -193,7 +193,8 @@ async function call_llm(parameters) {
     const responseData = await response.json();
 
     // Transform the LLM response to match what displayResults expects
-    const formattedResponse = llm_formatResponse(responseData);
+    // const formattedResponse = llm_formatResponse(responseData);
+    const formattedResponse = responseData;
 
     console.log(`********bridge.js - call_llm*** [formattedResponse]:`, formattedResponse);
 

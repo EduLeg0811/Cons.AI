@@ -95,33 +95,12 @@ function limitResultsPerSource(results, maxPerSource) {
 // llm_formatResponse  --- call from [bridge.js] <call_llm>
 //______________________________________________________________________________________________
 function llm_formatResponse(responseData) {
-    // Group citations by source
-    const citationsBySource = responseData.citations
-        .replace(/[\[\]]/g, '')  // Remove brackets
-        .split(';')              // Split by semicolon
-        .map(pair => {
-            const [source, page] = pair.split(',').map(s => s.trim());
-            return {
-                source: source.replace(/\.[^/.]+$/, ''), // Remove file extension
-                page: parseInt(page, 10) || 0
-            };
-        })
-        .reduce((acc, {source, page}) => {
-            if (!acc[source]) acc[source] = new Set();
-            acc[source].add(page);
-            return acc;
-        }, {});
 
-    // Format the grouped citations
-    const formattedCitations = Object.entries(citationsBySource)
-        .map(([source, pages]) => 
-            `${source}: ${Array.from(pages).sort((a, b) => a - b).join(', ')}`
-        )
-        .join(' ; ');
+    console.log('RAW llm_formatResponse:', responseData);
 
     const formattedResponse = {
         text: responseData.text,
-        citations: formattedCitations,
+        citations: responseData.citations,
         total_tokens_used: responseData.total_tokens_used || 0,
         type: responseData.type || 'ragbot',
         model: responseData.model,
@@ -268,6 +247,15 @@ function extractMetadata(data, type) {
 
   
 // ---------------- Chat ID helpers ----------------
+const CHAT_ID_STORAGE_KEYS = {
+  default: 'cons_chat_id',
+  ragbot: 'cons_chat_id_ragbot'
+};
+
+function resolveChatIdKey(scope = 'default') {
+  return CHAT_ID_STORAGE_KEYS[scope] || CHAT_ID_STORAGE_KEYS.default;
+}
+
 function createUuid() {
   if (window.crypto?.randomUUID) return window.crypto.randomUUID();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -277,30 +265,39 @@ function createUuid() {
   });
 }
 
-function getOrCreateChatId() {
-  let id = localStorage.getItem('cons_chat_id');
+function getOrCreateChatId(scope = 'default') {
+  const key = resolveChatIdKey(scope);
+  let id = localStorage.getItem(key);
   if (!id) {
     id = createUuid();
-    localStorage.setItem('cons_chat_id', id);
+    localStorage.setItem(key, id);
   }
   return id;
 }
 
-function newConversationId() {
+function newConversationId(scope = 'default') {
   const id = createUuid();
-  localStorage.setItem('cons_chat_id', id);
+  const key = resolveChatIdKey(scope);
+  localStorage.setItem(key, id);
   return id;
 }
 
+function setChatId(id, scope = 'default') {
+  const key = resolveChatIdKey(scope);
+  localStorage.setItem(key, id);
+  return id;
+}
+window.setChatId = setChatId;
 
 
 // Reset LLM
-async function resetLLM() {
-  // Abort a requisição ativa (se houver)
+async function resetLLM(scope = 'default') {
+  const effectiveScope = typeof scope === 'string' ? scope : 'default';
+
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }
-  const chat_id = getOrCreateChatId();
+  const chat_id = getOrCreateChatId(effectiveScope);
   try {
     await fetch(apiBaseUrl + '/ragbot_reset', {
       method: 'DELETE',
@@ -310,24 +307,21 @@ async function resetLLM() {
   } catch (e) {
     console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
   }
-  newConversationId();
- 
-  // Zera histÃ³rico em memÃ³ria (se exposto)
+  newConversationId(effectiveScope);
+
   if (window.chatHistory && Array.isArray(window.chatHistory)) {
     try { window.chatHistory.length = 0; } catch {}
   }
 }
 
-
-
-
 // Opcional: reset no servidor + novo chat_id local, se existir o endpoint /ragbot_reset (limpa tambem Search Box)
-async function resetConversation() {
-  // Abort a requisição ativa (se houver)
+async function resetConversation(scope = 'default') {
+  const effectiveScope = typeof scope === 'string' ? scope : 'default';
+
   if (window.abortRagbot) {
     try { window.abortRagbot(); } catch {}
   }
-  const chat_id = getOrCreateChatId();
+  const chat_id = getOrCreateChatId(effectiveScope);
   try {
     await fetch(apiBaseUrl + '/ragbot_reset', {
       method: 'DELETE',
@@ -337,30 +331,23 @@ async function resetConversation() {
   } catch (e) {
     console.warn('Falha ao resetar no servidor (seguindo mesmo assim):', e);
   }
-  newConversationId();
-  // Limpeza básica de UI se existir
+  newConversationId(effectiveScope);
   const container = document.querySelector('#results');
   if (container) container.innerHTML = '';
-  // Limpa mensagens do chat
   const chat = document.getElementById('chatMessages');
   if (chat) chat.innerHTML = '';
-  // Zera histÃ³rico em memÃ³ria (se exposto)
   if (window.chatHistory && Array.isArray(window.chatHistory)) {
     try { window.chatHistory.length = 0; } catch {}
   }
   const input = document.getElementById('searchInput');
   if (input) input.value = '';
 
-  // Mensagem de boas-vindas
   if (window.ragbotAddMessage) {
     window.ragbotAddMessage('bot', 'Nova conversa iniciada. Como posso ajudar?');
   }
 }
 
-// Se existir um botão com este id, liga automaticamente
-document.getElementById('btn-new-conv')?.addEventListener('click', resetConversation);
-
-
+document.getElementById('btn-new-conv')?.addEventListener('click', () => resetConversation('default'));
 // ---------------- Theme (Light/Dark) ----------------
 // Centralized theme handling to keep all pages consistent
 // Applies `data-theme` on <html> and persists in localStorage

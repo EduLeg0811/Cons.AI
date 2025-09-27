@@ -1395,7 +1395,7 @@ body.dark .book-pill.active {
 .displaybox-group { display: none; }
 .displaybox-content {
     padding: var(--space-6);
-    line-height: 1.5;
+    line-height: 1.2;
 }
 /* RagBot response box: add a bit more breathing room */
 .displaybox-container.ragbot-box .displaybox-content {
@@ -1403,7 +1403,7 @@ body.dark .book-pill.active {
 }
 @media (max-width: 480px) {
     .displaybox-container.ragbot-box .displaybox-content {
-        padding: var(--space-4);
+        padding: var(--space-3);
     }
     /* Tighten spacing between text and metadata badges on small screens */
     .displaybox-text {
@@ -1423,7 +1423,7 @@ body.dark .book-pill.active {
 .simple-ref {
     text-align: right;
     color: var(--gray-500);
-    font-size: 0.85em;
+    font-size: 0.8em;
     font-style: italic;
     margin-top: 4px;
 }
@@ -1436,7 +1436,7 @@ body.dark .book-pill.active {
 .metadata-container {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-1);
     margin-top: var(--space-1);
 }
 /* ===== COLLAPSIBLE SUMMARIES ===== */
@@ -1664,7 +1664,7 @@ body.dark .book-pill.active {
 .markdown-content h5,
 .markdown-content h6 {
     margin: 0.8em 0 0.5em;
-    line-height: 1.2;
+    line-height: 1.4;
     font-weight: 600;
 }
 /* /* /* Ajuste tamanho letra e espacamento das linhas nos paragrafos renderizados via Markdown */
@@ -1674,13 +1674,13 @@ body.dark .book-pill.active {
 .markdown-content ol {
     margin: 0;
     padding-left: 1.2em; /* mantém leve recuo */
-    line-height: 1.2;    /* igual ao <p> */
+    line-height: 1.4;    /* igual ao <p> */
     font-size: var(--text-sm); /* igual ao <p> */
 }
 
 .markdown-content li {
     margin: 0; /* remove espaçamento extra entre itens */
-    line-height: 1.2; /* igual ao <p> */
+    line-height: 1.4; /* igual ao <p> */
     font-size: var(--text-sm); /* igual ao <p> */
 }
 
@@ -1777,7 +1777,7 @@ body.dark .book-pill.active {
         margin: 0 auto;
     }
     
-    /* Mobile: manter t�tulo centralizado sem bloquear bot�es */
+    /* Mobile: manter titulo centralizado sem bloquear botoes */
     .navbar-text {
         position: static;
         transform: none;
@@ -1847,8 +1847,8 @@ body.dark .book-pill.active {
         line-height: 1;
         align-self: center;
         text-align: center;
-        margin-top: 2px;     /* Espa�o acima */
-        margin-bottom: 2px;  /* Espa�o abaixo */
+        margin-top: 2px;     /* Espaco acima */
+        margin-bottom: 2px;  /* Espaco abaixo */
         margin: 2px;
         line-height: 1;
     }
@@ -1864,7 +1864,7 @@ body.dark .book-pill.active {
 
     
     /* Lexical: compact single-row badge on small screens */
-    /* Ajusta o espa�amento entre os cards para que sejam mais compactos */
+    /* Ajusta o espacamento entre os cards para que sejam mais compactos */
     /* =================================================== */
     .tool-card.lexical-compact,
     /* Generic compact style for all module badges */
@@ -2272,7 +2272,7 @@ select {
   
 
 
-  /* Ajustes para smartphones at� 480px */
+  /* Ajustes para smartphones até 480px */
   @media (max-width: 480px) {
     #initial-quests {
       margin: 8px;
@@ -2280,7 +2280,7 @@ select {
     }
   
     .initial-quests-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-align: left;
     }
   
@@ -2289,7 +2289,7 @@ select {
     }
   
     .initial-quests-badge {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       padding: 8px 12px;
       width: 100%; /* badges ocupam largura inteira */
       text-align: left;
@@ -2578,3 +2578,30 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 /* Cor Highlight */
 .hl { background: #fff59d; padding: 0 1px; border-radius: 2px; }
+
+
+
+
+
+/* ===============================
+   Ajuste tipografia parágrafos módulos — Mobile 480px
+   =============================== */
+   @media (max-width: 480px) {
+    /* Parágrafos renderizados nos resultados de busca */
+    .displaybox-text .markdown-content p,
+    .displaybox-text .markdown-content li,
+    .displaybox-text .markdown-content ul,
+    .displaybox-text .markdown-content ol {
+      font-size: var(--text-xs);    /* var-xs */
+      line-height: 1.2;
+    }
+  
+    /* Títulos dentro dos resultados também um pouco menores */
+    .displaybox-text .markdown-content h1,
+    .displaybox-text .markdown-content h2,
+    .displaybox-text .markdown-content h3 {
+      font-size: var(--text-xs);
+      line-height: 1.2;
+    }
+  }
+  

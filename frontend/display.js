@@ -1,5 +1,4 @@
 // display.js - Centralized result rendering functionality (modularized)
-
 // __________________________________________________________________________________________
 // DOMPurify
 // __________________________________________________________________________________________
@@ -9,290 +8,6 @@ const sanitizeHtml = window.DOMPurify?.sanitize || (html => html);
 // Evita TDZ e permite popular depois que todas as funções showX forem definidas
 var renderers = Object.create(null);
 
-
-// Markdown renderer (usa marked + DOMPurify se disponíveis; senão, fallback simples)
-function renderMarkdown(mdText) {
-    const input = typeof mdText === 'string' ? mdText : String(mdText || '');
-  
-    // 0) Se já há HTML de bloco, apenas sanitize e devolve (evita <p><p>...</p></p>)
-    const hasBlockHtml = /<\s*(p|div|ul|ol|li|h[1-6]|pre|blockquote|br)\b/i.test(input);
-    try {
-      if (!hasBlockHtml && window.marked?.parse) {
-        const html = window.marked.parse(input);
-        return sanitizeHtml(html);
-      }
-    } catch (e) {
-      console.warn('marked falhou, usando fallback:', e);
-    }
-    if (hasBlockHtml) {
-      // Ainda assim, tira <br> duplos e <p> vazios que porventura cheguem prontos
-      return sanitizeHtml(
-        input
-          .replace(/(<br\s*\/?>\s*){2,}/gi, '<br>')
-          .replace(/<p>\s*(?:<br\s*\/?>\s*)*<\/p>/gi, '')
-      );
-    }
-  
-    // 1) Normalização de linhas
-    let normalized = input
-      .replace(/\r\n?/g, '\n')     // CRLF/LF -> LF
-      .replace(/[ \t]+\n/g, '\n')  // tira espaços ao fim da linha
-      .replace(/\n{3,}/g, '\n\n')  // colapsa 3+ quebras em 2
-      .trim();
-  
-    // 2) Preserva blocos de código antes de mexer em quebras
-    normalized = normalized.replace(/```([\s\S]*?)```/g, (_, code) =>
-      `<pre><code>${sanitizeHtml(code)}</code></pre>`
-    );
-  
-    // 3) Marcações simples (headers, ênfases, listas mínimas)
-    let tmp = normalized
-      .replace(/^######\s?(.*)$/gm, '<h6>$1</h6>')
-      .replace(/^#####\s?(.*)$/gm, '<h5>$1</h5>')
-      .replace(/^####\s?(.*)$/gm, '<h4>$1</h4>')
-      .replace(/^###\s?(.*)$/gm, '<h3>$1</h3>')
-      .replace(/^##\s?(.*)$/gm, '<h2>$1</h2>')
-      .replace(/^#\s?(.*)$/gm, '<h1>$1</h1>')
-      .replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>')
-      .replace(/^\s*\*\s+(.*)$/gm, '<li>$1</li>')
-      .replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>')
-      .replace(/(?:\s*<li>.*<\/li>\s*)+/gs, m => `<ul>${m}</ul>`)
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>');
-  
-    // 4) Quebra em parágrafos (2+ \n). Filtra vazios.
-    const paragraphs = tmp.split(/\n{2,}/).filter(p => p.trim().length);
-  
-    const html = paragraphs.map(p => {
-      // dentro do parágrafo, 1 quebra -> <br> (e evita <br><br>)
-      const withBreaks = p.replace(/\n/g, '<br>').replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
-      return `<p>${sanitizeHtml(withBreaks)}</p>`;
-    }).join('');
-  
-    // 5) Limpeza final: remove <p> vazios e <br> duplicados entre blocos
-    const cleaned = html
-      .replace(/<p>\s*(?:<br\s*\/?>\s*)*<\/p>/gi, '')
-      .replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
-  
-    return sanitizeHtml(cleaned);
-  }
-
-
-// ============================== HIGHLIGHT UTILITIES =========================================
-// Pinta de amarelo (accent-insensitive) os termos/expressões da consulta no HTML já sanitizado.
-// --------------------------------------------------------------------------------------------
-
-// Normaliza para busca (lower + sem acentos)
-function _stripAccents(s) {
-  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-function _norm(s) { return _stripAccents(String(s || '')).toLowerCase(); }
-
-// Constrói mapa de dobra (fold) para mapear índices do texto "sem acento" para o original
-function _buildFoldMap(original) {
-  const map = [];         // map[iFold] = iOriginal
-  let folded = '';
-  for (let i = 0; i < original.length; i++) {
-    const ch = original[i];
-    const base = _stripAccents(ch); // remove diacríticos do ponto atual
-    // Se base tiver múltiplos chars (raro), mapeia todos
-    for (let k = 0; k < base.length; k++) {
-      folded += base[k];
-      map.push(i);
-    }
-    // Combining marks são descartados naturalmente
-  }
-  return { folded, map };
-}
-
-// Tokeniza a query de forma leve (suporta "frases", ! & | ())
-function _tokenizeQuery(q) {
-  const tokens = [];
-  let i = 0, n = q.length;
-  while (i < n) {
-    const c = q[i];
-    if (/\s/.test(c)) { i++; continue; }
-    if ('()&|!'.includes(c)) { tokens.push(c); i++; continue; }
-    if (c === '"') {
-      let j = i + 1, buf = [];
-      while (j < n && q[j] !== '"') { buf.push(q[j++]); }
-      tokens.push('"' + buf.join('') + '"');
-      i = (j < n && q[j] === '"') ? j + 1 : j;
-      continue;
-    }
-    let j = i;
-    while (j < n && !'()&|!"'.includes(q[j]) && !/\s/.test(q[j])) j++;
-    tokens.push(q.slice(i, j));
-    i = j;
-  }
-  return tokens.filter(Boolean);
-}
-
-// Extrai literais POSITIVOS para destacar (ignora negados com ! e operadores)
-function _extractHighlightLiterals(query) {
-  const tokens = _tokenizeQuery(String(query || ''));
-  const lits = [];
-  let negateNext = false;
-  for (const t of tokens) {
-    if (t === '!') { negateNext = true; continue; }
-    if (t === '&' || t === '|' || t === '(' || t === ')') { negateNext = false; continue; }
-    // t = termo ou "frase"
-    if (negateNext) { negateNext = false; continue; } // não destacar NOT
-    const isPhrase = t.length >= 2 && t[0] === '"' && t[t.length-1] === '"';
-    const core = isPhrase ? t.slice(1, -1) : t;
-    if (!core) continue;
-    lits.push({ raw: t, phrase: isPhrase, core });
-    negateNext = false;
-  }
-  // ordenar por tamanho desc para evitar wrap parcial (c*a antes de 'a', etc.)
-  return lits.sort((a,b) => b.core.length - a.core.length);
-}
-
-// Constrói regex sobre TEXTO NORMALIZADO (folded), preservando ideia de wildcards e palavras
-function _buildRegexForLiteral(lit) {
-  const core = _norm(lit.core);
-  if (lit.phrase) {
-    // frase: substring literal (sem \b e sem curingas)
-    return new RegExp(_escapeRegex(core), 'gi');
-  }
-  if (core.includes('*')) {
-    // wildcard: '*' -> '.*'
-    const pattern = _escapeRegex(core).replace(/\\\*/g, '.*');
-    return new RegExp(pattern, 'gi');
-  }
-  // termo simples: palavra inteira (\b ... \b)
-  return new RegExp(`\\b${_escapeRegex(core)}\\b`, 'gi');
-}
-
-function _escapeRegex(s) {
-  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-// Dado um HTML já sanitizado, colore os termos apenas em TEXT NODES (sem tocar em tags)
-function highlightHtml(safeHtml, query) {
-  if (!safeHtml || !query) return safeHtml;
-
-  const literals = _extractHighlightLiterals(query);
-  if (!literals.length) return safeHtml;
-
-  const patterns = literals.map(_buildRegexForLiteral);
-
-  // divide em blocos "texto" e "tags", para não invadir atributos e nomes de tag
-  const parts = String(safeHtml).split(/(<[^>]+>)/g);
-
-  for (let i = 0; i < parts.length; i++) {
-    const chunk = parts[i];
-    if (!chunk || chunk.startsWith('<')) continue; // é tag, não texto
-
-    // mapeamento folded->original para acentuação
-    const { folded, map } = _buildFoldMap(chunk);
-    const foldedLower = folded.toLowerCase();
-
-    // coletar ranges de matches (em índices do ORIGINAL)
-    const ranges = [];
-    patterns.forEach(re => {
-      re.lastIndex = 0;
-      let m;
-      while ((m = re.exec(foldedLower)) !== null) {
-        const startFold = m.index;
-        const endFold = m.index + (m[0]?.length || 0);
-        if (endFold <= startFold) continue;
-        const startOrig = map[startFold];
-        const endOrig = (endFold - 1 < map.length) ? map[endFold - 1] + 1 : chunk.length;
-        ranges.push([startOrig, endOrig]);
-        // proteção: se regex puder casar vazio, evita loop infinito
-        if (re.lastIndex === m.index) re.lastIndex++;
-      }
-    });
-
-    if (!ranges.length) continue;
-
-    // mesclar sobreposições
-    ranges.sort((a,b) => a[0] - b[0] || a[1] - b[1]);
-    const merged = [];
-    let [cs, ce] = ranges[0];
-    for (let k = 1; k < ranges.length; k++) {
-      const [s, e] = ranges[k];
-      if (s <= ce) {
-        ce = Math.max(ce, e);
-      } else {
-        merged.push([cs, ce]);
-        [cs, ce] = [s, e];
-      }
-    }
-    merged.push([cs, ce]);
-
-    // reconstrói com marcação
-    let out = '';
-    let last = 0;
-    for (const [s, e] of merged) {
-      out += chunk.slice(last, s);
-      out += `<mark class="hl">${chunk.slice(s, e)}</mark>`;
-      last = e;
-    }
-    out += chunk.slice(last);
-
-    parts[i] = out;
-  }
-
-  return parts.join('');
-}
-
-// ============================================================================================
-// Pequeno CSS opcional (se quiser personalizar o amarelo do <mark> padrão do navegador)
-// Coloque no seu CSS global:
-// .hl { background: #fff59d; padding: 0 1px; border-radius: 2px; }
-// ============================================================================================
-
-// ============================== AUX: extrair search term do payload =========================
-function getSearchQuery(data) {
-  // 1) candidatos em ordem de prioridade
-  const candidates = [
-    data?.term,
-    data?.search_term
-  ].filter(v => typeof v === 'string' && v.trim() !== '');
-
-  if (!candidates.length) {
-    console.log('||| Display.js|||  getSearchQuery final term: (vazio)');
-    return '';
-  }
-
-  // 2) pega o primeiro candidato não vazio
-  let chosen = String(candidates[0]);
-
-  // 3) se houver "prefixo:valor", extrai o prefixo apenas (parte antes do ':')
-  const colonIdx = chosen.indexOf(':');
-  if (colonIdx >= 0) {
-    chosen = chosen.slice(0, colonIdx);
-  }
-
-  // 4) normalizações leves
-  let term = chosen
-    .trim()
-    .replace(/^"(.*)"$/, '$1')   // remove aspas externas
-    .replace(/\s+/g, ' ');       // colapsa espaços múltiplos
-
-  // 5) normalização para highlight: minúsculas e sem acentos
-  term = term
-    .toLowerCase()
-    .normalize('NFD')                // separa base + diacríticos
-    .replace(/[\u0300-\u036f]/g, ''); // remove os diacríticos
-
-  console.log('||| Display.js|||  getSearchQuery final term:', term);
-  return term;
-}
-
-
-
-
-
-// Collapse all open result panels and reset pill state when needed
-function collapseAllPills() {
-    document.querySelectorAll('.collapse-panel.open').forEach(panel => panel.classList.remove('open'));
-    document.querySelectorAll('.pill.active').forEach(pill => pill.classList.remove('active'));
-}
-
-window.collapseAllPills = collapseAllPills;
 
 
 // ===========================================================================
@@ -358,8 +73,6 @@ function showDeepdive(container, data) {
   summaryRows += '</div>';
   container.insertAdjacentHTML('beforeend', summaryRows);
 }
-
-
 
 
 
@@ -937,55 +650,6 @@ console.log('||| Display.js|||  showVerbetopedia data:', data);
 }
 
 
-// ________________________________________________________________________________________
-// Show RAGbot
-// ________________________________________________________________________________________
-function showRagbot(container, data) {
-  const text = data?.text || 'No text available.';
-  const mdHtml = renderMarkdown(text);
-
-  metadata = extractMetadata(data, 'ragbot');
-  const citations = metadata?.citations;
-  const total_tokens_used = metadata?.total_tokens_used;
-  const model = metadata?.model;
-  const temperature = metadata?.temperature;
-    
-  const html = `
-    <div class="displaybox-container ragbot-box">
-      <div class="displaybox-content">
-        <div class="displaybox-text markdown-content">${mdHtml}</div>
-      </div>
-    </div>`;
-  container.insertAdjacentHTML('beforeend', html);
-}
-
-
-// ________________________________________________________________________________________
-// Show Quiz (stub seguro; remova do assign final se não usar)
-// ________________________________________________________________________________________
-function showQuiz(container, data) {
-  if (!container) return;
-  const arr = Array.isArray(data?.results) ? data.results : [];
-  if (!arr.length) {
-    container.insertAdjacentHTML('beforeend',
-      '<div class="displaybox-container"><div class="displaybox-content">No quiz items.</div></div>');
-    return;
-  }
-  const html = arr.map((it, i) => {
-    const q = (it?.question || it?.text || '').toString();
-    const a = (it?.answer || '').toString();
-    return `
-      <div class="displaybox-item">
-        <div class="displaybox-text"><strong>Q${i+1}.</strong> ${escapeHtml(q)}</div>
-        ${a ? `<div class="meta-inline" style="margin-top:6px;"><em>Answer:</em> ${escapeHtml(a)}</div>` : ''}
-      </div>`;
-  }).join('');
-  container.insertAdjacentHTML('beforeend', `
-    <div class="displaybox-group">
-      <div class="displaybox-header"><span>Quiz</span><span class="score-badge">${arr.length}</span></div>
-      <div class="displaybox-content">${html}</div>
-    </div>`);
-}
 
 
 // ________________________________________________________________________________________
@@ -1209,6 +873,57 @@ function showCcg(container, data) {
 
 
 
+// ========================================================================================
+//                                  RAGBOT FUNCTIONS
+// ========================================================================================
+
+// ________________________________________________________________________________________
+// showBotMetainfo
+// ________________________________________________________________________________________
+function showBotMetainfo(container, metaData) {
+
+ 
+  if (!container) return;
+
+  // Extrair metadados relevantes
+  const md = extractMetadata(metaData, 'ragbot');
+
+  const citations = (md?.citations || metaData?.citations || '').toString();
+  const totalTokens = md?.total_tokens_used ?? metaData?.total_tokens_used;
+  const model = md?.model ?? metaData?.model;
+  const temperature = md?.temperature ?? metaData?.temperature;
+
+
+  const badgeParts = [];
+  if (model) {
+    badgeParts.push(`<span class="metadata-badge estilo1">${escapeHtml(model)}</span>`);
+  }
+  if (temperature !== undefined) {
+    badgeParts.push(`<span class="metadata-badge estilo2">Temp: ${escapeHtml(temperature)}</span>`);
+  }
+  if (totalTokens !== undefined) {
+    badgeParts.push(`<span class="metadata-badge estilo2">Tokens: ${escapeHtml(totalTokens)}</span>`);
+  }
+  if (citations.length > 2) {
+    // retira texto de citations após o ":" e elimina o primeiro caracter " "
+    citations_book = citations.split(':')[0].trim();
+    badgeParts.push(`<span class="metadata-badge estilo2">Refs: ${escapeHtml(citations_book)}</span>`);
+  }
+
+  // Remove badges anteriores
+  const oldMeta = container.querySelector('.metadata-container');
+  if (oldMeta) oldMeta.remove();
+
+  // Adiciona um espaço em branco antes das badges
+  container.insertAdjacentHTML('beforeend', '<br>');
+
+  const metaHtml = `<div class="metadata-container">${badgeParts.join('')}</div>`;
+  container.insertAdjacentHTML('beforeend', metaHtml);
+}
+
+
+
+
 // ______________________________________________________________________________________________
 // Loading helpers (restaurados)
 // ______________________________________________________________________________________________
@@ -1238,6 +953,15 @@ function removeLoading(container) {
 // .loading-container .loading { font-size: 0.95rem; color: var(--gray-700, #444); }
 
 
+
+
+// Collapse all open result panels and reset pill state when needed
+function collapseAllPills() {
+  document.querySelectorAll('.collapse-panel.open').forEach(panel => panel.classList.remove('open'));
+  document.querySelectorAll('.pill.active').forEach(pill => pill.classList.remove('active'));
+}
+
+window.collapseAllPills = collapseAllPills;
 
 
 
@@ -1272,10 +996,6 @@ function shouldShowRefBadges() {
 }
 
 
-
-
-
-
 // Helper: build inline reference line like: [ Name: value; Name2: value2 ]
 function buildMetaInlineLine(pairs) {
   try {
@@ -1297,6 +1017,291 @@ function buildMetaInlineLine(pairs) {
     return '';
   }
 }
+
+
+
+
+
+// ============================== HIGHLIGHT UTILITIES =========================================
+// Pinta de amarelo (accent-insensitive) os termos/expressões da consulta no HTML já sanitizado.
+// --------------------------------------------------------------------------------------------
+
+// Normaliza para busca (lower + sem acentos)
+function _stripAccents(s) {
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function _norm(s) { return _stripAccents(String(s || '')).toLowerCase(); }
+
+// Constrói mapa de dobra (fold) para mapear índices do texto "sem acento" para o original
+function _buildFoldMap(original) {
+  const map = [];         // map[iFold] = iOriginal
+  let folded = '';
+  for (let i = 0; i < original.length; i++) {
+    const ch = original[i];
+    const base = _stripAccents(ch); // remove diacríticos do ponto atual
+    // Se base tiver múltiplos chars (raro), mapeia todos
+    for (let k = 0; k < base.length; k++) {
+      folded += base[k];
+      map.push(i);
+    }
+    // Combining marks são descartados naturalmente
+  }
+  return { folded, map };
+}
+
+// Tokeniza a query de forma leve (suporta "frases", ! & | ())
+function _tokenizeQuery(q) {
+  const tokens = [];
+  let i = 0, n = q.length;
+  while (i < n) {
+    const c = q[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if ('()&|!'.includes(c)) { tokens.push(c); i++; continue; }
+    if (c === '"') {
+      let j = i + 1, buf = [];
+      while (j < n && q[j] !== '"') { buf.push(q[j++]); }
+      tokens.push('"' + buf.join('') + '"');
+      i = (j < n && q[j] === '"') ? j + 1 : j;
+      continue;
+    }
+    let j = i;
+    while (j < n && !'()&|!"'.includes(q[j]) && !/\s/.test(q[j])) j++;
+    tokens.push(q.slice(i, j));
+    i = j;
+  }
+  return tokens.filter(Boolean);
+}
+
+// Extrai literais POSITIVOS para destacar (ignora negados com ! e operadores)
+function _extractHighlightLiterals(query) {
+  const tokens = _tokenizeQuery(String(query || ''));
+  const lits = [];
+  let negateNext = false;
+  for (const t of tokens) {
+    if (t === '!') { negateNext = true; continue; }
+    if (t === '&' || t === '|' || t === '(' || t === ')') { negateNext = false; continue; }
+    // t = termo ou "frase"
+    if (negateNext) { negateNext = false; continue; } // não destacar NOT
+    const isPhrase = t.length >= 2 && t[0] === '"' && t[t.length-1] === '"';
+    const core = isPhrase ? t.slice(1, -1) : t;
+    if (!core) continue;
+    lits.push({ raw: t, phrase: isPhrase, core });
+    negateNext = false;
+  }
+  // ordenar por tamanho desc para evitar wrap parcial (c*a antes de 'a', etc.)
+  return lits.sort((a,b) => b.core.length - a.core.length);
+}
+
+// Constrói regex sobre TEXTO NORMALIZADO (folded), preservando ideia de wildcards e palavras
+function _buildRegexForLiteral(lit) {
+  const core = _norm(lit.core);
+  if (lit.phrase) {
+    // frase: substring literal (sem \b e sem curingas)
+    return new RegExp(_escapeRegex(core), 'gi');
+  }
+  if (core.includes('*')) {
+    // wildcard: '*' -> '.*'
+    const pattern = _escapeRegex(core).replace(/\\\*/g, '.*');
+    return new RegExp(pattern, 'gi');
+  }
+  // termo simples: palavra inteira (\b ... \b)
+  return new RegExp(`\\b${_escapeRegex(core)}\\b`, 'gi');
+}
+
+function _escapeRegex(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Dado um HTML já sanitizado, colore os termos apenas em TEXT NODES (sem tocar em tags)
+function highlightHtml(safeHtml, query) {
+  if (!safeHtml || !query) return safeHtml;
+
+  const literals = _extractHighlightLiterals(query);
+  if (!literals.length) return safeHtml;
+
+  const patterns = literals.map(_buildRegexForLiteral);
+
+  // divide em blocos "texto" e "tags", para não invadir atributos e nomes de tag
+  const parts = String(safeHtml).split(/(<[^>]+>)/g);
+
+  for (let i = 0; i < parts.length; i++) {
+    const chunk = parts[i];
+    if (!chunk || chunk.startsWith('<')) continue; // é tag, não texto
+
+    // mapeamento folded->original para acentuação
+    const { folded, map } = _buildFoldMap(chunk);
+    const foldedLower = folded.toLowerCase();
+
+    // coletar ranges de matches (em índices do ORIGINAL)
+    const ranges = [];
+    patterns.forEach(re => {
+      re.lastIndex = 0;
+      let m;
+      while ((m = re.exec(foldedLower)) !== null) {
+        const startFold = m.index;
+        const endFold = m.index + (m[0]?.length || 0);
+        if (endFold <= startFold) continue;
+        const startOrig = map[startFold];
+        const endOrig = (endFold - 1 < map.length) ? map[endFold - 1] + 1 : chunk.length;
+        ranges.push([startOrig, endOrig]);
+        // proteção: se regex puder casar vazio, evita loop infinito
+        if (re.lastIndex === m.index) re.lastIndex++;
+      }
+    });
+
+    if (!ranges.length) continue;
+
+    // mesclar sobreposições
+    ranges.sort((a,b) => a[0] - b[0] || a[1] - b[1]);
+    const merged = [];
+    let [cs, ce] = ranges[0];
+    for (let k = 1; k < ranges.length; k++) {
+      const [s, e] = ranges[k];
+      if (s <= ce) {
+        ce = Math.max(ce, e);
+      } else {
+        merged.push([cs, ce]);
+        [cs, ce] = [s, e];
+      }
+    }
+    merged.push([cs, ce]);
+
+    // reconstrói com marcação
+    let out = '';
+    let last = 0;
+    for (const [s, e] of merged) {
+      out += chunk.slice(last, s);
+      out += `<mark class="hl">${chunk.slice(s, e)}</mark>`;
+      last = e;
+    }
+    out += chunk.slice(last);
+
+    parts[i] = out;
+  }
+
+  return parts.join('');
+}
+
+// ============================================================================================
+// Pequeno CSS opcional (se quiser personalizar o amarelo do <mark> padrão do navegador)
+// Coloque no seu CSS global:
+// .hl { background: #fff59d; padding: 0 1px; border-radius: 2px; }
+// ============================================================================================
+
+// ============================== AUX: extrair search term do payload =========================
+function getSearchQuery(data) {
+  // 1) candidatos em ordem de prioridade
+  const candidates = [
+    data?.term,
+    data?.search_term
+  ].filter(v => typeof v === 'string' && v.trim() !== '');
+
+  if (!candidates.length) {
+    console.log('||| Display.js|||  getSearchQuery final term: (vazio)');
+    return '';
+  }
+
+  // 2) pega o primeiro candidato não vazio
+  let chosen = String(candidates[0]);
+
+  // 3) se houver "prefixo:valor", extrai o prefixo apenas (parte antes do ':')
+  const colonIdx = chosen.indexOf(':');
+  if (colonIdx >= 0) {
+    chosen = chosen.slice(0, colonIdx);
+  }
+
+  // 4) normalizações leves
+  let term = chosen
+    .trim()
+    .replace(/^"(.*)"$/, '$1')   // remove aspas externas
+    .replace(/\s+/g, ' ');       // colapsa espaços múltiplos
+
+  // 5) normalização para highlight: minúsculas e sem acentos
+  term = term
+    .toLowerCase()
+    .normalize('NFD')                // separa base + diacríticos
+    .replace(/[\u0300-\u036f]/g, ''); // remove os diacríticos
+
+  console.log('||| Display.js|||  getSearchQuery final term:', term);
+  return term;
+}
+
+
+
+
+
+
+
+// Markdown renderer (usa marked + DOMPurify se disponíveis; senão, fallback simples)
+function renderMarkdown(mdText) {
+  const input = typeof mdText === 'string' ? mdText : String(mdText || '');
+
+  // 0) Se já há HTML de bloco, apenas sanitize e devolve (evita <p><p>...</p></p>)
+  const hasBlockHtml = /<\s*(p|div|ul|ol|li|h[1-6]|pre|blockquote|br)\b/i.test(input);
+  try {
+    if (!hasBlockHtml && window.marked?.parse) {
+      const html = window.marked.parse(input);
+      return sanitizeHtml(html);
+    }
+  } catch (e) {
+    console.warn('marked falhou, usando fallback:', e);
+  }
+  if (hasBlockHtml) {
+    // Ainda assim, tira <br> duplos e <p> vazios que porventura cheguem prontos
+    return sanitizeHtml(
+      input
+        .replace(/(<br\s*\/?>\s*){2,}/gi, '<br>')
+        .replace(/<p>\s*(?:<br\s*\/?>\s*)*<\/p>/gi, '')
+    );
+  }
+
+  // 1) Normalização de linhas
+  let normalized = input
+    .replace(/\r\n?/g, '\n')     // CRLF/LF -> LF
+    .replace(/[ \t]+\n/g, '\n')  // tira espaços ao fim da linha
+    .replace(/\n{3,}/g, '\n\n')  // colapsa 3+ quebras em 2
+    .trim();
+
+  // 2) Preserva blocos de código antes de mexer em quebras
+  normalized = normalized.replace(/```([\s\S]*?)```/g, (_, code) =>
+    `<pre><code>${sanitizeHtml(code)}</code></pre>`
+  );
+
+  // 3) Marcações simples (headers, ênfases, listas mínimas)
+  let tmp = normalized
+    .replace(/^######\s?(.*)$/gm, '<h6>$1</h6>')
+    .replace(/^#####\s?(.*)$/gm, '<h5>$1</h5>')
+    .replace(/^####\s?(.*)$/gm, '<h4>$1</h4>')
+    .replace(/^###\s?(.*)$/gm, '<h3>$1</h3>')
+    .replace(/^##\s?(.*)$/gm, '<h2>$1</h2>')
+    .replace(/^#\s?(.*)$/gm, '<h1>$1</h1>')
+    .replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>')
+    .replace(/^\s*\*\s+(.*)$/gm, '<li>$1</li>')
+    .replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>')
+    .replace(/(?:\s*<li>.*<\/li>\s*)+/gs, m => `<ul>${m}</ul>`)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // 4) Quebra em parágrafos (2+ \n). Filtra vazios.
+  const paragraphs = tmp.split(/\n{2,}/).filter(p => p.trim().length);
+
+  const html = paragraphs.map(p => {
+    // dentro do parágrafo, 1 quebra -> <br> (e evita <br><br>)
+    const withBreaks = p.replace(/\n/g, '<br>').replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
+    return `<p>${sanitizeHtml(withBreaks)}</p>`;
+  }).join('');
+
+  // 5) Limpeza final: remove <p> vazios e <br> duplicados entre blocos
+  const cleaned = html
+    .replace(/<p>\s*(?:<br\s*\/?>\s*)*<\/p>/gi, '')
+    .replace(/(<br\s*\/?>\s*){2,}/gi, '<br>');
+
+  return sanitizeHtml(cleaned);
+}
+
+
+
+
 
 
 /**
@@ -1336,14 +1341,13 @@ function escapeHtml(text) {
 // Popular o mapeamento no final do arquivo
 // Como renderers foi criado com var lá no topo, não há risco de “Cannot access 'renderers' before initialization”.
 Object.assign(renderers, {
-  ragbot: showRagbot,
+  botmetainfo: showBotMetainfo,
   lexical: showSearch,
   semantical: showSearch,
   title: showTitle,
   simple: showSimple,
   verbetopedia: showVerbetopedia,
   ccg: showCcg,
-  quiz: showQuiz,        // remova esta linha se não usar quiz
   lexverb: showLexverb,
   deepdive: showDeepdive
 });

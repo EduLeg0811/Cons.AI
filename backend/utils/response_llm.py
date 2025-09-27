@@ -1,20 +1,24 @@
+import json
 import logging
 import os
+import re
+import re
 import re
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from rich.pretty import pprint
 
 from utils.config import (
-    MODEL_LLM, 
-    OPENAI_API_KEY, 
-    LLM_MAX_RESULTS, 
-    DEFAULT_VECTOR_STORE_OPENAI, 
-    TEMPERATURE, 
+    DEFAULT_VECTOR_STORE_OPENAI,
     INSTRUCTIONS_LLM_BACKEND,
-    OPENAI_ID_ALLWV, 
+    LLM_MAX_RESULTS,
+    MODEL_LLM,
+    OPENAI_API_KEY,
     OPENAI_ID_ALLCONS,
-    OPENAI_ID_EDUNOTES
+    OPENAI_ID_ALLWV,
+    OPENAI_ID_EDUNOTES,
+    TEMPERATURE,
 )
 
 
@@ -40,81 +44,77 @@ _conversation_last_id = {}  # chat_id -> último response.id
 
 
 
-# (removido) get_llm_session estava definido mas não era utilizado
-
-
 
 # =============================================================================
 # Função principal para gerar resposta do LLM
 # =============================================================================
-def generate_llm_answer(query, model=MODEL_LLM, vector_store_names="ALLWV", temperature=TEMPERATURE, instructions=INSTRUCTIONS_LLM_BACKEND, use_session=True, chat_id="default"):
-   
+def generate_llm_answer(
+    query,
+    model=MODEL_LLM,
+    vector_store_names="ALLWV",
+    temperature=TEMPERATURE,
+    instructions=INSTRUCTIONS_LLM_BACKEND,
+    use_session=True,
+    chat_id="default"
+):
     client = OpenAI(api_key=OPENAI_API_KEY)
 
     if not query:
         return {"error": "Consulta vazia."}
 
-    # Busca o id real do vector_store
     vector_store_ids = get_vector_store_ids(vector_store_names)
-
-    # Recupera o último response.id dessa conversa
     previous_id = _conversation_last_id.get(chat_id) if use_session else None
 
-    if str(model).startswith("gpt-5"):
-
-        
-        llm_str = {
-            "model": model,
-            "tools": [{
-                "type": "file_search",
-                "vector_store_ids": vector_store_ids,
-                "max_num_results": int(LLM_MAX_RESULTS)
-            }],
-            "input": query,
-            "instructions": instructions,   # reenvie sempre
-            "store": True,                   # necessário para encadear
-            #"text": {"verbosity": "low"},
-            #"reasoning": {"effort": "minimal"}
-        }
-
-    else:
-
-        llm_str = {
-            "model": model,
-            "tools": [{
-                "type": "file_search",
+    # Monta payload
+    llm_str = {
+        "model": model,
+        "tools": [{
+            "type": "file_search",
             "vector_store_ids": vector_store_ids,
             "max_num_results": int(LLM_MAX_RESULTS)
         }],
         "input": query,
-        "instructions": instructions,   # reenvie sempre
-        "store": True,                   # necessário para encadear
-        "temperature": float(temperature)
+        "instructions": instructions,
+        "store": True,
     }
-
-
-    # adiciona previous_response_id se existir
+    if not str(model).startswith("gpt-5"):
+        llm_str["temperature"] = float(temperature)
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
-    logger.info(f"\n\n ------- < generate_llm_answer > ------- LLM String: {llm_str}")
+
+    # === Log inline, formatado ===
+    from pprint import pformat
+    logger.info(
+        "\n\n------- < generate_llm_answer > ------- LLM Payload:\n%s",
+        pformat(llm_str, indent=2, width=120)
+    )
 
     try:
-
+        # === Chamada principal ===
         response = client.responses.create(**llm_str)
 
-        # Atualiza o último id desta conversa
+        # Atualiza o último ID da conversa
         last_id = getattr(response, "id", None)
         if last_id and use_session:
             _conversation_last_id[chat_id] = last_id
 
-        logger.info(f"\n\n ------- < generate_llm_answer > ------- Response: {response}")
+        # === Log inline, formatado ===
+        from pprint import pformat
+        logger.info(
+            "\n\n------- < generate_llm_answer > ------- RAW LLM Response:\n%s",
+            pformat(response.model_dump(), indent=2, width=120)
+        )
 
         return format_llm_response(response)
 
     except Exception as e:
         logger.error(f"Erro ao gerar resposta LLM: {str(e)}")
         return {"error": f"Falha ao gerar resposta: {str(e)}"}
+
+# =============================================================================
+
+
 
 
 
@@ -137,7 +137,14 @@ def get_vector_store_ids(vector_store_names):
 # Formata a resposta para o frontend
 # =============================================================================
 def format_llm_response(response_main):
-    formatted_output = {"text": "", "file_citations": "No citations", "total_tokens_used": "N/A", "search_type": "ragbot"}
+
+
+    formatted_output = {
+        "text": "",
+        "file_citations": "No citations",
+        "total_tokens_used": "N/A",
+        "search_type": "ragbot"
+    }
 
     try:
         output_items = getattr(response_main, "output", None)
@@ -163,53 +170,128 @@ def format_llm_response(response_main):
             content = get_attr(message_output, "content", []) or []
             text_content = next((c for c in content if get_attr(c, "type") == "output_text"), None)
             if text_content:
-                formatted_output["text"] = str(get_attr(text_content, "text", "")).strip()
+                raw_text = str(get_attr(text_content, "text", "")).strip()
 
-                # --- CITAÇÕES (file_search) -----------------------------------
-                citations = []
-                annotations = get_attr(text_content, "annotations", []) or []
-
-                # cliente para resolver filename (best-effort)
-                _client = None
-                _file_name_cache = {}
-
-                for ann in annotations:
-                    if get_attr(ann, "type") == "file_citation":
-                        file_id = get_attr(ann, "file_id") or get_attr(ann, "id")  # variantes
-                        index = get_attr(ann, "index", None)
-
-                        filename = None
-                        if file_id:
-                            try:
-                                if file_id in _file_name_cache:
-                                    filename = _file_name_cache[file_id]
-                                else:
-                                    if _client is None:
-                                        _client = OpenAI(api_key=OPENAI_API_KEY)
-                                    f = _client.files.retrieve(file_id)
-                                    filename = getattr(f, "filename", None)
-                                    _file_name_cache[file_id] = filename or file_id
-                            except Exception:
-                                filename = file_id  # fallback
-
-                        label = filename or "file"
-                        if index is not None:
-                            citations.append(f"{label}, {index}")
-                        else:
-                            citations.append(f"{label}")
-
-                formatted_output["file_citations"] = f"[{' ; '.join(citations)}]" if citations else "No citations"
                 # ----------------------------------------------------------------
+                # 1. Extrair todas as citações inline do texto (ex:  )
+                # ----------------------------------------------------------------
+                citation_pattern = r'【[^】]+】'
+                inline_citations = re.findall(citation_pattern, raw_text)
+
+                # Remove citações do texto final (para não exibir duplicado ao usuário)
+                clean_text = re.sub(citation_pattern, "", raw_text).strip()
+
+                # Junta todas as citações encontradas em uma única string
+                if inline_citations:
+                    collect_ref = " ".join(inline_citations)
+                else:
+                    collect_ref = ""
+
+                formatted_output["text"] = clean_text
+
+                # ----------------------------------------------------------------
+                # 2. Determinar string final de citações
+                # ----------------------------------------------------------------
+                if collect_ref:
+                    citations_str = collect_ref
+                else:
+                    citations_str = extract_citations_string(response_main)
+
+                if ("【" in citations_str):
+                    clean_citations = re.sub(r'【[^】]+】', '', citations_str).strip()
+                    formatted_output["file_citations"] = clean_citations
+                else:
+                    formatted_output["file_citations"] = citations_str
 
         usage = getattr(response_main, "usage", None)
         if usage:
             formatted_output["total_tokens_used"] = getattr(usage, "total_tokens", "N/A")
+
 
     except Exception as e:
         logger.error(f"Erro ao formatar resposta LLM: {str(e)}")
         formatted_output["text"] = "Erro ao processar resposta."
 
     return formatted_output
+
+
+
+
+
+def extract_citations_string(response_main) -> str:
+    """
+    Extrai e formata as citações de arquivos retornadas pela LLM.
+    Aceita tanto objetos Response quanto dicts.
+    Exemplo de saída: "TNP: 538, 816, 1044; 700EXP: 1307, 1590"
+    """
+    # Converte Response para dict se necessário
+    if not isinstance(response_main, dict) and hasattr(response_main, "model_dump"):
+        response_dict = response_main.model_dump()
+    else:
+        response_dict = response_main
+
+    citations_map = {}
+
+    # Percorre as saídas
+    for output_item in response_dict.get("output", []):
+        if output_item.get("type") == "message":
+            for content_item in output_item.get("content", []):
+                text = content_item.get("text", "")
+                annotations = content_item.get("annotations", [])
+
+                # 1. Extrai citações estruturadas
+                for ann in annotations:
+                    if ann.get("type") == "file_citation":
+                        filename = ann.get("filename", "")
+                        index = ann.get("index")
+                        clean_name = filename.replace(".md", "").strip()
+                        if " - " in clean_name:
+                            clean_name = clean_name.split(" - ", 1)[1].split(" ", 1)[0]
+                        citations_map.setdefault(clean_name, set()).add(index)
+
+                # 2. Extrai citações inline do texto (padrão 【...】)
+                inline_matches = re.findall(r'【[^】]+】', text)
+                for match in inline_matches:
+                    # Exemplo:  
+                    idx_match = re.search(r':(\d+)', match)
+                    file_match = re.search(r'†([^)]+)\)', match)
+                    if idx_match and file_match:
+                        index = int(idx_match.group(1))
+                        file_raw = file_match.group(1).strip()
+                        clean_name = file_raw.replace(".md", "")
+                        if " - " in clean_name:
+                            clean_name = clean_name.split(" - ", 1)[1].split(" ", 1)[0]
+                        citations_map.setdefault(clean_name, set()).add(index)
+
+    # Monta string final ordenada
+    parts = []
+    for name, indices in sorted(citations_map.items()):
+        ordered = sorted(indices)
+        indices_str = ", ".join(str(i) for i in ordered)
+        parts.append(f"{name}: {indices_str}")
+
+    return "; ".join(parts)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

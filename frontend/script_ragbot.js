@@ -2,6 +2,7 @@
 
 let controller = null;
 let chatHistory = [];
+const RAGBOT_CHAT_SCOPE = 'ragbot';
 // Expor refs no escopo global para integraÃ§Ãµes (reset, etc.)
 window.chatHistory = chatHistory;
 window.abortRagbot = function abortRagbot() {
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Clean chat on load
-    resetLLM();
+    resetLLM(RAGBOT_CHAT_SCOPE);
 
     // Apresenta perguntas iniciais como sugestão (badges clicáveis)
     initialQuests();
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
 
 
-
+        let chatMessages_id = null;
 
         try {
 
@@ -93,10 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
           searchInput.value = '';
           searchInput.style.height = 'auto';
 
-          
 
           // Add user message to chat
-          addChatMessage('user', term);
+          chatMessages_id = addChatMessage('user', term);
 
           // Add loading message
          
@@ -106,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
           //call_ragbot
           //*****************************************************************************************
           // 
-          const chat_id = getOrCreateChatId();
+          const chat_id = getOrCreateChatId(RAGBOT_CHAT_SCOPE);
+          console.debug('[ragbot] using chat_id:', chat_id);
 
           const paramRAGbot = {
             query: term,
@@ -121,35 +122,30 @@ document.addEventListener('DOMContentLoaded', () => {
           const response = await call_llm(paramRAGbot);
           
           if (response.chat_id) {
-            localStorage.setItem('cons_chat_id', response.chat_id);
+            setChatId(response.chat_id, RAGBOT_CHAT_SCOPE);
             paramRAGbot.chat_id = response.chat_id; // garante consistência
+            console.debug('[ragbot] refreshed chat_id from backend:', response.chat_id);
           }
           
           // *****************************************************************************************
 
           // Add bot message
-          addChatMessage('bot', response.text);
-          
+          chatMessage_id = addChatMessage('bot', response.text, false);
+
           
           // Mostra os metadados do response em Badges, logo após o texto da resposta
-          // ------------------------------------------------------------------------      
-          if (window.CONFIG.FULL_BADGES) {
-            metaData = extractMetadata(response, 'ragbot');
-            const citations = metaData?.citations;
-            const total_tokens_used = metaData?.total_tokens_used;
-            const model = metaData?.model;
-            const temperature = metaData?.temperature;
-            const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
-
-            console.log(metaData);
-
-            // Badge do número absoluto do parágrafo no arquivo (se presente)
-            const metaInfo = `${vector_store_names}     ●     ${citations}     ●     ${model}     ●     ${temperature}     ●     ${total_tokens_used}`;
-
-            addChatMessage('bot', metaInfo, false);
-
-          }
-
+          // ------------------------------------------------------------------------   
+          metaData = extractMetadata(response, 'ragbot');
+          const citations = metaData?.citations;
+          const total_tokens_used = metaData?.total_tokens_used;
+          const model = metaData?.model;
+          const temperature = metaData?.temperature;
+          const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
+          
+          const botMessageEl = document.getElementById(chatMessage_id).querySelector('.message-content');
+          displayResults(botMessageEl, metaData, 'botmetainfo'); 
+          
+          
           // Store in chat history
           chatHistory.push({
             user: term,
@@ -158,13 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
 
 
-          const downloadData = prepareDownloadData(response, term);
-          
-          // Update results for download (show button only when ready)
-          if (window.downloadUtils && window.downloadUtils.updateResults) {
-            window.downloadUtils.updateResults(downloadData, term, 'ragbot');
-          }
-
         } catch (error) {
             console.error('Error in ragbot:', error);
 
@@ -172,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const loadingMessages = document.querySelectorAll('.chat-message.loading');
             loadingMessages.forEach(msg => msg.remove());
             
-            addChatMessage('bot', `Sorry, there was an error: ${error.name === 'AbortError' ? 'Request timed out' : error.message || 'An unexpected error occurred'}`);
+            chatMessage_id = addChatMessage('bot', `Sorry, there was an error: ${error.name === 'AbortError' ? 'Request timed out' : error.message || 'An unexpected error occurred'}`);
+
         } finally {
           // Re-enable the search button and restore original state
           if (searchButton) {
@@ -257,6 +247,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return messageId;
     }
+
+
+
+
+
+
+
+
+
+
+
 
     function removeUserMessages() {
       if (!chatMessages) return;
