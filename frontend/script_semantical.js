@@ -69,13 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Livros selecionados do módulo Semantical
             const settings = getSemanticalSettings();
             const books = settings.books || [];
-            console.log("<<<script_semantical.js - semantical*** [books]:", books); 
-            // → ["EC", "DAC"]
-            
-            // If no books selected, select LO by default
-            const source = books.length > 0 ? books : ['LO'];
-
-            console.log("<<<script_semantical.js - semantical*** [source]:", source); 
+           
+            // If no books selected, ask for selection
+            if (books.length === 0) {
+                alert('Please select at least one book');
+                return;
+            }
+            const source = books;
 
             // Clear previous results
             resultsDiv.innerHTML = '';

@@ -83,9 +83,12 @@ async function deepdive_search() {
         const settings = getDeepdiveSettings();
         const books = settings.books || [];
         
-        // If no books selected, select LO by default
-        const source = books.length > 0 ? books : ['LO'];
-        
+        // If no books selected, ask for selection
+        if (books.length === 0) {
+            alert('Please select at least one book');
+            return;
+        }
+        const source = books;
 
         // FIXED SELECTED BOOKS
         // const selectedBooks = [];

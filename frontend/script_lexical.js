@@ -68,8 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
        console.log("<<<script_lexical.js - lexical*** [books]:", books); 
        // → ["EC", "DAC"]
        
-       // If no books selected, select LO by default
-       const source = books.length > 0 ? books : ['LO'];
+       // If no books selected, ask for selection
+       if (books.length === 0) {
+           alert('Please select at least one book');
+           return;
+       }
+       const source = books;
 
 
         // Limpa resultados anteriores
