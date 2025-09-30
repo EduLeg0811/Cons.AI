@@ -7,7 +7,7 @@ import re
 
 from dotenv import load_dotenv
 from openai import OpenAI
-from rich.pretty import pprint
+
 
 from utils.config import (
     DEFAULT_VECTOR_STORE_OPENAI,
@@ -81,14 +81,6 @@ def generate_llm_answer(
         llm_str["temperature"] = float(temperature)
     if previous_id:
         llm_str["previous_response_id"] = previous_id
-
-
-    # === Log inline, formatado ===
-    #from pprint import pformat
-    #logger.info(
-    #    "\n\n------- < generate_llm_answer > ------- LLM Payload:\n%s",
-    #    pformat(llm_str, indent=2, width=120)
-    #)
 
     try:
         # === Chamada principal ===
