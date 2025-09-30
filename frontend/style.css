@@ -1213,6 +1213,12 @@ body.dark .book-pill.active {
 .theme-bots .chat-message.user .message-content p {
     margin: 0;
 }
+
+/* ==== ConsBOT: aproximar “Sugestões de perguntas” da caixa de pesquisa ==== */
+.theme-bots .search-row {
+    margin-bottom: var(--space-2); /* antes: var(--space-6) */
+  }
+
 .chat-input-container {
     background: transparent;
     backdrop-filter: none;
@@ -1313,14 +1319,14 @@ body.dark .book-pill.active {
 }
 /* Parágrafos com leve separação */
 .theme-bots .chat-message.bot .message-content .markdown-content p {
-    margin: 0.6em 0;
+    margin: 0.8em 0;
     line-height: 1.4;
     font-size: var(--text-sm);
 }
 
 .theme-bots .chat-message.bot .message-content .markdown-content ul,
 .theme-bots .chat-message.bot .message-content .markdown-content ol {
-    margin: 0.6em 0;
+    margin: 0.8em 0;
     padding-left: 0;             /* remove recuo extra */
     list-style-position: inside; /* coloca números/bullets no mesmo alinhamento do texto */
     font-size: var(--text-sm);
@@ -2081,19 +2087,19 @@ body.dark .book-pill.active {
         color: var(--gray-900);        /* adapt to light/dark via tokens */
         padding-bottom: 0;             /* remove bottom padding to tighten spacing */
         margin-bottom: 0.2em;          /* half-line spacing to next paragraph */
-        font-size: var(--text-sm);
+        font-size: var(--text-xs);
     }
 
     /* Title text color for Verbetopedia and CCG pages */
     .page-verbetopedia .verbetopedia-header .header-text,
     .page-ccg .verbetopedia-header .header-text {
         margin-bottom: 0.2em;
-        font-size: var(--text-sm);
+        font-size: var(--text-xs);
     }
 
     
     .metadata-badge {
-        font-size: var(--text-xs);
+        font-size: var(--text-xxs);
         line-height: 1;
         font-weight: 500;
         margin: 0;
@@ -2370,7 +2376,7 @@ select {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 12px;
+    margin: 6px;
   }
   
   /* Título */
@@ -2419,7 +2425,7 @@ select {
   /* Ajustes para smartphones até 480px */
   @media (max-width: 480px) {
     #initial-quests {
-      margin: 8px;
+      margin: 4px;
       gap: 6px;
     }
   
@@ -2795,3 +2801,46 @@ background: var(--module-accent-secondary, var(--primary-600));
     color: var(--module-accent-contrast, #fff) !important;
     box-shadow: 0 0 0 3px rgba(2, 50, 120, 0.35);
   }
+
+
+
+  /* ===== Markdown tables: tipografia e layout consistentes ===== */
+.markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8em 0;             /* similar aos parágrafos */
+    font-size: var(--text-sm);   /* igual ao texto comum */
+    line-height: 1.4;
+  }
+  
+  .markdown-content th,
+  .markdown-content td {
+    font-size: var(--text-sm);   /* igual ao texto comum */
+    line-height: 1.4;
+    padding: 0.45em 0.6em;
+    border: 1px solid var(--gray-200);
+  }
+  
+  .markdown-content th {
+    background: var(--gray-50);
+    font-weight: 600;
+  }
+  
+  /* Tema escuro */
+  [data-theme="dark"] .markdown-content th,
+  [data-theme="dark"] .markdown-content td {
+    border-color: var(--gray-700);
+  }
+  
+  [data-theme="dark"] .markdown-content th {
+    background: rgba(148, 163, 184, 0.12);
+  }
+
+
+  /* Tabelas menores dentro de cards compactos */
+.displaybox-text .markdown-content table,
+.displaybox-text .markdown-content th,
+.displaybox-text .markdown-content td {
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}

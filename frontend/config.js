@@ -3,8 +3,9 @@
 // Global Parameters
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
-const MODEL_LLM='gpt-4.1-nano';
-const MODEL_RAGBOT='gpt-4.1-nano';
+const MODEL_LLM='gpt-4.1-mini';
+const MODEL_RAGBOT='gpt-4.1-mini';
+const MODEL_DEEPDIVE='gpt-5-mini';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=100;
 const MIN_RESULTS_DISPLAY=1;

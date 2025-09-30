@@ -114,7 +114,7 @@ async function deepdive_search() {
 
         const paramRAGbotDef = {
             query: term,
-            model: (window.CONFIG?.MODEL_RAGBOT ?? MODEL_RAGBOT),
+            model: MODEL_DEEPDIVE,
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: INSTRUCTIONS_DEFINITION,                 
@@ -148,7 +148,7 @@ async function deepdive_search() {
 
         const paramRAGbotDesc = {
             query: "TEXTO DE ENTRADA: " + term + ".",
-            model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+            model: MODEL_DEEPDIVE,
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: SEMANTIC_DESCRIPTION,
@@ -233,7 +233,7 @@ async function deepdive_search() {
         const paramSem = {
             term: newTerm,
             source: source,
-            model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+            model: MODEL_DEEPDIVE,
         };
         const semJson = await call_semantic(paramSem);
         //*************************************************

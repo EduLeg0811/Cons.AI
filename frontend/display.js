@@ -10,6 +10,7 @@ var renderers = Object.create(null);
 
 
 const FLAG_FULL_BADGES = Boolean(window.CONFIG?.FULL_BADGES);
+const FLAG_HEADER = false;
 
 // ===========================================================================
 // showSortedData — com modo agrupado e "All" (sem agrupamento) + HIGHLIGHT
@@ -364,8 +365,7 @@ const format_paragraph_CCG = (item, query) => {
 
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
 
-  const FLAG_HEADER = true;
-  if (FLAG_HEADER) {
+   if (FLAG_HEADER) {
     if (title)           badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
     if (folha)           badgeParts.push(`<span class="metadata-badge estilo2">(${escapeHtml(folha)})</span>`);
     if (number)          badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(number)}</span>`);
@@ -526,7 +526,7 @@ const format_paragraph_Default = (item, query) => {
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
   if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
 
-  if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
+  if (FLAG_FULL_BADGES) {
     if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
   }
@@ -691,10 +691,10 @@ function showBotMetainfo(container, metaData) {
     badgeParts.push(`<span class="metadata-badge estilo1">${escapeHtml(model)}</span>`);
   }
   if (temperature !== undefined) {
-    badgeParts.push(`<span class="metadata-badge estilo2">Temp: ${escapeHtml(temperature)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo3">Temp: ${escapeHtml(temperature)}</span>`);
   }
   if (totalTokens !== undefined) {
-    badgeParts.push(`<span class="metadata-badge estilo2">Tokens: ${escapeHtml(totalTokens)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo4">Tokens: ${escapeHtml(totalTokens)}</span>`);
   }
   if (citations.length > 2) {
     // retira texto de citations após o ":" e elimina o primeiro caracter " "
