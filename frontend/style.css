@@ -1097,9 +1097,30 @@ body.dark .book-pill.active {
       gap: 8px;              /* espa�o maior entre pills para toque */
     }
   
+    .book-checkboxes {
+        display: flex;                 /* define como flex container */
+        flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
+        gap: 4px;                      /* espa�o vertical entre os pills */
+        width: 100%;                   /* ocupa toda a largura disponível do container pai */
+        /* max-width: 200px; limita a largura m�xima da coluna (pode remover se quiser flexível) */
+        margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
+    }
+     
     .book-pill {
-        padding: 6px 14px;     /* 6px em cima/baixo, 14px nas laterais */
-        font-size: var(--text-xs);        /* fonte um pouco maior */
+        width: 100%;                   /* faz o pill ocupar toda a largura do container */
+        height: 20px;                  /* altura fixa de cada pill */
+        text-align: center;            /* centraliza o texto na horizontal */
+        padding: 2px;                  /* espa�o interno (topo/baixo/laterais) */   
+        background: #f3f4f6;           /* cor de fundo padr�o (cinza claro) */
+        color: #374151;                /* cor do texto (cinza escuro) */
+        font-size: var(--text-xs);     /* tamanho da fonte (pega da vari�vel global) */
+        font-weight: 500;              /* peso da fonte (semibold) */
+        cursor: pointer;               /* cursor de “m�ozinha” ao passar por cima */
+        transition: background 0.2s ease, color 0.2s ease; /* transi��o suave ao mudar cor de fundo e texto */
+        user-select: none;             /* evita sele��o de texto ao clicar */
+        box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
+        border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
+        border-radius: var(--radius-full); /* arredondamento completo (vari�vel global) */
     }
   }
   
@@ -1417,8 +1438,9 @@ body.dark .book-pill.active {
 }
 
 .displaybox-container.simple .markdown-content p {
-    margin-top: 0.4em;
+    margin-top: 0.8em;
     margin-bottom: 0.8em;
+
   }
   
 .displaybox-header {
