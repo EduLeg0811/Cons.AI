@@ -72,7 +72,7 @@ async function deepdive_search() {
             definologia: {},
             descritivo: {},
             lexical: [],
-            semantical: [],
+            semantic: [],
         };
 
         // Lê parâmetros iniciais
@@ -128,7 +128,7 @@ async function deepdive_search() {
         // Exibe definologia
         removeLoading(resultsDiv);
         defJson.ref = "Definição"
-        displayResults(resultsDiv, defJson, 'simple');
+        showSimple(resultsDiv, defJson);
 
         // Monta respHistory.definologia
         respHistory.definologia = {
@@ -151,7 +151,7 @@ async function deepdive_search() {
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: SEMANTICAL_DESCRIPTION,
+            instructions: SEMANTIC_DESCRIPTION,
             use_session: true,
             chat_id: chat_id        
         };
@@ -176,7 +176,7 @@ async function deepdive_search() {
         // Exibe descritivos
         removeLoading(resultsDiv);
         descJson.ref = "Descritivos"
-        displayResults(resultsDiv, descJson, 'simple');
+        showSimple(resultsDiv, descJson);
 
       
 
@@ -212,48 +212,9 @@ async function deepdive_search() {
 
 
 
- 
-        
-        // // CASO ESPECIAL TEMPORÁRIO : EC lexical = ECALL_DEF.xlsx
-        // // ------------------------------------------------------
-
-        // if (source.includes('EC')) {
-            
-
-        //     //call_lexical (lexverb)
-        //     //*****************************************************************************************
-        //     const paramLexverb = {
-        //         term: term,
-        //         source: ["ECALL_DEF"],
-        //         file_type: 'xlsx'
-        //     };
-        //     const respLexverb = await call_lexical (paramLexverb);
-        //     //*****************************************************************************************
-
-        //     // Get max results from input or use default
-        //     const rawMaxResults = document.getElementById("maxResults")?.value ?? getMaxResultsCap();
-        //     const maxResults = normalizeMaxResults(rawMaxResults);
-
-        //     // Restrict display to first maxResults if results exist
-        //     if (respLexverb.results && Array.isArray(respLexverb.results)) {
-        //         respLexverb.results = respLexverb.results.slice(0, maxResults);
-        //     } else {
-        //         respLexverb.results = [];
-        //     }
-
-        //     // Une os resultados de respLexical e respLexverb
-        //     respLexical.results = [...respLexical.results, ...respLexverb.results];
-
-        // }
-
         console.log('<<< script_deepdive.js ---- respLexical: ', respLexical);
 
-        // Exibe lexical
-        removeLoading(resultsDiv);
-        displayResults(resultsDiv, 'Busca Léxica    ●    ' + term, 'title');
-        displayResults(resultsDiv, respLexical, 'deepdive');
-
-        
+               
         // Monta respHistory.lexical (já limitado por fonte)
         respHistory.lexical = Array.isArray(respLexical.results) 
         ? respLexical.results 
@@ -263,18 +224,18 @@ async function deepdive_search() {
 
 
         // =======================================================================================
-        // 4. Semantical
+        // 4. semantic
         // =======================================================================================
         insertLoading(resultsDiv, "Busca Semantica");
 
-        //call_semantical
+        //call_semantic
         //*************************************************
         const paramSem = {
             term: newTerm,
             source: source,
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
         };
-        const semJson = await call_semantical(paramSem);
+        const semJson = await call_semantic(paramSem);
         //*************************************************
 
         
@@ -285,15 +246,56 @@ async function deepdive_search() {
             semJson.results = [];
         }
 
-        // Monta respHistory.semantical (já limitado por fonte)
-        respHistory.semantical = Array.isArray(semJson.results) 
+        // Monta respHistory.semantic (já limitado por fonte)
+        respHistory.semantic = Array.isArray(semJson.results) 
             ? semJson.results 
             : [];
 
-        // Exibe semantical
+
+
+        // =======================================================================================
+        // 4. Statistics
+        // =======================================================================================
+        insertLoading(resultsDiv, "Resultados");
+
+        // Monta estatística do total de resultados (itens de dados) de lexical e semantic, por cada tipo de source, e dentro de cada source, por cada tipo de pesquisa (lexical ou semantic)
+
+        // Mapa de contagem por fonte
+        const sourceCounts = {};
+        function inc(src, type) {
+        const key = src || 'Unknown';
+        if (!sourceCounts[key]) sourceCounts[key] = { lexical: 0, semantic: 0, total: 0 };
+        if (type === 'lexical') sourceCounts[key].lexical += 1;
+        if (type === 'semantic') sourceCounts[key].semantic += 1;
+        sourceCounts[key].total = sourceCounts[key].lexical + sourceCounts[key].semantic;
+        }
+
+        // Conta itens por fonte/tipo
+        (respHistory.lexical || []).forEach(item => inc(item?.source, 'lexical'));
+        (respHistory.semantic || []).forEach(item => inc(item?.source, 'semantic'));
+
+        // Totais globais
+        let totalLexical = 0;
+        let totalSemantic = 0;
+        Object.values(sourceCounts).forEach(c => {
+        totalLexical += c.lexical;
+        totalSemantic += c.semantic;
+        });
+
+        const detailedStats = {
+        total: {
+            lexical: totalLexical,
+            semantic: totalSemantic,
+            all: totalLexical + totalSemantic
+        },
+        by_source: sourceCounts
+        };
+
+        // Exibe estatísticas
         removeLoading(resultsDiv);
-        displayResults(resultsDiv, `Busca Semântica    ●    ${term}`, 'title');
-        displayResults(resultsDiv, semJson, 'deepdive');
+        showTitle(resultsDiv, "Resultados");
+        showSimple(resultsDiv, detailedStats);
+
 
 
 
@@ -302,7 +304,7 @@ async function deepdive_search() {
         // =======================================================================================
 
         // Extrair as fontes únicas
-        let uniqueSources = respHistory.semantical.map(result => result.source);
+        let uniqueSources = respHistory.semantic.map(result => result.source);
         uniqueSources = [...new Set(uniqueSources)];
 
         const downloadData = {
@@ -315,7 +317,7 @@ async function deepdive_search() {
             definologia: respHistory.definologia,
             descritivo: respHistory.descritivo,
             lexical: respHistory.lexical,
-            semantical: respHistory.semantical
+            semantic: respHistory.semantic
         };
 
         // Update results using centralized function

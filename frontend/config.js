@@ -3,12 +3,11 @@
 // Global Parameters
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
-window.SHOW_REF_BADGES = true;
 const MODEL_LLM='gpt-4.1-nano';
 const MODEL_RAGBOT='gpt-4.1-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=100;
-const MIN_RESULTS_DISPLAY=10;
+const MIN_RESULTS_DISPLAY=1;
 const OPENAI_RAGBOT='ALLWV';
 const FULL_BADGES = false;
 
@@ -70,22 +69,22 @@ window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 window.GROUP_COLORS = window.GROUP_COLORS || {
   search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
   apps:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
-  semantical: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
+  semantic: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
   bots:   { primary: '#10b981', secondary: '#34d399' }, // green
   utils:  { primary: '#f87171', secondary: '#fca5a5' }, // light red (Links Externos)
 };
 
 // Map module type identifiers -> group keys
-// Types come from display.js renderers (e.g., 'lexical', 'semantical', 'verbetopedia', 'ccg', 'ragbot', 'quiz', 'lexverb').
+// Types come from display.js renderers (e.g., 'lexical', 'semantic', 'verbetopedia', 'ccg', 'ragbot', 'quiz', 'lexverb').
 window.MODULE_GROUPS = window.MODULE_GROUPS || {
   // Search tools
   lexical: 'search',
   lexverb: 'search',
-  // Semantical apps
-  semantical: 'semantical',
-  verbetopedia: 'semantical',
-  ccg: 'semantical',
-  deepdive: 'semantical',
+  // semantic apps
+  semantic: 'semantic',
+  verbetopedia: 'semantic',
+  ccg: 'semantic',
+  deepdive: 'semantic',
   // Bots
   ragbot: 'bots',
   // Other apps
@@ -108,9 +107,9 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
       root.style.setProperty('--apps-primary', C.apps.primary);
       root.style.setProperty('--apps-secondary', C.apps.secondary || C.apps.primary);
     }
-    if (C.semantical) {
-      root.style.setProperty('--sem-primary', C.semantical.primary);
-      root.style.setProperty('--sem-secondary', C.semantical.secondary || C.semantical.primary);
+    if (C.semantic) {
+      root.style.setProperty('--sem-primary', C.semantic.primary);
+      root.style.setProperty('--sem-secondary', C.semantic.secondary || C.semantic.primary);
     }
     if (C.bots) {
       root.style.setProperty('--bots-primary', C.bots.primary);
@@ -173,7 +172,7 @@ Você atua como um assistente no estilo ChatGPT, especializado em Conscienciolog
 
 
 
-const SEMANTICAL_DESCRIPTION = `
+const SEMANTIC_DESCRIPTION = `
 Você é um assistente especialista em Conscienciologia.  
 Sua tarefa é gerar descritores semânticos que serão usados em busca vetorial (FAISS).  
 
@@ -407,3 +406,11 @@ window.__API_BASE = apiBaseUrl;
 
 
 }
+
+
+
+// Configuração de timeout
+window.CONFIG = {
+  ...window.CONFIG,
+  SEARCH_TIMEOUT_MS: 45000 // ou 60000
+};

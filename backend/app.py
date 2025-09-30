@@ -4,39 +4,49 @@ API Response Structures
 """
 
 # Import required libraries
-import os
-import sys
-from pathlib import Path
 from io import BytesIO
 import logging
+import os
+from pathlib import Path
 import re
+import sys
 from typing import Any, Dict, Tuple
 import uuid
+import pprint
 
-from flask import Flask, jsonify, request, send_file, Response, send_from_directory
+from flask import Flask, Response, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from flask_restful import Api, Resource
+
+from modules.lexical_search.lexical_utils import lexical_search_in_files
+from modules.mancia.mancia_utils import get_random_paragraph
+from modules.semantic_search.search_operations import simple_semantic_search
+from utils.config import (
+    FAISS_INDEX_DIR,
+    FILES_SEARCH_DIR,
+    MODEL_LLM,
+)
+from utils.docx_export import build_docx
+from utils.response_llm import generate_llm_answer, reset_conversation_memory
 
 # Add backend directory to Python path
 BACKEND_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(BACKEND_DIR))
 
-# Now import local modules
-from modules.lexical_search.lexical_utils import lexical_search_in_files
-from modules.mancia.mancia_utils import get_random_paragraph
-from modules.semantical_search.search_operations import simple_semantical_search
-from utils.config import (
-    FAISS_INDEX_DIR,
-    FILES_SEARCH_DIR,
-    INSTRUCTIONS_LLM_BACKEND,
-    MODEL_LLM
-)
-from utils.docx_export import build_docx
-from utils.response_llm import generate_llm_answer, reset_conversation_memory
-    
 
 logger = logging.getLogger("cons-ai")
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(name)s:%(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True,  # override any existing handlers
+)
+
+logger = logging.getLogger("cons-ai")
+logger.setLevel(logging.INFO)
+logger.info("CONS-AI toolbox")
+
+
 
 # Checagem de sanidade do FAISS_INDEX_DIR
 try:
@@ -110,16 +120,22 @@ class LexicalSearchResource(Resource):
             # Parse input parameters with defaults
             term = safe_str(data.get("term", ""))
             source = data.get("source", [])  # lista
-            file_type = data.get("file_type")
 
+           
             if not term:
                 raise ValueError("Search term is required")
 
+
             # Process search
-            results = lexical_search_in_files(term, source, file_type)
+            results = lexical_search_in_files(term, source)
 
             # Sort by source for consistent ordering
             #results.sort(key=lambda x: x['source' or 'book' or 'file'])
+            #logger.info("\n\n++++++++++ [app.py - Lexical Search] results:\n%s",
+                        #pprint.pformat(results, indent=2, width=120))
+
+
+            
 
             # Monta a resposta diretamente
             response = {
@@ -129,6 +145,7 @@ class LexicalSearchResource(Resource):
                 "count": len(results) if results else 0
             }
 
+           
             return response, 200, get_search_headers('lexical')
 
         except Exception as e:
@@ -137,9 +154,9 @@ class LexicalSearchResource(Resource):
 
 
 # ______________________________________________________________________
-# 2. Semantical Search
+# 2. semantic Search
 # ______________________________________________________________________
-class SemanticalSearchResource(Resource):
+class SemanticSearchResource(Resource):
     def post(self):
         try:
             payload = request.get_json(force=True)
@@ -151,7 +168,7 @@ class SemanticalSearchResource(Resource):
                 raise ValueError("Search term is required")
 
             # Run FAISS-backed search
-            processed_results = simple_semantical_search(
+            processed_results = simple_semantic_search(
                 query=term,
                 source=source,
                 index_dir=FAISS_INDEX_DIR,
@@ -159,10 +176,10 @@ class SemanticalSearchResource(Resource):
 
 
 
-            return processed_results, 200, get_search_headers('semantical')
+            return processed_results, 200, get_search_headers('semantic')
 
         except Exception as e:
-            error_response, status_code, headers = handle_search_error(e, "semantical search")
+            error_response, status_code, headers = handle_search_error(e, "semantic search")
             return error_response, status_code, headers
 
 
@@ -321,7 +338,7 @@ def handle_search_error(error: Exception, context: str = "search") -> Tuple[Dict
     
     Args:
         error: The exception that was raised
-        context: Context for the error (e.g., 'lexical search', 'semantical search')
+        context: Context for the error (e.g., 'lexical search', 'semantic search')
         
     Returns:
         Tuple of (error_response, status_code, headers)
@@ -353,7 +370,7 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
     Get standard headers for search responses.
     
     Args:
-        search_type: Type of search ('lexical' or 'semantical')
+        search_type: Type of search ('lexical' or 'semantic')
         
     Returns:
         Dict with standard response headers
@@ -377,7 +394,7 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
 # ====================== Routes ======================
 api.add_resource(LlmQueryResource, '/llm_query')
 api.add_resource(LexicalSearchResource, '/lexical_search')
-api.add_resource(SemanticalSearchResource, '/semantical_search')
+api.add_resource(SemanticSearchResource, '/semantic_search')
 api.add_resource(RandomPensataResource, '/random_pensata')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')

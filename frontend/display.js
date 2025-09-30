@@ -9,234 +9,225 @@ const sanitizeHtml = window.DOMPurify?.sanitize || (html => html);
 var renderers = Object.create(null);
 
 
+const FLAG_FULL_BADGES = Boolean(window.CONFIG?.FULL_BADGES);
 
 // ===========================================================================
-// showDeepdive (corrigido com IDs únicos)  + HIGHLIGHT
+// showSortedData — com modo agrupado e "All" (sem agrupamento) + HIGHLIGHT
 // ===========================================================================
-function showDeepdive(container, data) {
+function showSortedData(container, sortedData, query = '', flag_grouping = false) {
 
   if (!container) {
-      console.error('Results container not found');
-      return;
+    console.error('Results container not found');
+    return;
   }
 
-  // Guarda query atual (global leve para uso nos formatters)
-  window.__lastSearchQuery = getSearchQuery(data);
+  //container.innerHTML = '';
 
-  // 0) Garantir array de entrada
-  const arr = Array.isArray(data.results) ? data.results : [];
-  if (!arr.length) {
-      container.insertAdjacentHTML(
-          'beforeend',
-          '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-      );
-      return;
+  
+  console.log("showSortedData*** [query]:", query); 
+  console.log("showSortedData*** [flag_grouping]:", flag_grouping); 
+  console.log("showSortedData*** [sortedData]:", sortedData);
+  console.log("showSortedData*** [FLAG_FULL_BADGES]:", FLAG_FULL_BADGES);
+  
+  
+  
+  if (!sortedData || typeof sortedData !== 'object' || Object.keys(sortedData).length === 0) {
+    container.insertAdjacentHTML(
+      'beforeend',
+      '<div class="displaybox-container"><div class="displaybox-content">Nenhum resultado encontrado.</div></div>'
+    );
+    return;
   }
 
-  // 1) Normalizador de fonte/livro para exibição
+  // ⚡️ Define a query global para highlight (como showSearch)
+  if (query && typeof query === 'string') {
+    window.__lastSearchQuery = query;
+  } else {
+    window.__lastSearchQuery = window.__lastSearchQuery || '';
+  }
+
+  // ============================
+  // 0️⃣ Normalizador de nomes de fonte
+  // ============================
   const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
-      ? window.normSourceName
-      : function _fallbackNormSourceName(src) {
-          if (!src) return 'Results';
-          let s = String(src);
-          s = s.split(/[\\/]/).pop();
-          s = s.replace(/\.(md|markdown|txt|xlsx)$/i, '');
-          return s;
+    ? window.normSourceName
+    : function _fallbackNormSourceName(src) {
+        if (!src) return 'Results';
+        let s = String(src);
+        s = s.split(/[\\/]/).pop();
+        s = s.replace(/\.(md|markdown|txt|xlsx)$/i, '');
+        return s;
       };
 
-  // 2) Agrupar por fonte normalizada
-  const groups = arr.reduce((acc, it, idx) => {
-      const raw = it?.book || it?.source || it?.file || 'Results';
-      const key = normSourceName(raw);
-      if (!acc[key]) acc[key] = [];
-      acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
-      return acc;
-  }, {});
-  const groupNames = Object.keys(groups);
-
-  // 3) Summary badges (rows)
-  const slug = (s) => String(s || 'all')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-  let summaryRows = '<div class="summary-list-deepdive">';
-  summaryRows += groupNames.map((name, idx) => {
-    const n = groups[name].length;
-    const target = `group-${slug(name)}-${idx}`;
-    return `
-      <div class="pill-row-deepdive" data-target="${target}">
-        <span class="pill-label-deepdive">${escapeHtml(bookName(name))}</span>
-        <span class="pill-count-deepdive">${n}</span>
-      </div>`;
-  }).join('');
-  summaryRows += '</div>';
-  container.insertAdjacentHTML('beforeend', summaryRows);
-}
-
-
-
-
-
-// ===========================================================================
-// showSearch (corrigido com IDs únicos) + HIGHLIGHT
-// ===========================================================================
-function showSearch(container, data) {
-
-  if (!container) {
-      console.error('Results container not found');
-      return;
+  // ============================
+  // 1️⃣ Normaliza estrutura dos grupos
+  // ============================
+  const groups = {};
+  const allItems = []; // ← para o modo All
+  for (const key of Object.keys(sortedData)) {
+    const normalized = normSourceName(key);
+    const mappedItems = sortedData[key].map((item, idx) => ({
+      ...item,
+      number: item.paragraph_number ?? item.number ?? '',
+      markdown: item.mk_text ?? item.markdown ?? item.text ?? '',
+      content_text: item.raw_text ?? item.content_text ?? item.text ?? '',
+      source: key,
+      _origIndex: idx,
+      _srcRaw: key,
+      _src: normalized
+    }));
+    groups[normalized] = mappedItems;
+    allItems.push(...mappedItems);
   }
 
-  // Guarda query atual para os formatters usarem
-  window.__lastSearchQuery = getSearchQuery(data);
-
-  // 0) Garantir array de entrada
-  const arr = Array.isArray(data.results) ? data.results : [];
-  if (!arr.length) {
-      container.insertAdjacentHTML(
-          'beforeend',
-          '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-      );
-      return;
-  }
-
-  // 1) Normalizador de fonte/livro para exibição
-  const normSourceName = (typeof window !== 'undefined' && typeof window.normSourceName === 'function')
-      ? window.normSourceName
-      : function _fallbackNormSourceName(src) {
-          if (!src) return 'Results';
-          let s = String(src);
-          s = s.split(/[\\/]/).pop();
-          s = s.replace(/\.(md|markdown|txt|xlsx)$/i, '');
-          return s;
-      };
-
-  // 2) Agrupar por fonte normalizada
-  const groups = arr.reduce((acc, it, idx) => {
-      const raw = it?.book || it?.source || it?.file || 'Results';
-      const key = normSourceName(raw);
-      if (!acc[key]) acc[key] = [];
-      acc[key].push({ ...it, _origIndex: idx, _srcRaw: raw, _src: key });
-      return acc;
-  }, {});
   const groupNames = Object.keys(groups);
+  const slug = (s) => String(s || 'all').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-  // 3) Summary badges (rows)
-  const totalCount = arr.length;
-  const slug = (s) => String(s || 'all')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-  const flag_grouping = document.getElementById('groupResults')?.checked ?? true;
-
+  // ============================
+  // 2️⃣ Summary pills retráteis
+  // ============================
   let summaryRows = '<div class="summary-list">';
+
+  // MODO GROUPING: Se flag_grouping for true, cria pills para cada grupo
+  // --------------------------------------------------------------------
   if (flag_grouping) {
-      summaryRows += groupNames.map((name, idx) => {
-          const n = groups[name].length;
-          const target = `group-${slug(name)}-${idx}`; // ID único com índice
-          return `<button class="pill pill-row accented" data-target="${target}">
-                    <span class="pill-label">${escapeHtml(bookName(name))}</span>
-                    <span class="count">${n}</span>
-                  </button>`;
-      }).join('');
+    groupNames.forEach((name, idx) => {
+      const n = groups[name].length;
+      const target = `group-${slug(name)}-${idx}`;
+      summaryRows += `
+        <button class="pill pill-row accented" data-target="${target}">
+          <span class="pill-label">${escapeHtml(bookName(name))}</span>
+          <span class="count">${n}</span>
+        </button>`;
+    });
+
+  // MODO ALL: Se flag_grouping for false, cria pill para "All"
+  // --------------------------------------------------------------------
   } else {
-      summaryRows += `<button class="pill pill-row accented" data-target="all-results">
-                        <span class="pill-label">Total</span>
-                        <span class="count">${totalCount}</span>
-                      </button>`;
+    const totalCount = allItems.length;
+    summaryRows += `
+      <button class="pill pill-row accented" data-target="all-results">
+        <span class="pill-label">Total</span>
+        <span class="count">${totalCount}</span>
+      </button>`;
   }
+
   summaryRows += '</div>';
+
+  // Insere os pills antes dos painéis
   container.insertAdjacentHTML('beforeend', summaryRows);
 
-  // 4) Renderização dos painéis
+
+  // ============================
+  // 3️⃣ Renderização dos painéis
+  // ============================
+
+  // MODO GROUPING: Se flag_grouping for true, cria painéis para cada grupo
+  // --------------------------------------------------------------------
   if (flag_grouping) {
-      groupNames.forEach((groupName, groupIndex) => {
-          const groupItems = groups[groupName];
-          let groupHtml = '';
-
-          groupItems.forEach((item) => {
-              const sourceName = item.source || item.file || item.book || 'Unknown';
-              groupHtml += format_paragraphs_source(item, sourceName); // aplica highlight dentro
-          });
-
-          const panelId = `group-${slug(groupName)}-${groupIndex}`;
-          const groupPanel = `
-              <div id="${panelId}" class="collapse-panel">
-                  <div class="displaybox-container">
-                      <div class="displaybox-content group-content">
-                          ${groupHtml}
-                      </div>
-                  </div>
-              </div>
-          `;
-          container.insertAdjacentHTML('beforeend', groupPanel);
-      });
-  } else {
-      const sortedItems = [...arr].sort((b, a) => (b.score || 0) - (a.score || 0));
+    groupNames.forEach((groupName, groupIndex) => {
+      const groupItems = groups[groupName];
       let groupHtml = '';
-      sortedItems.forEach((item) => {
-          const sourceName = item.source || item.file || item.book || 'Unknown';
-          groupHtml += format_paragraphs_source(item, sourceName);
+
+      groupItems.forEach((item) => {
+        const sourceName = item.source || item.file || item.book || 'Unknown';
+        groupHtml += format_paragraphs_source(item, sourceName);
       });
 
+      const panelId = `group-${slug(groupName)}-${groupIndex}`;
       const groupPanel = `
-          <div id="all-results" class="collapse-panel">
-              <div class="displaybox-container">
-                  <div class="displaybox-content group-content">
-                      ${groupHtml}
-                  </div>
-              </div>
+        <div id="${panelId}" class="collapse-panel">
+          <div class="displaybox-container">
+            <div class="displaybox-content group-content">
+              ${groupHtml}
+            </div>
           </div>
-      `;
+        </div>`;
       container.insertAdjacentHTML('beforeend', groupPanel);
+    });
+
+
+    // MODO ALL: Se flag_grouping for false, cria painéis para todos os itens
+    // --------------------------------------------------------------------
+  } else {
+    
+    let allHtml = '';
+    const sortedAllItems = [...allItems].sort((a, b) => {
+      const scoreA = a.score ?? 0;
+      const scoreB = b.score ?? 0;
+      return scoreA - scoreB;
+    });
+
+    sortedAllItems.forEach((item) => {
+      const sourceName = item.source || item.file || item.book || 'Unknown';
+      allHtml += format_paragraphs_source(item, sourceName, query);
+    });
+    
+    const allPanel = `
+    <div id="all-results" class="collapse-panel">
+      <div class="displaybox-container">
+        <div class="displaybox-content group-content">
+          ${allHtml}
+        </div>
+      </div>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', allPanel);
+
+    
+
+
   }
 
-  // 5) Event delegation para toggle dos pills
+  // ============================
+  // 4️⃣ Toggle dos pills
+  // ============================
   if (!container.__pillHandlerBound) {
     container.addEventListener('click', function(ev) {
-        const btn = ev.target.closest('.pill');
-        if (!btn) return;
-        ev.preventDefault();
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return;
-        const safeId = `#${targetId.replace(/[^a-z0-9\\-_:]/gi, '')}`;
-        const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
-        if (!panel) return;
-
-        const isOpen = panel.classList.toggle('open');
-
-        if (isOpen) {
-            btn.classList.add('active');
-            try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-        } else {
-            btn.classList.remove('active');
-        }
+      const btn = ev.target.closest('.pill');
+      if (!btn) return;
+      ev.preventDefault();
+      const targetId = btn.getAttribute('data-target');
+      if (!targetId) return;
+      const panel = container.querySelector(`#${CSS.escape(targetId)}`);
+      if (!panel) return;
+      const isOpen = panel.classList.toggle('open');
+      if (isOpen) {
+        btn.classList.add('active');
+        try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
+      } else {
+        btn.classList.remove('active');
+      }
     });
     container.__pillHandlerBound = true;
   }
 }
 
 
+
+
+
+
+
+
 // ===========================================================================
 // format_paragraphs_source  (os formatters internos chamam highlightHtml)
 // ===========================================================================
-const format_paragraphs_source = (item, sourceName) => {
-  if (sourceName === 'LO') return format_paragraph_LO(item);
-  if (sourceName === 'DAC') return format_paragraph_DAC(item);
-  if (sourceName === 'CCG') return format_paragraph_CCG(item);
-  if (sourceName === 'EC' || sourceName === 'ECALL_DEF' || sourceName === 'ECWV' || sourceName === 'ECALL') {
-    return format_paragraph_EC(item);
-  }
-  return format_paragraph_Default(item);
+const format_paragraphs_source = (item, sourceName, query) => {
+  if (sourceName === 'LO') return format_paragraph_LO(item, query);
+  if (sourceName === 'DAC') return format_paragraph_DAC(item, query);
+  if (sourceName === 'CCG') return format_paragraph_CCG(item, query);
+  if (sourceName === 'EC')  return format_paragraph_EC(item, query);
+  return format_paragraph_Default(item, query);
 };
+
+
 
 
 // ===========================================================================
 // LO: Content_Text  Markdown_Text Title  Number  Score   (+ HIGHLIGHT)
 // ===========================================================================
-const format_paragraph_LO = (item) => {
+const format_paragraph_LO = (item, query) => {
+
     const title = item.title || '';
     const paragraph_number = item.number || '';
     const score = item.score || 0.00;
@@ -244,35 +235,36 @@ const format_paragraph_LO = (item) => {
     let source = item.source || '';
     source = bookName(source);
 
-    const badgeParts = [];
-    if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
-    if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
-    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
-      if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
-      if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
-    }
-    metaBadges = badgeParts.join('');
 
-    const textCompleted = (score > 0.0) ? `**${title}**. ${text}` : text;
+    // Caso especial 'LO': coloca **title.** em negrito antes da pensata.
+    const textCompleted = (title) ? `**${title}.** ${text}` : text;
 
+    // Texto do parágrafo + highlight
     const rawHtml = renderMarkdown(textCompleted);
     const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-
-    // >>> HIGHLIGHT <<<
     const q = window.__lastSearchQuery || '';
     const highlighted = highlightHtml(safeHtml, q);
 
-    const showBadges = shouldShowRefBadges();
-    const metaInline = buildMetaInlineLine([
-        ['Source', source],
-        ['Title', title],
-        ['Number', paragraph_number],
-        ...(score > 0.0 ? [['Score', score]] : []),
-    ]);
 
-    const finalHtml = showBadges
-      ? `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`
-      : `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}${metaInline}</div></div>`;
+    // Monta os badges
+    // -------------------------------------------------------------------------------------------------------------------------
+    let badgeParts = [];
+    if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+    if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+
+    if (FLAG_FULL_BADGES) {
+      if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+      if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+    }
+
+    if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
+
+    const metaBadges = badgeParts.join('');
+
+    // ------------------------------------------------------------------------------------------------------------------------- 
+
+    const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
 
     return finalHtml;
 };
@@ -281,196 +273,277 @@ const format_paragraph_LO = (item) => {
 // ===========================================================================
 // DAC: Content_Text  Markdown  Title  Number  Source  Argumento  Section  (+ HIGHLIGHT)
 // ===========================================================================
-const format_paragraph_DAC = (item) => {
+const format_paragraph_DAC = (item, query) => {
+
     const title = item.title || '';
     const score = item.score || 0.00;
     const paragraph_number = item.number || '';
     const text = item.markdown || item.content_text || item.text || '';
-    const argumento = item.argumento || '';
+    const argumento = item.argumento || item.argument || '';
     const section = item.section || '';
     let source = item.source || '';
     source = bookName(source);
 
-    const badgeParts = [];
+    // Texto do parágrafo + highlight
+    const textCompleted = text;
+    const rawHtml = renderMarkdown(textCompleted);
+    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+    const q = window.__lastSearchQuery || '';
+    const highlighted = highlightHtml(safeHtml, q);
+
+
+    // Monta os badges
+    // -------------------------------------------------------------------------------------------------------------------------
+    let badgeParts = [];
     if (source)   badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
     if (title)    badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
     if (argumento)badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(argumento)}</span>`);
     if (section)  badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(section)}</em></span>`);
-    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
+      
+    if (FLAG_FULL_BADGES) {
       if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
+   
+    if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+      else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
+
     metaBadges = badgeParts.join('');
 
-    const rawHtml = renderMarkdown(text);
-    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+    // ------------------------------------------------------------------------------------------------------------------------
 
-    // >>> HIGHLIGHT <<<
-    const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
 
-    const showBadges = shouldShowRefBadges();
-    const metaInline = buildMetaInlineLine([
-        ['Source', source],
-        ['Title', title],
-        ['Argument', argumento],
-        ['Section', section],
-        ['Number', paragraph_number],
-        ...(score > 0.0 ? [['Score', score]] : []),
-    ]);
-
-    const finalHtml = showBadges
-      ? `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`
-      : `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}${metaInline}</div></div>`;
+    const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
 
     return finalHtml;
 };
     
-    
+
+
 // ===========================================================================
 // CCG: Content_Text  Markdown_Text  Title  Number  Source  Folha  (+ HIGHLIGHT)
 // ===========================================================================
-const format_paragraph_CCG = (item) => {
-    const title = item.title || '';
-    const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || item.text || '';
-    const folha = item.folha || '';
-    let source = item.source || '';
-    source = bookName(source);
+const format_paragraph_CCG = (item, query) => {
 
-    let question_number = '';
-    if (score > 0.0) question_number = item.number || '';
+  const title = item.title || '';
+  const score = item.score || 0.00;
+  const text = item.markdown || item.content?.text || item.text || '';
+  const folha = item.folha || '';
+  const number = item.number || '';
 
-    const badgeParts = [];
-    if (source)          badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+  let source = item.source || 'CCG';
+  source = bookName(source);
+
+  // Texto do parágrafo + highlight
+  const textCompleted = text;
+  const rawHtml = renderMarkdown(textCompleted);
+  const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  const q = window.__lastSearchQuery || '';
+  const highlighted = highlightHtml(safeHtml, q);
+
+
+  // Cabeçalho do item
+  const titleHtml = `<strong>${escapeHtml(title)}</strong>  ●  ${escapeHtml(folha)}  ●  #${escapeHtml(number)}`;
+
+  // Monta o panel
+  let panelHtml = `
+    <div class="displaybox-item">
+      <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color: rgba(20, 30, 100);">
+        <span class="header-text">${titleHtml}</span>
+      </div>
+      <div class="displaybox-text">
+        <span class="displaybox-text markdown-content">${safeHtml}</span>
+      </div>
+    </div>
+  `;
+
+
+  // Monta os badges
+  // -------------------------------------------------------------------------------------------------------------------------
+  let badgeParts = [];
+
+  if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+
+  const FLAG_HEADER = true;
+  if (FLAG_HEADER) {
     if (title)           badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
     if (folha)           badgeParts.push(`<span class="metadata-badge estilo2">(${escapeHtml(folha)})</span>`);
-    if (question_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(question_number)}</span>`);
-    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
-      if (score > 0.0) badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+    if (number)          badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(number)}</span>`);
+
+    if (FLAG_FULL_BADGES) {
+      if (score > 0.0)     badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
-    metaBadges = badgeParts.join('');
-    
-    const rawHtml  = renderMarkdown(text);
-    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  }
 
-    // >>> HIGHLIGHT <<<
-    const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
+  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
+ 
+  const metaBadges = badgeParts.join('');
 
-    const showBadges = shouldShowRefBadges();
-    const metaInline = buildMetaInlineLine([
-        ['Source', source],
-        ['Title', title],
-        ['Folha', folha],
-        ['Number', question_number],
-        ...(score > 0.0 ? [['Score', score]] : []),
-    ]);
+  // -------------------------------------------------------------------------------------------------------------------------
 
-    const finalHtml = showBadges
-      ? `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`
-      : `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}${metaInline}</div></div>`;
+  // Monta o pane
+  const finalHtml = `
+    <div class="displaybox-item">
+     <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100);">
+        <span class="header-text">${titleHtml}</span>
+      </div>
+      <div class="displaybox-text">
+        <span class="displaybox-text markdown-content">${highlighted}</span>
+        ${metaBadges}
+      </div>
+    </div>
+  `;
+  return finalHtml;
 
-    return finalHtml;
 };
+
 
   
 // ===========================================================================
 // EC: Content_Text  Markdown_Text  Title  Number  Source ... (+ HIGHLIGHT)
 // ===========================================================================
-const format_paragraph_EC = (item) => {
-    const title = item.title || '';
-    const verbete_number = item.number || '';
-    const score = item.score || 0.00;
-    const text = item.markdown || item.content?.text || item.text || '';
-    const area = item.area || '';
-    const theme = item.theme || '';
-    const author = item.author || '';
-    const sigla = item.sigla || '';
-    const date = item.date || '';
-    const link = item.link || '';
-    let source = item.source || '';
-    source = bookName(source);
+const format_paragraph_EC = (item, query) => {
 
-    const badgeParts = [];
-    if (source)           badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+  const title = item.title || '';
+  const verbete_number = item.number || '';
+  const score = item.score || 0.00;
+  const text = item.markdown || item.content?.text || item.text || '';
+  const area = item.area || '';
+  const theme = item.theme || '';
+  const author = item.author || '';
+  const sigla = item.sigla || '';
+  const date = item.date || '';
+  const link = item.link || '';
+  let source = item.source || '';
+  source = bookName(source);
+
+  
+  const defText = '**Definologia.** ' + text;
+
+  // Texto do parágrafo + highlight
+  // Caso especial EC
+  const textCompleted = '**Definologia.** ' + text;  
+  const rawHtml = renderMarkdown(textCompleted);
+  const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  const q = window.__lastSearchQuery || '';
+  const highlighted = highlightHtml(safeHtml, q);
+
+
+  // Monta header do paragrafo: EC
+
+  const FLAG_HEADER = true;
+  let titleHtml = '';
+  let scoreHtml = '';
+  if (FLAG_HEADER) {
+    titleHtml = `<strong>${title}</strong> (${area})  ●  <em>${author}</em>  ●  #${verbete_number}  ●  ${date}`;
+    scoreHtml = (typeof score === 'number' && !Number.isNaN(score))
+        ? `<span class="rag-badge">Score: ${score.toFixed(2)}</span>` : '';
+  }
+    
+  // Monta os badges
+  // -------------------------------------------------------------------------------------------------------------------------
+  let badgeParts = [];
+
+  if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+
+  if (FLAG_HEADER) {
     if (title)            badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
     if (area)             badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(area)}</em></span>`);
     if (verbete_number)   badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(verbete_number)}</span>`);
     if (theme)            badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(theme)}</span>`);
     if (author)           badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(author)}</span>`);
     if (date)             badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(date)}</span>`);
-    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
-      if (score > 0.0)    badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+
+    if (FLAG_FULL_BADGES) {
+      if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
-    metaBadges = badgeParts.join('');
-      
-    const rawHtml = renderMarkdown(text);
-    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  }
+  
+  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
 
-    // >>> HIGHLIGHT <<<
-    const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
+  const metaBadges = badgeParts.join('');
+  // -------------------------------------------------------------------------------------------------------------------------
 
-    const showBadges = shouldShowRefBadges();
-    const metaInline = buildMetaInlineLine([
-        ['Source', source],
-        ['Title', title],
-        ['Area', area],
-        ['Number', verbete_number],
-        ['Theme', theme],
-        ['Author', author],
-        ['Date', date],
-        ...(score > 0.0 ? [['Score', score]] : []),
-    ]);
+  // Monta o link PDF  
+  const arquivo = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/Ç/g, "C");
+  const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
+  const pdfLink = `
+    <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
+        title="Abrir PDF em nova aba" style="margin-left: 8px; color: red; font-size: 1.1em;">
+        <i class="fas fa-file-pdf"></i>
+    </a>`;
+  
 
-    const finalHtml = showBadges
-      ? `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`
-      : `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}${metaInline}</div></div>`;
+  // Monta o pane
+  const finalHtml = `
+    <div class="displaybox-item">
+      <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100);">
+        <span class="header-text">${titleHtml}</span>
+      </div>
+      <div class="displaybox-text">
+        <span class="displaybox-text markdown-content">${highlighted}</span>
+        ${metaBadges}
+        ${pdfLink}
+      </div>
+    </div>
+  `;
 
-    return finalHtml;
+  return finalHtml;
 };
 
-  
+
+
+
 // ===========================================================================
 // Default: Content_Text  Markdown_Text Title  Number  Score  (+ HIGHLIGHT)
 // ===========================================================================
-const format_paragraph_Default = (item) => {
-    const title = item.title || '';
-    const paragraph_number = item.number || '';
-    const score = item.score || 0.00;
-    const text = item.markdown || item.content_text || item.text || '';
-    let source = item.source || '';
-    source = bookName(source);
+const format_paragraph_Default = (item, query) => {
 
-    const badgeParts = [];
-    if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
-    if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
-    if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
-      if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
-      if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
-    }
-    metaBadges = badgeParts.join('');
 
-    const textCompleted = (score > 0.0) ? `**${title}**. ${text}` : text;
+  const title = item.title || '';
+  const paragraph_number = item.number || '';
+  const score = item.score || 0.00;
+  const text = item.markdown || item.content_text || item.text || '';
+  let source = item.source || '';
+  source = bookName(source);
 
-    const rawHtml = renderMarkdown(textCompleted);
-    const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
 
-    // >>> HIGHLIGHT <<<
-    const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
+  // Caso especial 'LO': coloca **title.** em negrito antes da pensata.
+  const textCompleted = (title) ? `**${title}.** ${text}` : text;
 
-    const showBadges = shouldShowRefBadges();
-    const metaInline = buildMetaInlineLine([
-        ['Source', source],
-        ['Title', title],
-        ['Number', paragraph_number],
-        ...(score > 0.0 ? [['Score', score]] : []),
-    ]);
+  // Texto do parágrafo + highlight
+  const rawHtml = renderMarkdown(textCompleted);
+  const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  const q = window.__lastSearchQuery || '';
+  const highlighted = highlightHtml(safeHtml, q);
 
-    const finalHtml = showBadges
-      ? `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`
-      : `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}${metaInline}</div></div>`;
 
-    return finalHtml;
+  // Monta os badges
+  // -------------------------------------------------------------------------------------------------------------------------
+  let badgeParts = [];
+  if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+  if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+
+  if (window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) {
+    if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+    if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+  }
+
+  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+  else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
+
+  const metaBadges = badgeParts.join('');
+
+  // ------------------------------------------------------------------------------------------------------------------------- 
+
+  const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
+
+  return finalHtml;
+
 };
+
 
 
 // ________________________________________________________________________________________
@@ -507,368 +580,87 @@ function showSimple(container, data) {
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">
           ${mdHtml}
-          <div class="simple-ref">${ref}</div>
-        </div>
+        <div class="simple-ref">${ref}</div>
       </div>
     </div>`;
     container.insertAdjacentHTML('beforeend', html);
 }
 
 
+
+
+
+
 // ________________________________________________________________________________________
-// Show Verbetopedia (simplificada — ordenação por score)  + HIGHLIGHT
+// Show Quiz
 // ________________________________________________________________________________________
-function showVerbetopedia(container, data) {
-    if (!container) {
-        console.error('Results container not found');
-        return;
-    }
+function showQuiz(container, data) {
+  if (!container) {
+    console.error('Results container not found');
+    return;
+  }
 
-console.log('||| Display.js|||  showVerbetopedia data:', data);
+  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta : '';
+  let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
+  while (opcoes.length < 4) opcoes.push('');
 
-    // Query atual para highlight
-    window.__lastSearchQuery = getSearchQuery(data);
-
-    const arr = Array.isArray(data.results) ? data.results : [];
-    if (!arr.length) {
-        container.insertAdjacentHTML(
-            'beforeend',
-            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-        );
-        return;
-    }
-
-    const items = arr.map(item => {
-        const metaData = extractMetadata(item, 'verbetopedia');
-        return { ...item, _meta: metaData };
-    });
-
-    items.sort((a, b) => {
-        const sa = (typeof a._meta.score === 'number') ? a._meta.score : -Infinity;
-        const sb = (typeof b._meta.score === 'number') ? b._meta.score : -Infinity;
-        return sa - sb; // menor primeiro
-    });
-
-    const contentHtml = items.map(item => {
-        let content = (
-            (typeof item.markdown === 'string' && item.markdown) ||
-            (typeof item.page_content === 'string' && item.page_content) ||
-            (typeof item.text === 'string' && item.text) ||
-            ''
-        );
-
-        content = '**Definologia.** ' + content;
-        const rawHtml  = renderMarkdown(content);
-        const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-
-        console.log('||| Display.js|||  showVerbetopedia content:', content);
-        console.log('||| Display.js|||  showVerbetopedia rawHtml:', rawHtml);
-        console.log('||| Display.js|||  showVerbetopedia safeHtml:', safeHtml);
-
-        // >>> HIGHLIGHT <<<
-        const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
-
-        const metaData = item._meta;
-        const titleHtml = `
-          <strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  #${metaData.number}  ●  ${metaData.date}
-        `;
-        const scoreHtml = (typeof metaData.score === 'number' && !Number.isNaN(metaData.score))
-            ? `<span class="rag-badge">Score: ${metaData.score.toFixed(2)}</span>` : '';
-
-        // Monta link PDF
-        let arquivo = metaData.title;
-        arquivo = arquivo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/Ç/g, "C");
-        const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
-        const pdfLink = `
-            <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
-               title="Abrir PDF em nova aba" style="margin-left: 8px; color: red; font-size: 1.1em;">
-                <i class="fas fa-file-pdf"></i>
-            </a>`;
-
-        return `
-        <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgb(20, 30, 100)">
-                <span class="header-text">${titleHtml}</span>
-            </div>
-            <div class="displaybox-text">
-                <span class="displaybox-text markdown-content">${highlighted}</span>
-                ${(window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
-                ${pdfLink}
-            </div>
+  // Build HTML for quiz box
+  const optionsHtml = opcoes
+    .map((opt, idx) => {
+      const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
+      return `
+        <div class="quiz-option-row" data-index="${idx}" style="display:flex;align-items:center;gap:8px;margin:6px 0;">
+          <button type="button" class="quiz-badge-btn" data-index="${idx}" style="border:none;background:transparent;cursor:pointer;">
+            <span class="metadata-badge estilo2" style="display:inline-block;padding:4px 8px;border-radius:12px;min-width:28px;text-align:center;">${idx + 1}</span>
+          </button>
+          <div class="quiz-option-text markdown-content">${rendered}</div>
         </div>`;
-    }).join('');
+    })
+    .join('');
 
-    const groupHtml = `
-    <div class="displaybox-group">
-        <div class="displaybox-header">
-            <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
-            <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
-        </div>
-        <div class="displaybox-content">
-            ${contentHtml}
-        </div>
-    </div>`;
-    container.insertAdjacentHTML('beforeend', groupHtml);
+  const qHtml = pergunta ? `<div class="quiz-question markdown-content" style="font-weight:600;margin:6px 0 8px 0;">${renderMarkdown(pergunta)}</div>` : '';
 
-
-    
-    // Badge + painel colapsável
-    const _vb_count = items.length;
-    const _vb_html = `
-      <div class="summary-list">
-        <button class="pill pill-row accented" data-target="group-ec">
-          <span class="pill-label">Enciclopédia da Conscienciologia</span>
-          <span class="count">${_vb_count}</span>
-        </button>
-      </div>
-      <div id="group-ec" class="collapse-panel">
-        <div class="displaybox-container">
-          <div class="displaybox-content group-content">
-            ${contentHtml}
+  const html = `
+    <div class="displaybox-container quiz-box">
+      <div class="displaybox-content">
+        <div class="displaybox-text">
+          ${qHtml}
+          <div class="quiz-options-list">
+            ${optionsHtml}
           </div>
         </div>
-      </div>`;
-    container.insertAdjacentHTML('beforeend', _vb_html);
-
-    if (!container.__pillHandlerBound) {
-      container.addEventListener('click', function(ev) {
-          const btn = ev.target.closest('.pill');
-          if (!btn) return;
-          ev.preventDefault();
-          const targetId = btn.getAttribute('data-target');
-          if (!targetId) return;
-          const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
-          const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
-          if (!panel) return;
-          panel.classList.toggle('open');
-          if (panel.classList.contains('open')) {
-              try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-          }
-      });
-      container.__pillHandlerBound = true;
-    }
-}
-
-
-
-
-// ________________________________________________________________________________________
-// Show Lexverb  (+ HIGHLIGHT)
-// ________________________________________________________________________________________
-function showLexverb(container, data) {
-
-    if (!container) {
-        console.error('Results container not found');
-        return;
-    }
-
-    // Query atual
-    window.__lastSearchQuery = getSearchQuery(data);
-
-    const arr = Array.isArray(data.results) ? data.results : [];
-    if (!arr.length) {
-        container.insertAdjacentHTML(
-            'beforeend',
-            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-        );
-        return;
-    }
-   
-    const contentHtml = arr.map(item => {
-        const metaData = item.metadata;
-        let content = metaData.markdown || metaData.page_content || metaData.text || metaData.paragraph || '';
-        content = '**Definologia.** ' + content;
-        const rawHtml  = renderMarkdown(content);
-        const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-
-        // >>> HIGHLIGHT <<<
-        const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
-
-        const titleHtml = `
-          <strong>${metaData.title}</strong> (${metaData.area})  ●  <em>${metaData.author}</em>  ●  #${metaData.number}  ●  ${metaData.date}
-        `;
-
-        // PDF link
-        let arquivo = metaData.title;
-        arquivo = arquivo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/Ç/g, "C");
-        const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
-        const pdfLink = `
-            <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
-               title="Abrir PDF em nova aba" style="margin-left: 8px; color: red; font-size: 1.1em;">
-                <i class="fas fa-file-pdf"></i>
-            </a>`;
-
-        return `
-        <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100)">
-                <span class="header-text">${titleHtml}</span>
-            </div>
-            <div class="displaybox-text">
-                <span class="displaybox-text markdown-content">${highlighted}</span>
-                ${pdfLink}
-            </div>
-        </div>`;
-    }).join('');
-
-    const groupHtml = `
-    <div class="displaybox-group">
-        <div class="displaybox-header">
-            <span style="color: blue; font-size: 16px; font-weight: bold;">Enciclopédia da Conscienciologia</span>
-            <span class="score-badge" style="font-size: 12px">${arr.length} resultado${arr.length !== 1 ? 's' : ''}</span>
-        </div>
-        <div class="displaybox-content">
-            ${contentHtml}
-        </div>
-    </div>`;
-    container.insertAdjacentHTML('beforeend', groupHtml);
-
-    // Badge + painel
-    const _vb_count = arr.length;
-    const _vb_html = `
-      <div class="summary-list">
-        <button class="pill pill-row accented" data-target="group-ec">
-          <span class="pill-label">Enciclopédia da Conscienciologia</span>
-          <span class="count">${_vb_count}</span>
-        </button>
       </div>
-      <div id="group-ec" class="collapse-panel">
-        <div class="displaybox-container">
-          <div class="displaybox-content group-content">
-            ${contentHtml}
-          </div>
-        </div>
-      </div>`;
-    container.insertAdjacentHTML('beforeend', _vb_html);
-
-    if (!container.__pillHandlerBound) {
-      container.addEventListener('click', function(ev) {
-          const btn = ev.target.closest('.pill');
-          if (!btn) return;
-          ev.preventDefault();
-          const targetId = btn.getAttribute('data-target');
-          if (!targetId) return;
-          const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
-          const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
-          if (!panel) return;
-          panel.classList.toggle('open');
-          if (panel.classList.contains('open')) {
-              try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-          }
-      });
-      container.__pillHandlerBound = true;
-    }
-}
-
-
-// ________________________________________________________________________________________
-// Show Conscienciogramopedia (simplificada — ordenação por score)  (+ HIGHLIGHT)
-// ________________________________________________________________________________________
-function showCcg(container, data) {
-    if (!container) {
-        console.error('Results container not found');
-        return;
-    }
-
-    window.__lastSearchQuery = getSearchQuery(data);
-
-    const arr = Array.isArray(data.results) ? data.results : [];
-    if (!arr.length) {
-        container.insertAdjacentHTML(
-            'beforeend',
-            '<div class="displaybox-container"><div class="displaybox-content">No results to display.</div></div>'
-        );
-        return;
-    }
-
-    const items = arr.map(item => {
-        const metaData = extractMetadata(item, 'ccg');
-        return { ...item, _meta: metaData };
-    });
-
-    items.sort((a, b) => {
-        const sa = (typeof a._meta.score === 'number') ? a._meta.score : -Infinity;
-        const sb = (typeof b._meta.score === 'number') ? b._meta.score : -Infinity;
-        return sa - sb;
-    });
-
-    const contentHtml = items.map(item => {
-        let content = (
-            (typeof item.markdown === 'string' && item.markdown) ||
-            (typeof item.page_content === 'string' && item.page_content) ||
-            (typeof item.text === 'string' && item.text) ||
-            ''
-        );
-
-        const rawHtml  = renderMarkdown(content);
-        const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-
-        // >>> HIGHLIGHT <<<
-        const highlighted = highlightHtml(safeHtml, window.__lastSearchQuery || '');
-
-        const metaData = item._meta;
-        const titleHtml = `<strong>${metaData.title}</strong>  ●  ${metaData.folha}  ●  #${metaData.number}`;
-        const scoreHtml = (typeof metaData.score === 'number' && !Number.isNaN(metaData.score))
-            ? `<span class="rag-badge">Score: ${metaData.score.toFixed(2)}</span>` : '';
-
-        return `
-        <div class="displaybox-item">
-            <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgb(20, 30, 100)">
-                <span class="header-text">${titleHtml}</span>
-            </div>
-            <div class="displaybox-text">
-                <span class="displaybox-text markdown-content">${highlighted}</span>
-                ${(window.CONFIG ? !!window.CONFIG.FULL_BADGES : FULL_BADGES) ? `<span class="metadata-badge">${scoreHtml}</span>` : ''}
-            </div>
-        </div>`;
-    }).join('');
-
-    const groupHtml = `
-    <div class="displaybox-group">
-        <div class="displaybox-header">
-            <span style="color: blue; font-size: 16px; font-weight: bold;">Conscienciograma</span>
-            <span class="score-badge" style="font-size: 12px">${items.length} resultado${items.length !== 1 ? 's' : ''}</span>
-        </div>
-        <div class="displaybox-content">
-            ${contentHtml}
-        </div>
     </div>`;
-    container.insertAdjacentHTML('beforeend', groupHtml);
 
-    const _vb_count = items.length;
-    const _vb_html = `
-      <div class="summary-list">
-        <button class="pill pill-row accented" data-target="group-ec">
-          <span class="pill-label">Conscienciograma</span>
-          <span class="count">${_vb_count}</span>
-        </button>
-      </div>
-      <div id="group-ec" class="collapse-panel">
-        <div class="displaybox-container">
-          <div class="displaybox-content group-content">
-            ${contentHtml}
-          </div>
-        </div>
-      </div>`;
-    container.insertAdjacentHTML('beforeend', _vb_html);
+  container.insertAdjacentHTML('beforeend', html);
 
-    if (!container.__pillHandlerBound) {
-      container.addEventListener('click', function(ev) {
-          const btn = ev.target.closest('.pill');
-          if (!btn) return;
-          ev.preventDefault();
-          const targetId = btn.getAttribute('data-target');
-          if (!targetId) return;
-          const safeId = `#${targetId.replace(/[^a-z0-9\-_:]/gi, '')}`;
-          const panel = container.querySelector(safeId) || container.querySelector(`#${targetId}`);
-          if (!panel) return;
-          panel.classList.toggle('open');
-          if (panel.classList.contains('open')) {
-              try { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) {}
-          }
-      });
-      container.__pillHandlerBound = true;
-    }
+  // Event delegation for option clicks (no custom event; logic handled in script_quiz.js)
+  if (!container.__quizClickBound) {
+    container.addEventListener('click', function(ev) {
+      const btn = ev.target.closest('.quiz-badge-btn');
+      const row = btn ? btn.closest('.quiz-option-row') : ev.target.closest('.quiz-option-row');
+      if (!row) return;
+
+      const box = row.closest('.quiz-box');
+      if (!box) return;
+
+      // Visual feedback: highlight selected badge using module color
+      try {
+        const badge = row.querySelector('.metadata-badge');
+        if (badge) {
+          badge.style.backgroundColor = '#10b981'; // Changed to green-500 color
+          badge.style.color = '#fff';
+        }
+      } catch {}
+
+      // Disable further interaction within this quiz box
+      box.querySelectorAll('button.quiz-badge-btn').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+      // No emission here; script_quiz.js listens to clicks on #results
+    });
+    container.__quizClickBound = true;
+  }
 }
+
 
 
 
@@ -947,13 +739,6 @@ function removeLoading(container) {
   const loadingContainer = container.querySelector('.loading-container');
   if (loadingContainer) loadingContainer.remove();
 }
-
-// CSS (opcional): coloque no seu stylesheet global
-// @keyframes spin { to { transform: rotate(360deg); } }
-// .loading-container .loading { font-size: 0.95rem; color: var(--gray-700, #444); }
-
-
-
 
 // Collapse all open result panels and reset pill state when needed
 function collapseAllPills() {
@@ -1301,30 +1086,6 @@ function renderMarkdown(mdText) {
 
 
 
-
-
-
-/**
- * ======================================================================================================================
- * Displays results based on search type
- * @param {HTMLElement} container - The container element
- * @param {Object} data - The data payload
- * @param {string} type - The search type key
- * ======================================================================================================================
- */
-function displayResults(container, data, type) {
-  if (!container) {
-      console.error('Results container not found');
-      return;
-  }
-  const renderer = renderers[type];
-  if (!renderer) {
-      console.error(`Unknown search type: ${type}`);
-      return;
-  }
-  renderer(container, data);
-}
-
 // ===== Utility functions =====
 function escapeHtml(text) {
     if (typeof text !== 'string') return text;
@@ -1337,17 +1098,4 @@ function escapeHtml(text) {
 }
 
 
-// ===== Renderer assignments =====
-// Popular o mapeamento no final do arquivo
-// Como renderers foi criado com var lá no topo, não há risco de “Cannot access 'renderers' before initialization”.
-Object.assign(renderers, {
-  botmetainfo: showBotMetainfo,
-  lexical: showSearch,
-  semantical: showSearch,
-  title: showTitle,
-  simple: showSimple,
-  verbetopedia: showVerbetopedia,
-  ccg: showCcg,
-  lexverb: showLexverb,
-  deepdive: showDeepdive
-});
+

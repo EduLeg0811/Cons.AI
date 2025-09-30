@@ -91,10 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const quizParsed = parseQuizResponse(quizData) || { pergunta: '', opcoes: [] };
             const pergunta = quizParsed.pergunta || '';
             const opcoes   = Array.isArray(quizParsed.opcoes) ? quizParsed.opcoes : [];
-            if (typeof displayResults === 'function') {
-                displayResults(resultsDiv, { pergunta, opcoes }, 'quiz');
-            }
+          
+            showQuiz(resultsDiv, { pergunta, opcoes });
 
+           
             // Aguarda resposta do usuário (com timeout)
             // -----------------------------------------
             const userAnswer = await new Promise((resolve, reject) => {
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             removeLoading(resultsDiv);
 
             // Exibe Comentário
-            displayResults(resultsDiv, respComment, 'ragbot');
+            showSimple(resultsDiv, respComment);
 
 
             // Pré-carrega próxima pergunta

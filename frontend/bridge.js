@@ -1,6 +1,6 @@
 // escopo de módulo
 let _lexicalController = null;
-let _semanticalController = null;
+let _semanticController = null;
 let _llmQueryController = null;
 let _randomPensataController = null;
 let _downloadController = null;  // Added download controller
@@ -73,26 +73,26 @@ async function call_lexical(parameters) {
 
 
 //_________________________________________________________
-// Semantical Search
+// semantic Search
 //_________________________________________________________
-async function call_semantical(parameters) {
+async function call_semantic(parameters) {
 
 
-  if (_semanticalController) _semanticalController.abort();
-  _semanticalController = new AbortController();
+  if (_semanticController) _semanticController.abort();
+  _semanticController = new AbortController();
 
 
-    console.log(' SEMANTICAL SEARCH REQUEST:', {
-        endpoint: `${apiBaseUrl}/semantical_search`,
+    console.log(' SEMANTIC SEARCH REQUEST:', {
+        endpoint: `${apiBaseUrl}/semantic_search`,
         parameters: JSON.parse(JSON.stringify(parameters)) // Deep clone
     });
 
     try {
-        const response = await fetch(apiBaseUrl + '/semantical_search', {
+        const response = await fetch(apiBaseUrl + '/semantic_search', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(parameters),
-            signal: _semanticalController.signal
+            signal: _semanticController.signal
         });
 
         if (!response.ok) {
@@ -102,7 +102,7 @@ async function call_semantical(parameters) {
 
         const responseData = await response.json();
         
-        console.log(' SEMANTICAL SEARCH RESPONSE:', {
+        console.log(' SEMANTIC SEARCH RESPONSE:', {
             data: responseData,
             type: typeof responseData,
             isArray: Array.isArray(responseData),
@@ -111,34 +111,27 @@ async function call_semantical(parameters) {
         
         // Log detailed structure if it's an object
         if (responseData && typeof responseData === 'object') {
-            console.debug(' SEMANTICAL SEARCH RESPONSE STRUCTURE:', {
+            console.debug(' SEMANTIC SEARCH RESPONSE STRUCTURE:', {
                 firstLevelKeys: Object.keys(responseData),
                 sampleFirstItem: responseData[0] ? 
                     Object.keys(responseData[0]) : 'No items in response'
             });
         }
 
-          //if source contains "ECALL_DEF", change it to "EC"
-          responseData.forEach(item => {
-            if (item.source === "ECALL_DEF") {
-                item.source = "EC";
-            }            
-          });
-
           // Format response
           const formattedResponse = {
             count: responseData.length,
-            search_type: "semantical",
+            search_type: "semantic",
             term: parameters.term,
             results: responseData,
           };
 
-        console.log(`********bridge.js - call_semantical*** [formattedResponse]:`, formattedResponse);
+        console.log(`********bridge.js - call_semantic*** [formattedResponse]:`, formattedResponse);
 
         return formattedResponse;
 
     } catch (error) {
-        console.error(' SEMANTICAL SEARCH EXCEPTION:', error);
+        console.error(' SEMANTIC SEARCH EXCEPTION:', error);
         throw error;
     }
 }
@@ -192,7 +185,7 @@ async function call_llm(parameters) {
 
     const responseData = await response.json();
 
-    // Transform the LLM response to match what displayResults expects
+    // Transform the LLM response to match what displaySimple expects
     // const formattedResponse = llm_formatResponse(responseData);
     const formattedResponse = responseData;
 
@@ -296,3 +289,20 @@ async function call_download(format, payload) {
       _downloadController = null;
   }
 }
+
+// ---------------------------------------------------------
+// Global abort helpers (for cleanup before navigation)
+// ---------------------------------------------------------
+function abortAllRequests() {
+  try { _lexicalController?.abort(); } catch {}
+  try { _semanticController?.abort(); } catch {}
+  try { _llmQueryController?.abort(); } catch {}
+  try { _randomPensataController?.abort(); } catch {}
+  try { _downloadController?.abort(); } catch {}
+}
+
+// Expose globally so other modules/pages can use them
+window.abortAllRequests = abortAllRequests;
+window.abortRagbot = function() {
+  try { _llmQueryController?.abort(); } catch {}
+};

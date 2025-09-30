@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
 
 
-        let chatMessages_id = null;
+        let chatMessage_id = null;
 
         try {
 
@@ -91,12 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
           
           // Clear input
-          searchInput.value = '';
+          searchInput.value = 'Consultando o ConsBOT...';
           searchInput.style.height = 'auto';
 
 
           // Add user message to chat
-          chatMessages_id = addChatMessage('user', term);
+          chatMessage_id = addChatMessage('user', term);
 
           // Add loading message
          
@@ -132,6 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
           // Add bot message
           chatMessage_id = addChatMessage('bot', response.text, false);
 
+          // Clear input
+          searchInput.value = '';
+          searchInput.style.height = 'auto';
+
           
           // Mostra os metadados do response em Badges, logo após o texto da resposta
           // ------------------------------------------------------------------------   
@@ -143,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
           
           const botMessageEl = document.getElementById(chatMessage_id).querySelector('.message-content');
-          displayResults(botMessageEl, metaData, 'botmetainfo'); 
+          showBotMetainfo(botMessageEl, metaData); 
           
           
           // Store in chat history

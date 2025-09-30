@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
             pensJson.ref = "Léxico de Ortopensatas, 2019"
 
             removeLoading(resultsDiv);
-            //displayResults(resultsDiv, "Pensata Sorteada", 'title');
-            displayResults(resultsDiv, pensJson, 'simple');
+            //showTitle(resultsDiv, "Pensata Sorteada");
+            showSimple(resultsDiv, pensJson);
             
 
             // Extrai text da resposta
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
         // Display results
         removeLoading(resultsDiv);
-        //displayResults(resultsDiv, "Comentário", 'title');
-        displayResults(resultsDiv, commentaryData, 'ragbot');
+        //showTitle(resultsDiv, "Comentário");
+        showSimple(resultsDiv, commentaryData);
 
         const downloadData = prepareDownloadData(pensataText, commentaryData, "Bibliomancia");
 

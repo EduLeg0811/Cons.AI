@@ -10,6 +10,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from html2docx import html2docx
 import markdown2
+#import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -58,67 +59,43 @@ def _add_bottom_border(paragraph, color="444444", size_eights_pt=10):
 
 
 
-
-
-logger = logging.getLogger(__name__)
-
-
-
-
-
-
-
-
 #_________________________________________________________  
 # build_docx_deepdive
 #_________________________________________________________  
-def build_docx(data, group_results_by_book):
+def build_docx(data: dict, group_results_by_book: bool):
 
-    # Extração de dados
+
+    # Extração de dados básicos
     # =============================================================
-    search_term   = data.get("search_term")
-    search_type   = data.get("search_type")
-    display_option = data.get("display_option")
-    lexical       = data.get("lexical", [])
-    semantical    = data.get("semantical", [])
-    definologia   = data.get("definologia", "")
-    descritivo    = data.get("descritivo", "")
-    source_array  = data.get("source_array", [])
-    max_results   = data.get("max_results", 10)
+    search_term = data.get("search_term", "")
+    search_type = data.get("search_type", [])
+    source_array = data.get("source_array", [])
+    display_option = data.get("display_option", "unified")
 
-    # Garante string em definologia e descritivo
-    defText = ""
-    descrText = ""
+    defText = data.get("definologia", {}).get("text") or ""
+    descText = data.get("descritivo", {}).get("text") or ""
 
-    if isinstance(definologia, dict):
-        defText = definologia.get("text") 
-        if not isinstance(defText, str):
-            defText = str(defText)
-
-    if isinstance(descritivo, dict):
-        descrText = descritivo.get("text") 
-        if not isinstance(descrText, str):
-            descrText = str(descrText)
-
-
-    if search_type == "semantical":
-        searchTypeTxt = "Semântica"
-    elif search_type == "lexical" or search_type == "lexverb":
+    # Tipo de busca (para exibir no cabeçalho)
+    searchTypeTxt = ""
+    if "lexical" in search_type and "semantic" in search_type:
+        searchTypeTxt = "Léxica & Semântica"
+    elif "lexical" in search_type:
         searchTypeTxt = "Léxica"
-    elif search_type == "deepdive":
-        searchTypeTxt = "Deep Research"
-
-
-    # Monta array com nomes reais dos livros em "source"
-    source_array = [bookName(src) for src in source_array]
-    txt_source = ", ".join(source_array).capitalize()
-    if len(source_array) > 1:
-        txt_source = " e ".join(source_array).capitalize()
+    elif "semantic" in search_type:
+        searchTypeTxt = "Semântica"
     else:
-        txt_source = source_array[0].capitalize()
-   
+        searchTypeTxt = "Desconhecida"
 
-    # Criação do documento
+    # Fonte textual
+    source_names = [bookName(src) for src in source_array]
+    if len(source_names) > 1:
+        txt_source = " e ".join(source_names).capitalize()
+    elif source_names:
+        txt_source = source_names[0].capitalize()
+    else:
+        txt_source = ""
+
+    # Documento Word
     # =============================================================
     doc = Document()
     style = doc.styles["Normal"]
@@ -137,10 +114,7 @@ def build_docx(data, group_results_by_book):
         section.left_margin   = Cm(MARGIN_CM)
         section.right_margin  = Cm(MARGIN_CM)
 
-
-
-    # 1. Cabeçalho
-    # =============================================================
+    # Cabeçalho principal
     p = doc.add_paragraph(str(search_term).capitalize())
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.runs[0]
@@ -149,21 +123,22 @@ def build_docx(data, group_results_by_book):
     _add_paragraph_border_double(p, size_eights_pt=9)
 
     doc.add_paragraph("")
-    doc.add_paragraph("")
 
     # Termo
     p = doc.add_paragraph()
     p.add_run("Termo de pesquisa: ").bold = True
     p.add_run(str(search_term).capitalize())
-    doc.add_paragraph("")
-  
+    p.space_after = Pt(6)
+    p.space_before = Pt(6)
+
     # Tipo de pesquisa
     p = doc.add_paragraph()
     p.add_run("Tipo de pesquisa: ").bold = True
     p.add_run(searchTypeTxt)
-    doc.add_paragraph("")
-    
-    # Display Option
+    p.space_after = Pt(6)
+    p.space_before = Pt(6)
+
+    # Display option
     p = doc.add_paragraph()
     p.add_run("Display Option: ").bold = True
     if display_option == "simple" and group_results_by_book:
@@ -171,17 +146,20 @@ def build_docx(data, group_results_by_book):
     else:
         p.add_run(str(display_option).capitalize())
 
+    p.space_after = Pt(6)
+    p.space_before = Pt(6)
     doc.add_paragraph("")
 
-  
+
     # 2. Estatística geral
     # =============================================================
-     
+
     # Reutiliza o agrupamento do display_results_unified
     array_data_lexical = flatten_data(data, fields=["lexical"], sort_fields=[("number", "crescent")])
-    array_data_semantical = flatten_data(data, fields=["semantical"], sort_fields=[("score", "decrescent")])
+    array_data_semantic = flatten_data(data, fields=["semantic"], sort_fields=[("score", "decrescent")])
 
     newData = {}
+
     def _normalize_source(value):
         if isinstance(value, list):
             for candidate in value:
@@ -190,13 +168,7 @@ def build_docx(data, group_results_by_book):
             return "Unknown"
         if value in (None, ""):
             return "Unknown"
-
         return str(value)
-
-    def _normalize_text(txt):
-        if not txt:
-            return ""
-        return " ".join(txt.lower().split())
 
     def _add_items(items, field):
         for original in items or []:
@@ -207,62 +179,52 @@ def build_docx(data, group_results_by_book):
             obj = dict(original)
             obj.setdefault("source", src)
             obj.setdefault("field", field)
-            newData.setdefault(src, {"lexical": [], "semantical": []})[field].append(obj)
+            newData.setdefault(src, {"lexical": [], "semantic": []})[field].append(obj)
 
-    # Agrupar lexical e semantical
+    # Agrupar lexical e semantic
     _add_items(array_data_lexical, "lexical")
-    _add_items(array_data_semantical, "semantical")
+    _add_items(array_data_semantic, "semantic")
 
-    # Remover duplicados por texto
-    for src, groups in newData.items():
-        for field in ["lexical", "semantical"]:
-            seen = set()
-            unique_items = []
-            for it in groups[field]:
-                txt = (
-                    it.get("text")
-                    or it.get("content_text")
-                    or it.get("markdown")
-                    or (it.get("metadata") or {}).get("markdown")
-                    or ""
-                )
-                norm = _normalize_text(txt)
-                if norm not in seen:
-                    seen.add(norm)
-                    unique_items.append(it)
-            newData[src][field] = unique_items
-
-
-    # calcula total geral de resultados
-    #total_results = len(newData)
+    # Cabeçalho da seção
     p = doc.add_paragraph()
     p.add_run("Estatística de Resultados:").bold = True
-    
 
-    # Impressão final por fonte
+    # Impressão final por fonte com detalhamento
     for src, groups in newData.items():
         n_lex = len(groups["lexical"])
-        n_sem = len(groups["semantical"])
+        n_sem = len(groups["semantic"])
+        total = n_lex + n_sem
         livro = bookName(src)
 
-        # cria um novo parágrafo
+        # Linha principal por source
         p = doc.add_paragraph()
         run1 = p.add_run(f"●   {livro}:   ")
         run1.bold = True
-
-        if search_type == "deepdive":
-            run2 = p.add_run(f"Léxica = {n_lex}    |    Semântica = {n_sem}")
-        elif search_type == "lexical":
-            run2 = p.add_run(f"{n_lex}")
-        elif search_type == "semantical":
-            run2 = p.add_run(f"{n_sem}")
-
-        # espaçamento antes e depois
+        p.add_run(f"Total = {total}")
         p.paragraph_format.space_before = Pt(3)
         p.paragraph_format.space_after = Pt(3)
 
+        # Sub-linha detalhada lexical
+        p_lex = doc.add_paragraph()
+        p_lex.paragraph_format.left_indent = Cm(1)
+        p_lex.add_run("Léxica: ").bold = True
+        p_lex.add_run(str(n_lex))
+        p_lex.paragraph_format.space_before = Pt(0)
+        p_lex.paragraph_format.space_after = Pt(0)
+
+        # Sub-linha detalhada semantic
+        p_sem = doc.add_paragraph()
+        p_sem.paragraph_format.left_indent = Cm(1)
+        p_sem.add_run("Semântica: ").bold = True
+        p_sem.add_run(str(n_sem))
+        p_sem.paragraph_format.space_before = Pt(0)
+        p_sem.paragraph_format.space_after = Pt(6)
+
     doc.add_paragraph("")
     doc.add_paragraph("")
+
+
+
 
 
 
@@ -270,83 +232,56 @@ def build_docx(data, group_results_by_book):
 
     # 3. Definologia e Descritivo
     # =============================================================
+    if len(defText) > 2:
+        p = doc.add_paragraph()
+        p.add_run("Definição: ").bold = True
+        insert_markdown_into_paragraph(defText, p)
+        doc.add_paragraph("")
 
-    if defText or descrText:
-        # badge_def = doc.add_paragraph()
-        # run = badge_def.add_run("Definologia")
-        # run.font.size = Pt(12)
-        # run.font.bold = True
-        # run.font.color.rgb = RGBColor(0, 0, 0)
-        # badge_def.alignment = WD_ALIGN_PARAGRAPH.LEFT
-
-        # divider_def = doc.add_paragraph()
-        # _add_bottom_border(divider_def)
-        # doc.add_paragraph("")
-
-        if defText:
-            p = doc.add_paragraph()
-            p.add_run("Definição: ").bold = True
-            insert_markdown_into_paragraph(str(defText).capitalize(), p)
-            doc.add_paragraph("")
-        
-        if descrText:
-            p = doc.add_paragraph()
-            p.add_run("Descritivos: ").bold = True
-            insert_markdown_into_paragraph(str(descrText).capitalize(), p)
-            doc.add_paragraph("")
+    if len(descText) > 2:
+        p = doc.add_paragraph()
+        p.add_run("Descritivos: ").bold = True
+        insert_markdown_into_paragraph(descText, p)
+        doc.add_paragraph("")
 
 
-    doc.add_paragraph("")        
-
-
-    # 4 Display Option
+    # 4. Resultados (simple / unified)
     # =============================================================
-    
-    # display_mode == "simple" : semantical data grouped by source or sorted by score (NORMAL)
-    # ----------------------------------------------------------------------------------------
-    if (display_option == "simple"):
+    if display_option == "simple":
         display_results_simple(doc, data, search_type, group_results_by_book)
-
-    # display_mode == "advanced" : semantical data grouped by source or sorted by score (NORMAL)
-    # ----------------------------------------------------------------------------------------
-    elif (display_option == "unified"):
+    elif display_option == "unified":
         display_results_unified(doc, data, search_type)
 
 
-
-        # 6. Referências
+    # 5. Legenda
     # =============================================================
     doc.add_paragraph("")
-
-    # linha separadora antes da legenda
     divider_ref = doc.add_paragraph()
     _add_bottom_border(divider_ref)
-    
-    # título da legenda
+
     p = doc.add_paragraph("Legenda:")
     p.runs[0].bold = True
-    p.paragraph_format.space_before = Pt(6)
-    p.paragraph_format.space_after = Pt(6)
+    p.space_before = Pt(6)
 
-    if search_type in ("semantical", "deepdive"):
+    if "semantic" in search_type or "deepdive" in search_type:
         p1 = doc.add_paragraph()
         run1 = p1.add_run("@ :  ")
         run1.bold = True
         p1.add_run("score de similaridade semântica (0 = máxima correspondência)")
-        p1.paragraph_format.space_before = Pt(6)
-        p1.paragraph_format.space_after = Pt(6)
+        p1.space_before = Pt(6)
 
     p2 = doc.add_paragraph()
     run2 = p2.add_run("# :  ")
     run2.bold = True
     p2.add_run("nº do parágrafo (Livros); nº do verbete (EC); nº da questão (Conscienciograma)")
-    p2.paragraph_format.space_before = Pt(3)
-    p2.paragraph_format.space_after = Pt(3)
+    p2.space_before = Pt(6)
 
 
+
+    # 6. Finaliza
+    # =============================================================
     doc.add_paragraph("")
-
-
+    # Final
     bio = BytesIO()
     doc.save(bio)
     bio.seek(0)
@@ -365,20 +300,18 @@ def build_docx(data, group_results_by_book):
 #_________________________________________________________
 def display_results_unified(doc, data, search_type):
 
-
-
     # 1. Extrai arrays já ordenados separadamente
     # ==========================================
     array_data_lexical = flatten_data(
         data, fields=["lexical"], sort_fields=[("number", "crescent")]
     )
-    array_data_semantical = flatten_data(
-        data, fields=["semantical"], sort_fields=[("score", "decrescent")]
+    array_data_semantic = flatten_data(
+        data, fields=["semantic"], sort_fields=[("score", "decrescent")]
     )
 
 
 
-    # 2. Agrupa lexical e semantical por fonte
+    # 2. Agrupa lexical e semantic por fonte
     # =======================================
     newData = {}
 
@@ -401,11 +334,11 @@ def display_results_unified(doc, data, search_type):
             obj = dict(original)
             obj.setdefault("source", src)
             obj.setdefault("field", field)
-            newData.setdefault(src, {"lexical": [], "semantical": []})[field].append(obj)
+            newData.setdefault(src, {"lexical": [], "semantic": []})[field].append(obj)
 
-    # separa lexical e semantical por fonte
+    # separa lexical e semantic por fonte
     _add_items(array_data_lexical, "lexical")
-    _add_items(array_data_semantical, "semantical")
+    _add_items(array_data_semantic, "semantic")
 
     # eliminar duplicados pelo campo "text"
     def _normalize_text(txt):
@@ -414,7 +347,7 @@ def display_results_unified(doc, data, search_type):
         return " ".join(txt.lower().split())
 
     for src, groups in newData.items():
-        for field in ["lexical", "semantical"]:
+        for field in ["lexical", "semantic"]:
             seen = set()
             unique_items = []
             for it in groups[field]:
@@ -433,7 +366,7 @@ def display_results_unified(doc, data, search_type):
 
     # mostrar resultados por fonte
     for src, groups in newData.items():
-        if not groups["lexical"] and not groups["semantical"]:
+        if not groups["lexical"] and not groups["semantic"]:
             continue
 
           
@@ -482,8 +415,8 @@ def display_results_unified(doc, data, search_type):
           
 
 
-        # Linha divisória entre lexical e semantical
-        if groups["lexical"] and groups["semantical"]:
+        # Linha divisória entre lexical e semantic
+        if groups["lexical"] and groups["semantic"]:
             last_p = doc.paragraphs[-1]  # pega o último
             last_p._element.getparent().remove(last_p._element)  # remove inline
             divider_p = doc.add_paragraph()
@@ -493,8 +426,8 @@ def display_results_unified(doc, data, search_type):
             doc.add_paragraph("")
 
 
-        # Depois semantical
-        for it in groups["semantical"]:
+        # Depois semantic
+        for it in groups["semantic"]:
             counter += 1
             mdText = (
                 (it.get("metadata") or {}).get("markdown")
@@ -511,7 +444,7 @@ def display_results_unified(doc, data, search_type):
 
             if src in ("EC", "ECALL_DEF", "ECWV", "ECALL"):
                 mdText = f"**Definologia.** {mdText}"
-            if src == "LO" and search_type == "semantical":
+            if src == "LO" and search_type == "semantic":
                 mdText = f"**{it.get('title')}**. {mdText}"
 
             insert_markdown_into_paragraph(mdText, p)
@@ -538,14 +471,14 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
         array_search_loop = ["lexical"]
     elif search_type == "lexverb":
         array_search_loop = ["lexical"]
-    elif search_type == "semantical":
-        array_search_loop = ["semantical"]
+    elif search_type == "semantic":
+        array_search_loop = ["semantic"]
     elif search_type == "deepdive":
-        array_search_loop = ["lexical", "semantical"]
+        array_search_loop = ["lexical", "semantic"]
 
 
 
-    # Itera nos modos de pesquisa (lexical, semantical) ou ambos (deepdive)
+    # Itera nos modos de pesquisa (lexical, semantic) ou ambos (deepdive)
     for current_search_mode in array_search_loop:
 
         doc.add_paragraph("")
@@ -635,7 +568,7 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                         if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
                             mdText = f"**Definologia.** {mdText}"
 
-                        if src == 'LO' and search_type == 'semantical':
+                        if (src == 'LO'):
                             mdText = f"**{it.get('title')}**. {mdText}"
 
                         insert_markdown_into_paragraph(mdText, p)
@@ -698,11 +631,11 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
     # ---------------------------------------------------------
     # 2. Semantic
     # ---------------------------------------------------------
-    if current_search_mode == "semantical":
+    if current_search_mode == "semantic":
 
         search_mode_txt = "Pesquisa Semântica"
         array_data = flatten_data(
-            data, fields=["semantical"], sort_fields=[("score", "crescent")]
+            data, fields=["semantic"], sort_fields=[("score", "crescent")]
         )
 
 
@@ -776,7 +709,7 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                         if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
                             mdText = f"**Definologia.** {mdText}"
 
-                        if src == 'LO' and search_type == 'semantical':
+                        if (src == 'LO'):
                             mdText = f"**{it.get('title')}**. {mdText}"
 
                         insert_markdown_into_paragraph(mdText, p)
@@ -820,8 +753,8 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                     if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
                         mdText = f"**Definologia.** {mdText}"
 
-                    # Se for pensata do LO em Semantical, antepor Titulo em negrito antes do texto
-                    if src in ('LO'):
+                    # Se for pensata do LO, antepor Titulo em negrito antes do texto
+                    if (src ==  'LO'):
                         mdText = f"**{it.get('title')}**. {mdText}"
 
 
@@ -899,7 +832,7 @@ def insert_markdown_into_paragraph(mdText, paragraph):
 #_________________________________________________________  
 def flatten_data(
     data,
-    fields=["lexical", "semantical"],
+    fields=["lexical", "semantic"],
     sort_fields=[("number", "crescent")],
     ignore_accents=False
 ):

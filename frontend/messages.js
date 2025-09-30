@@ -13,8 +13,8 @@ const PANEL_DESCRIPTIONS = {
   // Panel: AI Lexical Search
   'IA Search': 'Pesquisa em Livros por IA',
 
-  // Panel: AI Semantical Search
-  'IA Semantical Search': 'Pesquisa Semântica por Afinidade',
+  // Panel: AI semantic Search
+  'IA semantic Search': 'Pesquisa Semântica por Afinidade',
 
 // Panel: AI Apps
   'IA Apps': 'Aplicativos de IA para Pesquisa',
@@ -35,8 +35,8 @@ const TOOL_MESSAGES = {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       '<br>',
-      'O <strong>ConsGPT</strong> é o chatbot mais <em>inteligente</em> de todos. ',
-      'Ótimo para brainstorming, resumos e conversas em geral.<br><br>',
+      'O <strong>ConsGPT</strong> é o chatbot mais <em>inteligente</em>. ',
+      'Ótimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
       '<strong>2.</strong> Peça a ele que formule <em>analogias</em> ou <em>metáforas</em> para algum tema.<br>',
@@ -50,7 +50,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
-      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br><br>',
+      'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente a seção lateral do <em>studio</em>, com Podcasts e tutoriais de Conscienciologia.<br>',
       '<strong>2.</strong> Veja também os <em>resumos prontos</em> e o <em>mapa de conhecimento</em> gerado por IA.'
@@ -63,7 +63,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
-      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br><br>', 
+      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>', 
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
@@ -73,87 +73,64 @@ const TOOL_MESSAGES = {
 
 
 
+  // -----------------------------------------------------------------------------------------------------------------------
 
-  // Tool: Lexical Search
-  'Pesquisa em Livros': {
-    short: '<em>Busca exata em livros</em>',
+
+  // Tool: Search_Book
+  'Livros & Tratados': {
+    short: 'Pesquisa em livros e tratados da Conscienciologia.',
     extra: [
       '<br>',
-      'Encontra os parágrafos de livros que contenham os termos exatos (literais). ',
-      'Útil para buscar ocorrências de certas palavras ou expressões nas obras da Conscienciologia.<br><br>',
-      '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Use caracteres especiais para busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
-      '<strong>2.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>3.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
-      '<strong>4.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>5.</strong> Escolha também se quer a saída em lista corrida ou <em>agrupada por livro</em>.<br>',
-      '<strong>6.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
-    ].join('\n')
-  },
-
-
-  // Tool: Lexical Verbetes
-  'Definologia de Verbetes': {
-    short: '<em>Busca exata em verbetes</em>',
-    extra: [
+      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo).',
       '<br>',
-      'Encontra verbetes que possuam os termos de busca exatos na <em>Definologia</em>, e não apenas no título.<br><br>',
-      '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Use caracteres especiais (&, |, !, *) para busca lógica avançada.<br>',
-      '<strong>2.</strong> Entre em <em>configurações</em>.<br>',
-      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar os resultados.<br>',
-      '<strong>5.</strong> Também é possível baixar o PDF do verbete completo.<br>',
-    ].join('\n')
-  },
-
-
-
-  // Tool: Semantic Search
-  'Pesquisa Semântica em Livros': {
-    short: '<em>Busca contextual em livros</em>',
-    extra: [
-      '<br>',
-      'Encontra os parágrafos de livros <em>semanticamente</em> relacionados à busca, independentemente da presença do termo exato. ',
-      'Útil para pesquisar temas e ideias correlatas ou afins.<br><br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Selecione os <em>livros</em> em que deseja buscar.<br>',
-      '<strong>3.</strong> Ajuste o número máximo de resultados para limitar a pesquisa.<br>',
-      '<strong>4.</strong> Escolha também se quer agrupar por <em>livro</em>, ou elencar por <em>índice de similaridade</em>.<br>',
-      '<strong>5.</strong> Ao invés de usar apenas um termo na busca, tente usar lista de palavras descritivas.<br>',
-      '<strong>6.</strong> Ao final, clique no ícone do Word para baixar os resultados.',
+      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
+      '<strong>3.</strong> Selecione os <em>livros</em> para pesquisa.<br>',
+      '<strong>4.</strong> Ajuste o número máximo de resultados.<br>',
+      '<strong>5.</strong> Defina a saída em lista corrida ou <em>agrupada por livro</em>.<br>',
+      '<strong>6.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
+      '<strong>7.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
     ].join('\n')
   },
 
 
-  // Tool: Verbetopedia
-  'Verbetopedia': {
-    short: '<em>Busca contextual em verbertes</em>',
+  // Tool: Search_Verbetes
+  'Definologia de Verbetes': {
+    short: 'Pesquisa na Definologia dos verbetes.',
     extra: [
       '<br>',
-      'Indica verbetes afins ao termo de busca. ',
-      'Excelente para sugerir verbetes para o aprofundamento da sua pesquisa.<br><br>',
+      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo). ',
+      'Pesquisa na Definologia dos verbetes, e não apenas no título.',
+      '<br>',
       '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Para ter acesso ao verbete completo, basta clicar no ícone do PDF indicado.<br>',
-      '<strong>2.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar sua pesquisa usando frases ou parágrafos.<br>',
-      '<strong>3.</strong> Ao final, clique no ícone do Word para baixar a listagem dos resultados.',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
+      '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
+      '<strong>4.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
+      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
+      '<strong>6.</strong> Também é possível baixar o PDF do verbete completo.<br>',
     ].join('\n')
   },
 
-// Tool: Conscienciogramopedia
-'Questões do Conscienciograma': {
-  short: '<em>Busca contextual em questões</em>',
-  extra: [
-    '<br>',
-    'Indica questões do Conscienciograma afins ao termo de busca. ',
-    'Ótimo para buscar questões de aprofundamento da autopesquisa.<br><br>',
-    '<strong>Dicas:</strong><br>',
-    '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-    '<strong>2.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
-    '<strong>3.</strong> Ao invés de usar apenas uma palavra simples na busca, tente explicar o que deseja pesquisar, usando expressões compostas, frases ou parágrafos.',
-  ].join('\n')
-},
+
+
+  // Tool: Search_CCG
+  'Questões do Conscienciograma': {
+    short: 'Pesquisa nas questões do Conscienciograma.',
+    extra: [
+      '<br>',
+      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo)',
+      '<br>',
+      '<strong>Dicas:</strong><br>',
+      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
+      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
+      '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
+      '<strong>4.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
+      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
+      '<strong>6.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
+    ].join('\n')
+  },
 
 // Tool: Caderno de Estudos
 'Caderno de Estudos': {
@@ -162,13 +139,15 @@ const TOOL_MESSAGES = {
     '<br>',
     'Realiza pesquisa profunda em livros, tratados e verbetes. ',
     'Monta um Caderno de Estudos completo sobre o tema. ',
-    'Utiliza algoritoms de IA de definição, descritivos, busca léxica e busca semântica. ',
-    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.<br><br>',
+    'Utiliza algoritoms de IA com GPT-5 da OpenAI (última geração). ',
+    'Realiza busca <em>léxica</em> e <em>semântica</em> conjugadas. ',
+    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.',
+    '<br>',
     '<strong>Dicas:</strong><br>',
     '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-    '<strong>2.</strong> Selecione se deseja listagem contínua ou agrupada por livros.<br>',
-    '<strong>3.</strong> Experimente combinações e variações de termos para obter melhores resultados.<br>',
-    '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem dos resultados.',
+    '<strong>2.</strong> Experimente combinações e variações de termos para obter melhores resultados.<br>',
+    '<strong>3.</strong> Por utilizar o GPT-5 com reasoning, a pesquisa pode levar vários minutos para concluir.<br>',
+    '<strong>4.</strong> Ao final, clique no ícone do Word para baixar o caderno de estudos.'
   ].join('\n')
 },
 
@@ -177,8 +156,9 @@ const TOOL_MESSAGES = {
     short: '<em>Sorteio de ortopensata do LO</em>',
     extra: [
       '<br>',
-      'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA.',
-      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br><br>',
+      'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA. ',
+      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.',
+      '<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para instigar as <em>sincronicidades</em>.<br>',
       '<strong>2.</strong> Compare a sua interpretação da pensata (hermenêutica) com a da IA.<br>',
@@ -192,8 +172,8 @@ const TOOL_MESSAGES = {
     short: '<em>Quiz de perguntas & respostas</em>',
     extra: [
       '<br>',
-      'Formula perguntas sobre temas da Conscienciologia.',
-      'Você responde as perguntas e a IA avalia a resposta.<br><br>',
+      'Formula perguntas sobre temas da Conscienciologia. ',
+      'Você responde as perguntas e a IA avalia a resposta.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para testar o seu conhecimento da Conscienciologia.<br>',
       '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',
@@ -273,7 +253,7 @@ function applyMessages() {
       if (panel.classList.contains('bots')) {
         descr = 'Assistentes de conversação';
       } else if (panel.classList.contains('search')) {
-        descr = 'Pesquisa por termos exatos';
+        descr = 'Pesquisa léxica e semântica';
       } else if (panel.classList.contains('sem')) {
         descr = 'Pesquisa por termos afins';
       } else if (panel.classList.contains('apps')) {
@@ -298,7 +278,7 @@ function applyMessages() {
           canonical = 'Pesquisa em Livros';
         } else if (href.includes('index_lexverb.html')) {
           canonical = 'Definologia de Verbetes';
-        } else if (href.includes('index_semantical.html')) {
+        } else if (href.includes('index_semantic.html')) {
           canonical = 'Pesquisa Semântica em Livros';
         } else if (href.includes('index_verbetopedia.html')) {
           canonical = 'Verbetopedia';
@@ -325,7 +305,7 @@ function applyMessages() {
         if (!msg && href2.includes('index_quiz.html')) {
           msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;
         }
-        if (!msg && href2.includes('index_semantical.html')) {
+        if (!msg && href2.includes('index_semantic.html')) {
           msg = TOOL_MESSAGES['Pesquisa Semântica em Livros'] || msg;
         }
 

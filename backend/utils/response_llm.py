@@ -84,11 +84,11 @@ def generate_llm_answer(
 
 
     # === Log inline, formatado ===
-    from pprint import pformat
-    logger.info(
-        "\n\n------- < generate_llm_answer > ------- LLM Payload:\n%s",
-        pformat(llm_str, indent=2, width=120)
-    )
+    #from pprint import pformat
+    #logger.info(
+    #    "\n\n------- < generate_llm_answer > ------- LLM Payload:\n%s",
+    #    pformat(llm_str, indent=2, width=120)
+    #)
 
     try:
         # === Chamada principal ===
@@ -100,11 +100,11 @@ def generate_llm_answer(
             _conversation_last_id[chat_id] = last_id
 
         # === Log inline, formatado ===
-        from pprint import pformat
-        logger.info(
-            "\n\n------- < generate_llm_answer > ------- RAW LLM Response:\n%s",
-            pformat(response.model_dump(), indent=2, width=120)
-        )
+        #from pprint import pformat
+        #logger.info(
+        #    "\n\n------- < generate_llm_answer > ------- RAW LLM Response:\n%s",
+        #    pformat(response.model_dump(), indent=2, width=120)
+        #)
 
         return format_llm_response(response)
 

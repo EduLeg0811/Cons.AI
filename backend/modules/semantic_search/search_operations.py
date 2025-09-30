@@ -55,9 +55,9 @@ def _to_float_or_none(val):
 
 # _________________________________________________________________________________________
 
-# Simple Search SEMANTICAL
+# Simple Search semantic
 # _________________________________________________________________________________________
-def simple_semantical_search(query, source, index_dir):
+def simple_semantic_search(query, source, index_dir):
     
 
      # Normalize query to lowercase for case-insensitive search
@@ -81,7 +81,7 @@ def simple_semantical_search(query, source, index_dir):
         # ****************************************************************************************************************
         vector_store_ids = get_vector_store_id(source)
 
-        logger.info(f"++++++++++ [simple_semantical_search] Vector store IDs: {vector_store_ids}")
+        #logger.info(f"++++++++++ [simple_semantic_search] Vector store IDs: {vector_store_ids}")
 
         for vs_id in vector_store_ids:
 
@@ -95,9 +95,9 @@ def simple_semantical_search(query, source, index_dir):
             process = psutil.Process(os.getpid())
             #logger.info(f"[FAISS] Antes de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
-            logger.info(f"\n\n++++++++++ [simple_semantical_search] index_path: {index_path}")
-            logger.info(f"++++++++++ [simple_semantical_search] index_file: {index_file}")
-            logger.info(f"++++++++++ [simple_semantical_search] vs_id: {vs_id}")
+            #logger.info(f"\n\n++++++++++ [simple_semantic_search] index_path: {index_path}")
+            #logger.info(f"++++++++++ [simple_semantic_search] index_file: {index_file}")
+            #logger.info(f"++++++++++ [simple_semantic_search] vs_id: {vs_id}")
 
             # Carrega o índice FAISS
             #------------------------------------------------------
@@ -149,11 +149,12 @@ def simple_semantical_search(query, source, index_dir):
         # ------------------------------------------------------
         # Caso especial de FAISS do LO (dividido em 2 partes)
         # ------------------------------------------------------
-        RENOMEAR = {"LO1": "LO", "LO2": "LO", "LO3": "LO", "LO4": "LO"}
+        RENOMEAR = {"LO1": "LO", "LO2": "LO", "LO3": "LO", "LO4": "LO", "ECALL_DEF": "EC"}
         for doc in processed_results:   # <<< agora só doc
             src = doc.metadata.get("source")
             if src in RENOMEAR:
                 doc.metadata["source"] = RENOMEAR[src]             
+
 
 
         # ------------------------------------------------------

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Pesquisa de Livros ● Cons-AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+
+<body class="theme-search">
+
+
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+
+            <div class="navbar-center">
+                <div class="navbar-text">
+                    <div class="navbar-title-modules">Livros & Tratados</div>
+                    <div class="navbar-subtitle-modules">Busca Léxica e Semântica</div>
+                </div>
+            </div>
+
+            <div class="navbar-controls">
+                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <div class="container">
+        <!-- Options Trigger + Panel (dropdown) -->
+        <div class="options-wrapper">
+            <div class="search-toolbar">
+                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
+                    <i class="fas fa-file-word fa-2x"></i>
+                </button>
+                <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <textarea id="searchInput" placeholder="Digite o termo para pesquisar..." class="search-input" rows="1"></textarea>
+                        <button id="searchButton" class="search-button" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="options-panel" id="optionsPanel">
+
+                <div class="options-header" onclick="toggleOptions()">
+                    <h3 class="options-title">Search Options</h3>
+                    <button class="options-toggle" id="optionsToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+
+                <div class="options-content" id="optionsContent">
+
+                    <!-- Search Type Toggle -->
+                    <div class="search-type-checkboxes" data-module="search_type" data-mode="multi">
+
+                        <!-- Opção Léxica -->
+                        <div class="search-type-option">
+                            <div class="search-type-pill" data-value="lexical">Léxica</div>
+                            <div class="search-type-label">Busca por termos exatos</div>
+                        </div>
+
+                        <!-- Opção Semântica -->
+                        <div class="search-type-option">
+                            <div class="search-type-pill" data-value="semantic">Semântica</div>
+                            <div class="search-type-label">Busca por afinidade de sentido</div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Config do Modulo (pills + opções) -->
+                    <div class="book-checkboxes" data-module="search_book" data-mode="multi">
+                        <div class="book-pill" data-value="LO">Léxico de Ortopensatas</div>
+                        <div class="book-pill" data-value="DAC">Dicionário de Argumentos da Conscienciologia</div>
+                        <div class="book-pill" data-value="TNP">Manual da Tenepes</div>
+                        <div class="book-pill" data-value="DUPLA">Manual da Dupla Evolutiva</div>
+                        <div class="book-pill" data-value="200TEAT">200 Teáticas da Conscienciologia</div>
+                        <div class="book-pill" data-value="PROEXIS">Manual da Proéxis</div>
+                        <div class="book-pill" data-value="700EXP">700 Experimentos</div>
+                        <div class="book-pill" data-value="TEMAS">Temas da Conscienciologia</div>
+                        <div class="book-pill" data-value="HSR">Homo sapiens reurbanisatus</div>
+                        <div class="book-pill" data-value="HSP">Homo sapiens pacificus</div>
+
+                        <br>
+
+                        <div class="config-container">
+                            <div class="config-options">
+
+                                <!-- Max Results -->
+                                <div class="row max-results">
+                                    <label for="maxResults">Resultados (máximo por livro)</label>
+                                    <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
+                                </div>
+
+                                <!-- Toggle -->
+                                <div class="row toggle-option">
+                                    <label class="switch">
+                                        <input type="checkbox" id="groupResults" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                                </div>
+
+                            </div>
+
+                            <div class="config-actions">
+                                <!-- Botão salvar -->
+                                <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="results"></div>
+
+    </div>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="display.js"></script>
+    <script src="bridge.js"></script>
+    <script src="download.js"></script>
+    <script src="script_search_book.js"></script>
+
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initTheme();
+        
+        const trigger = document.getElementById('optionsTrigger');
+        const panel = document.getElementById('optionsPanel');
+        const saveBtn = document.querySelector('.save-btn');
+        const STORAGE_KEY = 'settings_search_book';
+    
+        // ================================================================
+        // 1️⃣ Definição da configuração inicial padrão
+        // ================================================================
+        const DEFAULT_SETTINGS = {
+            books: ['LO', 'DAC'],        // ✅ Apenas LO e DAC
+            searchType: ['lexical'],     // ✅ Léxica marcada
+            maxResults: 10,
+            groupResults: true
+        };
+    
+        // Só define se não houver configuração anterior
+        if (!localStorage.getItem(STORAGE_KEY)) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
+        }
+    
+        // ================================================================
+        // 2️⃣ Toggle de livros
+        // ================================================================
+        document.querySelectorAll('.book-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+            });
+        });
+    
+        // ================================================================
+        // 3️⃣ Toggle de Search Type (Léxico / Semântico)
+        // ================================================================
+        document.querySelectorAll('.search-type-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+            });
+        });
+    
+        // ================================================================
+        // 4️⃣ Abrir/fechar painel
+        // ================================================================
+        if (trigger && panel) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                panel.classList.toggle('open');
+                try {
+                    if (!localStorage.getItem('configPulseSeen_search_book')) {
+                        localStorage.setItem('configPulseSeen_search_book', 'true');
+                    }
+                } catch (err) {}
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+            });
+    
+            document.addEventListener('click', function(e) {
+                if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
+                    panel.classList.remove('open');
+                }
+            });
+        }
+    
+        // ================================================================
+        // 5️⃣ Aplicar configurações salvas (ou padrão)
+        // ================================================================
+        (function applySaved() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+
+                // Tipo de Modulo
+                saved.module = 'book';
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    
+                // Livros
+                if (Array.isArray(saved.books)) {
+                    const set = new Set(saved.books);
+                    document.querySelectorAll('.book-pill').forEach(pill => {
+                        pill.classList.toggle('active', set.has(pill.dataset.value));
+                    });
+                }
+    
+                // Search Type
+                if (Array.isArray(saved.searchType)) {
+                    const set = new Set(saved.searchType);
+                    document.querySelectorAll('.search-type-pill').forEach(pill => {
+                        pill.classList.toggle('active', set.has(pill.dataset.value));
+                    });
+                }
+    
+                // Max Results
+                if (typeof saved.maxResults === 'number') {
+                    const inp = document.getElementById('maxResults');
+                    if (inp) inp.value = saved.maxResults;
+                }
+    
+                // Agrupar
+                if (typeof saved.groupResults === 'boolean') {
+                    const chk = document.getElementById('groupResults');
+                    if (chk) chk.checked = saved.groupResults;
+                }
+            } catch (e) {
+                console.warn('Failed to apply saved settings', e);
+            }
+        })();
+    
+        // ================================================================
+        // 6️⃣ Botão salvar atualiza o localStorage
+        // ================================================================
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                const books = Array.from(document.querySelectorAll('.book-pill.active'))
+                    .map(p => p.dataset.value);
+                const searchType = Array.from(document.querySelectorAll('.search-type-pill.active'))
+                    .map(p => p.dataset.value);
+                const maxInput = document.getElementById('maxResults');
+                const rawMax = maxInput?.value ?? 10;
+                const maxResults = normalizeMaxResults(rawMax);
+                const groupResults = !!document.getElementById('groupResults')?.checked;
+    
+                const settings = { books, searchType, maxResults, groupResults };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+
+                
+                // feedback visual de salvando (500ms), depois fecha painel
+                try { saveBtn.classList.add('saving'); } catch {}
+                setTimeout(() => {
+                try { saveBtn.classList.remove('saving'); } catch {}
+                if (panel) panel.classList.remove('open');
+                }, 500);
+                
+            });
+        }
+    
+        // ================================================================
+        // 7️⃣ Função global de acesso
+        // ================================================================
+        window.getSearchBookSettings = function() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        };
+    });
+    </script>
+    

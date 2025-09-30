@@ -1,3 +1,173 @@
+
+
+
+
+
+//______________________________________________________________________________________________
+// Limita resultados por fonte
+//______________________________________________________________________________________________
+function limitResultsPerSource(results, maxResults) {
+  const grouped = {};
+  const limited = [];
+
+  for (const item of results) {
+      const src = item.source || "Unknown";
+      if (!grouped[src]) grouped[src] = [];
+      if (grouped[src].length < maxResults) {
+          grouped[src].push(item);
+          limited.push(item);
+      }
+  }
+  return limited;
+}
+
+
+
+//______________________________________________________________________________________________
+// flattenDataEntries: Recebe um array 'data' e retorna um array de objetos planos
+//______________________________________________________________________________________________
+function flattenDataEntries(data) {
+  if (!Array.isArray(data)) return [];
+
+  return data.map(item => {
+    const metadata = item.metadata || {};
+
+    // Helper para pegar campo no item ou no metadata
+    const getField = (field) => item[field] ?? metadata[field] ?? null;
+
+    // Score convertido para float se possível
+    let score = getField('score');
+    score = (score !== null && score !== undefined && !isNaN(parseFloat(score)))
+      ? parseFloat(score)
+      : null;
+
+    // Texto cru e markdown com fallback
+    const rawText = item.page_content || item.text || "";
+    const mkText  = metadata.markdown || item.markdown || item.text || "";
+
+
+    return {
+      source: getField('source'),
+      score: score,
+      paragraph_number: getField('number') || getField('paragraph_number'),
+      raw_text: rawText,
+      mk_text: mkText,
+      title: getField('title'),
+      argument: getField('argumento') || getField('argument'),
+      section: getField('section'),
+      folha: getField('folha'),
+      date: getField('date'),
+      link: getField('link'),
+      area: getField('area'),
+      theme: getField('theme'),
+      author: getField('author'),
+      sigla: getField('sigla'),
+      citation: getField('citation'),
+      total_token_used: getField('total_token_used'),
+      model: getField('model'),
+      temperature: getField('temperature')
+    };
+  });
+}
+
+
+//______________________________________________________________________________________________
+// sortData: Agrupa os itens por 'source' e ordena cada grupo com 2 blocos:
+// 1) score = 0 → ordenados por number (asc)
+// 2) score > 0 → ordenados por score (asc)
+//______________________________________________________________________________________________
+function sortData(uniqueData) {
+  if (!Array.isArray(uniqueData)) return {};
+
+  // 1️⃣ Agrupar por source
+  const grouped = uniqueData.reduce((acc, item) => {
+    const src = item.source || "Unknown";
+    if (!acc[src]) acc[src] = [];
+    acc[src].push(item);
+    return acc;
+  }, {});
+
+  // 2️⃣ Ordenar cada grupo separando blocos
+  for (const source in grouped) {
+    const group = grouped[source];
+
+    // Bloco A: score = 0 → ordena por number
+    const zeroScoreItems = group
+      .filter(it => (it.score ?? 0) === 0)
+      .sort((a, b) => {
+          const numA = Number(a.paragraph_number) || Number.POSITIVE_INFINITY;
+          const numB = Number(b.paragraph_number) || Number.POSITIVE_INFINITY;
+          
+          return numA - numB;
+      });
+
+    // Bloco B: score > 0 → ordena por score crescente
+    const scoredItems = group
+      .filter(it => (it.score ?? 0) !== 0)
+      .sort((a, b) => {
+          const scoreA = Number(a.score) || Number.POSITIVE_INFINITY;
+          const scoreB = Number(b.score) || Number.POSITIVE_INFINITY;
+          
+          return scoreA - scoreB;
+      });
+
+    // Junta blocos mantendo a ordem desejada
+    grouped[source] = [...zeroScoreItems, ...scoredItems];
+  }
+
+  return grouped;
+}
+
+
+
+//______________________________________________________________________________________________
+// delDuplicateItems: Remove itens duplicados com base no texto (text, mk_text ou metadata.markdown)
+// Normaliza o texto removendo marcações simples de Markdown, acentos e caixa.
+// Retorna o array filtrado, mantendo apenas o primeiro item único.
+//______________________________________________________________________________________________
+function delDuplicateItems(flattenedData) {
+
+  console.log('<<< delDuplicateItems >>> [flattenedData]: ', flattenedData);
+
+  if (!Array.isArray(flattenedData)) return [];
+
+  const seen = new Set();
+
+  const normalizeText = (str) => {
+    if (!str) return "";
+    // Remove marcações markdown simples
+    let cleaned = str.replace(/\*|_|`|~|__|#/g, '');
+    // Remove acentos
+    cleaned = cleaned.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    // Converte para minúsculas e remove espaços extras
+    return cleaned.toLowerCase().trim();
+  };
+
+  return flattenedData.filter(item => {
+    const text =
+      item.text ||
+      item.mk_text ||
+      (item.metadata && item.metadata.markdown) ||
+      "";
+
+    const normalized = normalizeText(text);
+
+    if (seen.has(normalized)) return false;
+    seen.add(normalized);
+    return true;
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 // Runtime helpers for MAX_RESULTS_DISPLAY
 function getMaxResultsCap() {
   const fallback = typeof MAX_RESULTS_DISPLAY === 'number' ? MAX_RESULTS_DISPLAY : 200;
@@ -151,9 +321,6 @@ function bookName(source) {
     if (source === 'DAC') {
         realName = 'Dicionário de Argumentos da Conscienciologia';
     }        
-    if (source === 'ECALL_DEF') {
-        realName = 'Enciclopédia da Conscienciologia (Definologia)';
-    }        
     if (source === 'PROJ') {
         realName = 'Projeciologia';
     }
@@ -191,7 +358,7 @@ function extractMetadata(data, type) {
       lexical: {
         metadataFields: [...COMMON_FIELDS]
       },
-      semantical: {
+      semantic: {
         metadataFields: [...COMMON_FIELDS, 'area', 'theme', 'author', 'sigla', 'date', 'link', 'score', 'argumento', 'section', 'folha']
       },
       mancia: {
@@ -404,3 +571,62 @@ document.getElementById('btn-new-conv')?.addEventListener('click', () => resetCo
 
 
 
+
+function showMessage(container, message, type = 'error') {
+  const classes = {
+      error: 'msg-error',
+      info: 'msg-info',
+      success: 'msg-success'
+  };
+  container.innerHTML = `
+      <div class="search-message ${classes[type] || ''}">
+          ${message}
+      </div>
+  `;
+}
+
+// Intercept Home ('.back-button') clicks to abort requests and reset chat_id before navigation
+(function(){
+  function isHomeButton(el){ return !!(el && el.classList && el.classList.contains('back-button')); }
+  async function onClick(ev){
+    const a = ev.target && ev.target.closest && ev.target.closest('a');
+    if (!a || !isHomeButton(a)) return;
+    ev.preventDefault();
+    try {
+      // Abort all in flight requests, if helper is present
+      if (typeof window.abortAllRequests === 'function') {
+        try { window.abortAllRequests(); } catch {}
+      }
+      // Reset LLM chat_id in both scopes
+      try { await resetLLM('default'); } catch {}
+      try { await resetLLM('ragbot'); } catch {}
+    } finally {
+      const href = a.getAttribute('href') || 'index.html';
+      try { window.location.assign(href); } catch { window.location.href = href; }
+    }
+  }
+  document.addEventListener('click', onClick, true);
+})();
+
+
+
+
+// Collapse all pills when configuration button is clicked
+(function(){
+  function onConfigClick(ev){
+    const btn = ev.target && ev.target.closest && ev.target.closest('.options-trigger');
+    if (!btn) return;
+    try {
+      // Aguarda 500ms para deixar o painel de config abrir, então retrai os pills
+      setTimeout(() => {
+        if (typeof window.collapseAllPills === 'function') {
+          window.collapseAllPills();
+        } else {
+          document.querySelectorAll('.pill.active').forEach(p => p.classList.remove('active'));
+          document.querySelectorAll('.collapse-panel.open').forEach(p => p.classList.remove('open'));
+        }
+      }, 500);
+    } catch {}
+  }
+  document.addEventListener('click', onConfigClick, true);
+})();

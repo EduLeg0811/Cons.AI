@@ -38,6 +38,7 @@ import pandas as pd
 
 from utils.config import FILES_SEARCH_DIR, MAX_OVERALL_SEARCH_RESULTS
 
+logger = logging.getLogger("cons-ai")
 
 # Operadores e precedência: NOT > AND > OR
 _BOOL_OPS: Dict[str, int] = {"!": 3, "&": 2, "|": 1}
@@ -54,6 +55,133 @@ class SearchResult:
     number: Optional[int] = None
     score: float = 0.0
     metadata: Optional[Dict[str, Any]] = None
+
+
+
+# =============================================================================================
+# 7) Public function (versão atualizada)
+# =============================================================================================
+def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[str, Any]]:
+    """
+    Busca léxica em múltiplos arquivos. Para cada 'book':
+    - Se houver XLSX, usa esse.
+    - Senão, tenta MD/TXT.
+    - Senão, marca como ausente.
+
+    Parâmetros:
+    - search_term: string de consulta com operadores (!, &, |), curingas (*) e frases entre aspas.
+    - source: lista com nomes de "books" (sem extensão). Ex.: ["DAC","LO","EC"].
+
+    Retorno:
+    - Lista de dicionários compatível com o restante do pipeline (source, text, number, score, metadata).
+    """
+    if not source:
+        raise ValueError("Parâmetro 'source' está vazio.")
+
+    files_dir = Path(FILES_SEARCH_DIR)
+
+    # -----------------------------------------------------------------------------
+    # Helper: retorna Path do arquivo por prioridade XLSX > MD > TXT
+    # -----------------------------------------------------------------------------
+    def get_file_for_book(book: str) -> Optional[Path]:
+        candidates = [
+            files_dir / f"{book}.xlsx",
+            files_dir / f"{book}.md",
+            files_dir / f"{book}.txt",
+        ]
+        for c in candidates:
+            if c.exists():
+                return c
+        return None
+
+    # -----------------------------------------------------------------------------
+    # Logging inicial
+    # -----------------------------------------------------------------------------
+    logger.info("\n" + "─" * 80)
+    logger.info("📚 LEXICAL SEARCH REQUEST")
+    logger.info(f"🔍 Termo: {search_term}")
+    logger.info(f"📘 Livros solicitados: {', '.join(source)}")
+
+    selected_files: List[Path] = []
+    missing_books: List[str] = []
+
+    for book in source:
+        file_path = get_file_for_book(book)
+        if file_path:
+            selected_files.append(file_path)
+        else:
+            missing_books.append(book)
+
+    if missing_books:
+        logger.warning(f"⚠️ Livros sem arquivo correspondente: {', '.join(missing_books)}")
+
+    if not selected_files:
+        raise FileNotFoundError(
+            f"Nenhum arquivo correspondente encontrado para os livros: {', '.join(source)}"
+        )
+
+    logger.info("CONS-AI lexical_utils.py")
+    logger.info(f"[lexical_search_in_files] Arquivos selecionados: {', '.join([p.name for p in selected_files])}")
+
+    # -----------------------------------------------------------------------------
+    # Processamento dos arquivos selecionados
+    # -----------------------------------------------------------------------------
+    results: List[SearchResult] = []
+
+    for path in selected_files:
+        book = path.stem
+        ext = path.suffix.lower()
+
+        try:
+            if ext == ".xlsx":
+                rows = read_excel_first_sheet(path)
+                matches = search_excel_rows(rows, search_term)
+                for m in matches:
+                    results.append(SearchResult(
+                        source=book,
+                        text=m.get("paragraph_text", ""),
+                        number=m.get("paragraph_number"),
+                        score=0.0,
+                        metadata=m.get("metadata")
+                    ))
+
+            elif ext in {".md", ".txt"}:
+                text = read_text_file(path)
+                matches = search_md_content(text, search_term)
+                for m in matches:
+                    results.append(SearchResult(
+                        source=book,
+                        text=m.get("paragraph_text", ""),
+                        number=m.get("paragraph_number"),
+                        score=0.0,
+                        metadata=None
+                    ))
+
+        except Exception as e:
+            logger.error(f"[lexical_search_in_files] Erro ao processar {path.name}: {e}", exc_info=True)
+
+    # -----------------------------------------------------------------------------
+    # Limita resultados globais e devolve no formato esperado (dict)
+    # -----------------------------------------------------------------------------
+    results = clamp_max_results(results, MAX_OVERALL_SEARCH_RESULTS)
+
+    logger.info(f"[lexical_search_in_files] Total de resultados: {len(results)}")
+
+    return [asdict(r) for r in results]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # =============================================================================================
@@ -91,6 +219,18 @@ def clamp_max_results(results: List[Any], limit: int) -> List[Any]:
     return results[: max(0, limit)]
 
 
+def strip_markdown_simple(s: str) -> str:
+    """
+    Remove marcações markdown simples (* e **) usadas para itálico/negrito.
+    Ex.: "**texto**" -> "texto"; "*texto*" -> "texto".
+    """
+    if not s:
+        return ""
+    # remove ** e *
+    return re.sub(r"(\*\*|\*)", "", s)
+
+
+
 # =============================================================================================
 # 4) I/O (leitura de arquivos)
 # =============================================================================================
@@ -103,7 +243,7 @@ def list_files(source_dir: str, extension: str) -> List[Path]:
     if not base.exists():
         logging.error(f"Diretório não existe: {base}")
         return []
-    ext = f".{extension.lower()}"
+    ext = f".{str(extension).lower()}"
     return sorted([p for p in base.iterdir() if p.is_file() and p.suffix.lower() == ext])
 
 
@@ -446,7 +586,10 @@ def search_md_content(content: str, query: str) -> List[Dict[str, Any]]:
     results: List[Dict[str, Any]] = []
 
     for idx, paragraph in enumerate(paragraphs, start=1):
-        pnorm = normalize_for_match(paragraph)
+        # remove marcações markdown antes de normalizar
+        cleaned = strip_markdown_simple(paragraph)
+        pnorm = normalize_for_match(cleaned)
+
 
         # 1) pré-filtro barato (quando aplicável)
         if pre is not None and not pre(pnorm):
@@ -487,7 +630,10 @@ def search_excel_rows(rows: List[Dict[str, Any]], query: str) -> List[Dict[str, 
 
     for row in rows:
         paragraph = str(row.get(texto_key, ""))
-        pnorm = normalize_for_match(paragraph)
+        
+        cleaned = strip_markdown_simple(paragraph)
+        pnorm = normalize_for_match(cleaned)
+
 
         # 1) pré-filtro barato (quando aplicável)
         if pre is not None and not pre(pnorm):
@@ -507,87 +653,6 @@ def search_excel_rows(rows: List[Dict[str, Any]], query: str) -> List[Dict[str, 
             break
 
     return results
-
-
-# =============================================================================================
-# 7) Façade pública — função principal
-# =============================================================================================
-def lexical_search_in_files(search_term: str, source: List[str], file_type: str) -> List[Dict[str, Any]]:
-    """
-    Busca léxica em múltiplos arquivos (MD/TXT ou XLSX) pertencentes a um conjunto de 'books'.
-
-    Parâmetros:
-    - search_term: string de consulta com operadores (!, &, |), curingas (*) e frases entre aspas.
-    - source: lista com nomes de "books" (sem extensão). Ex.: ["DAC","LO","EC"].
-    - file_type: um entre {"md","txt","xlsx"} indicando o tipo de arquivo a usar.
-
-    Retorno:
-    - Lista de dicionários compatível com o restante do pipeline (source, text, number, score, metadata).
-    """
-    if not source:
-        raise ValueError("Parâmetro 'source' está vazio.")
-
-    if file_type.lower() not in {"md", "txt", "xlsx"}:
-        raise ValueError("Parâmetro 'file_type' deve ser 'md', 'txt' ou 'xlsx'.")
-
-    # Mapeia todos os arquivos disponíveis do tipo pedido
-    files = list_files(FILES_SEARCH_DIR, file_type.lower())
-
-    # Constrói mapa {BOOKNAME_UPPER: Path}
-    file_map: Dict[str, Path] = {p.stem.upper(): p for p in files}
-
-    # Seleciona os pedidos
-    missing: List[str] = []
-    selected: List[Path] = []
-    for book in source:
-        k = (book or "").upper()
-        if k in file_map:
-            selected.append(file_map[k])
-        else:
-            missing.append(book)
-
-    if missing:
-        logging.warning(f"[lexical_search_in_files] Arquivos não encontrados: {', '.join(missing)}")
-
-    if not selected:
-        raise ValueError("Nenhum arquivo correspondente encontrado para os 'source' informados.")
-
-    # Executa por arquivo
-    results: List[SearchResult] = []
-
-    for path in selected:
-        book = path.stem
-        try:
-            if file_type.lower() in {"md", "txt"}:
-                text = read_text_file(path)
-                matches = search_md_content(text, search_term)
-                for m in matches:
-                    results.append(SearchResult(
-                        source=book,
-                        text=m.get("paragraph_text", ""),
-                        number=m.get("paragraph_number"),
-                        score=0.0,
-                        metadata=None
-                    ))
-
-            elif file_type.lower() == "xlsx":
-                rows = read_excel_first_sheet(path)
-                matches = search_excel_rows(rows, search_term)
-                for m in matches:
-                    results.append(SearchResult(
-                        source=book,
-                        text=m.get("paragraph_text", ""),
-                        number=m.get("paragraph_number"),
-                        score=0.0,
-                        metadata=m.get("metadata")
-                    ))
-
-        except Exception as e:
-            logging.error(f"[lexical_search_in_files] Erro ao processar {path.name}: {e}", exc_info=True)
-
-    # Limita resultados globais e devolve no formato esperado (dict)
-    results = clamp_max_results(results, MAX_OVERALL_SEARCH_RESULTS)
-    return [asdict(r) for r in results]
 
 
 # =============================================================================================

@@ -5,7 +5,7 @@ let currentSearchTerm = '';
 
 /**
  * Initialize download buttons for a specific search type
- * @param {string} searchType - Type of search (lexical, semantical, verbetopedia, mancia, ragbot)
+ * @param {string} searchType - Type of search (lexical, semantic, verbetopedia, mancia, ragbot)
  * @param {string} searchTerm - Current search term
  */
 function initDownloadButtons(searchType, searchTerm = '') {
@@ -97,7 +97,7 @@ function updateResults(data) {
     const searchType = data.search_type;
 
 
-    // Verificar data contém dados em lexical ou semantical, e apenas se houver dados inicializa o botão de download
+    // Verificar data contém dados em lexical ou semantic, e apenas se houver dados inicializa o botão de download
     // const data = {
     //     search_term: term,
     //     search_type: 'lexical',
@@ -107,11 +107,16 @@ function updateResults(data) {
     //     definologia: null,
     //     descritivo: null,
     //     lexical: responseData.results,
-    //     semantical: null
+    //     semantic: null
     // };
 
-   // Verificar se há resultados em lexical ou semantical antes de inicializar o botão de download
-    if ((data.lexical && data.lexical.length > 0) || (data.semantical && data.semantical.length > 0)) {
+
+    console.log('lastResults: ', lastResults);
+    console.log('currentSearchTerm: ', currentSearchTerm);
+    console.log('currentSearchType: ', currentSearchType);
+
+   // Verificar se há resultados em lexical ou semantic antes de inicializar o botão de download
+    if ((data.lexical && data.lexical.length > 0) || (data.semantic && data.semantic.length > 0)) {
 
         lastResults = data;
         currentSearchTerm = term;
@@ -122,6 +127,7 @@ function updateResults(data) {
     } else {
         return null;
     }
+    
 
 }
 
