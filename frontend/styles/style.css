@@ -1,0 +1,14 @@
+/* ==========================================================================
+   STYLES ENTRY POINT — Importação modular do CSS do projeto
+   --------------------------------------------------------------------------
+   Este arquivo orquestra todos os módulos de estilo em uma ordem lógica.
+   Você pode comentar temporariamente algum @import para depurar um módulo.
+   ========================================================================== */
+
+@import url('./base.css');        /* Tokens, reset e tipografia */
+@import url('./layout.css');      /* Navbar, main-content, containers */
+@import url('./components.css');  /* Painéis, cards, pills, botões */
+@import url('./chat.css');        /* Interface de chat e tema bots */
+@import url('./options.css');     /* Painel de opções, switches e sliders */
+@import url('./dark.css');        /* Overrides do modo escuro */
+@import url('./responsive.css');  /* Media queries para telas menores */

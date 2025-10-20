@@ -349,7 +349,7 @@ const format_paragraph_CCG = (item, query) => {
   // Monta o panel
   let panelHtml = `
     <div class="displaybox-item">
-      <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color: rgba(20, 30, 100);">
+      <div class=" verbetopedia-header">
         <span class="header-text">${titleHtml}</span>
       </div>
       <div class="displaybox-text">
@@ -385,7 +385,7 @@ const format_paragraph_CCG = (item, query) => {
   // Monta o pane
   const finalHtml = `
     <div class="displaybox-item">
-     <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100);">
+     <div class="displaybox-header verbetopedia-header">
         <span class="header-text">${titleHtml}</span>
       </div>
       <div class="displaybox-text">
@@ -470,8 +470,7 @@ const format_paragraph_EC = (item, query) => {
   const arquivo = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/Ç/g, "C");
   const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
   const pdfLink = `
-    <a href="${verbLink}" target="_blank" rel="noopener noreferrer"
-        title="Abrir PDF em nova aba" style="margin-left: 8px; color: red; font-size: 1.1em;">
+    <a href="${verbLink}" target="_blank" rel="noopener noreferrer" title="Abrir PDF em nova aba" class="pdf-link">
         <i class="fas fa-file-pdf"></i>
     </a>`;
   
@@ -479,7 +478,7 @@ const format_paragraph_EC = (item, query) => {
   // Monta o pane
   const finalHtml = `
     <div class="displaybox-item">
-      <div class="displaybox-header verbetopedia-header" style="text-align: left; padding-left: 0; color:rgba(20, 30, 100);">
+      <div class="displaybox-header verbetopedia-header">
         <span class="header-text">${titleHtml}</span>
       </div>
       <div class="displaybox-text">
@@ -552,14 +551,8 @@ const format_paragraph_Default = (item, query) => {
 function showTitle(container, text) {
   const cleanText = renderMarkdown(text);
   const html = `
-  <div style="
-      border: 1px solid var(--gray-200);
-      background-color: rgba(255, 255, 255, 0.73);
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin: 8px 0 14px 0;
-  ">
-      <div style="font-weight: bold; color: rgb(65, 67, 179);">
+  <div class="title-box">
+      <div class="title-box-heading">
          ${cleanText}
       </div>
   </div>`;
@@ -609,16 +602,16 @@ function showQuiz(container, data) {
     .map((opt, idx) => {
       const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
       return `
-        <div class="quiz-option-row" data-index="${idx}" style="display:flex;align-items:center;gap:8px;margin:6px 0;">
-          <button type="button" class="quiz-badge-btn" data-index="${idx}" style="border:none;background:transparent;cursor:pointer;">
-            <span class="metadata-badge estilo2" style="display:inline-block;padding:4px 8px;border-radius:12px;min-width:28px;text-align:center;">${idx + 1}</span>
+        <div class="quiz-option-row" data-index="${idx}">
+          <button type="button" class="quiz-badge-btn" data-index="${idx}">
+            <span class="metadata-badge estilo2 quiz-badge">${idx + 1}</span>
           </button>
           <div class="quiz-option-text markdown-content">${rendered}</div>
         </div>`;
     })
     .join('');
 
-  const qHtml = pergunta ? `<div class="quiz-question markdown-content" style="font-weight:600;margin:6px 0 8px 0;">${renderMarkdown(pergunta)}</div>` : '';
+  const qHtml = pergunta ? `<div class="quiz-question markdown-content">${renderMarkdown(pergunta)}</div>` : '';
 
   const html = `
     <div class="displaybox-container quiz-box">
@@ -648,8 +641,7 @@ function showQuiz(container, data) {
       try {
         const badge = row.querySelector('.metadata-badge');
         if (badge) {
-          badge.style.backgroundColor = '#10b981'; // Changed to green-500 color
-          badge.style.color = '#fff';
+          badge.classList.add('selected');
         }
       } catch {}
 
@@ -725,7 +717,7 @@ function insertLoading(container, message = 'Carregando…') {
   if (container.querySelector('.loading-container')) return;
 
   container.insertAdjacentHTML('beforeend', `
-    <div class="loading-container" style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+    <div class="loading-container">
       <div class="loading" aria-live="polite" aria-busy="true">
         ${escapeHtml(String(message))}
       </div>
@@ -797,7 +789,7 @@ function buildMetaInlineLine(pairs) {
       });
     if (!parts.length) return '';
     const content = `[ ${parts.join('; ')} ]`;
-    return `<div class="meta-inline" style="font-size: 80%; color: var(--gray-600); margin-top: 4px;">${content}</div>`;
+    return `<div class="meta-inline">${content}</div>`;
   } catch (e) {
     return '';
   }

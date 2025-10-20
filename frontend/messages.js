@@ -7,20 +7,44 @@
 // Key: exact text of the panel title in the UI
 // Value: one-line description shown under the title
 const PANEL_DESCRIPTIONS = {
-  // Panel: AI Bots
-  'IA Bots': 'Assistentes de Conversação por IA',
 
-  // Panel: AI Lexical Search
-  'IA Search': 'Pesquisa em Livros por IA',
+'Bots IA': '<span class="panel-desc-lead">Assistentes de conversação</span>',
 
-  // Panel: AI semantic Search
-  'IA semantic Search': 'Pesquisa Semântica por Afinidade',
 
-// Panel: AI Apps
-  'IA Apps': 'Aplicativos de IA para Pesquisa',
 
-  // Panel: Utils
-  'Links Externos': 'Links e Recursos Úteis',
+  'Busca IA': [
+  '<span class="panel-desc-lead">Pesquisa em Livros por IA</span>',
+  '<br><br>',
+  '<span class="panel-desc-sm">',
+  '<strong>Orientações gerais:</strong><br>',
+  'Clique no ícone de <em>configurações</em> para selecionar a busca <em>léxica</em> e / ou <em>semântica</em>.<br>',
+  '<br>',
+  '1. <strong>Léxica</strong>: procura pelo termo <em>exato</em>.<br>',
+  'Permite busca avançada com operadores lógicos & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
+  '<br>',
+  '2. <strong>Semântica</strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>',
+  'Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com os descritivos "bioenergias" e "EC".<br>',
+  '<br>',
+  '<strong>Observações sobre os resultados:</strong><br>',
+  '<strong>1.</strong> Consulte sempre o livro original para ver o texto no entorno, a fim de ter uma melhor visão de conjunto e compreensão do contexto.<br>',
+  '<strong>2.</strong> No momento, a busca não traz o número das páginas, mas indica quando possível o capítulo, seção, verbete ou título de entrada. Para localizar exatamente o trecho encontrado, consulte o livro ou tratado original.<br>',
+  '</span>',
+  '<br>'
+].join('\n'),
+
+  'Apps IA': [
+    '<span class="panel-desc-lead">Aplicativos de IA para Pesquisa</span>',
+    '<br><br>',
+    '<span class="panel-desc-sm">',
+    '<strong>Orientações gerais:</strong><br>',
+    'Lembre-se que sou uma <em>IA</em> (Inteligência Artificial), e infelizmente ainda não possuo <strong>IE</strong> (Inteligência Evolutiva).<br>',
+    'Por isso, mantenha sempre o senso crítico e aplique o <em>Princípio da Descrença</em>.<br>',
+    'Consulte as fontes originais para se certificar das respostas.<br>',
+    '</span>',
+    '<br>',
+  ].join('\n'),
+
+  'Links Externos': '<span class="panel-desc-lead">Links e Recursos Úteis</span>',
 };
 
 // Tool card messages keyed by the card title (h3)
@@ -35,7 +59,7 @@ const TOOL_MESSAGES = {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       '<br>',
-      'O <strong>ConsGPT</strong> é o chatbot mais <em>inteligente</em>. ',
+      'O <strong>ConsGPT</strong> é o chatbot mais avançado em (IA) <em>inteligência artificial</em>. ',
       'Ótimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
@@ -67,49 +91,58 @@ const TOOL_MESSAGES = {
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
-      '<strong>3.</strong> Aproveite as <em>sugestões de perguntas iniciais <em>, para ter boas ideias do que extrair da IA.'
+      '<strong>3.</strong> Aproveite as <em>sugestões de perguntas iniciais</em>, para ter boas ideias do que extrair da IA.'
     ].join('\n')
   },
 
-
+ // Tool: ConsAGENT (RAG chatbot)
+ 'ConsAGENT': {
+  short: '<em>Agente Chatkit OpenAI</em>',
+  extra: [
+    '<br>',
+    'O <strong>ConsAGENT</strong> é um projeto experimental de agente de IA (Chatkit OpenAI) da Conscienciologia. ',
+    'Ele pode interagir com você e direcionar de modo inteligente sua solicitação. ',
+    'Ainda está em <em>fase de desenvolvimento</em>, mas já consegue resolver problemas, responder perguntas e fornecer informações sobre a Conscienciologia.<br>',
+    '<strong>Dicas:</strong><br>',
+    '<strong>1.</strong> Análise da escrita de Verbetes.<br>',
+    '<strong>2.</strong> Auxílio na elaboração de definições e exemplos.<br>',
+    '<strong>3.</strong> Mais funcionalidades em breve...'
+  ].join('\n')
+},
 
   // -----------------------------------------------------------------------------------------------------------------------
 
-
   // Tool: Search_Book
   'Livros & Tratados': {
-    short: 'Pesquisa em livros e tratados da Conscienciologia.',
+    short: 'Pesquisa em livros e tratados da Conscienciologia',
     extra: [
       '<br>',
-      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo).',
-      '<br>',
-      '<strong>Dicas:</strong><br>',
+      '<strong>Instruções:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
+      '<strong>2.</strong> Escolha o tipo de busca desejado (<em>léxica</em> ou <em>semântica</em>).<br>',
       '<strong>3.</strong> Selecione os <em>livros</em> para pesquisa.<br>',
       '<strong>4.</strong> Ajuste o número máximo de resultados.<br>',
       '<strong>5.</strong> Defina a saída em lista corrida ou <em>agrupada por livro</em>.<br>',
-      '<strong>6.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
-      '<strong>7.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
+      '<br>',
+      '<strong>Termo de Pesquisa:</strong><br>',
+      '<strong>1.</strong> Digite o termo para pesquisa.<br>',
+      '<strong>2.</strong> Use operadores lógicos (&, |, !, *) para combinar termos.<br>',
+      '<strong>3.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
     ].join('\n')
   },
 
 
   // Tool: Search_Verbetes
   'Definologia de Verbetes': {
-    short: 'Pesquisa na Definologia dos verbetes.',
+    short: 'Pesquisa na Definologia dos verbetes',
     extra: [
       '<br>',
-      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo). ',
-      'Pesquisa na Definologia dos verbetes, e não apenas no título.',
-      '<br>',
-      '<strong>Dicas:</strong><br>',
+      '<strong>Instruções:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
       '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
-      '<strong>4.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
-      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
-      '<strong>6.</strong> Também é possível baixar o PDF do verbete completo.<br>',
+      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
+      '<strong>5.</strong> Também é possível baixar o PDF do verbete completo.<br>',
     ].join('\n')
   },
 
@@ -117,20 +150,24 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_CCG
   'Questões do Conscienciograma': {
-    short: 'Pesquisa nas questões do Conscienciograma.',
+    short: 'Pesquisa nas Questões do Conscienciograma',
     extra: [
       '<br>',
-      'Busca <em>léxica</em> (termo exato) e / ou <em>semântica</em> (afinidade de conteúdo)',
-      '<br>',
-      '<strong>Dicas:</strong><br>',
+      '<strong>Instruções:</strong><br>',
       '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
       '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
       '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
-      '<strong>4.</strong> Use busca lógica avançada: & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
-      '<strong>5.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
-      '<strong>6.</strong> Consulte o livro original para ver as outras perguntas da mesma folha, a fim de ter uma melhor visão de conjunto.<br>',
+      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
     ].join('\n')
   },
+
+
+
+
+
+
+
+
 
 // Tool: Caderno de Estudos
 'Caderno de Estudos': {
@@ -139,7 +176,7 @@ const TOOL_MESSAGES = {
     '<br>',
     'Realiza pesquisa profunda em livros, tratados e verbetes. ',
     'Monta um Caderno de Estudos completo sobre o tema. ',
-    'Utiliza algoritoms de IA com GPT-5 da OpenAI (última geração). ',
+    'Utiliza algoritmos de IA com GPT-5 da OpenAI (última geração). ',
     'Realiza busca <em>léxica</em> e <em>semântica</em> conjugadas. ',
     'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.',
     '<br>',
@@ -150,6 +187,11 @@ const TOOL_MESSAGES = {
     '<strong>4.</strong> Ao final, clique no ícone do Word para baixar o caderno de estudos.'
   ].join('\n')
 },
+
+
+
+
+
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
@@ -173,7 +215,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'Formula perguntas sobre temas da Conscienciologia. ',
-      'Você responde as perguntas e a IA avalia a resposta.<br>',
+      'Você responde às perguntas e a IA avalia a resposta.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para testar o seu conhecimento da Conscienciologia.<br>',
       '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',
@@ -230,9 +272,9 @@ const TOOL_MESSAGES = {
 const TOOL_ALIASES = {
   'OpenAI ConsGPT': 'ConsGPT',
   'Google ConsLM': 'ConsLM',
-  'Pesquisa em Livros': 'Pesquisa em Livros',
+  'ConsAGENT': 'ConsAGENT',
+  'Pesquisa em Livros & Tratados': 'Livros & Tratados', // ajuste aqui
   'Definologia de Verbetes': 'Definologia de Verbetes',
-  'Pesquisa Semântica em Livros': 'Pesquisa Semântica em Livros',
   'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
   'Bibliomancia Digital': 'Bibliomancia Digital',
@@ -243,26 +285,33 @@ const TOOL_ALIASES = {
 // Finds panels and tool cards and injects the corresponding text.
 function applyMessages() {
   try {
-    // Panels: set description under each h2 (robust by panel group class)
+   
     document.querySelectorAll('.tool-panel .panel-header .panel-info').forEach(info => {
       const p = info.querySelector('p');
       if (!p) return;
+
+      const h2 = info.querySelector('h2');
+      const title = h2 ? h2.textContent.trim() : '';
+
+      // 1) Preferir descrição pelo título visível
+      let descr = (typeof PANEL_DESCRIPTIONS === 'object' && PANEL_DESCRIPTIONS[title]) || '';
+    if (!descr) {
       const panel = info.closest('.tool-panel');
-      if (!panel) return;
-      let descr = '';
-      if (panel.classList.contains('bots')) {
-        descr = 'Assistentes de conversação';
-      } else if (panel.classList.contains('search')) {
-        descr = 'Pesquisa léxica e semântica';
-      } else if (panel.classList.contains('sem')) {
-        descr = 'Pesquisa por termos afins';
-      } else if (panel.classList.contains('apps')) {
-        descr = 'Aplicativos para autopesquisa';
-      } else if (panel.classList.contains('utils')) {
-        descr = 'Links e recursos úteis';
+      if (panel) {
+        if (panel.classList.contains('bots')) {
+          descr = 'Assistentes de conversação';
+        } else if (panel.classList.contains('busca')) {
+          descr = 'Pesquisa léxica e semântica';
+        } else if (panel.classList.contains('apps')) {
+          descr = 'Aplicativos para autopesquisa';
+        } else if (panel.classList.contains('utils')) {
+          descr = 'Links e recursos úteis';
+        }
       }
-      if (descr) p.textContent = descr;
-    });
+    }
+
+  if (descr) p.innerHTML = descr; // permitir HTML nos textos do painel
+});
 
     // Tool cards: set title, short description, and extra help
     document.querySelectorAll('.tool-card').forEach(card => {
@@ -274,15 +323,12 @@ function applyMessages() {
       // Disambiguate by href when titles are reused (e.g., "Livros & Tratados")
       try {
         const href = (card.getAttribute('href') || '').toLowerCase();
-        if (href.includes('index_lexical.html')) {
-          canonical = 'Pesquisa em Livros';
-        } else if (href.includes('index_lexverb.html')) {
+        // Dentro do try { const href = ... }:
+        if (href.includes('index_search_book.html')) {
+          canonical = 'Livros & Tratados'; // ajuste aqui
+        } else if (href.includes('index_search_verb.html')) {
           canonical = 'Definologia de Verbetes';
-        } else if (href.includes('index_semantic.html')) {
-          canonical = 'Pesquisa Semântica em Livros';
-        } else if (href.includes('index_verbetopedia.html')) {
-          canonical = 'Verbetopedia';
-        } else if (href.includes('index_ccg.html')) {
+        } else if (href.includes('index_search_ccg.html')) {
           canonical = 'Questões do Conscienciograma';
         } else if (href.includes('index_mancia.html')) {
           canonical = 'Bibliomancia Digital';
@@ -302,21 +348,20 @@ function applyMessages() {
       // Fallbacks for encoding-mangled keys based on href
       try {
         const href2 = (card.getAttribute('href') || '').toLowerCase();
-        if (!msg && href2.includes('index_quiz.html')) {
-          msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;
+        if (!msg && href2.includes('index_search_book.html')) {
+          msg = TOOL_MESSAGES['Livros & Tratados'] || msg;
         }
-        if (!msg && href2.includes('index_semantic.html')) {
-          msg = TOOL_MESSAGES['Pesquisa Semântica em Livros'] || msg;
+        if (!msg && href2.includes('index_search_verb.html')) {
+          msg = TOOL_MESSAGES['Definologia de Verbetes'] || msg;
         }
-
-        if (!msg && href2.includes('index_verbetopedia.html')) {
-          msg = TOOL_MESSAGES['Verbetopedia'] || msg;
-        }
-        if (!msg && href2.includes('index_ccg.html')) {
+        if (!msg && href2.includes('index_search_ccg.html')) {
           msg = TOOL_MESSAGES['Questões do Conscienciograma'] || msg;
         }
         if (!msg && href2.includes('index_mancia.html')) {
           msg = TOOL_MESSAGES['Bibliomancia Digital'] || msg;
+        }
+        if (!msg && href2.includes('index_quiz.html')) {
+          msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;
         }
         if (!msg && href2.includes('index_deepdive.html')) {
           msg = TOOL_MESSAGES['Caderno de Estudos'] || msg;

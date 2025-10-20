@@ -13,7 +13,6 @@ function initDownloadButtons(searchType, searchTerm = '') {
     currentSearchTerm = searchTerm;
 
     let btn = document.getElementById('downloadDocx');
-    const downloadButtons = document.querySelector('.download-buttons');
 
     // Remove existing event listeners to avoid duplicates by cloning
     if (btn) {
@@ -36,10 +35,7 @@ function initDownloadButtons(searchType, searchTerm = '') {
     const hasResults = lastResults != null;
 
 
-    // Toggle visibility for container and/or icon button
-    if (downloadButtons) {
-        downloadButtons.style.display = hasResults ? 'block' : 'none';
-    }
+    // Toggle visibility for icon button only
     if (btn) {
         btn.classList.toggle('hidden', !hasResults);
     }
@@ -72,10 +68,6 @@ async function handleDocxDownload() {
             button.disabled = false;
         }
         // After a successful (or attempted) download, hide until next search completes
-        const container = document.querySelector('.download-buttons');
-        if (container) {
-            container.style.display = 'none';
-        }
         const btn = document.getElementById('downloadDocx');
         if (btn) {
             btn.classList.add('hidden');

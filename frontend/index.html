@@ -6,9 +6,10 @@
     <title>Cons-AI ● Toolbox de IA da Conscienciologia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="icon.png">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- style.overrides.css merged into style.bundle.css -->
 </head>
 <body>
     <!-- Navbar -->
@@ -21,15 +22,17 @@
           </button>
       
           <!-- Título central -->
-          <a href="#" class="navbar-brand">
-            <div class="navbar-text">
-              <!-- <img class="navbar-logo" src="Icon.png" alt="Logomarca Cons-IA" /> -->
-              <div class="navbar-heading">
-                <div class="navbar-title">Cons-IA</div>
-                <div class="navbar-subtitle">Toolbox de IA da Conscienciologia</div>
+          <div class="navbar-center">
+            <a href="#" class="navbar-brand">
+              <div class="navbar-text">
+                <!-- <img class="navbar-logo" src="Icon.png" alt="Logomarca Cons-IA" /> -->
+                <div class="navbar-heading">
+                  <div class="navbar-title">Cons-IA</div>
+                  <div class="navbar-subtitle">Toolbox de IA da Conscienciologia</div>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
 
           <!-- Botão de Configuração
           <button class="navbar-control-btn config-toggle" title="Configurações" onclick="toggleConfig()">
@@ -64,7 +67,6 @@
                         </div>
                     </div>
 
-                    <!-- Tools List -->
                     <div class="tools-list">
 
                         <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt?model=gpt-5" class="tool-card compact" target="_blank" rel="noopener noreferrer">
@@ -95,6 +97,17 @@
                             </div>
                             <div class="tool-info">
                                 <h3>ConsBOT</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+                        <a href="https://consagent.onrender.com" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon google">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>ConsAGENT</h3>
                                 <p></p>
                                 <div class="tool-info-extra"></div>
                             </div>
@@ -282,7 +295,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-text">
-                © 2025 Cons-IA ● Toolbox de IA da Conscienciologia.
+                © 2025 Cons-IA ● Toolbox de IA da Conscienciologia
             </div>
             <div class="footer-contact">
                 <span>Fale com o Diretor:</span>
@@ -327,6 +340,7 @@
                 }
             });
 
+            
             // ==================== Config Modal Logic ====================
             function openConfigModal() {
               const el = document.getElementById('config-backdrop');
@@ -412,8 +426,8 @@
     <!-- Config Modal Styles and Markup --><div id="config-backdrop" class="config-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="config-modal" role="document">
         <header>
-          <span>Configurações do Sistema</span>
-          <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">âœ•</button>
+          <span>ConfiguraÃ§Ãµes do Sistema</span>
+          <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">Ã¢Å“â€¢</button>
         </header>
         <div class="content">
           <div class="config-grid">
@@ -423,7 +437,6 @@
                 <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1</option>
               </select>
             </div>
             <div class="config-field">
@@ -432,7 +445,6 @@
                 <option value="gpt-5-nano">gpt-5-nano</option>
                 <option value="gpt-5-mini">gpt-5-mini</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1">gpt-4.1</option>
               </select>
             </div>
             <div class="config-field">
@@ -470,6 +482,7 @@
     </div>
 </body>
 </html>
+
 
 
 

@@ -10,7 +10,7 @@
     <title>Pesquisa do Conscienciograma ● Cons-AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="icon.png">
 </head>
 
@@ -74,10 +74,10 @@
             </div>
         </div>
 
-        <!-- Painel de opções -->
+        <!-- Painel de opÃ§Ãµes -->
         <div class="options-panel" id="optionsPanel">
             <div class="options-header" onclick="toggleOptions()">
-                <h3 class="options-title">Search Options</h3>
+                <h3 class="options-title">Opções de Pesquisa</h3>
                 <button class="options-toggle" id="optionsToggle">
                     <i class="fas fa-chevron-down"></i>
                 </button>
@@ -97,7 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Config do Módulo (pills + opções) -->
+                <!-- Config do MÃ³dulo (pills + opÃ§Ãµes) -->
                 <div class="book-pill-static" data-value="CCG" style="background-color: var(--search-primary); color: var(--white);">
                     Conscienciograma
                 </div>
@@ -120,7 +120,7 @@
         </div>
     </div>
 
-    <!-- ✅ Container de resultados CENTRALIZADO -->
+    <!-- âœ… Container de resultados CENTRALIZADO -->
     <div id="results" class="results"></div>
 </div>
 
@@ -156,23 +156,23 @@
         const STORAGE_KEY = 'settings_search_book';
     
         // ================================================================
-        // 1️⃣ Definição da configuração inicial padrão
+        // 1ï¸âƒ£ DefiniÃ§Ã£o da configuraÃ§Ã£o inicial padrÃ£o
         // ================================================================
-        const FIXED_BOOK = 'CCG';   // 🔥 Altere aqui se quiser outro livro fixo
+        const FIXED_BOOK = 'CCG';   // ðŸ”¥ Altere aqui se quiser outro livro fixo
         const DEFAULT_SETTINGS = {
-            books: [FIXED_BOOK],        // ✅ Apenas CCG
-            searchType: ['lexical'],     // ✅ Léxica marcada
+            books: [FIXED_BOOK],        // âœ… Apenas CCG
+            searchType: ['lexical'],     // âœ… LÃ©xica marcada
             maxResults: 10,
             groupResults: false
         };
     
-        // Só define se não houver configuração anterior
+        // SÃ³ define se nÃ£o houver configuraÃ§Ã£o anterior
         if (!localStorage.getItem(STORAGE_KEY)) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
     
         // // ================================================================
-        // // 2️⃣ Toggle de livros
+        // // 2ï¸âƒ£ Toggle de livros
         // // ================================================================
         // document.querySelectorAll('.book-pill').forEach(pill => {
         //     pill.addEventListener('click', () => {
@@ -181,7 +181,7 @@
         // });
     
         // ================================================================
-        // 3️⃣ Toggle de Search Type (Léxico / Semântico)
+        // 3ï¸âƒ£ Toggle de Search Type (LÃ©xico / SemÃ¢ntico)
         // ================================================================
         document.querySelectorAll('.search-type-pill').forEach(pill => {
             pill.addEventListener('click', () => {
@@ -190,7 +190,7 @@
         });
     
         // ================================================================
-        // 4️⃣ Abrir/fechar painel
+        // 4ï¸âƒ£ Abrir/fechar painel
         // ================================================================
         if (trigger && panel) {
             trigger.addEventListener('click', function(e) {
@@ -212,7 +212,7 @@
         }
     
         // ================================================================
-        // 5️⃣ Aplicar configurações salvas (ou padrão)
+        // 5ï¸âƒ£ Aplicar configuraÃ§Ãµes salvas (ou padrÃ£o)
         // ================================================================
         (function applySaved() {
             try {
@@ -252,18 +252,18 @@
         })();
     
          // ================================================================
-        // 5️⃣ Botão Salvar
+        // 5ï¸âƒ£ BotÃ£o Salvar
         // ================================================================
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
-                const books = [FIXED_BOOK]; // 🔥 Sempre forçado
+                const books = [FIXED_BOOK]; // ðŸ”¥ Sempre forÃ§ado
     
                 const searchType = Array.from(document.querySelectorAll('.search-type-pill.active'))
                     .map(p => p.dataset.value);
                 const maxInput = document.getElementById('maxResults');
                 const rawMax = maxInput?.value ?? 10;
                 const maxResults = normalizeMaxResults(rawMax);
-                const groupResults = true; // 🔥 Sempre agrupado
+                const groupResults = true; // ðŸ”¥ Sempre agrupado
     
                   // Merge com settings existentes, preservando 'books'
                   let saved = {};
@@ -289,7 +289,7 @@
         }
     
         // ================================================================
-        // 6️⃣ Função global para recuperar configs
+        // 6ï¸âƒ£ FunÃ§Ã£o global para recuperar configs
         // ================================================================
         window.getSearchBookSettings = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -299,3 +299,4 @@
     });
     </script>
     
+

@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caderno de Estudos ● Cons-AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="icon.png">
 </head>
 
@@ -73,7 +73,7 @@
             <div class="options-panel" id="optionsPanel">
 
                 <div class="options-header" onclick="toggleOptions()">
-                    <h3 class="options-title">Search Options</h3>
+                    <h3 class="options-title">Opções de Pesquisa</h3>
                     <button class="options-toggle" id="optionsToggle">
                         <i class="fas fa-chevron-down"></i>
                     </button>
@@ -120,7 +120,7 @@
                             </div>
 
                             <div class="config-actions">
-                                <!-- Botão salvar -->
+                                <!-- BotÃ£o salvar -->
                                 <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
@@ -184,7 +184,7 @@
             }
         }
 
-        // Inicialização + salvar/restaurar configs
+        // InicializaÃ§Ã£o + salvar/restaurar configs
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
 
@@ -266,7 +266,7 @@
             })();
 
 
-            // Botão salvar â†’ grava tudo junto
+            // BotÃ£o salvar Ã¢â€ â€™ grava tudo junto
             if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
                     const books = Array.from(document.querySelectorAll('.book-pill.active'))
@@ -282,7 +282,7 @@
                 });
             }
 
-            // Função global para recuperar configs
+            // FunÃ§Ã£o global para recuperar configs
             window.getDeepdiveSettings = function() {
                 return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
             };
@@ -293,6 +293,8 @@
 
 </body>
 </html>
+
+
 
 
 

@@ -1,0 +1,141 @@
+/* ==========================================================================
+   ⚙️ OPÇÕES / PAINEL, SWITCHES E SLIDERS
+   --------------------------------------------------------------------------
+   Elementos de configuração: painel de opções, botões de gatilho (trigger), campos numéricos, interruptores (switch/slider) e suas variações de estado.
+   ========================================================================== */
+
+.options-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-6);
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.options-header:hover {
+    background: var(--gray-100);
+}
+
+.options-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.options-toggle {
+    width: 32px;
+    height: 32px;
+    background: var(--gray-200);
+    border: none;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    transition: all var(--transition-fast);
+}
+
+.options-content {
+    padding: var(--space-6);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-6);
+}
+
+.options-trigger {
+    width: 40px;
+    height: 40px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.options-trigger:hover,
+.options-trigger:focus-visible {
+    background: var(--gray-50);
+    color: var(--gray-800);
+    transform: translateY(-1px);
+}
+
+.options-trigger.pulsing { animation: configPulse 1s ease-in-out infinite; }
+
+.options-trigger.pulsing:hover,
+.options-trigger.pulsing:focus-visible { animation: none; }
+
+.options-wrapper .options-panel.open { display: block; }
+
+.option-group {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--gray-200);
+}
+
+.option-group-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--space-2);
+}
+
+.options-panel .max-results input {
+  background: var(--white) !important;
+  color: var(--gray-800) !important;
+  border-color: var(--gray-300) !important;
+}
+
+.max-results input {
+width: 50px;
+flex: none;
+padding: 4px 6px;
+border: 1px solid var(--gray-300, #ccc);
+border-radius: 6px;
+font-size: var(--text-sm);
+background: #fff;
+color: #000;
+text-align: center;
+}
+
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0; left: 0px; right: 0; bottom: 0;
+background-color: #ccc;
+transition: 0.3s;
+border-radius: 24px;
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 2px;
+bottom: 2px;
+background-color: var(--white);
+transition: 0.3s;
+border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+background-color: var(--module-accent, var(--primary-500));
+}
+
+.switch input:checked + .slider:before {
+transform: translateX(16px);
+}

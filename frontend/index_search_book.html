@@ -10,7 +10,7 @@
     <title>Pesquisa de Livros ● Cons-AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="icon.png">
 </head>
 
@@ -73,7 +73,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="options-panel" id="optionsPanel">
 
                 <div class="options-header" onclick="toggleOptions()">
@@ -186,11 +185,11 @@
         const STORAGE_KEY = 'settings_search_book';
     
         // ================================================================
-        // 1️⃣ Definição da configuração inicial padrão
+        // 1. Definição da configuração inicial padrão
         // ================================================================
         const DEFAULT_SETTINGS = {
-            books: ['LO', 'DAC'],        // ✅ Apenas LO e DAC
-            searchType: ['lexical'],     // ✅ Léxica marcada
+            books: ['LO', 'DAC'],        // Apenas LO e DAC
+            searchType: ['lexical'],     // Léxica marcada
             maxResults: 10,
             groupResults: true
         };
@@ -201,7 +200,7 @@
         }
     
         // ================================================================
-        // 2️⃣ Toggle de livros
+        // 2. Toggle de livros
         // ================================================================
         document.querySelectorAll('.book-pill').forEach(pill => {
             pill.addEventListener('click', () => {
@@ -210,7 +209,7 @@
         });
     
         // ================================================================
-        // 3️⃣ Toggle de Search Type (Léxico / Semântico)
+        // 3. Toggle de Search Type (Léxico / Semântico)
         // ================================================================
         document.querySelectorAll('.search-type-pill').forEach(pill => {
             pill.addEventListener('click', () => {
@@ -219,7 +218,7 @@
         });
     
         // ================================================================
-        // 4️⃣ Abrir/fechar painel
+        // 4. Abrir/fechar painel
         // ================================================================
         if (trigger && panel) {
             trigger.addEventListener('click', function(e) {
@@ -241,7 +240,7 @@
         }
     
         // ================================================================
-        // 5️⃣ Aplicar configurações salvas (ou padrão)
+        // 5. Aplicar configurações salvas (ou padrão)
         // ================================================================
         (function applySaved() {
             try {
@@ -286,7 +285,7 @@
         })();
     
         // ================================================================
-        // 6️⃣ Botão salvar atualiza o localStorage
+        // 6. Botão salvar atualiza o localStorage
         // ================================================================
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
@@ -314,7 +313,7 @@
         }
     
         // ================================================================
-        // 7️⃣ Função global de acesso
+        // 7. Função global de acesso
         // ================================================================
         window.getSearchBookSettings = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -322,3 +321,4 @@
     });
     </script>
     
+

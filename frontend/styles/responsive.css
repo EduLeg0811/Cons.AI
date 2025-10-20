@@ -1,0 +1,156 @@
+/* ==========================================================================
+   📱 DESIGN RESPONSIVO / MEDIA QUERIES
+   --------------------------------------------------------------------------
+   Quebras de layout por largura de tela (smartphones e tablets). Estas regras adaptam espaçamentos, tipografia e organização visual em telas menores.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .options-trigger.pulsing { animation: none; }
+}
+
+@media (max-width: 480px) {
+    /* Consolidado: removido bloco anterior de .book-checkboxes (mantido abaixo o bloco mais completo;
+       propriedade max-width foi mesclada para evitar duplicidade e manter o mesmo resultado visual) */
+    
+    .book-checkboxes {
+        display: flex;                 /* define como flex container */
+        flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
+        gap: 4px;                      /* espa  o vertical entre os pills */
+        width: 100%;                   /* ocupa toda a largura dispon  vel do container pai */
+        max-width: 100%;               /* ocupa a tela inteira no mobile */
+        margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
+    }
+     
+    .book-pill {
+        width: 100%;                   /* faz o pill ocupar toda a largura do container */
+        text-align: center;            /* centraliza o texto na horizontal */
+        height: 28px;                  /* altura fixa de cada pill */
+        padding: 4px;                  /* espa�o interno (topo/baixo/laterais) */   
+        background: #f3f4f6;           /* cor de fundo padr�o (cinza claro) */
+        color: #374151;                /* cor do texto (cinza escuro) */
+        font-size: var(--text-xs);     /* tamanho da fonte (pega da vari�vel global) */
+        font-weight: 500;              /* peso da fonte (semibold) */
+        cursor: pointer;               /* cursor de “m�ozinha” ao passar por cima */
+        transition: background 0.2s ease, color 0.2s ease; /* transi��o suave ao mudar cor de fundo e texto */
+        user-select: none;             /* evita sele��o de texto ao clicar */
+        box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
+        border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
+        border-radius: var(--radius-full); /* arredondamento completo (vari�vel global) */
+        font-size: var(--text-xs);
+    }
+ 
+    .displaybox-container.ragbot-box .displaybox-content {
+        padding: var(--space-3);
+    }
+    /* Tighten spacing between text and metadata badges on small screens */
+    .displaybox-text {
+        margin-bottom: var(--space-1);
+        font-size: var(--text-xs);
+        line-height: 1.2;
+    }
+    .metadata-container {
+        margin-top: var(--space-1);
+    }
+
+
+    /* Responsive: smaller bot text on very small screens */
+    /* Reduce overall bot bubble typography */
+    .theme-bots .chat-message.bot .message-content {
+        font-size: var(--text-xs);
+        line-height: 1.2; /* keep readability */
+    }
+
+    /* Ensure markdown paragraphs match the reduced size */
+    .theme-bots .chat-message.bot .message-content .markdown-content p {
+        font-size: var(--text-xs);
+    }
+
+    
+    .message-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: var(--text-xs);
+    }
+
+
+/* Bot markdown headings: scale down on very small screens */
+.theme-bots .chat-message.bot .message-content .markdown-content h1 {
+    font-size: var(--text-base);
+    line-height: 1.2;
+    margin: 0.6em 0 0.4em;
+}
+.theme-bots .chat-message.bot .message-content .markdown-content h2 {
+    font-size: var(--text-sm);
+    line-height: 1.2;
+    margin: 0.6em 0 0.4em;
+}
+.theme-bots .chat-message.bot .message-content .markdown-content h3 {
+    font-size: var(--text-xs);
+    line-height: 1.2;
+    margin: 0.6em 0 0.4em;
+}
+.theme-bots .chat-message.bot .message-content .markdown-content h4,
+.theme-bots .chat-message.bot .message-content .markdown-content h5,
+.theme-bots .chat-message.bot .message-content .markdown-content h6 {
+    font-size: var(--text-xs);
+    line-height: 1.2;
+    margin: 0.5em 0 0.3em;
+}
+
+
+
+/* Bot markdown lists: compact and aligned on very small screens */
+.theme-bots .chat-message.bot .message-content .markdown-content ul,
+.theme-bots .chat-message.bot .message-content .markdown-content ol {
+    list-style-position: inside;  /* marcadores alinhados ao texto */
+    padding-left: 0;              /* remove recuo extra */
+    margin: 0.2em 0 0.2em 0.8em;  /* espaço vertical mais justo */
+    font-size: var(--text-xs);    /* acompanha o corpo reduzido do bot */
+    line-height: 1.2;             /* consistente com mobile */
+}
+
+/* Listas aninhadas: pequeno deslocamento visual, sem grandes recuos */
+.theme-bots .chat-message.bot .message-content .markdown-content li {
+    margin: 0.2em 0;              /* espaço compacto entre itens */
+    font-size: var(--text-xs);
+}
+
+.theme-bots .chat-message.bot .message-content .markdown-content li p {
+    display: inline;              /* evita quebra após marcador */
+    margin: 0;                    /* remove margem extra */
+    font-size: var(--text-xs);
+    line-height: 1.2;
+}
+
+
+/*Metabadges*/
+.metadata-badge {
+    padding: 2px var(--space-2);
+    background: var(--gray-100);
+    font-size: var(--text-xxs);
+    line-height: 1.2;
+    font-weight: 500;
+    border: 1px solid var(--gray-100);
+    margin: 0;
+}
+
+
+/* Verbetopedia and CCG TITLE on very small screens */
+.page-verbetopedia .verbetopedia-header .header-text,
+.page-ccg .verbetopedia-header .header-text {
+    margin-bottom: 0.2em;
+    font-size: var(--text-xs);
+}
+
+
+
+/* Header variant used by CCG/EC panels */
+.displaybox-header.verbetopedia-header {
+    text-align: left;
+    padding-left: 0;
+    color: var(--gray-800);
+    color: #1e3a8a; /* dark blue */
+    font-size: var(--text-sm);
+}
+
+
+}

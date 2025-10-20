@@ -1,0 +1,217 @@
+/* ==========================================================================
+   🧭 LAYOUT / NAVBAR, CONTAINERS E ESTRUTURA
+   --------------------------------------------------------------------------
+   Composição estrutural da interface: navbar fixa, área principal (main-content), containers e rodapé. Mantém o esqueleto da página e a distribuição de espaços.
+   ========================================================================== */
+
+.navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; /* allow centering absolute children */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    align-self: center;
+    text-align: center;
+}
+
+.theme-sem .navbar-icon {
+    background: linear-gradient(135deg, var(--sem-primary) 0%, var(--sem-secondary) 100%);
+}
+
+.theme-bots .navbar-icon {
+    background: linear-gradient(135deg, var(--bots-primary) 0%, var(--bots-secondary) 100%);
+}
+
+.theme-apps .navbar-icon {
+    background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
+}
+
+.navbar-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    align-self: center;
+    text-align: center;
+    /* Centralização agora é feita via wrapper .navbar-center (flex) */
+}
+
+.navbar-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-right: var(--space-2);
+}
+
+.navbar-title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--gray-900);
+    line-height: 1.2;
+    align-self: center;
+    text-align: center;
+    /* Removido line-height duplicado (já definido acima) */
+}
+
+.navbar-subtitle {
+    font-size: var(--text-lg);
+    color: var(--gray-500);
+    font-weight: 500;
+    align-self: center;
+    text-align: center; 
+    margin: var(--space-1);
+    line-height: 1.2;
+}
+.navbar-title-modules {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--gray-900);
+    align-self: center;
+    text-align: center;
+    /* Removidas margens específicas duplicadas: margin-top/margin-bottom são redundantes quando margin geral existe */
+    margin: var(--space-1);
+    line-height: 1.2;
+}
+
+.navbar-subtitle-modules {
+    font-size: var(--text-base);
+    color: var(--gray-500);
+    font-weight: 500;
+    align-self: center;
+    text-align: center; 
+    margin: var(--space-0);
+    line-height: 1.2;
+}
+
+.navbar-controls {
+    display: flex;
+    gap: var(--space-2);
+    width: auto;
+    justify-content: initial;
+    align-items: center;
+}
+
+.navbar-control-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    font-size: var(--text-base);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.navbar-control-btn:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
+    transform: translateY(-2px);
+}
+
+.navbar-control-btn.info-toggle {
+    animation: infoPulse 1s ease-in-out infinite;
+}
+
+.panel-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.panel-header {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    margin-top: 0;
+    /* Removido display duplicado (já definido no início do bloco) */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.panel-info h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-0);
+    margin-top: var(--space-0);
+    text-align: center;
+}
+
+.panel-info p {
+    font-size: var(--text-base);
+    color: var(--gray-500);
+    font-weight: 400;
+    line-height: 1.2;
+    /* manter só UMA margem */
+    margin: 0 0 8px 0;
+    /* garantir largura total do container e centralização */
+    width: 100%;
+    text-align: center;    /* lead centralizado */
+    align-self: stretch;   /* ocupa toda a largura no flex container */
+  }
+
+.panel-info p .panel-desc-sm {
+    display: block;     /* era inline-block */
+    width: 100%;
+    margin: 0;          /* zera margens */
+    padding: 0;         /* zera padding */
+    text-align: left;   /* mantém alinhado à esquerda */
+    font-size: var(--text-xs);
+    line-height: 1.2;
+    color: var(--gray-600);   
+  }
+
+.panel-info p .panel-desc-lead {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-style: italic;
+}
+
+[data-show-info="true"] .tool-panel .panel-header .panel-info p { display: block; }
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.footer-text {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+}
+
+.footer-contact {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+  }
