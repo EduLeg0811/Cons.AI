@@ -102,7 +102,7 @@
                             </div>
                         </a>
 
-                       <!--  <a href="https://consagent.onrender.com" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                        <a href="https://consagent.onrender.com" class="tool-card compact" target="_blank" rel="noopener noreferrer">
                             <div class="tool-icon google">
                                 <i class="fa-solid fa-graduation-cap"></i>
                             </div>
@@ -111,7 +111,7 @@
                                 <p></p>
                                 <div class="tool-info-extra"></div>
                             </div>
-                        </a> -->
+                        </a>
 
                     </div>
                 </div>
@@ -310,6 +310,29 @@
     <script src="config.js"></script>
     <script src="utils.js"></script>
     <script src="messages.js"></script>
+    <script>
+      // Delegated click logger for module cards
+      document.addEventListener('click', function(e){
+        try {
+          const card = e.target.closest('.tools-list a.tool-card');
+          if (!card) return;
+          const panel = card.closest('.tool-panel');
+          const panelClasses = panel ? Array.from(panel.classList) : [];
+          const groups = ['bots','search','apps','semantic','utils'];
+          const module_group = panelClasses.find(c => groups.includes(c));
+          const module_label = (card.querySelector('h3')?.textContent || card.getAttribute('aria-label') || card.textContent || '').trim();
+          const module_href = card.getAttribute('href') || '';
+          if (window.logEvent) {
+            window.logEvent({
+              event: 'module_click',
+              module_label,
+              module_href,
+              module_group
+            });
+          }
+        } catch (err) { /* noop */ }
+      });
+    </script>
     <script>
             // Info toggle (expand/collapse badge descriptions)
             function toggleInfo() {

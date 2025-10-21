@@ -324,9 +324,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const suggestions = [
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
           'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
-          'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
+          'O que significa Proéxis e como identificar a própria programação existencial?',
+          'O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?',
+          'Qual o papel das Reurbanizações Extrafísicas (Reurbexes) no contexto evolutivo do planeta?',
+          'Fale sobre as Comunidades Extrafísicas (Comunexes) e sua relação com os Cursos Intermissivos.',
+          'Como saber sou completista? Quais os indicadores devo observar?',
+          'Cite os principais sinais da autodesassimilação energética (desassim).',
           'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
-          'Posso te passar a Definologia e a Fatologia do verbete que estou escrevendo, para que você me dê ideias, aponte inconsistências e sugira aprofundamentos?',
+          'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
         ];
     
         // Container principal

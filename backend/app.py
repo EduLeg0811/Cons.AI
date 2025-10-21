@@ -1,4 +1,4 @@
-﻿"""
+"""
 API Response Structures
 ======================
 """
@@ -13,6 +13,8 @@ import sys
 from typing import Any, Dict, Tuple
 import uuid
 import pprint
+import json
+import datetime
 
 from flask import Flask, Response, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
@@ -107,6 +109,56 @@ logger.info(
 # Helper to safely strip values
 def safe_str(value):
     return str(value).strip() if value is not None else ""
+
+
+# ______________________________________________________________________
+# Lightweight logging endpoint (append-only JSON Lines)
+# ______________________________________________________________________
+# Grava eventos enviados pelo frontend (page_view, module_click, etc.)
+LOG_DIR = BACKEND_DIR / "logs"
+LOG_FILE = LOG_DIR / "access.log"
+
+@app.route('/log', methods=['POST'])
+def log_event():
+    try:
+        payload = request.get_json(silent=True) or {}
+    except Exception:
+        payload = {}
+
+    # Enriquecimento server-side
+    try:
+        payload["_server_ts"] = datetime.datetime.utcnow().isoformat() + "Z"
+        payload["_client_ip"] = request.remote_addr
+        payload["_user_agent"] = request.headers.get("User-Agent")
+        payload["_path"] = request.path
+    except Exception:
+        pass
+
+    # Garantir diretório e gravar como JSON line
+    try:
+        LOG_DIR.mkdir(exist_ok=True)
+        with LOG_FILE.open('a', encoding='utf-8') as f:
+            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    except Exception as e:
+        logger.error(f"[log_event] Falha ao gravar log: {e}")
+        return jsonify({"status": "error"}), 500
+
+    return jsonify({"status": "ok"})
+
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    # Exibe todo o conteúdo do arquivo de logs como texto simples
+    try:
+        LOG_DIR.mkdir(exist_ok=True)
+        if not LOG_FILE.exists():
+            return Response("", mimetype='text/plain; charset=utf-8')
+        with LOG_FILE.open('r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='text/plain; charset=utf-8')
+    except Exception as e:
+        logger.error(f"[get_logs] Falha ao ler log: {e}")
+        return Response("Erro ao ler logs.", status=500, mimetype='text/plain; charset=utf-8')
 
 
 # ______________________________________________________________________

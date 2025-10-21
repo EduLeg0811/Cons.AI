@@ -422,10 +422,49 @@ window.__API_BASE = apiBaseUrl;
 window.apiBaseUrl = apiBaseUrl;
 window.apiBaseUrl = apiBaseUrl;
 
+// =================== Minimal Client Log ===================
+// window.logEvent(payload): envia eventos ao backend (/log)
+// Uso: window.logEvent({ event: 'page_view', page: location.pathname })
+(function initClientLogger(){
+  const getSessionId = () => {
+    try {
+      const key = 'client_session_id';
+      let id = localStorage.getItem(key);
+      if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
+      return id;
+    } catch { return undefined; }
+  };
 
+  window.logEvent = function logEvent(data) {
+    try {
+      const base = window.apiBaseUrl || apiBaseUrl;
+      const url = `${base}/log`;
+      const enriched = {
+        ...data,
+        page: data?.page || (location && location.pathname) || undefined,
+        origin: origin,
+        referrer: document.referrer || '',
+        mode: mode,
+        ts: new Date().toISOString(),
+        session_id: getSessionId(),
+      };
+
+      const body = JSON.stringify(enriched);
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        return navigator.sendBeacon(url, blob);
+      } else {
+        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
+      }
+    } catch {}
+  };
+
+  // Auto page view on DOM ready
+  document.addEventListener('DOMContentLoaded', function(){
+    try { window.logEvent({ event: 'page_view' }); } catch {}
+  });
+})();
 } else {
-
-
 
 function resolveApiBaseUrl() {
   
@@ -451,19 +490,56 @@ try {
   //document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
 } catch {}
 
-
-
-
 // (Opcional) “ping” para acordar backend no Render; em DEV apenas valida CORS
 window.addEventListener('load', () => {
   fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
 });
 
-
-
 // Exporta para debug no console
 window.__API_BASE = apiBaseUrl;
 
+// =================== Minimal Client Log ===================
+// window.logEvent(payload): envia eventos ao backend (/log)
+// Uso: window.logEvent({ event: 'page_view', page: location.pathname })
+(function initClientLogger(){
+  const getSessionId = () => {
+    try {
+      const key = 'client_session_id';
+      let id = localStorage.getItem(key);
+      if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
+      return id;
+    } catch { return undefined; }
+  };
+
+  window.logEvent = function logEvent(data) {
+    try {
+      const base = window.apiBaseUrl || apiBaseUrl;
+      const url = `${base}/log`;
+      const enriched = {
+        ...data,
+        page: data?.page || (location && location.pathname) || undefined,
+        origin: origin,
+        referrer: document.referrer || '',
+        mode: mode,
+        ts: new Date().toISOString(),
+        session_id: getSessionId(),
+      };
+
+      const body = JSON.stringify(enriched);
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        return navigator.sendBeacon(url, blob);
+      } else {
+        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
+      }
+    } catch {}
+  };
+
+  // Auto page view on DOM ready
+  document.addEventListener('DOMContentLoaded', function(){
+    try { window.logEvent({ event: 'page_view' }); } catch {}
+  });
+})();
 
 }
 
