@@ -161,6 +161,17 @@ def get_logs():
         return Response("Erro ao ler logs.", status=500, mimetype='text/plain; charset=utf-8')
 
 
+@app.route('/logs/clear', methods=['DELETE'])
+def clear_logs():
+    try:
+        LOG_DIR.mkdir(exist_ok=True)
+        with LOG_FILE.open('w', encoding='utf-8') as f:
+            f.write('')
+        return jsonify({"status": "ok", "message": "logs cleared"}), 200
+    except Exception as e:
+        logger.error(f"[clear_logs] Falha ao limpar log: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/logs/view', methods=['GET'])
 def view_logs_page():
     # Página simples para visualizar os logs em tabela
@@ -221,8 +232,10 @@ def view_logs_page():
           <option value=\"input_text\">input_text</option>
           <option value=\"input_submit\">input_submit</option>
         </select>
-        <input id=\"search\" placeholder=\"Buscar (label, href, page, ip, UA)\" class=\"input\" />
+        <input id=\"search\" placeholder=\"Buscar (label, page, ip, UA)\" class=\"input\" />
         <button id=\"refresh\" class=\"btn\">Atualizar</button>
+        <button id=\"reset\" class=\"btn\" title=\"Limpa filtros e larguras salvas\">Resetar</button>
+        <button id=\"clear-logs\" class=\"btn\" title=\"Apaga o arquivo de logs no servidor\">Limpar Logs</button>
       </div>
     </div>
     <div class=\"card\">
@@ -230,17 +243,14 @@ def view_logs_page():
         <colgroup id=\"colgroup\">
           <col style=\"width:10ch\" />  <!-- data dd/mm/aaaa -->
           <col style=\"width:6ch\" />   <!-- hora HH:mm -->
-          <col style=\"width:10ch\" />  <!-- event -->
+          <col style=\"width:15ch\" />  <!-- event -->
           <col />                          <!-- value (auto) -->
-          <col style=\"width:16ch\" />  <!-- field meta -->
           <col style=\"width:9ch\" />   <!-- module -->
           <col style=\"width:8ch\" />   <!-- group -->
           <col />                          <!-- page (auto) -->
-          <col />                          <!-- href (auto) -->
-          <col style=\"width:12ch\" />  <!-- ip -->
-          <col />                          <!-- origin (auto) -->
-          <col />                          <!-- referrer (auto) -->
-          <col />                          <!-- ua (auto) -->
+          <col style=\"width:8ch\" />  <!-- ip -->
+          <col style=\"width:10ch\" />                          <!-- origin (auto) -->
+          <col style=\"width:8ch\" />                          <!-- ua (auto) -->
         </colgroup>
         <thead>
           <tr>
@@ -248,14 +258,11 @@ def view_logs_page():
             <th class=\"nowrap\">hora<div class=\"resizer\"></div></th>
             <th>event<div class=\"resizer\"></div></th>
             <th>value<div class=\"resizer\"></div></th>
-            <th>field<div class=\"resizer\"></div></th>
             <th>module<div class=\"resizer\"></div></th>
             <th>group<div class=\"resizer\"></div></th>
             <th>page<div class=\"resizer\"></div></th>
-            <th>href<div class=\"resizer\"></div></th>
             <th class=\"nowrap\">client ip<div class=\"resizer\"></div></th>
             <th>origin<div class=\"resizer\"></div></th>
-            <th>referrer<div class=\"resizer\"></div></th>
             <th>user agent<div class=\"resizer\"></div></th>
           </tr>
         </thead>
@@ -272,6 +279,8 @@ def view_logs_page():
     const filterEvent = $('#filter-event');
     const search = $('#search');
     const refreshBtn = $('#refresh');
+    const resetBtn = $('#reset');
+    const clearBtn = $('#clear-logs');
 
     async function fetchLogs() {
       const res = await fetch('/logs', { cache: 'no-store' });
@@ -304,12 +313,10 @@ def view_logs_page():
       if (ev) list = list.filter(x => (x.event||'') === ev);
       if (q) {
         list = list.filter(x => {
-          const f = x.field || {};
           const hay = [
             x.value,
-            f.id, f.name, f.placeholder, f.classes, f.dataset_module,
-            x.module_label, x.module_href, x.module_group, x.page,
-            x.origin, x.referrer, x._client_ip, x._user_agent
+            x.module_label, x.module_group, x.page,
+            x.origin, x._client_ip, x._user_agent
           ].join(' ').toLowerCase();
           return hay.includes(q);
         });
@@ -320,8 +327,6 @@ def view_logs_page():
       rowsEl.innerHTML = list.map(x => {
         const ts = x._server_ts || x.ts || '';
         const f = fmtDateTimeUTCm3(ts);
-        const field = x.field || {};
-        const fieldStr = [field.id, field.name, field.placeholder].filter(Boolean).join(' | ');
         const esc = (s) => (String(s||'')).replace(/</g,'&lt;');
         return `
         <tr>
@@ -329,15 +334,12 @@ def view_logs_page():
           <td class="mono nowrap">${f.t}</td>
           <td><span class="pill ev">${x.event||''}</span></td>
           <td>${esc(x.value)}</td>
-          <td class="mono">${esc(fieldStr)}</td>
           <td>${(x.module_label||'') .replace(/</g,'&lt;')}</td>
           <td><span class="pill grp">${x.module_group||''}</span></td>
           <td>${(x.page||'') .replace(/</g,'&lt;')}</td>
-          <td>${(x.module_href||'') .replace(/</g,'&lt;')}</td>
           <td class="mono nowrap">${x._client_ip||''}</td>
           <td>${(x.origin||'') .replace(/</g,'&lt;')}</td>
-          <td>${(x.referrer||'') .replace(/</g,'&lt;')}</td>
-          <td>${(x._user_agent||'').slice(0,140) .replace(/</g,'&lt;')}</td>
+          <td>${(x._user_agent||'').slice(0,10) .replace(/</g,'&lt;')}</td>
         </tr>
       `}).join('');
       counterEl.textContent = `${list.length} eventos`;
@@ -348,7 +350,7 @@ def view_logs_page():
         const data = await fetchLogs();
         render(data);
       } catch(e) {
-        rowsEl.innerHTML = `<tr><td colspan="13" class="mono">Erro ao carregar logs.</td></tr>`;
+        rowsEl.innerHTML = `<tr><td colspan="10" class="mono">Erro ao carregar logs.</td></tr>`;
       }
     }
 
@@ -404,6 +406,28 @@ def view_logs_page():
     filterEvent && filterEvent.addEventListener('change', load);
     search && search.addEventListener('input', () => { window.clearTimeout(window.__t); window.__t = setTimeout(load, 250); });
     refreshBtn && refreshBtn.addEventListener('click', load);
+    resetBtn && resetBtn.addEventListener('click', () => {
+      // limpar larguras persistidas
+      try { localStorage.removeItem('log_col_widths'); } catch {}
+      // limpar filtros
+      if (filterEvent) filterEvent.value = '';
+      if (search) search.value = '';
+      // limpar larguras aplicadas no DOM
+      const colgroup = document.getElementById('colgroup');
+      if (colgroup) Array.from(colgroup.children).forEach(c => c.style.width = '');
+      // recarregar
+      load();
+    });
+    clearBtn && clearBtn.addEventListener('click', async () => {
+      if (!confirm('Tem certeza que deseja limpar todos os logs?')) return;
+      try {
+        const res = await fetch('/logs/clear', { method: 'DELETE' });
+        if (!res.ok) throw new Error('Falha ao limpar logs');
+      } catch(e) {
+        console.error(e);
+      }
+      load();
+    });
     document.addEventListener('DOMContentLoaded', ()=>{ setupResizableColumns(); load(); });
   </script>
 </body>
@@ -520,12 +544,50 @@ class LlmQueryResource(Resource):
                 "chat_id": chat_id,
             }
 
+            # Log only the prompt text for LLM requests
+            try:
+                LOG_DIR.mkdir(exist_ok=True)
+                llm_log = {
+                    "event": "llm_request",
+                    "value": (query or "")[:200],
+                    "model": model,
+                    "temperature": temperature,
+                    "chat_id": chat_id,
+                    "_server_ts": datetime.datetime.utcnow().isoformat() + "Z",
+                    "_client_ip": request.remote_addr,
+                    "_user_agent": request.headers.get("User-Agent"),
+                    "_path": request.path,
+                }
+                with LOG_FILE.open('a', encoding='utf-8') as f:
+                    f.write(json.dumps(llm_log, ensure_ascii=False) + "\n")
+            except Exception as e:
+                logger.error(f"[llm_request log] failed: {e}")
+
             results = generate_llm_answer(**parameters)
 
             if "error" in results:
                 return {"error": results["error"]}, 500
 
             clean_text = results.get("text", "")
+
+            # Log only a short summary of the LLM response
+            try:
+                LOG_DIR.mkdir(exist_ok=True)
+                llm_log_resp = {
+                    "event": "llm_response",
+                    "value": (clean_text or "")[:200],
+                    "model": model,
+                    "temperature": temperature,
+                    "chat_id": chat_id,
+                    "_server_ts": datetime.datetime.utcnow().isoformat() + "Z",
+                    "_client_ip": request.remote_addr,
+                    "_user_agent": request.headers.get("User-Agent"),
+                    "_path": request.path,
+                }
+                with LOG_FILE.open('a', encoding='utf-8') as f:
+                    f.write(json.dumps(llm_log_resp, ensure_ascii=False) + "\n")
+            except Exception as e:
+                logger.error(f"[llm_response log] failed: {e}")
 
             response = {
                 "text": clean_text,

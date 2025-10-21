@@ -432,19 +432,7 @@ if (VERSION_DEVELOPMENT) {
     const now = () => Date.now();
     const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
 
-    document.addEventListener('input', function(e){
-      try {
-        const el = e.target;
-        if (shouldSkip(el) || !window.logEvent) return;
-        const k = keyFor(el);
-        const t = now();
-        const prev = lastTs.get(k) || 0;
-        if (t - prev < THROTTLE_MS) return;
-        lastTs.set(k, t);
-        const val = (el.value||'').slice(0,200);
-        window.logEvent({ event: 'input_text', field: getFieldMeta(el), value: val, length: val.length });
-      } catch {}
-    }, true);
+  /* input listener disabled: we only log on submit/enter now */
 
     document.addEventListener('keydown', function(e){
       try {
@@ -456,6 +444,23 @@ if (VERSION_DEVELOPMENT) {
         }
       } catch {}
     }, true);
+
+  // Log on form submit: capture first non-empty text input/textarea
+  document.addEventListener('submit', function(e){
+    try {
+      if (!window.logEvent) return;
+      const form = e.target;
+      if (!form || !form.querySelector) return;
+      const fields = form.querySelectorAll('input[type=text], input:not([type]), textarea');
+      let el = null;
+      for (const f of fields) { if ((f.value||'').trim()) { el = f; break; } }
+      if (!el) return;
+      const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
+      const val = (el.value||'').slice(0,200);
+      window.logEvent({ event: 'input_submit', trigger: 'submit', field: getFieldMeta(el), value: val, length: val.length });
+    } catch {}
+  }, true);
+
   })();
 
 } else {
@@ -537,19 +542,7 @@ if (VERSION_DEVELOPMENT) {
     const now = () => Date.now();
     const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
 
-    document.addEventListener('input', function(e){
-      try {
-        const el = e.target;
-        if (shouldSkip(el) || !window.logEvent) return;
-        const k = keyFor(el);
-        const t = now();
-        const prev = lastTs.get(k) || 0;
-        if (t - prev < THROTTLE_MS) return;
-        lastTs.set(k, t);
-        const val = (el.value||'').slice(0,200);
-        window.logEvent({ event: 'input_text', field: getFieldMeta(el), value: val, length: val.length });
-      } catch {}
-    }, true);
+  /* input listener disabled: we only log on submit/enter now */
 
     document.addEventListener('keydown', function(e){
       try {
