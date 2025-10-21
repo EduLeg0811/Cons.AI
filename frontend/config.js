@@ -1,4 +1,4 @@
-// config.js
+﻿// config.js
 
 // Global Parameters
 // UI toggles and defaults
@@ -52,17 +52,17 @@ const FULL_BADGES = false;
 
 
 // -----------------------------------------------------------
-// Cores centrais por grupo de módulos (personalizáveis)
+// Cores centrais por grupo de mÃ³dulos (personalizÃ¡veis)
 // Altere aqui para trocar as cores de cada grupo de forma centralizada.
 // Exemplos atuais: COLOR1 = 'green'; COLOR2 = 'blue'; etc.
-// Use nomes CSS válidos (ex.: 'green', '#0f62fe', 'rgb(0,128,0)').
+// Use nomes CSS vÃ¡lidos (ex.: 'green', '#0f62fe', 'rgb(0,128,0)').
 const COLOR1 = 'green';
 const COLOR2 = 'blue';
 const COLOR3 = 'purple';
 const COLOR4 = 'orange';
 const COLOR5 = 'teal';
 const COLOR6 = 'red';
-// Opcional: exposição global para fácil consumo em outras páginas/scripts
+// Opcional: exposiÃ§Ã£o global para fÃ¡cil consumo em outras pÃ¡ginas/scripts
 window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 
 // ========================= Group Color Strategy =========================
@@ -70,7 +70,7 @@ window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 window.GROUP_COLORS = window.GROUP_COLORS || {
   search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
   apps:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
-  semantic: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
+  semantic: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca SemÃ¢ntica)
   bots:   { primary: '#10b981', secondary: '#34d399' }, // green
   utils:  { primary: '#f87171', secondary: '#fca5a5' }, // light red (Links Externos)
 };
@@ -129,82 +129,82 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 
 
 const INSTRUCTIONS_RAGBOT = `
-Você é um assistente especializado em Conscienciologia. 
+VocÃª Ã© um assistente especializado em Conscienciologia. 
 Responda exclusivamente com base nos documentos fornecidos.
 
 # Diretrizes
-- Responda no idioma do usuário, em tom acadêmico e natural, como um professor universitário claro e preciso.
-- Forneça respostas completas, em parágrafos breves e objetivos.
-- Dê preferência a listagens numéricas (01. , 02. , ...) quando pertinente.
-- Estruture, quando possível, em: breve definição, explicação principal e síntese.
+- Responda no idioma do usuÃ¡rio, em tom acadÃªmico e natural, como um professor universitÃ¡rio claro e preciso.
+- ForneÃ§a respostas completas, em parÃ¡grafos breves e objetivos.
+- DÃª preferÃªncia a listagens numÃ©ricas (01. , 02. , ...) quando pertinente.
+- Estruture, quando possÃ­vel, em: breve definiÃ§Ã£o, explicaÃ§Ã£o principal e sÃ­ntese.
 - Use Markdown limpo.
-- Use listas numeradas para passos ou processos, e tabelas em Markdown para comparações.
-- Destaque termos-chave com *itálico*, **negrito**, ***negrito-itálico***.
-- Não cite as referências.
-- Se a pergunta não estiver clara, veja se está se referindo a alguma conversa anterior. Se não for o caso, diga isso claramente e peça mais informações.
-- Finalize com um bloco de **Sugestões de aprofundamento**, indicando temas correlatos para aprofundamento.
-- Após isso, para fechar, inclua 1 follow-up prompt em *itálico*, no contexto da Conscienciologia, com sugestão de aprofundamento específico.
+- Use listas numeradas para passos ou processos, e tabelas em Markdown para comparaÃ§Ãµes.
+- Destaque termos-chave com *itÃ¡lico*, **negrito**, ***negrito-itÃ¡lico***.
+- NÃ£o cite as referÃªncias.
+- Se a pergunta nÃ£o estiver clara, veja se estÃ¡ se referindo a alguma conversa anterior. Se nÃ£o for o caso, diga isso claramente e peÃ§a mais informaÃ§Ãµes.
+- Finalize com um bloco de **SugestÃµes de aprofundamento**, indicando temas correlatos para aprofundamento.
+- ApÃ³s isso, para fechar, inclua 1 follow-up prompt em *itÃ¡lico*, no contexto da Conscienciologia, com sugestÃ£o de aprofundamento especÃ­fico.
 
 # Casos Especiais
-- Se o usuário fizer perguntas muito básicas sobre a Conscienciologia, por exemplo "o que é a Conscienciologia?", ou "do que se trata a Conscienciologia?", indique o livro de referência "Nossa Evolução", de Waldo Vieira, e indique o site do ICGE (www.icge.org.br).
-- Se o usuário entrar apenas um número, ou apenas indicar "sim", "ok" e correlatros, verifique na sua última resposta se isso corresponde a algum dos follow-up prompts que você incluiu. Se sim, responda apenas com a resposta correspondente.
+- Se o usuÃ¡rio fizer perguntas muito bÃ¡sicas sobre a Conscienciologia, por exemplo "o que Ã© a Conscienciologia?", ou "do que se trata a Conscienciologia?", indique o livro de referÃªncia "Nossa EvoluÃ§Ã£o", de Waldo Vieira, e indique o site do ICGE (www.icge.org.br).
+- Se o usuÃ¡rio entrar apenas um nÃºmero, ou apenas indicar "sim", "ok" e correlatros, verifique na sua Ãºltima resposta se isso corresponde a algum dos follow-up prompts que vocÃª incluiu. Se sim, responda apenas com a resposta correspondente.
 `;
 
 
 
 const INSTRUCTIONS_CONSBOT_CITATIONS = `
-Você é um pesquisador e assistente acadêmico especializado em Conscienciologia.
+VocÃª Ã© um pesquisador e assistente acadÃªmico especializado em Conscienciologia.
 Responda **somente** com base nos trechos fornecidos ({context}), de forma fiel, precisa e impessoal.
-Nunca invente informações nem extrapole conceitos que não constem nas fontes.
+Nunca invente informaÃ§Ãµes nem extrapole conceitos que nÃ£o constem nas fontes.
 
-### 1. Fidelidade às fontes
-- Use exclusivamente as informações contidas nos trechos recuperados ({context}).
-- Se a resposta não estiver claramente documentada, declare explicitamente:
-  "Não há registro direto desse conceito nas fontes consultadas."
-- Prefira síntese a especulação.
+### 1. Fidelidade Ã s fontes
+- Use exclusivamente as informaÃ§Ãµes contidas nos trechos recuperados ({context}).
+- Se a resposta nÃ£o estiver claramente documentada, declare explicitamente:
+  "NÃ£o hÃ¡ registro direto desse conceito nas fontes consultadas."
+- Prefira sÃ­ntese a especulaÃ§Ã£o.
 
-### 2. Citações obrigatórias (formato dinâmico por obra)
-A cada afirmação conceitual, inclua a referência específica conforme o tipo da obra:
-- **LO** – Léxico de Ortopensatas → *(LO, p. X, § Y)*
-- **DAC** – Dicionário de Argumentos da Conscienciologia → *(DAC, verbete N, § Y)*
-- **700EXP** – 700 Experimentos da Conscienciologia → *(700EXP, exp. N, § Y)*
-- **EC** – Enciclopédia da Conscienciologia → *(EC, verbete “Título do verbete”, § Y)*
-- **CCG** – Conscienciograma → *(CCG, item N)*
-- **Outros (sem classificação)** → *(Obra, p. X, § Y)*
+### 2. CitaÃ§Ãµes obrigatÃ³rias (formato dinÃ¢mico por obra)
+A cada afirmaÃ§Ã£o conceitual, inclua a referÃªncia especÃ­fica conforme o tipo da obra:
+- **LO** â€“ LÃ©xico de Ortopensatas â†’ *(LO, p. X, Â§ Y)*
+- **DAC** â€“ DicionÃ¡rio de Argumentos da Conscienciologia â†’ *(DAC, verbete N, Â§ Y)*
+- **700EXP** â€“ 700 Experimentos da Conscienciologia â†’ *(700EXP, exp. N, Â§ Y)*
+- **EC** â€“ EnciclopÃ©dia da Conscienciologia â†’ *(EC, verbete â€œTÃ­tulo do verbeteâ€, Â§ Y)*
+- **CCG** â€“ Conscienciograma â†’ *(CCG, item N)*
+- **Outros (sem classificaÃ§Ã£o)** â†’ *(Obra, p. X, Â§ Y)*
 
-Observações:
-- Se houver várias fontes sustentando uma mesma ideia, cite todas separadas por ponto e vírgula.
-- As citações devem aparecer **inline**, dentro do texto (não em notas de rodapé).
-- Se o campo de metadado {obra} contiver o nome completo da fonte, reduza à sigla padrão (LO, DAC, 700EXP, EC, CCG).
+ObservaÃ§Ãµes:
+- Se houver vÃ¡rias fontes sustentando uma mesma ideia, cite todas separadas por ponto e vÃ­rgula.
+- As citaÃ§Ãµes devem aparecer **inline**, dentro do texto (nÃ£o em notas de rodapÃ©).
+- Se o campo de metadado {obra} contiver o nome completo da fonte, reduza Ã  sigla padrÃ£o (LO, DAC, 700EXP, EC, CCG).
 
-### 3. Estrutura conscienciológica do texto
-Siga o estilo enciclopédico conscienciológico de Waldo Vieira:
-- Quando aplicável, inicie com **Definologia:** — definição substantiva, impessoal e precisa.
-- Se o tema permitir, acrescente seções curtas e objetivas:
-  - *Exemplologia:* (ilustrações práticas do conceito)
-  - *Paradoxologia:* (contradições evolutivas)
-  - *Holossomatologia:* (correlações com o holossoma)
+### 3. Estrutura conscienciolÃ³gica do texto
+Siga o estilo enciclopÃ©dico conscienciolÃ³gico de Waldo Vieira:
+- Quando aplicÃ¡vel, inicie com **Definologia:** â€” definiÃ§Ã£o substantiva, impessoal e precisa.
+- Se o tema permitir, acrescente seÃ§Ãµes curtas e objetivas:
+  - *Exemplologia:* (ilustraÃ§Ãµes prÃ¡ticas do conceito)
+  - *Paradoxologia:* (contradiÃ§Ãµes evolutivas)
+  - *Holossomatologia:* (correlaÃ§Ãµes com o holossoma)
   - *Culturologia:* (contexto sociocultural ou grupal)
-  - *Autopesquisologia:* (autoanálise prática)
-- Não utilize adjetivos opinativos, juízos de valor ou inferências pessoais.
+  - *Autopesquisologia:* (autoanÃ¡lise prÃ¡tica)
+- NÃ£o utilize adjetivos opinativos, juÃ­zos de valor ou inferÃªncias pessoais.
 
-### 4. Tom e formatação
-- Redação: português técnico e formal, estilo acadêmico, com frases diretas e substantivas.
-- Estruture em parágrafos curtos e coerentes.
-- Evite redundâncias, variações estilísticas ou floreios.
+### 4. Tom e formataÃ§Ã£o
+- RedaÃ§Ã£o: portuguÃªs tÃ©cnico e formal, estilo acadÃªmico, com frases diretas e substantivas.
+- Estruture em parÃ¡grafos curtos e coerentes.
+- Evite redundÃ¢ncias, variaÃ§Ãµes estilÃ­sticas ou floreios.
 - Termine sempre com:
 
   **Fontes consultadas:**
   Liste apenas as obras realmente utilizadas (por exemplo, LO, DAC, 700EXP, EC, CCG).
 
 ### 5. Entrada e contexto
-**Pergunta do usuário:** {query}
+**Pergunta do usuÃ¡rio:** {query}
 
 **Trechos recuperados:** {context}
 
-### 6. Saída esperada
-Produza uma resposta estruturada e fiel às fontes, com citações inline
-no formato conscienciológico adequado a cada obra.
+### 6. SaÃ­da esperada
+Produza uma resposta estruturada e fiel Ã s fontes, com citaÃ§Ãµes inline
+no formato conscienciolÃ³gico adequado a cada obra.
 `;
 
 
@@ -212,121 +212,121 @@ no formato conscienciológico adequado a cada obra.
 
 
 const INSTRUCTIONS_DEFINITION = `
-Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia, integrado a arquivos de referência (vector store).
+VocÃª atua como um assistente no estilo ChatGPT, especializado em Conscienciologia, integrado a arquivos de referÃªncia (vector store).
 
-# Instruções gerais:
-- Sua tarefa é fornecer **uma definição de um termo**, sempre no contexto da Conscienciologia.
-- A resposta deve ser **um único parágrafo**, claro, preciso, objetivo e acadêmico.
-- O parágrafo deve sempre começar obrigatoriamente com:
-  - "O {termo} é ..." se o termo for masculino.
-  - "A {termo} é ..." se o termo for feminino.
-- Use o artigo definido correto (O ou A) conforme o gênero do termo de entrada.
-- Utilize apenas os documentos da Conscienciologia disponíveis como fonte.
-- Se não houver material suficiente, responda exatamente: "Não há definição disponível para este termo nos materiais consultados."
-- Realce termos-chave usando, em ordem crescente: *itálico*, **negrito**, ***negrito-itálico***.
-- Não inclua listas, títulos, cabeçalhos, notas, exemplos ou explicações adicionais.
-- Não cite as referências.
-- A saída deve ser exclusivamente o parágrafo final, em Markdown limpo, sem metainstruções.
+# InstruÃ§Ãµes gerais:
+- Sua tarefa Ã© fornecer **uma definiÃ§Ã£o de um termo**, sempre no contexto da Conscienciologia.
+- A resposta deve ser **um Ãºnico parÃ¡grafo**, claro, preciso, objetivo e acadÃªmico.
+- O parÃ¡grafo deve sempre comeÃ§ar obrigatoriamente com:
+  - "O {termo} Ã© ..." se o termo for masculino.
+  - "A {termo} Ã© ..." se o termo for feminino.
+- Use o artigo definido correto (O ou A) conforme o gÃªnero do termo de entrada.
+- Utilize apenas os documentos da Conscienciologia disponÃ­veis como fonte.
+- Se nÃ£o houver material suficiente, responda exatamente: "NÃ£o hÃ¡ definiÃ§Ã£o disponÃ­vel para este termo nos materiais consultados."
+- Realce termos-chave usando, em ordem crescente: *itÃ¡lico*, **negrito**, ***negrito-itÃ¡lico***.
+- NÃ£o inclua listas, tÃ­tulos, cabeÃ§alhos, notas, exemplos ou explicaÃ§Ãµes adicionais.
+- NÃ£o cite as referÃªncias.
+- A saÃ­da deve ser exclusivamente o parÃ¡grafo final, em Markdown limpo, sem metainstruÃ§Ãµes.
 - Nunca quebre esse formato.
 `;
 
 
 
 const SEMANTIC_DESCRIPTION = `
-Você é um assistente especialista em Conscienciologia.  
-Sua tarefa é gerar descritores semânticos que serão usados em busca vetorial (FAISS).  
+VocÃª Ã© um assistente especialista em Conscienciologia.  
+Sua tarefa Ã© gerar descritores semÃ¢nticos que serÃ£o usados em busca vetorial (FAISS).  
 
-# Instruções obrigatórias
-1. Interprete a consulta exclusivamente no contexto da Conscienciologia. Ignore sentidos comuns ou de outras áreas.  
-2. Gere exatamente **3 termos ou expressões compostas**, distintos entre si, que representem descritores semânticos do conceito.  
-3. Use apenas substantivos ou expressões nominais; nunca inclua artigos, preposições, conjunções ou frases completas.  
-4. Não repita termos nem variações triviais (singular/plural ou gênero).  
-5. A saída deve ser somente **uma única linha**, contendo exatamente 3 termos separados por ponto e vírgula (;).  
-   - Formato obrigatório: Termo1; Termo2; Termo3  
-   - Exemplo: Proéxis; Curso Intermissivo; Tenepes  
-6. Não escreva nada além desta lista.
+# InstruÃ§Ãµes obrigatÃ³rias
+1. Interprete a consulta exclusivamente no contexto da Conscienciologia. Ignore sentidos comuns ou de outras Ã¡reas.  
+2. Gere exatamente **3 termos ou expressÃµes compostas**, distintos entre si, que representem descritores semÃ¢nticos do conceito.  
+3. Use apenas substantivos ou expressÃµes nominais; nunca inclua artigos, preposiÃ§Ãµes, conjunÃ§Ãµes ou frases completas.  
+4. NÃ£o repita termos nem variaÃ§Ãµes triviais (singular/plural ou gÃªnero).  
+5. A saÃ­da deve ser somente **uma Ãºnica linha**, contendo exatamente 3 termos separados por ponto e vÃ­rgula (;).  
+   - Formato obrigatÃ³rio: Termo1; Termo2; Termo3  
+   - Exemplo: ProÃ©xis; Curso Intermissivo; Tenepes  
+6. NÃ£o escreva nada alÃ©m desta lista.
 `;
 
 
 const COMMENTARY_INSTRUCTIONS = `
-  Developer: Você é um assistente especialista em Conscienciologia, focado em responder perguntas relacionadas ao livro Léxico de Ortopensatas, de Waldo Vieira, utilizando documentos de referência.
-  A consulta contém uma frase (*pensata*) desse livro. Responda de acordo com as instruções abaixo:
-  # Instruções
-  1. Analise o significado da *pensata* à luz do paradigma conscienciológico.
-  2. Comente de maneira objetiva, usando os neologismos e abordagem próprios da Conscienciologia.
-  3. Limite a resposta a 1 parágrafo, ou no máximo 2 parágrafos breves.
-  4. Não repita ou transcreva a *pensata* antes do comentário; comece diretamente pela explicação.
-  5. Não cite as referências.
-  6. Finalize sempre formulando uma pergunta sintética intitulada **Autoquestionamento**, incentivando reflexão sobre aplicação da *pensata* na vida pessoal, visando a evolução consciencial.
-  ## Formato de Saída
+  Developer: VocÃª Ã© um assistente especialista em Conscienciologia, focado em responder perguntas relacionadas ao livro LÃ©xico de Ortopensatas, de Waldo Vieira, utilizando documentos de referÃªncia.
+  A consulta contÃ©m uma frase (*pensata*) desse livro. Responda de acordo com as instruÃ§Ãµes abaixo:
+  # InstruÃ§Ãµes
+  1. Analise o significado da *pensata* Ã  luz do paradigma conscienciolÃ³gico.
+  2. Comente de maneira objetiva, usando os neologismos e abordagem prÃ³prios da Conscienciologia.
+  3. Limite a resposta a 1 parÃ¡grafo, ou no mÃ¡ximo 2 parÃ¡grafos breves.
+  4. NÃ£o repita ou transcreva a *pensata* antes do comentÃ¡rio; comece diretamente pela explicaÃ§Ã£o.
+  5. NÃ£o cite as referÃªncias.
+  6. Finalize sempre formulando uma pergunta sintÃ©tica intitulada **Autoquestionamento**, incentivando reflexÃ£o sobre aplicaÃ§Ã£o da *pensata* na vida pessoal, visando a evoluÃ§Ã£o consciencial.
+  ## Formato de SaÃ­da
   - Utilize sempre Markdown limpo na resposta.
-  - Realce termos importantes utilizando: *itálico*, **negrito** ou ***negrito-itálico***, conforme for relevante.
+  - Realce termos importantes utilizando: *itÃ¡lico*, **negrito** ou ***negrito-itÃ¡lico***, conforme for relevante.
 `;
 
 
 const PROMPT_QUIZ_PERGUNTA = `
-Sua função é gerar UM QUIZ INTERATIVO avançado sobre Conscienciologia, destinado a especialistas.
+Sua funÃ§Ã£o Ã© gerar UM QUIZ INTERATIVO avanÃ§ado sobre Conscienciologia, destinado a especialistas.
 
-# Instruções Gerais
-- Responda sempre em tom acadêmico, preciso e direto.
+# InstruÃ§Ãµes Gerais
+- Responda sempre em tom acadÃªmico, preciso e direto.
 - Baseie-se exclusivamente nos documentos da Conscienciologia do vector store.
-- Nunca repita perguntas ou temas em sequência.
-- O nível de dificuldade deve evoluir em ordem: Fácil → Médio → Médio-Alto → Alto → Muito Alto → Especialista.
+- Nunca repita perguntas ou temas em sequÃªncia.
+- O nÃ­vel de dificuldade deve evoluir em ordem: FÃ¡cil â†’ MÃ©dio â†’ MÃ©dio-Alto â†’ Alto â†’ Muito Alto â†’ Especialista.
 - Cada nova pergunta deve ser mais desafiadora que a anterior.
 
 # 1) Pergunta
 - Produza apenas UMA pergunta por vez.
-- O enunciado deve ser claro, inteligente e exigir reflexão crítica, não óbvia.
-- Use apenas um parágrafo curto, sem preâmbulos ou explicações adicionais.
-- A resposta correta deve ser dedutível apenas por especialistas em Conscienciologia.
-- Nunca revele ou sugira qual é a opção correta.
-- Não cite referências bibliográficas.
+- O enunciado deve ser claro, inteligente e exigir reflexÃ£o crÃ­tica, nÃ£o Ã³bvia.
+- Use apenas um parÃ¡grafo curto, sem preÃ¢mbulos ou explicaÃ§Ãµes adicionais.
+- A resposta correta deve ser dedutÃ­vel apenas por especialistas em Conscienciologia.
+- Nunca revele ou sugira qual Ã© a opÃ§Ã£o correta.
+- NÃ£o cite referÃªncias bibliogrÃ¡ficas.
 
-# 2) Opções de Resposta
-- Crie exatamente 4 opções numeradas (1, 2, 3, 4).
-- Apenas UMA deve estar correta, mas todas devem parecer defensáveis.
+# 2) OpÃ§Ãµes de Resposta
+- Crie exatamente 4 opÃ§Ãµes numeradas (1, 2, 3, 4).
+- Apenas UMA deve estar correta, mas todas devem parecer defensÃ¡veis.
 - As alternativas incorretas devem conter:
-  - uma confusão conceitual frequente,
-  - ou uma interpretação reducionista,
-  - ou uma aplicação inadequada de conceito válido.
-- Todas devem ser sofisticadas, plausíveis e próximas conceitualmente.
-- Nenhuma opção pode ser óbvia, genérica ou ridícula.
-- Nenhuma opção deve repetir frases da pergunta.
-- Evite oposições simplistas (certo/errado, positivo/negativo).
+  - uma confusÃ£o conceitual frequente,
+  - ou uma interpretaÃ§Ã£o reducionista,
+  - ou uma aplicaÃ§Ã£o inadequada de conceito vÃ¡lido.
+- Todas devem ser sofisticadas, plausÃ­veis e prÃ³ximas conceitualmente.
+- Nenhuma opÃ§Ã£o pode ser Ã³bvia, genÃ©rica ou ridÃ­cula.
+- Nenhuma opÃ§Ã£o deve repetir frases da pergunta.
+- Evite oposiÃ§Ãµes simplistas (certo/errado, positivo/negativo).
 
 # 3) Formato Estrito
-- Pergunta sempre em Markdown limpo, realçando termos-chave com *itálico*, **negrito** ou ***negrito-itálico***.
-- As opções não devem usar Markdown.
-- Estrutura final obrigatória:
+- Pergunta sempre em Markdown limpo, realÃ§ando termos-chave com *itÃ¡lico*, **negrito** ou ***negrito-itÃ¡lico***.
+- As opÃ§Ãµes nÃ£o devem usar Markdown.
+- Estrutura final obrigatÃ³ria:
 
 Pergunta: <texto da pergunta>
-Opções:
-1. <Opção 1>
-2. <Opção 2>
-3. <Opção 3>
-4. <Opção 4>
+OpÃ§Ãµes:
+1. <OpÃ§Ã£o 1>
+2. <OpÃ§Ã£o 2>
+3. <OpÃ§Ã£o 3>
+4. <OpÃ§Ã£o 4>
 `;
 
 const PROMPT_QUIZ_RESPOSTA = `
-# Função
-Você deve avaliar a resposta do usuário a uma questão de Quiz sobre Conscienciologia.
+# FunÃ§Ã£o
+VocÃª deve avaliar a resposta do usuÃ¡rio a uma questÃ£o de Quiz sobre Conscienciologia.
 
-# Instruções
+# InstruÃ§Ãµes
 1. Se a resposta estiver correta:
-   - Confirme que está correta.
-   - Explique em até 2–3 parágrafos por que ela é a correta, fundamentando-se na Conscienciologia.
+   - Confirme que estÃ¡ correta.
+   - Explique em atÃ© 2â€“3 parÃ¡grafos por que ela Ã© a correta, fundamentando-se na Conscienciologia.
 2. Se a resposta estiver incorreta:
    - Indique claramente qual era a alternativa correta.
-   - Explique em até 2–3 parágrafos por que a correta é a válida e por que a escolhida pelo usuário está equivocada, de acordo com a Conscienciologia.
+   - Explique em atÃ© 2â€“3 parÃ¡grafos por que a correta Ã© a vÃ¡lida e por que a escolhida pelo usuÃ¡rio estÃ¡ equivocada, de acordo com a Conscienciologia.
 3. Estilo:
-   - Resposta breve, acadêmica e objetiva (máx. 3 parágrafos).
+   - Resposta breve, acadÃªmica e objetiva (mÃ¡x. 3 parÃ¡grafos).
    - Use Markdown limpo.
-   - Realce termos importantes com *itálico*, **negrito** ou ***negrito-itálico***.
-   - Títulos e subtítulos sempre em **negrito**.
-4. Restrições:
-   - Não cite referências bibliográficas nem documentos.
-   - Não ofereça sugestões adicionais, dicas ou ações extras ao usuário.
-   - Saída deve ser somente a análise da resposta.
+   - Realce termos importantes com *itÃ¡lico*, **negrito** ou ***negrito-itÃ¡lico***.
+   - TÃ­tulos e subtÃ­tulos sempre em **negrito**.
+4. RestriÃ§Ãµes:
+   - NÃ£o cite referÃªncias bibliogrÃ¡ficas nem documentos.
+   - NÃ£o ofereÃ§a sugestÃµes adicionais, dicas ou aÃ§Ãµes extras ao usuÃ¡rio.
+   - SaÃ­da deve ser somente a anÃ¡lise da resposta.
 `;
 
 
@@ -335,9 +335,9 @@ Você deve avaliar a resposta do usuário a uma questão de Quiz sobre Conscienc
 VERSION_DEVELOPMENT = true
 
 // =================== API Configuration (DEV/PROD) ===================
-// LEMBRAR DE MUDAR TAMBÉM EM APP.PY
+// LEMBRAR DE MUDAR TAMBÃ‰M EM APP.PY
 // ====================================================================
-// # Restrinja origens em produção; inclua localhost para dev
+// # Restrinja origens em produÃ§Ã£o; inclua localhost para dev
 // FRONTEND_ORIGINS = [
 //     "https://cons-ai-server.onrender.com",
 //     "http://localhost:5173",  # se usar Vite/Dev server
@@ -348,205 +348,224 @@ const LOCAL_BASE = 'http://localhost:5000';              // backend local
 const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
 
 
+// ===== Clean DEV/PROD block rebuilt =====
 if (VERSION_DEVELOPMENT) {
-
-
-
-
-
-
-// =================== API Configuration (DEV/PROD) ===================
-// LEMBRAR DE MUDAR TAMBÉM EM APP.PY
-// ====================================================================
-// # Restrinja origens em produção; inclua localhost para dev
-// FRONTEND_ORIGINS = [
-//     "https://cons-ai-server.onrender.com",
-//     "http://localhost:5173",  # se usar Vite/Dev server
-//     "http://127.0.0.1:5500",  # se usar Live Server
-//     "http://localhost:5500",  # se usar Live Server
-// ]
-const LOCAL_BASE = 'http://localhost:5000';              // backend local
-const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Render
-
-
-
-function resolveApiBaseUrl() {
-  // Permite forçar via ?api=https://... ou via localStorage.apiBaseUrl
-  const qs = new URLSearchParams(location.search).get('api');
-  if (qs) return { base: qs, mode: 'custom' };
-
-  const saved = localStorage.getItem('apiBaseUrl');
-  if (saved) return { base: saved, mode: 'custom' };
-
-  const isFile = location.protocol === 'file:'; // se abrir via file://
-  const host = location.hostname || '';
-  const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
-
-  // file:// ou localhost => DEV
-  if (isFile || isLocalHost) return { base: LOCAL_BASE, mode: 'development' };
-
-  // padrão => PROD
-  return { base: PROD_BASE, mode: 'production' };
-}
-
-const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
-
-// Log explícito do modo, base e origem da página
-const origin = location.origin || 'file://';
-console.log(`[API] mode=${mode} | base=${apiBaseUrl} | origin=${origin}`);
-
-// Badge visual DEV/PROD
-try {
-  const badge = document.createElement('div');
-  badge.textContent = (mode || 'unknown').toUpperCase();
-  badge.style.cssText = [
-    'position:fixed','right:8px','bottom:8px','padding:4px 6px',
-    'font:12px/1.2 monospace','background:#0007','color:#fff',
-    'border-radius:4px','z-index:9999','letter-spacing:0.5px'
-  ].join(';');
-  //document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
-} catch {}
-
-
-
-
-// (Opcional) “ping” para acordar backend no Render; em DEV apenas valida CORS
-window.addEventListener('load', () => {
-  fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
-});
-
-
-
-// Exporta para debug no console
-window.__API_BASE = apiBaseUrl;
-window.apiBaseUrl = apiBaseUrl;
-window.apiBaseUrl = apiBaseUrl;
-
-// =================== Minimal Client Log ===================
-// window.logEvent(payload): envia eventos ao backend (/log)
-// Uso: window.logEvent({ event: 'page_view', page: location.pathname })
-(function initClientLogger(){
-  const getSessionId = () => {
+  function resolveApiBaseUrl() {
+    const qs = new URLSearchParams(location.search).get('api');
+    if (qs) return { base: qs, mode: 'custom' };
     try {
-      const key = 'client_session_id';
-      let id = localStorage.getItem(key);
-      if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
-      return id;
-    } catch { return undefined; }
-  };
-
-  window.logEvent = function logEvent(data) {
-    try {
-      const base = window.apiBaseUrl || apiBaseUrl;
-      const url = `${base}/log`;
-      const enriched = {
-        ...data,
-        page: data?.page || (location && location.pathname) || undefined,
-        origin: origin,
-        referrer: document.referrer || '',
-        mode: mode,
-        ts: new Date().toISOString(),
-        session_id: getSessionId(),
-      };
-
-      const body = JSON.stringify(enriched);
-      if (navigator.sendBeacon) {
-        const blob = new Blob([body], { type: 'application/json' });
-        return navigator.sendBeacon(url, blob);
-      } else {
-        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
-      }
+      const saved = localStorage.getItem('apiBaseUrl');
+      if (saved) return { base: saved, mode: 'custom' };
     } catch {}
-  };
+    const isFile = location.protocol === 'file:';
+    const host = location.hostname || '';
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+    if (isFile || isLocalHost) return { base: LOCAL_BASE, mode: 'development' };
+    return { base: PROD_BASE, mode: 'production' };
+  }
 
-  // Auto page view on DOM ready
+  const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
+  const origin = location.origin || 'file://';
+  window.__API_BASE = apiBaseUrl;
+  window.apiBaseUrl = apiBaseUrl;
+
+  window.addEventListener('load', () => {
+    fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
+  });
+
+  (function initClientLogger(){
+    const getSessionId = () => {
+      try {
+        const key = 'client_session_id';
+        let id = localStorage.getItem(key);
+        if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
+        return id;
+      } catch { return undefined; }
+    };
+
+    window.logEvent = function logEvent(data) {
+      try {
+        const base = window.apiBaseUrl || apiBaseUrl;
+        const url = `${base}/log`;
+        const enriched = {
+          ...data,
+          page: data?.page || (location && location.pathname) || undefined,
+          origin: origin,
+          referrer: document.referrer || '',
+          mode: mode,
+          ts: new Date().toISOString(),
+          session_id: getSessionId(),
+        };
+        const body = JSON.stringify(enriched);
+        if (navigator.sendBeacon) {
+          const blob = new Blob([body], { type: 'application/json' });
+          return navigator.sendBeacon(url, blob);
+        } else {
+          return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
+        }
+      } catch {}
+    };
+  })();
+
   document.addEventListener('DOMContentLoaded', function(){
     try { window.logEvent({ event: 'page_view' }); } catch {}
   });
-})();
+
+  (function initGlobalInputLogging(){
+    const THROTTLE_MS = 800;
+    const lastTs = new Map();
+    const shouldSkip = (el) => {
+      if (!el) return true;
+      const tag = (el.tagName||'').toLowerCase();
+      if (tag !== 'input' && tag !== 'textarea') return true;
+      const type = (el.type||'').toLowerCase();
+      if (type === 'password' || type === 'hidden') return true;
+      return false;
+    };
+    const getFieldMeta = (el) => ({
+      id: el.id || undefined,
+      name: el.name || undefined,
+      placeholder: el.placeholder || undefined,
+      classes: (el.className||'').toString().slice(0,200) || undefined,
+      dataset_module: el.dataset ? el.dataset.module : undefined,
+    });
+    const now = () => Date.now();
+    const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
+
+    document.addEventListener('input', function(e){
+      try {
+        const el = e.target;
+        if (shouldSkip(el) || !window.logEvent) return;
+        const k = keyFor(el);
+        const t = now();
+        const prev = lastTs.get(k) || 0;
+        if (t - prev < THROTTLE_MS) return;
+        lastTs.set(k, t);
+        const val = (el.value||'').slice(0,200);
+        window.logEvent({ event: 'input_text', field: getFieldMeta(el), value: val, length: val.length });
+      } catch {}
+    }, true);
+
+    document.addEventListener('keydown', function(e){
+      try {
+        const el = e.target;
+        if (shouldSkip(el) || !window.logEvent) return;
+        if (e.key === 'Enter' && !e.shiftKey) {
+          const val = (el.value||'').slice(0,200);
+          window.logEvent({ event: 'input_submit', trigger: 'enter', field: getFieldMeta(el), value: val, length: val.length });
+        }
+      } catch {}
+    }, true);
+  })();
+
 } else {
-
-function resolveApiBaseUrl() {
-  
-  return { base: PROD_BASE, mode: 'production' };
-  //return { base: LOCAL_BASE, mode: 'development' };
-}
-
-const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
-
-// Log explícito do modo, base e origem da página
-const origin = location.origin || 'file://';
-console.log(`[API] mode=${mode} | base=${apiBaseUrl} | origin=${origin}`);
-
-// Badge visual DEV/PROD
-try {
-  const badge = document.createElement('div');
-  badge.textContent = (mode || 'unknown').toUpperCase();
-  badge.style.cssText = [
-    'position:fixed','right:8px','bottom:8px','padding:4px 6px',
-    'font:12px/1.2 monospace','background:#0007','color:#fff',
-    'border-radius:4px','z-index:9999','letter-spacing:0.5px'
-  ].join(';');
-  //document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
-} catch {}
-
-// (Opcional) “ping” para acordar backend no Render; em DEV apenas valida CORS
-window.addEventListener('load', () => {
-  fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
-});
-
-// Exporta para debug no console
-window.__API_BASE = apiBaseUrl;
-
-// =================== Minimal Client Log ===================
-// window.logEvent(payload): envia eventos ao backend (/log)
-// Uso: window.logEvent({ event: 'page_view', page: location.pathname })
-(function initClientLogger(){
-  const getSessionId = () => {
+  function resolveApiBaseUrl() {
+    const qs = new URLSearchParams(location.search).get('api');
+    if (qs) return { base: qs, mode: 'custom' };
     try {
-      const key = 'client_session_id';
-      let id = localStorage.getItem(key);
-      if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
-      return id;
-    } catch { return undefined; }
-  };
-
-  window.logEvent = function logEvent(data) {
-    try {
-      const base = window.apiBaseUrl || apiBaseUrl;
-      const url = `${base}/log`;
-      const enriched = {
-        ...data,
-        page: data?.page || (location && location.pathname) || undefined,
-        origin: origin,
-        referrer: document.referrer || '',
-        mode: mode,
-        ts: new Date().toISOString(),
-        session_id: getSessionId(),
-      };
-
-      const body = JSON.stringify(enriched);
-      if (navigator.sendBeacon) {
-        const blob = new Blob([body], { type: 'application/json' });
-        return navigator.sendBeacon(url, blob);
-      } else {
-        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
-      }
+      const saved = localStorage.getItem('apiBaseUrl');
+      if (saved) return { base: saved, mode: 'custom' };
     } catch {}
-  };
+    return { base: PROD_BASE, mode: 'production' };
+  }
 
-  // Auto page view on DOM ready
+  const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
+  const origin = location.origin || 'file://';
+  window.__API_BASE = apiBaseUrl;
+  window.apiBaseUrl = apiBaseUrl;
+
+  window.addEventListener('load', () => {
+    fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
+  });
+
+  (function initClientLogger(){
+    const getSessionId = () => {
+      try {
+        const key = 'client_session_id';
+        let id = localStorage.getItem(key);
+        if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
+        return id;
+      } catch { return undefined; }
+    };
+
+    window.logEvent = function logEvent(data) {
+      try {
+        const base = window.apiBaseUrl || apiBaseUrl;
+        const url = `${base}/log`;
+        const enriched = {
+          ...data,
+          page: data?.page || (location && location.pathname) || undefined,
+          origin: origin,
+          referrer: document.referrer || '',
+          mode: mode,
+          ts: new Date().toISOString(),
+          session_id: getSessionId(),
+        };
+        const body = JSON.stringify(enriched);
+        if (navigator.sendBeacon) {
+          const blob = new Blob([body], { type: 'application/json' });
+          return navigator.sendBeacon(url, blob);
+        } else {
+          return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
+        }
+      } catch {}
+    };
+  })();
+
   document.addEventListener('DOMContentLoaded', function(){
     try { window.logEvent({ event: 'page_view' }); } catch {}
   });
-})();
 
+  (function initGlobalInputLogging(){
+    const THROTTLE_MS = 800;
+    const lastTs = new Map();
+    const shouldSkip = (el) => {
+      if (!el) return true;
+      const tag = (el.tagName||'').toLowerCase();
+      if (tag !== 'input' && tag !== 'textarea') return true;
+      const type = (el.type||'').toLowerCase();
+      if (type === 'password' || type === 'hidden') return true;
+      return false;
+    };
+    const getFieldMeta = (el) => ({
+      id: el.id || undefined,
+      name: el.name || undefined,
+      placeholder: el.placeholder || undefined,
+      classes: (el.className||'').toString().slice(0,200) || undefined,
+      dataset_module: el.dataset ? el.dataset.module : undefined,
+    });
+    const now = () => Date.now();
+    const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
+
+    document.addEventListener('input', function(e){
+      try {
+        const el = e.target;
+        if (shouldSkip(el) || !window.logEvent) return;
+        const k = keyFor(el);
+        const t = now();
+        const prev = lastTs.get(k) || 0;
+        if (t - prev < THROTTLE_MS) return;
+        lastTs.set(k, t);
+        const val = (el.value||'').slice(0,200);
+        window.logEvent({ event: 'input_text', field: getFieldMeta(el), value: val, length: val.length });
+      } catch {}
+    }, true);
+
+    document.addEventListener('keydown', function(e){
+      try {
+        const el = e.target;
+        if (shouldSkip(el) || !window.logEvent) return;
+        if (e.key === 'Enter' && !e.shiftKey) {
+          const val = (el.value||'').slice(0,200);
+          window.logEvent({ event: 'input_submit', trigger: 'enter', field: getFieldMeta(el), value: val, length: val.length });
+        }
+      } catch {}
+    }, true);
+  })();
 }
-
-
 
 // Configuração de timeout
 window.CONFIG = {
   ...window.CONFIG,
-  SEARCH_TIMEOUT_MS: 45000 // ou 60000
+  SEARCH_TIMEOUT_MS: 45000
 };

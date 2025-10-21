@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -288,6 +288,30 @@
             };
 
         });
+    </script>
+
+    <script>
+      // ================= Logging (input + submit) =================
+      (function(){
+        const searchEl = document.getElementById('searchInput');
+        const submitBtn = document.getElementById('searchButton');
+        function throttle(fn, wait){ let t=0; return function(){ const now=Date.now(); if(now - t >= wait){ t=now; try{ fn.apply(this, arguments); }catch(e){} } }; }
+        if (searchEl && window.logEvent){
+          const send = throttle(()=>{
+            const val = searchEl.value || '';
+            window.logEvent({ event: 'search_input', module: 'deepdive', value: val, length: val.length });
+          }, 1000);
+          searchEl.addEventListener('input', send);
+        }
+        if (submitBtn && window.logEvent){
+          submitBtn.addEventListener('click', ()=>{
+            try{
+              const val = (document.getElementById('searchInput')?.value) || '';
+              window.logEvent({ event: 'search_submit', module: 'deepdive', value: val, length: val.length });
+            }catch(e){}
+          });
+        }
+      })();
     </script>
 
 

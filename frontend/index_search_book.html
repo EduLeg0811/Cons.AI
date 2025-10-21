@@ -311,14 +311,43 @@
                 
             });
         }
-    
-        // ================================================================
         // 7. Função global de acesso
         // ================================================================
         window.getSearchBookSettings = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         };
+
+        // ================================================================
+        // 8. Log de entradas digitadas e submissões
+        // ================================================================
+        (function initSearchLogging(){
+            const searchEl = document.getElementById('searchInput');
+            const submitBtn = document.getElementById('searchButton');
+            function throttle(fn, wait){ let t=0; return function(){ const now=Date.now(); if(now - t >= wait){ t=now; try{ fn.apply(this, arguments); }catch(e){} } }; }
+            if (searchEl && window.logEvent){
+                const send = throttle(()=>{
+                    const val = searchEl.value || '';
+                    window.logEvent({ event: 'search_input', module: 'book', value: val, length: val.length });
+                }, 1000);
+                searchEl.addEventListener('input', send);
+                // Enter -> search_submit (sem Shift)
+                searchEl.addEventListener('keydown', (e)=>{
+                    try{
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            const val = searchEl.value || '';
+                            window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length, trigger: 'enter' });
+                        }
+                    }catch(err){}
+                });
+            }
+            if (submitBtn && window.logEvent){
+                submitBtn.addEventListener('click', ()=>{
+                    try{
+                        const val = (document.getElementById('searchInput')?.value) || '';
+                        window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length });
+                    }catch(e){}
+                });
+            }
+        })();
     });
     </script>
-    
-
