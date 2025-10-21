@@ -15,6 +15,10 @@ import uuid
 import pprint
 import json
 import datetime
+import threading
+import urllib.request
+import urllib.error
+import time
 
 from flask import Flask, Response, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
@@ -70,6 +74,11 @@ app.static_folder = frontend_path
 # Serve frontend files
 @app.route('/')
 def serve_frontend():
+    # Kick off a non-blocking warm-up ping to ConsAGENT (Render)
+    try:
+        warm_consagent_async()
+    except Exception:
+        pass
     return send_from_directory(frontend_path, 'index.html')
 
 @app.route('/<path:path>')
@@ -77,6 +86,15 @@ def serve_static(path):
     if os.path.exists(os.path.join(frontend_path, path)):
         return send_from_directory(frontend_path, path)
     return "File not found", 404
+
+# Optional endpoint to manually trigger warm-up (useful for smoke tests)
+@app.route('/warm-consagent', methods=['GET', 'POST'])
+def warm_consagent_route():
+    try:
+        warm_consagent_async()
+        return jsonify({"status": "ok"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # Restrinja origens em produção; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = "*"
@@ -106,6 +124,36 @@ logger.info(
 # (removido) rota duplicada de health; manteremos a versão JSON abaixo
 
 
+# ______________________________________________________________________
+# Render warm-up helper (ConsAGENT)
+# ______________________________________________________________________
+CONSAGENT_URL = os.getenv("CONSAGENT_URL", "https://consagent.onrender.com/")
+
+def _warm_consagent_once():
+    """Fire-and-forget GET to wake the Render app. Non-fatal on error."""
+    try:
+        req = urllib.request.Request(
+            CONSAGENT_URL,
+            method="GET",
+            headers={
+                "User-Agent": "ConsAI-Warm/1.0",
+                "Cache-Control": "no-cache",
+            },
+        )
+        # Short timeout; we don't care about the body
+        with urllib.request.urlopen(req, timeout=4) as _:
+            pass
+    except Exception as e:
+        # Keep it quiet unless debugging; warm-up should never break the app
+        logger.debug(f"[warmup] ConsAGENT ping failed: {e}")
+
+def warm_consagent_async():
+    try:
+        threading.Thread(target=_warm_consagent_once, daemon=True).start()
+    except Exception as e:
+        logger.debug(f"[warmup] Failed to start warm thread: {e}")
+
+
 # Helper to safely strip values
 def safe_str(value):
     return str(value).strip() if value is not None else ""
@@ -118,6 +166,69 @@ def safe_str(value):
 LOG_DIR = BACKEND_DIR / "logs"
 LOG_FILE = LOG_DIR / "access.log"
 
+# Simple in-memory GeoIP cache with TTL
+GEOIP_CACHE: Dict[str, Dict[str, Any]] = {}
+GEOIP_TTL_SECONDS = 24 * 60 * 60  # 24h
+
+def get_client_ip(req) -> str:
+    """Resolve client IP honoring X-Forwarded-For when behind a proxy."""
+    try:
+        xff = req.headers.get("X-Forwarded-For", "")
+        if xff:
+            # Take the first IP in the list
+            candidate = xff.split(",")[0].strip()
+            if candidate:
+                return candidate
+    except Exception:
+        pass
+    return req.remote_addr or ""
+
+def _is_private_ip(ip: str) -> bool:
+    try:
+        # Very light check to avoid external lookups for private/local ranges
+        return (
+            ip.startswith("10.") or
+            ip.startswith("192.168.") or
+            ip.startswith("172.") or  # includes 172.16.0.0/12
+            ip.startswith("127.") or
+            ip.startswith("::1") or
+            ip.startswith("fc") or ip.startswith("fd")
+        )
+    except Exception:
+        return False
+
+def geoip_lookup(ip: str) -> Dict[str, Any]:
+    """Lookup GeoIP data for an IP with caching and short timeout.
+    Uses ip-api.com (no key) limited fields.
+    """
+    if not ip or _is_private_ip(ip):
+        return {}
+    try:
+        now = time.time()
+        cached = GEOIP_CACHE.get(ip)
+        if cached and (now - cached.get("_ts", 0)) < GEOIP_TTL_SECONDS:
+            return cached.get("data", {})
+
+        url = f"http://ip-api.com/json/{ip}?fields=status,country,regionName,city,query"
+        req = urllib.request.Request(url, headers={"User-Agent": "ConsAI-Geo/1.0"})
+        with urllib.request.urlopen(req, timeout=1.5) as resp:
+            body = resp.read()
+        try:
+            data = json.loads(body.decode("utf-8", errors="ignore"))
+        except Exception:
+            data = {}
+        result = {}
+        if data.get("status") == "success":
+            result = {
+                "geo_country": data.get("country"),
+                "geo_region": data.get("regionName"),
+                "geo_city": data.get("city"),
+            }
+        GEOIP_CACHE[ip] = {"_ts": now, "data": result}
+        return result
+    except Exception:
+        return {}
+
 @app.route('/log', methods=['POST'])
 def log_event():
     try:
@@ -128,9 +239,17 @@ def log_event():
     # Enriquecimento server-side
     try:
         payload["_server_ts"] = datetime.datetime.utcnow().isoformat() + "Z"
-        payload["_client_ip"] = request.remote_addr
+        real_ip = get_client_ip(request)
+        payload["_client_ip"] = real_ip
         payload["_user_agent"] = request.headers.get("User-Agent")
         payload["_path"] = request.path
+        # Geo enrichment (short-timeout, cached)
+        try:
+            geo = geoip_lookup(real_ip)
+            if geo:
+                payload.update(geo)
+        except Exception:
+            pass
     except Exception:
         pass
 
@@ -248,9 +367,10 @@ def view_logs_page():
           <col style=\"width:9ch\" />   <!-- module -->
           <col style=\"width:8ch\" />   <!-- group -->
           <col />                          <!-- page (auto) -->
+          <col style=\"width:10ch\" />  <!-- geo -->
           <col style=\"width:8ch\" />  <!-- ip -->
-          <col style=\"width:10ch\" />                          <!-- origin (auto) -->
-          <col style=\"width:8ch\" />                          <!-- ua (auto) -->
+          <col style=\"width:10ch\" /> <!-- origin (auto) -->
+          <col style=\"width:8ch\" />  <!-- ua (auto) -->
         </colgroup>
         <thead>
           <tr>
@@ -261,6 +381,7 @@ def view_logs_page():
             <th>module<div class=\"resizer\"></div></th>
             <th>group<div class=\"resizer\"></div></th>
             <th>page<div class=\"resizer\"></div></th>
+            <th>geo<div class=\"resizer\"></div></th>
             <th class=\"nowrap\">client ip<div class=\"resizer\"></div></th>
             <th>origin<div class=\"resizer\"></div></th>
             <th>user agent<div class=\"resizer\"></div></th>
@@ -316,7 +437,8 @@ def view_logs_page():
           const hay = [
             x.value,
             x.module_label, x.module_group, x.page,
-            x.origin, x._client_ip, x._user_agent
+            x.origin, x._client_ip, x._user_agent,
+            x.geo_city, x.geo_region, x.geo_country
           ].join(' ').toLowerCase();
           return hay.includes(q);
         });
@@ -328,6 +450,7 @@ def view_logs_page():
         const ts = x._server_ts || x.ts || '';
         const f = fmtDateTimeUTCm3(ts);
         const esc = (s) => (String(s||'')).replace(/</g,'&lt;');
+        const geo = [x.geo_city||'', x.geo_region||'', x.geo_country||''].filter(Boolean).join(', ');
         return `
         <tr>
           <td class="mono nowrap" title="server: ${x._server_ts||''}">${f.d}</td>
@@ -337,6 +460,7 @@ def view_logs_page():
           <td>${(x.module_label||'') .replace(/</g,'&lt;')}</td>
           <td><span class="pill grp">${x.module_group||''}</span></td>
           <td>${(x.page||'') .replace(/</g,'&lt;')}</td>
+          <td>${geo}</td>
           <td class="mono nowrap">${x._client_ip||''}</td>
           <td>${(x.origin||'') .replace(/</g,'&lt;')}</td>
           <td>${(x._user_agent||'').slice(0,10) .replace(/</g,'&lt;')}</td>
