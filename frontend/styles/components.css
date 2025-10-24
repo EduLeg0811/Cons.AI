@@ -973,3 +973,16 @@ background: var(--module-accent-secondary, var(--primary-600));
     color: var(--gray-800);
     color: #1e3a8a; /* dark blue */
 }
+
+
+
+.quiz-level-badge {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: var(--primary, #0055aa);
+    color: #fff;
+  }
+  

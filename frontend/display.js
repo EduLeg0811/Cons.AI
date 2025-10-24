@@ -582,10 +582,8 @@ function showSimple(container, data) {
 
 
 
-
-
 // ________________________________________________________________________________________
-// Show Quiz
+// Show Quiz  ✅ FINAL COM NIVEL E PERGUNTA
 // ________________________________________________________________________________________
 function showQuiz(container, data) {
   if (!container) {
@@ -593,11 +591,20 @@ function showQuiz(container, data) {
     return;
   }
 
-  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta : '';
+  // ✅ Extração segura de dados
+  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta.trim() : '';
+  const nivel = typeof data?.nivel === 'string' ? data.nivel.trim() : '';
+
+  // ✅ Badge de nível (estilo preservado)
+  const nivelHtml = nivel
+    ? `<div class="quiz-level-badge metadata-badge estilo1">${nivel}</div>`
+    : '';
+
+  // ✅ Garantir 4 opções mesmo que venham incompletas
   let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
   while (opcoes.length < 4) opcoes.push('');
 
-  // Build HTML for quiz box
+  // ✅ Renderiza opções com Markdown
   const optionsHtml = opcoes
     .map((opt, idx) => {
       const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
@@ -611,12 +618,17 @@ function showQuiz(container, data) {
     })
     .join('');
 
-  const qHtml = pergunta ? `<div class="quiz-question markdown-content">${renderMarkdown(pergunta)}</div>` : '';
+  // ✅ Renderiza pergunta com Markdown
+  const qHtml = pergunta
+    ? `<div class="quiz-question markdown-content">${renderMarkdown(pergunta)}</div>`
+    : '';
 
+  // ✅ HTML Final (layout 100% mantido)
   const html = `
     <div class="displaybox-container quiz-box">
       <div class="displaybox-content">
         <div class="displaybox-text">
+          ${nivelHtml}
           ${qHtml}
           <div class="quiz-options-list">
             ${optionsHtml}
@@ -625,9 +637,10 @@ function showQuiz(container, data) {
       </div>
     </div>`;
 
+  // ✅ Adiciona ao container sem remover histórico visual externo
   container.insertAdjacentHTML('beforeend', html);
 
-  // Event delegation for option clicks (no custom event; logic handled in script_quiz.js)
+  // ✅ Event delegation (uma única vez)
   if (!container.__quizClickBound) {
     container.addEventListener('click', function(ev) {
       const btn = ev.target.closest('.quiz-badge-btn');
@@ -637,18 +650,19 @@ function showQuiz(container, data) {
       const box = row.closest('.quiz-box');
       if (!box) return;
 
-      // Visual feedback: highlight selected badge using module color
+      // ✅ Destaque visual do selecionado
       try {
         const badge = row.querySelector('.metadata-badge');
-        if (badge) {
-          badge.classList.add('selected');
-        }
+        if (badge) badge.classList.add('selected');
       } catch {}
 
-      // Disable further interaction within this quiz box
-      box.querySelectorAll('button.quiz-badge-btn').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
-      // No emission here; script_quiz.js listens to clicks on #results
+      // ✅ Bloqueia novas seleções
+      box.querySelectorAll('button.quiz-badge-btn').forEach(b => {
+        b.disabled = true;
+        b.style.cursor = 'default';
+      });
     });
+
     container.__quizClickBound = true;
   }
 }
@@ -803,11 +817,15 @@ function buildMetaInlineLine(pairs) {
 // Pinta de amarelo (accent-insensitive) os termos/expressões da consulta no HTML já sanitizado.
 // --------------------------------------------------------------------------------------------
 
-// Normaliza para busca (lower + sem acentos)
+// Normaliza para busca (lower + sem acentos) e remove pontuação em literals (preserva '*')
 function _stripAccents(s) {
   return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
-function _norm(s) { return _stripAccents(String(s || '')).toLowerCase(); }
+function _norm(s) {
+  return _stripAccents(String(s || ''))
+    .toLowerCase()
+    .replace(/[^\w\s\*]/g, ''); // remove pontuação (mantém letras/números/underscore, espaço e '*')
+}
 
 // Constrói mapa de dobra (fold) para mapear índices do texto "sem acento" para o original
 function _buildFoldMap(original) {
@@ -824,6 +842,21 @@ function _buildFoldMap(original) {
     // Combining marks são descartados naturalmente
   }
   return { folded, map };
+}
+
+// Remove do folded tudo que não é \w (letra/dígito/_), espaço
+// Retorna string "clean" e mapa cleanMap[cleanIdx] = originalIdx
+function _cleanFolded(folded, map) {
+  const cleanChars = [];
+  const cleanMap = [];
+  for (let i = 0; i < folded.length; i++) {
+    const ch = folded[i];
+    if (/\w|\s/.test(ch)) { // mantém letras/dígitos/underscore e espaços
+      cleanChars.push(ch);
+      cleanMap.push(map[i]);
+    }
+  }
+  return { clean: cleanChars.join(''), cMap: cleanMap };
 }
 
 // Tokeniza a query de forma leve (suporta "frases", ! & | ())
@@ -873,16 +906,16 @@ function _extractHighlightLiterals(query) {
 function _buildRegexForLiteral(lit) {
   const core = _norm(lit.core);
   if (lit.phrase) {
-    // frase: substring literal (sem \b e sem curingas)
+    // frase: substring literal no texto LIMPO (sem pontuação)
     return new RegExp(_escapeRegex(core), 'gi');
   }
   if (core.includes('*')) {
-    // wildcard: '*' -> '.*'
+    // wildcard: '*' -> '.*' no texto LIMPO
     const pattern = _escapeRegex(core).replace(/\\\*/g, '.*');
     return new RegExp(pattern, 'gi');
   }
-  // termo simples: palavra inteira (\b ... \b)
-  return new RegExp(`\\b${_escapeRegex(core)}\\b`, 'gi');
+  // termo simples: casa em QUALQUER posição; expansão posterior cobre a palavra inteira
+  return new RegExp(_escapeRegex(core), 'gi');
 }
 
 function _escapeRegex(s) {
@@ -896,7 +929,7 @@ function highlightHtml(safeHtml, query) {
   const literals = _extractHighlightLiterals(query);
   if (!literals.length) return safeHtml;
 
-  const patterns = literals.map(_buildRegexForLiteral);
+  const patterns = literals.map(lit => ({ re: _buildRegexForLiteral(lit), phrase: !!lit.phrase }));
 
   // divide em blocos "texto" e "tags", para não invadir atributos e nomes de tag
   const parts = String(safeHtml).split(/(<[^>]+>)/g);
@@ -909,22 +942,60 @@ function highlightHtml(safeHtml, query) {
     const { folded, map } = _buildFoldMap(chunk);
     const foldedLower = folded.toLowerCase();
 
+    // versão "limpa" (sem pontuação) + mapa para original
+    const { clean, cMap } = _cleanFolded(foldedLower, map);
+
     // coletar ranges de matches (em índices do ORIGINAL)
     const ranges = [];
     patterns.forEach(re => {
       re.lastIndex = 0;
       let m;
-      while ((m = re.exec(foldedLower)) !== null) {
-        const startFold = m.index;
-        const endFold = m.index + (m[0]?.length || 0);
-        if (endFold <= startFold) continue;
-        const startOrig = map[startFold];
-        const endOrig = (endFold - 1 < map.length) ? map[endFold - 1] + 1 : chunk.length;
-        ranges.push([startOrig, endOrig]);
+      while ((m = re.exec(clean)) !== null) {
+        let startClean = m.index;
+        let endClean = m.index + (m[0]?.length || 0);
+        if (endClean <= startClean) continue;
+
+        // Expansão para palavra inteira para termos não-frase
+        const isPhrase = /"/.test(''+(m.inputToken||'')); // não confiável; reusa lit abaixo
+        // Como não temos referência ao literal aqui, heurística: se o padrão termina com \w* OU contém .*, expandimos.
+        const srcPattern = re.source;
+        const shouldExpandToWord = /\\w\*$/.test(srcPattern) || /\.\*/.test(srcPattern);
+        if (shouldExpandToWord) {
+          // expande para cobrir toda a palavra no TEXTO LIMPO
+          while (startClean > 0 && /\w/.test(clean[startClean - 1])) startClean--;
+          while (endClean < clean.length && /\w/.test(clean[endClean])) endClean++;
+        }
+
+        // Mapeia para índices do ORIGINAL via cMap
+        const startOrig = cMap[startClean] ?? 0;
+        const endOrig = (endClean - 1 < cMap.length) ? (cMap[endClean - 1] + 1) : chunk.length;
+        if (endOrig > startOrig) ranges.push([startOrig, endOrig]);
         // proteção: se regex puder casar vazio, evita loop infinito
         if (re.lastIndex === m.index) re.lastIndex++;
       }
     });
+
+    // Fallback: se nada encontrado no texto LIMPO, tenta no foldedLower original
+    if (!ranges.length) {
+      patterns.forEach(({re, phrase}) => {
+        re.lastIndex = 0;
+        let m;
+        while ((m = re.exec(foldedLower)) !== null) {
+          let sF = m.index;
+          let eF = m.index + (m[0]?.length || 0);
+          if (eF <= sF) continue;
+          if (!phrase) {
+            // expande para palavra inteira no foldedLower
+            while (sF > 0 && /\w/.test(foldedLower[sF - 1])) sF--;
+            while (eF < foldedLower.length && /\w/.test(foldedLower[eF])) eF++;
+          }
+          const sO = map[sF] ?? 0;
+          const eO = (eF - 1 < map.length) ? (map[eF - 1] + 1) : chunk.length;
+          if (eO > sO) ranges.push([sO, eO]);
+          if (re.lastIndex === m.index) re.lastIndex++;
+        }
+      });
+    }
 
     if (!ranges.length) continue;
 

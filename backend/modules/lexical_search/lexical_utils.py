@@ -198,7 +198,11 @@ def strip_accents(s: str) -> str:
 
 def normalize_for_match(s: str) -> str:
     """Normaliza string para comparação: sem acentos e minúscula."""
-    return strip_accents(s or "").lower()
+    # Remove acentos, converte para minúsculas e elimina pontuações em geral,
+    # preservando apenas caracteres de palavra, espaço e '*' (curinga).
+    base = strip_accents(s or "").lower()
+    # Remove tudo que NÃO é \w (letra/dígito/_), espaço ou '*':
+    return re.sub(r"[^\w\s\*]", "", base)
 
 
 def balanced_parentheses(query: str) -> bool:
@@ -419,7 +423,9 @@ def compile_boolean_predicate(query: str) -> Callable[[str], bool]:
                 pat_cache[token] = wildcard_pattern(token)
             else:
                 norm = normalize_for_match(token)
-                pat_cache[token] = re.compile(rf"\b{re.escape(norm)}\b", flags=re.IGNORECASE)
+                # Default: prefix match at word start (behaves like implicit trailing '*')
+                # Example: 'casa' matches 'casa', 'casado', but not 'emcasacado'.
+                pat_cache[token] = re.compile(rf"\b{re.escape(norm)}\w*", flags=re.IGNORECASE)
         pat = pat_cache[token]
         return lambda s: bool(pat.search(s))
 

@@ -83,7 +83,7 @@ const TOOL_MESSAGES = {
 
   // Tool: ConsBOT (RAG chatbot)
   'ConsBOT': {
-    short: '<em>Chatbot próprio da Conscienciologia (experimental)</em>',
+    short: '<em>Chatbot da Conscienciologia (experimental)</em>',
     extra: [
       '<br>',
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
@@ -114,7 +114,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_Book
   'Livros & Tratados': {
-    short: 'Pesquisa em livros e tratados da Conscienciologia',
+    short: 'Pesquisa em livros e tratados',
     extra: [
       '<br>',
       '<strong>Instruções:</strong><br>',
@@ -150,7 +150,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_CCG
   'Questões do Conscienciograma': {
-    short: 'Pesquisa nas Questões do Conscienciograma',
+    short: 'Pesquisa no Conscienciograma',
     extra: [
       '<br>',
       '<strong>Instruções:</strong><br>',
@@ -160,11 +160,6 @@ const TOOL_MESSAGES = {
       '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
     ].join('\n')
   },
-
-
-
-
-
 
 
 
@@ -190,12 +185,9 @@ const TOOL_MESSAGES = {
 
 
 
-
-
-
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: '<em>Sorteio de ortopensata do LO</em>',
+    short: '<em>Sorteio de ortopensata do Léxico</em>',
     extra: [
       '<br>',
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA. ',
