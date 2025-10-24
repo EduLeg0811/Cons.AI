@@ -189,7 +189,7 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
       ev.preventDefault();
       const targetId = btn.getAttribute('data-target');
       if (!targetId) return;
-      const panel = container.querySelector(`#${CSS.escape(targetId)}`);
+      const panel = container.querySelector(`#${targetId}`);
       if (!panel) return;
       const isOpen = panel.classList.toggle('open');
       if (isOpen) {
@@ -947,7 +947,9 @@ function highlightHtml(safeHtml, query) {
 
     // coletar ranges de matches (em índices do ORIGINAL)
     const ranges = [];
-    patterns.forEach(re => {
+    patterns.forEach(p => {
+      const re = p.re;
+      if (!re || typeof re.exec !== 'function') return;
       re.lastIndex = 0;
       let m;
       while ((m = re.exec(clean)) !== null) {
