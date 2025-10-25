@@ -40,7 +40,6 @@ BACKEND_DIR = Path(__file__).parent.resolve()
 sys.path.insert(0, str(BACKEND_DIR))
 
 
-logger = logging.getLogger("cons-ai")
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s:%(name)s:%(message)s",
@@ -157,6 +156,12 @@ def warm_consagent_async():
 # Helper to safely strip values
 def safe_str(value):
     return str(value).strip() if value is not None else ""
+
+
+
+
+
+
 
 
 # ______________________________________________________________________
@@ -414,6 +419,10 @@ def get_logs():
         if fmt == 'pretty':
             out_lines = []
             hr = "─" * 120
+            # Header with total count
+            out_lines.append(f"Total: {len(blocks)} eventos")
+            out_lines.append(hr)
+            out_lines.append("")
             for b in blocks:
                 # try to detect summary (first line not starting with '{')
                 lines = b.splitlines()
@@ -431,6 +440,14 @@ def get_logs():
                 if not summary_line:
                     summary_line = _summarize(rec)
                 out_lines.append(summary_line)
+                # Local time (-03) helper
+                try:
+                    ts_iso = (rec.get("_server_ts") or rec.get("ts") or "").replace("Z", "+00:00")
+                    dt_utc = datetime.datetime.fromisoformat(ts_iso)
+                    dt_local = dt_utc - datetime.timedelta(hours=3)
+                    local_str = dt_local.strftime("%d/%m/%Y %H:%M") + " (-03)"
+                except Exception:
+                    local_str = ""
                 # show selected fields pretty
                 fields = [
                     ("event", rec.get("event")),
@@ -442,6 +459,8 @@ def get_logs():
                     ("ua", rec.get("_user_agent")),
                     ("chat_id", rec.get("chat_id")),
                 ]
+                if local_str:
+                    out_lines.append(f"  - local: {local_str}")
                 for k, v in fields:
                     if v is None or v == "":
                         continue
@@ -498,19 +517,19 @@ def view_logs_page():
       --warn: #f59e0b; /* amber-500 */
       --border: #1f2937; /* gray-800 */
     }
-    html, body { height:100%; background:var(--bg); color:var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\"; }
-    .wrap { max-width: 100%; width: 100%; margin: 12px auto; padding: 0 8px; }
-    .header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
-    .title { font-weight:700; font-size:22px; letter-spacing:.3px; }
+    html, body { height:100%; background:var(--bg); color:var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\"; font-size:14px; }
+    .wrap { max-width: 1100px; width: 100%; margin: 16px auto; padding: 0 12px; }
+    .header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .title { font-weight:800; font-size:22px; letter-spacing:.3px; }
     .controls { display:flex; gap:8px; flex-wrap:wrap; }
     .input, .select { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:10px 12px; border-radius:8px; min-height:40px; }
-    .btn { background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; letter-spacing:.3px; }
-    .card { background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow: 0 1px 0 rgba(0,0,0,.3); }
+    .btn { background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700; letter-spacing:.3px; }
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: 0 1px 0 rgba(0,0,0,.3); }
     table { width:100%; border-collapse: collapse; table-layout: auto; }
     thead th { text-align:left; font-size:12px; color:var(--muted); padding:4px 6px; border-bottom:1px solid var(--border); white-space:nowrap; }
     tbody td { padding:4px 6px; border-bottom:1px solid var(--border); font-size:11.5px; line-height:1.25; vertical-align:top; white-space: normal; word-break: break-word; }
     tbody tr:hover { background: rgba(56,189,248,0.07); }
-    .pill { display:inline-block; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.2px; }
+    .pill { display:inline-block; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.2px; }
     .pill.ev { background:rgba(56,189,248,.18); color:#7dd3fc; border:1px solid rgba(56,189,248,.35); }
     .pill.grp { background:rgba(124,58,237,.18); color:#c4b5fd; border:1px solid rgba(124,58,237,.35); }
     .muted { color:var(--muted); font-size:12px; }
@@ -521,6 +540,13 @@ def view_logs_page():
     th { position: relative; }
     .resizer { position:absolute; right:0; top:0; height:100%; width:6px; cursor:col-resize; user-select:none; }
     .resizer:hover { background: rgba(125,211,252,0.25); }
+
+    /* Log list layout improvements */
+    .log-list { display:flex; flex-direction:column; }
+    .log-item { padding:12px 14px; border-top:1px solid var(--border); }
+    .log-item:first-child { border-top: none; }
+    .log-line { margin:2px 0; line-height:1.35; }
+    .log-line .pill { vertical-align:baseline; }
   </style>
 </head>
 <body>
