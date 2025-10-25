@@ -165,6 +165,122 @@ def safe_str(value):
 # Grava eventos enviados pelo frontend (page_view, module_click, etc.)
 LOG_DIR = BACKEND_DIR / "logs"
 LOG_FILE = LOG_DIR / "access.log"
+LOG_SEPARATOR = "\n" + ("─" * 120) + "\n\n"  # Unicode full-width horizontal rule
+RETENTION_DAYS = 14
+
+def _today_str():
+    try:
+        return datetime.datetime.utcnow().strftime("%Y-%m-%d")
+    except Exception:
+        return ""
+
+def _daily_log_path(date_str: str) -> Path:
+    try:
+        return LOG_DIR / f"access-{date_str}.log"
+    except Exception:
+        return LOG_FILE
+
+def _ensure_log_dir():
+    try:
+        LOG_DIR.mkdir(exist_ok=True)
+    except Exception:
+        pass
+
+def _cleanup_old_logs():
+    """Delete rotated logs older than RETENTION_DAYS."""
+    try:
+        cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=RETENTION_DAYS)
+        for name in os.listdir(LOG_DIR):
+            if not name.startswith("access-") or not name.endswith(".log"):
+                continue
+            try:
+                date_part = name[len("access-"):-len(".log")]
+                dt = datetime.datetime.strptime(date_part, "%Y-%m-%d")
+                if dt < cutoff:
+                    try:
+                        os.remove(LOG_DIR / name)
+                    except Exception:
+                        pass
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+def _day_header(date_str: str) -> str:
+    line = "═" * 120
+    return f"{line}\n⊙ {date_str} (UTC) ⊙\n{line}\n\n"
+
+def _summarize(record: Dict[str, Any]) -> str:
+    try:
+        ts = record.get("_server_ts") or record.get("ts") or ""
+        # compact time: YYYY-MM-DD HH:MM (UTC)
+        try:
+            dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            ts_compact = dt.strftime("%Y-%m-%d %H:%M") + "Z"
+        except Exception:
+            ts_compact = ts or ""
+        event = str(record.get("event", "")).strip()
+        page = str(record.get("page", record.get("_path", ""))).strip()
+        ip = str(record.get("_client_ip", "")).strip()
+        ua = str(record.get("_user_agent", "")).strip().replace("\n", " ")
+        if len(ua) > 80:
+            ua = ua[:77] + "..."
+        module = str(record.get("module_label") or record.get("module") or "").strip()
+        origin = str(record.get("origin", "")).strip()
+        geo_parts = [record.get("geo_city"), record.get("geo_region"), record.get("geo_country")]
+        geo = ", ".join([str(x) for x in geo_parts if x])
+        bits = [
+            f"[{ts_compact}]",
+            f"event={event or '—'}",
+            f"page={page or '—'}",
+            f"module={module or '—'}",
+            f"ip={ip or '—'}",
+            f"geo={geo or '—'}",
+            f"ua={ua or '—'}",
+        ]
+        return " ".join(bits)
+    except Exception:
+        return ""
+
+def append_log(record: Dict[str, Any]):
+    """Append one record to current logs with summary, JSON and separator.
+    Also write to a daily rotated file and cleanup retention.
+    """
+    try:
+        _ensure_log_dir()
+        # daily rotation: write day header if daily file is new
+        today = _today_str()
+        daily_file = _daily_log_path(today)
+        need_day_header = not daily_file.exists()
+
+        # optional sanitization/truncation for generic events
+        try:
+            if isinstance(record.get("value"), str) and len(record.get("value")) > 400:
+                record["value"] = record["value"][:397] + "..."
+        except Exception:
+            pass
+
+        summary = _summarize(record)
+        payload = json.dumps(record, ensure_ascii=False)
+        block = (summary + "\n" if summary else "") + payload + LOG_SEPARATOR
+
+        # write to main file
+        with LOG_FILE.open('a', encoding='utf-8') as f:
+            # insert a day header in main file if it's the first write of the day in daily file
+            if need_day_header:
+                f.write(_day_header(today))
+            f.write(block)
+
+        # write to daily file
+        with daily_file.open('a', encoding='utf-8') as df:
+            if need_day_header:
+                df.write(_day_header(today))
+            df.write(block)
+
+        # retention cleanup (best-effort)
+        _cleanup_old_logs()
+    except Exception as e:
+        logger.error(f"[append_log] failed: {e}")
 
 # Simple in-memory GeoIP cache with TTL
 GEOIP_CACHE: Dict[str, Dict[str, Any]] = {}
@@ -253,11 +369,9 @@ def log_event():
     except Exception:
         pass
 
-    # Garantir diretório e gravar como JSON line
+    # Garantir diretório e gravar
     try:
-        LOG_DIR.mkdir(exist_ok=True)
-        with LOG_FILE.open('a', encoding='utf-8') as f:
-            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+        append_log(payload)
     except Exception as e:
         logger.error(f"[log_event] Falha ao gravar log: {e}")
         return jsonify({"status": "error"}), 500
@@ -267,14 +381,84 @@ def log_event():
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
-    # Exibe todo o conteúdo do arquivo de logs como texto simples
+    # Exibe logs com opções de formato e limite
     try:
-        LOG_DIR.mkdir(exist_ok=True)
+        _ensure_log_dir()
         if not LOG_FILE.exists():
             return Response("", mimetype='text/plain; charset=utf-8')
+
+        fmt = (request.args.get('format') or '').strip().lower()
+        try:
+            limit = int(request.args.get('limit', '') or 0)
+            if limit < 0:
+                limit = 0
+        except Exception:
+            limit = 0
+
         with LOG_FILE.open('r', encoding='utf-8') as f:
-            content = f.read()
-        return Response(content, mimetype='text/plain; charset=utf-8')
+            raw = f.read()
+
+        if not fmt:
+            # backward-compatible: return raw; apply limit if requested by splitting blocks
+            if limit > 0:
+                blocks = [b for b in raw.split(LOG_SEPARATOR) if b.strip()]
+                content = LOG_SEPARATOR.join(blocks[-limit:]) + (LOG_SEPARATOR if blocks else "")
+                return Response(content, mimetype='text/plain; charset=utf-8')
+            return Response(raw, mimetype='text/plain; charset=utf-8')
+
+        # parse blocks from separator
+        blocks = [b for b in raw.split(LOG_SEPARATOR) if b.strip()]
+        if limit > 0:
+            blocks = blocks[-limit:]
+
+        if fmt == 'pretty':
+            out_lines = []
+            hr = "─" * 120
+            for b in blocks:
+                # try to detect summary (first line not starting with '{')
+                lines = b.splitlines()
+                summary_line = ''
+                json_line = ''
+                if lines and not lines[0].lstrip().startswith('{'):
+                    summary_line = lines[0]
+                    json_line = "\n".join(lines[1:])
+                else:
+                    json_line = "\n".join(lines)
+                try:
+                    rec = json.loads(json_line)
+                except Exception:
+                    rec = {}
+                if not summary_line:
+                    summary_line = _summarize(rec)
+                out_lines.append(summary_line)
+                # show selected fields pretty
+                fields = [
+                    ("event", rec.get("event")),
+                    ("page", rec.get("page", rec.get("_path"))),
+                    ("module", rec.get("module_label") or rec.get("module")),
+                    ("value", rec.get("value")),
+                    ("ip", rec.get("_client_ip")),
+                    ("geo", ", ".join([x for x in [rec.get("geo_city"), rec.get("geo_region"), rec.get("geo_country")] if x])),
+                    ("ua", rec.get("_user_agent")),
+                    ("chat_id", rec.get("chat_id")),
+                ]
+                for k, v in fields:
+                    if v is None or v == "":
+                        continue
+                    s = str(v).replace("\n", " ")
+                    if len(s) > 500:
+                        s = s[:497] + "..."
+                    out_lines.append(f"  - {k}: {s}")
+                out_lines.append(hr)
+                out_lines.append("")
+            content = "\n".join(out_lines)
+            return Response(content, mimetype='text/plain; charset=utf-8')
+
+        # default fallback: raw (optionally limited)
+        if limit > 0:
+            content = LOG_SEPARATOR.join(blocks[-limit:]) + (LOG_SEPARATOR if blocks else "")
+            return Response(content, mimetype='text/plain; charset=utf-8')
+        return Response(raw, mimetype='text/plain; charset=utf-8')
     except Exception as e:
         logger.error(f"[get_logs] Falha ao ler log: {e}")
         return Response("Erro ao ler logs.", status=500, mimetype='text/plain; charset=utf-8')
@@ -606,8 +790,7 @@ class LlmQueryResource(Resource):
                     "_user_agent": request.headers.get("User-Agent"),
                     "_path": request.path,
                 }
-                with LOG_FILE.open('a', encoding='utf-8') as f:
-                    f.write(json.dumps(llm_log, ensure_ascii=False) + "\n")
+                append_log(llm_log)
             except Exception as e:
                 logger.error(f"[llm_request log] failed: {e}")
 
@@ -632,8 +815,7 @@ class LlmQueryResource(Resource):
                     "_user_agent": request.headers.get("User-Agent"),
                     "_path": request.path,
                 }
-                with LOG_FILE.open('a', encoding='utf-8') as f:
-                    f.write(json.dumps(llm_log_resp, ensure_ascii=False) + "\n")
+                append_log(llm_log_resp)
             except Exception as e:
                 logger.error(f"[llm_response log] failed: {e}")
 
