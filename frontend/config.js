@@ -514,113 +514,34 @@ if (VERSION_DEVELOPMENT) {
       } catch {}
     }, true);
 
-  // Log on form submit: capture first non-empty text input/textarea
-  document.addEventListener('submit', function(e){
-    try {
-      if (!window.logEvent) return;
-      const form = e.target;
-      if (!form || !form.querySelector) return;
-      const fields = form.querySelectorAll('input[type=text], input:not([type]), textarea');
-      let el = null;
-      for (const f of fields) { if ((f.value||'').trim()) { el = f; break; } }
-      if (!el) return;
-      const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
-      const val = (el.value||'').slice(0,200);
-      window.logEvent({ event: 'input_submit', trigger: 'submit', field: getFieldMeta(el), value: val, length: val.length });
-    } catch {}
-  }, true);
-
-  })();
-
-} else {
-  function resolveApiBaseUrl() {
-    const qs = new URLSearchParams(location.search).get('api');
-    if (qs) return { base: qs, mode: 'custom' };
-    try {
-      const saved = localStorage.getItem('apiBaseUrl');
-      if (saved) return { base: saved, mode: 'custom' };
-    } catch {}
-    return { base: PROD_BASE, mode: 'production' };
-  }
-
-  const { base: apiBaseUrl, mode } = resolveApiBaseUrl();
-  const origin = location.origin || 'file://';
-  window.__API_BASE = apiBaseUrl;
-  window.apiBaseUrl = apiBaseUrl;
-
-  window.addEventListener('load', () => {
-    fetch(`${apiBaseUrl}/health`, { method: 'GET', mode: 'cors' }).catch(() => {});
-  });
-
-  (function initClientLogger(){
-    const getSessionId = () => {
+    // Log on explicit Send/Click of the search button (when not using a form submit)
+    document.addEventListener('click', function(e){
       try {
-        const key = 'client_session_id';
-        let id = localStorage.getItem(key);
-        if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(key, id); }
-        return id;
-      } catch { return undefined; }
-    };
-
-    window.logEvent = function logEvent(data) {
-      try {
-        const base = window.apiBaseUrl || apiBaseUrl;
-        const url = `${base}/log`;
-        const enriched = {
-          ...data,
-          page: data?.page || (location && location.pathname) || undefined,
-          origin: origin,
-          referrer: document.referrer || '',
-          mode: mode,
-          ts: new Date().toISOString(),
-          session_id: getSessionId(),
-        };
-        const body = JSON.stringify(enriched);
-        if (navigator.sendBeacon) {
-          const blob = new Blob([body], { type: 'application/json' });
-          return navigator.sendBeacon(url, blob);
-        } else {
-          return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
-        }
+        if (!window.logEvent) return;
+        const btn = e.target && (e.target.closest ? e.target.closest('#searchButton') : null);
+        if (!btn) return;
+        // Try to find the primary search input
+        const el = document.getElementById('searchInput');
+        if (!el || shouldSkip(el)) return;
+        const val = (el.value||'').slice(0,200);
+        const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
+        window.logEvent({ event: 'input_submit', trigger: 'click', field: getFieldMeta(el), value: val, length: val.length });
       } catch {}
-    };
-  })();
+    }, true);
 
-  document.addEventListener('DOMContentLoaded', function(){
-    try { window.logEvent({ event: 'page_view' }); } catch {}
-  });
-
-  (function initGlobalInputLogging(){
-    const THROTTLE_MS = 800;
-    const lastTs = new Map();
-    const shouldSkip = (el) => {
-      if (!el) return true;
-      const tag = (el.tagName||'').toLowerCase();
-      if (tag !== 'input' && tag !== 'textarea') return true;
-      const type = (el.type||'').toLowerCase();
-      if (type === 'password' || type === 'hidden') return true;
-      return false;
-    };
-    const getFieldMeta = (el) => ({
-      id: el.id || undefined,
-      name: el.name || undefined,
-      placeholder: el.placeholder || undefined,
-      classes: (el.className||'').toString().slice(0,200) || undefined,
-      dataset_module: el.dataset ? el.dataset.module : undefined,
-    });
-    const now = () => Date.now();
-    const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
-
-  /* input listener disabled: we only log on submit/enter now */
-
-    document.addEventListener('keydown', function(e){
+    // Log on form submit: capture first non-empty text input/textarea
+    document.addEventListener('submit', function(e){
       try {
-        const el = e.target;
-        if (shouldSkip(el) || !window.logEvent) return;
-        if (e.key === 'Enter' && !e.shiftKey) {
-          const val = (el.value||'').slice(0,200);
-          window.logEvent({ event: 'input_submit', trigger: 'enter', field: getFieldMeta(el), value: val, length: val.length });
-        }
+        if (!window.logEvent) return;
+        const form = e.target;
+        if (!form || !form.querySelector) return;
+        const fields = form.querySelectorAll('input[type=text], input:not([type]), textarea');
+        let el = null;
+        for (const f of fields) { if ((f.value||'').trim()) { el = f; break; } }
+        if (!el) return;
+        const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
+        const val = (el.value||'').slice(0,200);
+        window.logEvent({ event: 'input_submit', trigger: 'submit', field: getFieldMeta(el), value: val, length: val.length });
       } catch {}
     }, true);
   })();

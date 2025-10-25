@@ -358,44 +358,14 @@ def view_logs_page():
       </div>
     </div>
     <div class=\"card\">
-      <table>
-        <colgroup id=\"colgroup\">
-          <col style=\"width:10ch\" />  <!-- data dd/mm/aaaa -->
-          <col style=\"width:6ch\" />   <!-- hora HH:mm -->
-          <col style=\"width:15ch\" />  <!-- event -->
-          <col />                          <!-- value (auto) -->
-          <col style=\"width:9ch\" />   <!-- module -->
-          <col style=\"width:8ch\" />   <!-- group -->
-          <col />                          <!-- page (auto) -->
-          <col style=\"width:10ch\" />  <!-- geo -->
-          <col style=\"width:8ch\" />  <!-- ip -->
-          <col style=\"width:10ch\" /> <!-- origin (auto) -->
-          <col style=\"width:8ch\" />  <!-- ua (auto) -->
-        </colgroup>
-        <thead>
-          <tr>
-            <th class=\"nowrap\">data<div class=\"resizer\"></div></th>
-            <th class=\"nowrap\">hora<div class=\"resizer\"></div></th>
-            <th>event<div class=\"resizer\"></div></th>
-            <th>value<div class=\"resizer\"></div></th>
-            <th>module<div class=\"resizer\"></div></th>
-            <th>group<div class=\"resizer\"></div></th>
-            <th>page<div class=\"resizer\"></div></th>
-            <th>geo<div class=\"resizer\"></div></th>
-            <th class=\"nowrap\">client ip<div class=\"resizer\"></div></th>
-            <th>origin<div class=\"resizer\"></div></th>
-            <th>user agent<div class=\"resizer\"></div></th>
-          </tr>
-        </thead>
-        <tbody id=\"rows\"></tbody>
-      </table>
+      <div id=\"loglist\" class=\"log-list\"></div>
     </div>
     <div class=\"muted\" id=\"counter\" style=\"margin-top:8px\"></div>
   </div>
 
   <script>
     const $ = (sel) => document.querySelector(sel);
-    const rowsEl = $('#rows');
+    const rowsEl = $('#loglist');
     const counterEl = $('#counter');
     const filterEvent = $('#filter-event');
     const search = $('#search');
@@ -451,21 +421,22 @@ def view_logs_page():
         const f = fmtDateTimeUTCm3(ts);
         const esc = (s) => (String(s||'')).replace(/</g,'&lt;');
         const geo = [x.geo_city||'', x.geo_region||'', x.geo_country||''].filter(Boolean).join(', ');
+        const moduleName = (x.module_label || (x.field && x.field.dataset_module) || x.module || '')
+          .toString().replace(/</g,'&lt;');
+        const page = (x.page||'').toString().replace(/</g,'&lt;');
+        const origin = (x.origin||'').toString().replace(/</g,'&lt;');
         return `
-        <tr>
-          <td class="mono nowrap" title="server: ${x._server_ts||''}">${f.d}</td>
-          <td class="mono nowrap">${f.t}</td>
-          <td><span class="pill ev">${x.event||''}</span></td>
-          <td>${esc(x.value)}</td>
-          <td>${(x.module_label||'') .replace(/</g,'&lt;')}</td>
-          <td><span class="pill grp">${x.module_group||''}</span></td>
-          <td>${(x.page||'') .replace(/</g,'&lt;')}</td>
-          <td>${geo}</td>
-          <td class="mono nowrap">${x._client_ip||''}</td>
-          <td>${(x.origin||'') .replace(/</g,'&lt;')}</td>
-          <td>${(x._user_agent||'').slice(0,10) .replace(/</g,'&lt;')}</td>
-        </tr>
-      `}).join('');
+          <div class="log-item">
+            <div class="log-line mono nowrap" title="server: ${x._server_ts||''}">${f.d} | ${f.t}</div>
+            <div class="log-line">Evento: <span class="pill ev">${x.event||''}</span></div>
+            <div class="log-line">${moduleName || '—'} | ${page || '—'}</div>
+            <div class="log-line">value: ${esc(x.value)}</div>
+            <div class="log-line">geo: ${geo || '—'}</div>
+            <div class="log-line">client ip: ${x._client_ip||''}</div>
+            <div class="log-line">origin: ${origin}</div>
+          </div>
+        `
+      }).join('');
       counterEl.textContent = `${list.length} eventos`;
     }
 
@@ -474,58 +445,11 @@ def view_logs_page():
         const data = await fetchLogs();
         render(data);
       } catch(e) {
-        rowsEl.innerHTML = `<tr><td colspan="10" class="mono">Erro ao carregar logs.</td></tr>`;
+        rowsEl.innerHTML = `<div class=\"mono\">Erro ao carregar logs.</div>`;
       }
     }
 
-    // Resizable columns with localStorage persistence
-    function setupResizableColumns(){
-      const table = document.querySelector('table');
-      const colgroup = document.getElementById('colgroup');
-      if (!table || !colgroup) return;
-      const cols = Array.from(colgroup.children);
-      const ths = Array.from(table.tHead.rows[0].cells);
-
-      // Apply saved widths
-      try {
-        const saved = JSON.parse(localStorage.getItem('log_col_widths')||'[]');
-        if (Array.isArray(saved) && saved.length === cols.length) {
-          saved.forEach((w,i)=>{ if (w) cols[i].style.width = w; });
-        }
-      } catch {}
-
-      let startX = 0, startW = 0, idx = -1;
-      function onMove(e){
-        if (idx < 0) return;
-        const dx = e.clientX - startX;
-        const tableW = table.getBoundingClientRect().width || 1;
-        const deltaPct = (dx / tableW) * 100;
-        const newPct = Math.max(4, Math.min(40, (startW + deltaPct)));
-        cols[idx].style.width = newPct.toFixed(2) + '%';
-      }
-      function onUp(){
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-        // persist widths
-        const widths = cols.map(c=>c.style.width||'');
-        try { localStorage.setItem('log_col_widths', JSON.stringify(widths)); } catch {}
-        idx = -1;
-      }
-
-      ths.forEach((th,i)=>{
-        const handle = th.querySelector('.resizer');
-        if (!handle) return;
-        handle.addEventListener('mousedown', (e)=>{
-          e.preventDefault();
-          idx = i;
-          startX = e.clientX;
-          const w = cols[i].style.width;
-          startW = parseFloat(w && w.endsWith('%') ? w.slice(0,-1) : (100/cols.length));
-          document.addEventListener('mousemove', onMove);
-          document.addEventListener('mouseup', onUp);
-        });
-      });
-    }
+    // No resizable columns needed in vertical list layout
 
     filterEvent && filterEvent.addEventListener('change', load);
     search && search.addEventListener('input', () => { window.clearTimeout(window.__t); window.__t = setTimeout(load, 250); });
@@ -552,7 +476,7 @@ def view_logs_page():
       }
       load();
     });
-    document.addEventListener('DOMContentLoaded', ()=>{ setupResizableColumns(); load(); });
+    document.addEventListener('DOMContentLoaded', ()=>{ load(); });
   </script>
 </body>
 </html>
