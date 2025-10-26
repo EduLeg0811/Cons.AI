@@ -509,12 +509,14 @@ async function resetConversation(scope = 'default') {
   const input = document.getElementById('searchInput');
   if (input) input.value = '';
 
-  if (window.ragbotAddMessage) {
-    window.ragbotAddMessage('bot', 'Nova conversa iniciada. Como posso ajudar?');
+  // Ragbot: após reset, voltar à tela inicial com sugestões de perguntas
+  if (effectiveScope === 'ragbot' && window.ragbotShowInitialQuests) {
+    try { window.ragbotShowInitialQuests(); } catch {}
   }
 }
 
-document.getElementById('btn-new-conv')?.addEventListener('click', () => resetConversation('default'));
+document.getElementById('btn-new-conv')?.addEventListener('click', () => resetConversation('ragbot'));
+
 // ---------------- Theme (Light/Dark) ----------------
 // Centralized theme handling to keep all pages consistent
 // Applies `data-theme` on <html> and persists in localStorage

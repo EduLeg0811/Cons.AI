@@ -4,9 +4,11 @@ import os
 import re
 import re
 import re
+import time
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from openai import APIError, APIConnectionError, RateLimitError, APITimeoutError
 
 
 from utils.config import (
@@ -60,7 +62,9 @@ def generate_llm_answer(
     temperature=TEMPERATURE,
     instructions=INSTRUCTIONS_LLM_BACKEND,
     use_session=True,
-    chat_id="default"
+    chat_id="default",
+    timeout_s: int = 20,
+    max_retries: int = 2,
 ):
     client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -88,22 +92,31 @@ def generate_llm_answer(
         llm_str["previous_response_id"] = previous_id
 
     try:
-        # === Chamada principal ===
-        response = client.responses.create(**llm_str)
+        attempts = 0
+        last_exc = None
+        while attempts <= max_retries:
+            try:
+                # === Chamada principal com timeout ===
+                response = client.with_options(timeout=timeout_s).responses.create(**llm_str)
 
-        # Atualiza o último ID da conversa
-        last_id = getattr(response, "id", None)
-        if last_id and use_session:
-            _conversation_last_id[chat_id] = last_id
+                # Atualiza o último ID da conversa
+                last_id = getattr(response, "id", None)
+                if last_id and use_session:
+                    _conversation_last_id[chat_id] = last_id
 
-        # === Log inline, formatado ===
-        #from pprint import pformat
-        #logger.info(
-        #    "\n\n------- < generate_llm_answer > ------- RAW LLM Response:\n%s",
-        #    pformat(response.model_dump(), indent=2, width=120)
-        #)
+                return format_llm_response(response)
 
-        return format_llm_response(response)
+            except (RateLimitError, APITimeoutError, APIError, APIConnectionError) as ex:
+                last_exc = ex
+                if attempts >= max_retries:
+                    raise
+                # backoff exponencial simples com pequeno jitter
+                backoff = min(2 ** attempts, 8)
+                time.sleep(backoff + 0.1 * attempts)
+                attempts += 1
+            except Exception as ex:
+                # Erros não esperados: não retry
+                raise ex
 
     except Exception as e:
         logger.error(f"Erro ao gerar resposta LLM: {str(e)}")

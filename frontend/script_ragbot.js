@@ -389,6 +389,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('initialQuests: falha ao renderizar sugestões', e);
       }
     }
+
+    // Expor função para reexibir as sugestões iniciais após reset de conversa
+    try { window.ragbotShowInitialQuests = initialQuests; } catch {}
     
 
 
