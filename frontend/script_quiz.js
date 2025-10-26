@@ -60,14 +60,19 @@ async function quiz() {
         // ✅ CORREÇÃO MAIOR: só usar query minimalista
         // Deixar TODA regra para o PROMPT_QUIZ_PERGUNTA
         const paramQuestion = {
-            query: 'Continue.',
+            query: '`Gerar nova pergunta.',
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+            effort: 'medium',
+            max_output_tokens: 350,
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: PROMPT_QUIZ_PERGUNTA,
             use_session: true,
             chat_id: chat_id
         };
+
+
+   
 
         if (!quizData) {
             quizData = await call_llm({ ...paramQuestion, timeout_ms: 60000 });
@@ -128,7 +133,7 @@ async function quiz() {
         const respComment = await call_llm({
             query: 'Resposta do usuário: ' + userAnswer,
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-            temperature: 0.0, // ✅ garantir fidelidade de avaliação
+            temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE), // ✅ garantir fidelidade de avaliação
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: PROMPT_QUIZ_RESPOSTA,
             use_session: true,

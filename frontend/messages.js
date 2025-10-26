@@ -83,7 +83,7 @@ const TOOL_MESSAGES = {
 
   // Tool: ConsBOT (RAG chatbot)
   'ConsBOT': {
-    short: '<em>Chatbot da Conscienciologia (experimental)</em>',
+    short: '<em>Chatbot da Conscienciologia</em>',
     extra: [
       '<br>',
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
@@ -97,7 +97,7 @@ const TOOL_MESSAGES = {
 
  // Tool: ConsAGENT (RAG chatbot)
  'ConsAGENT': {
-  short: '<em>Agente Chatkit OpenAI (experimental)</em>',
+  short: '<em>Agente OpenAI (experimental)</em>',
   extra: [
     '<br>',
     'O <strong>ConsAGENT</strong> é um projeto experimental de agente de IA (Chatkit OpenAI) da Conscienciologia. ',

@@ -48,6 +48,11 @@ _conversation_last_id = {}  # chat_id -> último response.id
 # =============================================================================
 # Função principal para gerar resposta do LLM
 # =============================================================================
+
+
+# =============================================================================
+# Função principal para gerar resposta do LLM
+# =============================================================================
 def generate_llm_answer(
     query,
     model=MODEL_LLM,
@@ -105,7 +110,6 @@ def generate_llm_answer(
         return {"error": f"Falha ao gerar resposta: {str(e)}"}
 
 # =============================================================================
-
 
 
 

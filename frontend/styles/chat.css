@@ -168,3 +168,8 @@
     border-color: var(--bots-primary);
     box-shadow: 0 0 0 3px rgb(16 185 129 / 0.12); /* subtle green glow */
 }
+
+/* Slightly smaller font for user questions (chat bubbles) */
+.theme-bots .chat-message.user .message-content {
+    font-size: var(--text-base);
+}

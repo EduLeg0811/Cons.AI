@@ -420,7 +420,9 @@ def get_logs():
             out_lines = []
             hr = "─" * 120
             # Header with total count
-            out_lines.append(f"Total: {len(blocks)} eventos")
+            # depois de carregar rec para cada block
+            # acumule ids em um set e ao final:
+            out_lines[0] = f"Total: {len(blocks)} eventos | N={len(uniq)} usuários distintos"
             out_lines.append(hr)
             out_lines.append("")
             for b in blocks:
@@ -647,7 +649,16 @@ def view_logs_page():
           </div>
         `
       }).join('');
-      counterEl.textContent = `${list.length} eventos`;
+      try {
+        const uniq = new Set();
+        for (const x of list) {
+            const id = (x.session_id || x._client_ip || '').toString();
+            if (id) uniq.add(id);
+        }
+        counterEl.textContent = `N=${uniq.size} usuários distintos | ${list.length} eventos`;
+        } catch (e) {
+        counterEl.textContent = `${list.length} eventos`;
+        }
     }
 
     async function load() {
@@ -786,6 +797,8 @@ class LlmQueryResource(Resource):
             temperature = float(data.get("temperature", 0.3))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
+            effort = data.get("effort", "low")
+            max_output_tokens = data.get("max_output_tokens", 50)
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
             chat_id = safe_str(data.get("chat_id", "")) \
@@ -820,6 +833,8 @@ class LlmQueryResource(Resource):
             except Exception as e:
                 logger.error(f"[llm_request log] failed: {e}")
 
+            # Generate LLM answer
+            # -------------------
             results = generate_llm_answer(**parameters)
 
             if "error" in results:

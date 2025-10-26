@@ -64,6 +64,12 @@
         font-size: var(--text-xs);
     }
 
+     /* User questions: slightly smaller on very small screens */
+    .theme-bots .chat-message.user .message-content {
+        font-size: var(--text-xs);
+        line-height: 1.2;
+    }
+
     
     .message-avatar {
         width: 44px;
