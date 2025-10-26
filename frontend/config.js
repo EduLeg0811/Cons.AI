@@ -3,9 +3,9 @@
 // Global Parameters
 // UI toggles and defaults
 // Whether to show reference badges under each result (fixed global setting)
-const MODEL_LLM='gpt-4.1-mini';
-const MODEL_RAGBOT='gpt-4.1-mini';
-const MODEL_DEEPDIVE='gpt-5-mini';
+const MODEL_LLM='gpt-4.1-nano';
+const MODEL_RAGBOT='gpt-4.1-nano';
+const MODEL_DEEPDIVE='gpt-5-nano';
 const TEMPERATURE=0.3;
 const MAX_RESULTS_DISPLAY=100;
 const MIN_RESULTS_DISPLAY=1;
@@ -212,7 +212,7 @@ no formato conscienciológico adequado a cada obra.
 
 
 const INSTRUCTIONS_DEFINITION = `
-VocÃª atua como um assistente no estilo ChatGPT, especializado em Conscienciologia, integrado a arquivos de referÃªncia (vector store).
+Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia, integrado a arquivos de referência (vector store).
 
 # Instruções gerais:
 - Sua tarefa é fornecer **uma definição de um termo**, sempre no contexto da Conscienciologia.
@@ -283,7 +283,8 @@ A pergunta deve:
 • Exigir **análise comparativa** entre alternativas verossímeis;
 • Envolver **nuances conceituais**, evitando literalismo e definições óbvias;
 • Evitar categorias binárias (bom/ruim; certo/errado);
-• Ter **1 parágrafo único**.
+• Focar em **1 ou no máximo 2 conceitos** centrais do corpus;
+• Ter **1 parágrafo único**, objetivo e direto, sem frases compostas desnecessárias.
 
 🚫 PROIBIÇÕES
 A pergunta não pode permitir identificação da correta por:
@@ -296,12 +297,16 @@ A pergunta não pode permitir identificação da correta por:
 ============================================================
 ✅ OPÇÕES DE RESPOSTA
 ============================================================
-• Exatamente 4 opções, numeradas 1–4.
+• Exatamente 4 opções.
 • Apenas 1 correta.
 • As 3 incorretas devem ser **conceitualmente plausíveis**, com:
   – erros **de nuance sutil**,
   – terminologia consistente,
   – hipóteses rivais legítimas.
+• Balanceamento: as 4 opções devem ter **comprimento e estilo semelhantes**;
+  a diferença entre a mais curta e a mais longa não deve exceder **25%**.
+• Evite padrões lexicais/pistas (ex.: advérbios absolutos, marcadores óbvios).
+• Não reutilize **textos idênticos** de perguntas ou opções recentes.
 
 Critérios para formular opções:
 A) conceitos correlatos facilmente confundidos;
@@ -313,25 +318,30 @@ C) deslocamentos sutis de contexto ou causalidade.
 ============================================================
 🎯 DIFICULDADE DINÂMICA
 ============================================================
-Gerar automaticamente no nível:
-Fácil → Médio → Médio-Alto → Alto → Muito Alto → Especialista.
-(Avançar nível apenas quando o usuário acerta.)
+Use o nível solicitado externamente (fora deste prompt) e adeque a pergunta a ele.
+Garanta **diversidade temática**: evite repetir temas, especialidades ou tópicos usados recentemente.
 
 ============================================================
-📌 FORMATO FINAL — ESTRITO
+📌 SAÍDA ESTRITA EM JSON
 ============================================================
-Nível: <nível>
-Pergunta: <texto>
-Opções:
-1. <texto>
-2. <texto>
-3. <texto>
-4. <texto>
+Responda em JSON estrito com as seguintes chaves e tipos:
+{
+  "nivel": "Fácil|Médio|Médio-Alto|Alto|Muito Alto|Especialista",
+  "pergunta": "string",
+  "opcoes": ["string", "string", "string", "string"],
+  "correta_index": 1,
+  "topico": "string curta (tema-chave)"
+}
+Requisitos do JSON:
+• opcoes deve ter 4 itens não vazios e sem duplicatas (após normalização simples).
+• correta_index é um inteiro 1..4 correspondente à opção correta.
+• pergunta deve ser 1 parágrafo.
+• topico deve refletir o foco principal (1–2 conceitos), não use rótulos genéricos.
 
 ============================================================
 📌 EXECUÇÃO
 ============================================================
-Gerar **agora** a pergunta **nível Fácil**, seguindo estritamente o formato acima.
+Gere a pergunta obedecendo estritamente ao formato JSON acima.
 `;
 
 

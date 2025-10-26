@@ -638,3 +638,215 @@
 {"event": "llm_response", "value": "As **Reurbanizações Extrafísicas (Reurbexes)** desempenham um papel fundamental e multifacetado no contexto evolutivo do planeta Terra, conforme a visão conscienciológica. Elas consistem na transforma", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "d210374f-f2a1-4e6e-9232-bbdedf6252fd", "_server_ts": "2025-10-26T19:52:01.827059Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
+[2025-10-26 20:21Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:21:53.030Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:21:55.761445Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:21Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:21:57.923Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:21:57.927819Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:21Z] event=module_click page=/index.html module=ConsBOT ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "ConsBOT", "module_href": "index_ragbot.html", "module_group": "bots", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:21:59.060Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:21:59.376285Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:21Z] event=page_view page=/index_ragbot.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_ragbot.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-26T20:21:59.108Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:21:59.423349Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_ragbot.html", "mode": "development", "ts": "2025-10-26T20:22:03.686Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:22:03.999916Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=module_click page=/index.html module=Quiz Conscienciológico ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Quiz Conscienciológico", "module_href": "index_quiz.html", "module_group": "apps", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_ragbot.html", "mode": "development", "ts": "2025-10-26T20:22:04.760Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:22:05.082185Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=page_view page=/index_quiz.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_quiz.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-26T20:22:04.787Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:22:05.098314Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=page_view page=/index_quiz.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_quiz.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-26T20:22:06.463Z", "session_id": "sz9iewf2r9mh7mwml7", "_server_ts": "2025-10-26T20:22:06.467882Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:08.392577Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Fácil\",\n  \"pergunta\": \"Na Conscienciologia, ao comparar a autopesquisa tradicional com a autopesquisa multidimensional, qual nuance conceitual melhor distingue a abordagem multidimension", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:17.002461Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A autopesquisa multidimensional substitui a autopesquisa tradicional ao priorizar exclusivamente as experiências extracorpóreas e ignorar os aspectos físicos e mentais da consciên", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:40.461374Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "**Resposta incorreta.** A alternativa correta é: *\"A autopesquisa multidimensional integra simultaneamente os sentidos físicos, megaatributos mentais e parapercepções, enquanto a autopesquisa tradicio", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:44.190868Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:44.197166Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Fácil\",\n  \"pergunta\": \"Considerando a Conscienciologia, como se diferencia o holopensene pessoal do holopensene grupal em termos de influência sobre a consciência individual, e qual nuan", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:54.293197Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:22Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:22:56.486457Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Fácil\",\n  \"pergunta\": \"Na Conscienciologia, ao analisar as diferenças entre energia consciencial e energia imanente, qual nuance conceitual melhor expressa a relação entre essas duas ene", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:05.029250Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: Opção 1", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:19.227402Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "**Resposta incorreta.** A alternativa correta é: *\"A energia imanente é a fonte universal e essencial que permeia tudo, enquanto a energia consciencial é a energia imanente absorvida e transformada pe", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:22.538020Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:22.542393Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Fácil\",\n  \"pergunta\": \"Na Conscienciologia, considerando as diferenças entre o holossoma intrafísico e o holossoma extrafísico, qual nuance conceitual melhor caracteriza a composição e a", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:31.268593Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KH...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:46.584325Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:23Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KH...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Fácil\",\n  \"pergunta\": \"Na Conscienciologia, ao comparar o holossoma intrafísico com o holossoma extrafísico, qual nuance conceitual melhor expressa a relação entre a composição dos veícu", "model": "gpt-4.1-mini", "temperature": 0.3, "chat_id": "a62cd764-b840-49a4-b89a-11081c1979ee", "_server_ts": "2025-10-26T20:23:59.147352Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:36:42.226Z", "session_id": "oauk72dwdjmh86644y", "_server_ts": "2025-10-26T20:36:44.641302Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:36:44.156Z", "session_id": "oauk72dwdjmh86644y", "_server_ts": "2025-10-26T20:36:44.782244Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=module_click page=/index.html module=Quiz Conscienciológico ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Quiz Conscienciológico", "module_href": "index_quiz.html", "module_group": "apps", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-26T20:36:47.993Z", "session_id": "oauk72dwdjmh86644y", "_server_ts": "2025-10-26T20:36:48.002608Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=page_view page=/index_quiz.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_quiz.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-26T20:36:48.135Z", "session_id": "oauk72dwdjmh86644y", "_server_ts": "2025-10-26T20:36:48.446226Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=page_view page=/index_quiz.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_quiz.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-26T20:36:50.605Z", "session_id": "oauk72dwdjmh86644y", "_server_ts": "2025-10-26T20:36:50.609962Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:36:51.901598Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:36Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Na análise das ações humanas, especialmente na busca pela evolução consciencial, como podemos compreender a diferença entre a busca por autenticidade na dupla", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:36:57.776948Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A busca por autenticidade na dupla evolutiva é um processo de longo prazo que depende de afinizações milenares, enquanto a inversão existencial planejada é uma estratégia precoce ", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:19.848160Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está correta. Ela reflete uma compreensão adequada da distinção entre a busca por autenticidade na dupla evolutiva, que é um processo de longo prazo e envolve afinizações milenar", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:23.482284Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:23.486618Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Considerando a dinâmica da formação de duplas evolutivas e os fatores que influenciam sua autenticidade, como a relação entre a temporariedade dos prazos de a", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:29.824180Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A formação de uma dupla evolutiva autêntica é uma questão de compatibilidade energética e cármica, sem relação com o tempo ou a técnica, sendo uma questão de acaso e afinidade mom", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:37.763454Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está incorreta. A alternativa correta é a segunda: \"A busca por autenticidade na dupla evolutiva depende da qualidade da interação, do saldo evolutivo e do entendimento das variá", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:40.652718Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:40.657043Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:37Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Ao analisar a formação de duplas evolutivas, considerando os fatores de tempo, herança genética, e a importância da interação consciente, como podemos disting", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:37:46.663929Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A relação superficial ou planejada por conveniência cármica é aquela que se baseia apenas na compatibilidade energética momentânea, sem necessidade de técnica ou saldo evolutivo, ", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:00.317632Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está incorreta. A alternativa correta é a segunda: \"A verdadeira dupla evolutiva se caracteriza por uma interação baseada em exigências e concessões mútuas, com saldo evolutivo p", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:02.981640Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:02.985711Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Na análise da formação de duplas evolutivas, considerando os fatores de tempo, herança genética e a importância da interação consciente, como podemos distingu", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:11.454889Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A autenticidade na dupla evolutiva é garantida apenas pela afinidade cármica, independentemente do saldo evolutivo ou da técnica empregada, pois o acaso e a herança genética deter", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:25.426267Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está incorreta. A alternativa correta é a segunda: \"A verdadeira dupla evolutiva se caracteriza por uma interação baseada em exigências e concessões mútuas, com saldo evolutivo p", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:28.935902Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:28.940038Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Considerando os fatores que influenciam a formação de duplas evolutivas, como a importância da ressoma, a influência do tempo de afinização e a herança genéti", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:40.040972Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A relação superficial ou planejada por conveniência cármica é aquela que se fundamenta apenas na compatibilidade energética momentânea, sem necessidade de técnica ou saldo evoluti", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:52.525755Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está incorreta. A alternativa correta é a segunda: \"A verdadeira dupla evolutiva se caracteriza por uma interação baseada em exigências e concessões mútuas, com saldo evolutivo p", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:55.644308Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:38Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:38:55.648433Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:39Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Considerando a complexidade das questões relacionadas à evolução consciencial, como a prática de autoparapsiquismo, a elaboração de agendas extrafísicas e a a", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:39:01.802322Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:39Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "Resposta do usuário: A autenticidade na busca evolutiva depende exclusivamente do tempo de prática de autoparapsiquia e elaboração de agendas, sendo que a técnica e a maturidade são secundárias e pode", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:39:24.708005Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:39Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "A resposta do usuário está incorreta. A alternativa correta é a segunda: \"A busca autêntica se manifesta na dedicação contínua à autoparapsiquia, na elaboração de agendas extrafísicas e na busca por m", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:39:28.352877Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:39Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "`Gerar nova pergunta.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:39:28.357080Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-26 20:39Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "{\n  \"nivel\": \"Médio-Alto\",\n  \"pergunta\": \"Na análise das estratégias evolutivas na formação de duplas, considerando os fatores de ressoma, herança genética e a importância da interação consciente, com", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "8ccc17cd-0ad3-400f-ae95-08e5bcf6acf3", "_server_ts": "2025-10-26T20:39:34.388014Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+

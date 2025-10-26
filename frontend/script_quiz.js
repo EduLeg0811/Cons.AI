@@ -57,16 +57,48 @@ async function quiz() {
             chat_id = chat_id || localStorage.getItem('cons_chat_id') || null;
         }
 
-        // ✅ CORREÇÃO MAIOR: só usar query minimalista
-        // Deixar TODA regra para o PROMPT_QUIZ_PERGUNTA
+        // ====== Nível e tópicos recentes (progressão) ======
+        const LEVELS = ["Fácil","Médio","Médio-Alto","Alto","Muito Alto","Especialista"];
+        function getQuizLevel(){
+            try { return localStorage.getItem('quiz_level') || 'Fácil'; } catch { return 'Fácil'; }
+        }
+        function setQuizLevel(lv){ try { localStorage.setItem('quiz_level', lv); } catch {} }
+        function levelUp(lv){ const i = LEVELS.indexOf(lv); return LEVELS[Math.min(LEVELS.length-1, Math.max(0, i+1))] || lv; }
+        function levelDown(lv){ const i = LEVELS.indexOf(lv); return LEVELS[Math.max(0, i-1)] || lv; }
+        function getRecentTopics(){
+            try { return JSON.parse(localStorage.getItem('quiz_recent_topics')||'[]'); } catch { return []; }
+        }
+        function pushRecentTopic(t){
+            try {
+                const arr = getRecentTopics();
+                const norm = (t||'').toString().trim();
+                if (norm){
+                    // dedup + cap 10
+                    const set = new Set([norm, ...arr]);
+                    const next = Array.from(set).slice(0,10);
+                    localStorage.setItem('quiz_recent_topics', JSON.stringify(next));
+                }
+            } catch {}
+        }
+
+        const currentLevel = getQuizLevel();
+        const recentTopics = getRecentTopics();
+
+        // ====== Instruções dinâmicas: nível + evitar tópicos recentes ======
+        const dynamicHeader = [
+            `Nível solicitado: ${currentLevel}.`,
+            recentTopics.length ? `Evite repetir estes tópicos: ${recentTopics.join(', ')}.` : ''
+        ].filter(Boolean).join('\n');
+
         const paramQuestion = {
             query: '`Gerar nova pergunta.',
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             effort: 'medium',
             max_output_tokens: 350,
-            temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+            // Temperatura mais baixa para perguntas mais objetivas e consistentes
+            temperature: 0.25,
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: PROMPT_QUIZ_PERGUNTA,
+            instructions: `${dynamicHeader}\n\n${PROMPT_QUIZ_PERGUNTA}`,
             use_session: true,
             chat_id: chat_id
         };
@@ -78,10 +110,132 @@ async function quiz() {
             quizData = await call_llm({ ...paramQuestion, timeout_ms: 60000 });
         }
 
+        // ====== Parser JSON-first com fallback ======
+        function normalizeText(s){ return (s||'').toString().replace(/\s+/g,' ').trim(); }
+        function tryParseJsonResponse(resp){
+            try {
+                // Try multiple sources: text, results[0].text, or direct string/object
+                let raw = resp?.text ?? resp?.results?.[0]?.text ?? resp;
+                if (typeof raw !== 'string') {
+                    // If already object, return a shallow validated object
+                    if (raw && typeof raw === 'object') return raw;
+                    raw = '';
+                }
+                raw = String(raw).trim();
+                // Remove code fences if present
+                let block = raw.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+                // Strip wrapping quotes if accidentally double-stringified
+                if ((block.startsWith('"') && block.endsWith('"')) || (block.startsWith("'") && block.endsWith("'"))) {
+                    try { block = JSON.parse(block); } catch { /* keep as is */ }
+                    if (typeof block !== 'string') return (block && typeof block === 'object') ? block : null;
+                }
+                const obj = JSON.parse(block);
+                return obj && typeof obj === 'object' ? obj : null;
+            } catch { return null; }
+        }
+        function validateQuiz(json){
+            try{
+                if (!json) return false;
+                const ops = Array.isArray(json.opcoes) ? json.opcoes.slice(0,4) : [];
+                if (ops.length !== 4) return false;
+                const norms = ops.map(o=>normalizeText(o)).filter(Boolean);
+                if (norms.length !== 4) return false;
+                // unicidade
+                if (new Set(norms).size !== 4) return false;
+                // tamanho balanceado (<=50% de diferença relativa) — relaxado para evitar falso negativo
+                const lens = norms.map(x=>x.length);
+                const min = Math.max(1, Math.min(...lens));
+                const max = Math.max(...lens);
+                if ((max - min)/min > 0.5) return false;
+                // termos proibidos nas opções
+                const banned = /(correta|errada|obviamente|claramente)\b/i;
+                if (norms.some(t=>banned.test(t))) return false;
+                // correta_index coerente
+                const idx = Number(json.correta_index);
+                if (!(idx>=1 && idx<=4)) return false;
+                return true;
+            }catch{ return false; }
+        }
+
+        // Qualidade adicional: simplicidade e anti-repetição
+        function getRecentQuestions(){
+            try { return JSON.parse(localStorage.getItem('quiz_recent_questions')||'[]'); } catch { return []; }
+        }
+        function pushRecentQuestion(q){
+            try{
+                const arr = getRecentQuestions();
+                const norm = normalizeText(q);
+                if (!norm) return;
+                const set = new Set([norm, ...arr]);
+                const next = Array.from(set).slice(0,20);
+                localStorage.setItem('quiz_recent_questions', JSON.stringify(next));
+            } catch {}
+        }
+        function getRecentOptions(){
+            try { return JSON.parse(localStorage.getItem('quiz_recent_options')||'[]'); } catch { return []; }
+        }
+        function pushRecentOptions(opts){
+            try{
+                const prev = new Set(getRecentOptions());
+                const next = Array.from(new Set([ ...opts.map(normalizeText).filter(Boolean), ...prev ])).slice(0,80);
+                localStorage.setItem('quiz_recent_options', JSON.stringify(next));
+            } catch {}
+        }
+        function qualityCheck(json){
+            try{
+                const q = normalizeText(json?.pergunta);
+                const ops = Array.isArray(json?.opcoes) ? json.opcoes.map(normalizeText).filter(Boolean) : [];
+                if (!q || ops.length!==4) return false;
+                // limites de tamanho para simplicidade
+                if (q.length > 240) return false;
+                const lens = ops.map(x=>x.length);
+                if (lens.some(L=>L<30 || L>220)) return false;
+                // anti-repetição (pergunta e opções)
+                const rq = new Set(getRecentQuestions());
+                if (rq.has(q)) return false;
+                const ro = new Set(getRecentOptions());
+                // nenhuma opção recente pode se repetir
+                if (ops.some(o=>ro.has(o))) return false;
+                return true;
+            } catch { return false; }
+        }
+
+        // Parse JSON e tente regenerar APENAS se não houver JSON utilizável
+        let quizJson = tryParseJsonResponse(quizData);
+        if (!quizJson){
+            // tenta 1 regeneração somente quando não há JSON
+            quizData = await call_llm({ ...paramQuestion, timeout_ms: 60000 });
+            quizJson = tryParseJsonResponse(quizData);
+        }
+
+        // Caso haja JSON mas falhe qualidade (complexidade/repetição), tentar 1 regeneração com pista
+        if (quizJson && !qualityCheck(quizJson)){
+            const fixHeader = [
+                dynamicHeader,
+                'Atenção: não repetir pergunta nem opções recentes; focar em 1–2 conceitos; enunciado breve e direto; variar o tema.'
+            ].filter(Boolean).join('\n');
+            const retryParams = { ...paramQuestion, instructions: `${fixHeader}\n\n${PROMPT_QUIZ_PERGUNTA}` };
+            quizData = await call_llm({ ...retryParams, timeout_ms: 60000 });
+            const parsedRetry = tryParseJsonResponse(quizData);
+            if (parsedRetry) quizJson = parsedRetry;
+        }
+
         // ✅ Remover loading antes de mostrar pergunta
         if (typeof removeLoading === 'function') removeLoading(resultsDiv);
 
-        const quizParsed = parseQuizResponse(quizData);
+        let quizParsed;
+        if (quizJson){
+            quizParsed = {
+                nivel: String(quizJson.nivel||'').trim(),
+                pergunta: String(quizJson.pergunta||'').trim(),
+                opcoes: Array.isArray(quizJson.opcoes) ? quizJson.opcoes.slice(0,4) : [],
+                correta_index: Number(quizJson.correta_index||0),
+                topico: String(quizJson.topico||'').trim()
+            };
+        } else {
+            // fallback legacy parser
+            quizParsed = parseQuizResponse(quizData);
+        }
         const pergunta = quizParsed.pergunta;
         const opcoes = quizParsed.opcoes;
 
@@ -126,6 +280,30 @@ async function quiz() {
             quizData = null; // ✅ Garante nova pergunta
             return;
         }
+
+        // ====== Correção local (se houver gabarito JSON) + progressão de nível ======
+        let isCorrect = null;
+        try{
+            if (quizParsed && typeof quizParsed.correta_index === 'number' && quizParsed.correta_index>=1 && quizParsed.correta_index<=4){
+                const norms = opcoes.map(normalizeText);
+                const pickedNorm = normalizeText(userAnswer);
+                const pickedIdx = norms.findIndex(x=>x===pickedNorm) + 1; // 1..4
+                if (pickedIdx>=1) {
+                    isCorrect = (pickedIdx === quizParsed.correta_index);
+                }
+            }
+        } catch {}
+
+        // atualiza nível, tópicos e memória de repetição
+        try {
+            if (quizParsed?.topico) pushRecentTopic(quizParsed.topico);
+            // memória de repetição
+            pushRecentQuestion(quizParsed?.pergunta||'');
+            pushRecentOptions(Array.isArray(quizParsed?.opcoes)?quizParsed.opcoes:[]);
+            const lv = currentLevel;
+            if (isCorrect === true) setQuizLevel(levelUp(lv));
+            else if (isCorrect === false) setQuizLevel(levelDown(lv));
+        } catch {}
 
         // ✅ Feedback automático pelo LLM
         insertLoading(resultsDiv, 'Analisando...');
