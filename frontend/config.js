@@ -283,10 +283,10 @@ A pergunta deve:
 • Exigir **análise comparativa** entre alternativas verossímeis;
 • Envolver **nuances conceituais**, evitando literalismo e definições óbvias;
 • Evitar categorias binárias (bom/ruim; certo/errado);
-• Focar em **1 ou no máximo 2 conceitos** centrais do corpus;
+• Focar em 1 ou no máximo 2 conceitos centrais do corpus - não usar vários conceitos complexos da Conscienciologia na mesma pergunta;
 • Ter **1 parágrafo único**, objetivo e direto, sem frases compostas desnecessárias.
 • Terminar com *ponto de interrogação*, pois deve ser uma pergunta, e não uma afirmação.
-• Não ser muito complexa ou abstrata, pois o usuário deve conseguir ler e entender já na primeira leitura.
+• Não ser muito complexa ou abstrata, pois o usuário deve conseguir ler e entender facilmente já na primeira leitura.
 
 🚫 PROIBIÇÕES
 A pergunta não pode permitir identificação da opção correta por:
