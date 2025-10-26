@@ -285,9 +285,10 @@ A pergunta deve:
 • Evitar categorias binárias (bom/ruim; certo/errado);
 • Focar em **1 ou no máximo 2 conceitos** centrais do corpus;
 • Ter **1 parágrafo único**, objetivo e direto, sem frases compostas desnecessárias.
+• Não ser muito complexa ou abstrata, pois o usuário deve conseguir ler e entender já na primeira leitura.
 
 🚫 PROIBIÇÕES
-A pergunta não pode permitir identificação da correta por:
+A pergunta não pode permitir identificação da opção correta por:
 1) contradições internas ou absurdos nas erradas;
 2) pistas óbvias ou extremo desequilíbrio entre alternativas;
 3) exageros retóricos ou generalizações fáceis;
@@ -299,7 +300,7 @@ A pergunta não pode permitir identificação da correta por:
 ============================================================
 • Exatamente 4 opções.
 • Apenas 1 correta.
-• As 3 incorretas devem ser **conceitualmente plausíveis**, com:
+• As 3 incorretas devem apresentar:
   – erros **de nuance sutil**,
   – terminologia consistente,
   – hipóteses rivais legítimas.
@@ -309,7 +310,7 @@ A pergunta não pode permitir identificação da correta por:
 • Não reutilize **textos idênticos** de perguntas ou opções recentes.
 
 Critérios para formular opções:
-A) conceitos correlatos facilmente confundidos;
+A) conceitos correlatos normalmente confundidos;
 B) aplicações equivocadas mas sofisticadas;
 C) deslocamentos sutis de contexto ou causalidade.
 
