@@ -425,7 +425,7 @@ def compile_boolean_predicate(query: str) -> Callable[[str], bool]:
                 norm = normalize_for_match(token)
                 # Default: prefix match at word start (behaves like implicit trailing '*')
                 # Example: 'casa' matches 'casa', 'casado', but not 'emcasacado'.
-                pat_cache[token] = re.compile(rf"\b{re.escape(norm)}\w*", flags=re.IGNORECASE)
+                pat_cache[token] = re.compile(rf"\b{re.escape(norm)}\b", flags=re.IGNORECASE)
         pat = pat_cache[token]
         return lambda s: bool(pat.search(s))
 
