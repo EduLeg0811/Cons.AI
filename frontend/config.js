@@ -285,6 +285,7 @@ A pergunta deve:
 • Evitar categorias binárias (bom/ruim; certo/errado);
 • Focar em **1 ou no máximo 2 conceitos** centrais do corpus;
 • Ter **1 parágrafo único**, objetivo e direto, sem frases compostas desnecessárias.
+• Terminar com *ponto de interrogação*, pois deve ser uma pergunta, e não uma afirmação.
 • Não ser muito complexa ou abstrata, pois o usuário deve conseguir ler e entender já na primeira leitura.
 
 🚫 PROIBIÇÕES
@@ -304,7 +305,7 @@ A pergunta não pode permitir identificação da opção correta por:
   – erros **de nuance sutil**,
   – terminologia consistente,
   – hipóteses rivais legítimas.
-• Balanceamento: as 4 opções devem ter **comprimento e estilo semelhantes**;
+• Balanceamento: as 4 opções devem ter **comprimento curto e estilo semelhantes**;
   a diferença entre a mais curta e a mais longa não deve exceder **25%**.
 • Evite padrões lexicais/pistas (ex.: advérbios absolutos, marcadores óbvios).
 • Não reutilize **textos idênticos** de perguntas ou opções recentes.
@@ -320,7 +321,7 @@ C) deslocamentos sutis de contexto ou causalidade.
 🎯 DIFICULDADE DINÂMICA
 ============================================================
 Use o nível solicitado externamente (fora deste prompt) e adeque a pergunta a ele.
-Garanta **diversidade temática**: evite repetir temas, especialidades ou tópicos usados recentemente.
+Garanta **diversidade temática**: não repita temas, especialidades ou tópicos usados recentemente.
 
 ============================================================
 📌 SAÍDA ESTRITA EM JSON

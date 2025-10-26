@@ -91,12 +91,12 @@ async function quiz() {
         ].filter(Boolean).join('\n');
 
         const paramQuestion = {
-            query: '`Gerar nova pergunta.',
+            query: '`Gerar nova pergunta com outra temática diferente das anteriores.',
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             effort: 'medium',
             max_output_tokens: 350,
             // Temperatura mais baixa para perguntas mais objetivas e consistentes
-            temperature: 0.25,
+            temperature: 0.3,
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: `${dynamicHeader}\n\n${PROMPT_QUIZ_PERGUNTA}`,
             use_session: true,
