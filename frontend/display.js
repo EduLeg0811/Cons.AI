@@ -884,7 +884,24 @@ function _tokenizeQuery(q) {
 
 // Extrai literais POSITIVOS para destacar (ignora negados com ! e operadores)
 function _extractHighlightLiterals(query) {
-  const tokens = _tokenizeQuery(String(query || ''));
+  const qstr = String(query || '').trim();
+
+  // Caso especial: frase simples (sem operadores, sem curingas, sem aspas) com espaço
+  // Ex.: casa de papel -> destacar apenas a frase inteira
+  const isSimplePhrase = (
+    qstr.length > 0 &&
+    !/[&|!()]/.test(qstr) &&
+    qstr.indexOf('*') === -1 &&
+    qstr.indexOf('"') === -1 &&
+    /\s/.test(qstr)
+  );
+
+  if (isSimplePhrase) {
+    return [{ raw: '"' + qstr + '"', phrase: true, core: qstr }];
+  }
+
+  // Caso geral: tokeniza e respeita frases entre aspas e operadores
+  const tokens = _tokenizeQuery(qstr);
   const lits = [];
   let negateNext = false;
   for (const t of tokens) {

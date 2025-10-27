@@ -217,10 +217,8 @@ async function search_book() {
             // Exibe descritivos
             removeLoading(resultsDiv);
 
-            if (fullBadges) {
-                descJson.ref = "Descritivos"
-                showSimple(resultsDiv, descJson);
-            }
+            descJson.ref = "Descritivos"
+            showSimple(resultsDiv, descJson);
             
 
 
