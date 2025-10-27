@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchButton.addEventListener('click', search_book);
     searchInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') search_book();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            search_book();
+        }
     });
 
 

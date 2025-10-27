@@ -140,11 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
           // Mostra os metadados do response em Badges, logo após o texto da resposta
           // ------------------------------------------------------------------------   
           metaData = extractMetadata(response, 'ragbot');
-          const citations = metaData?.citations;
-          const total_tokens_used = metaData?.total_tokens_used;
-          const model = metaData?.model;
-          const temperature = metaData?.temperature;
-          const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
+          // const citations = metaData?.citations;
+          // const total_tokens_used = metaData?.total_tokens_used;
+          // const model = metaData?.model;
+          // const temperature = metaData?.temperature;
+          // const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
+
+          console.log('<<Script_RAGbot>> metaData:', metaData);
           
           const botMessageEl = document.getElementById(chatMessage_id).querySelector('.message-content');
           showBotMetainfo(botMessageEl, metaData); 

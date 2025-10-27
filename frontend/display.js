@@ -909,13 +909,19 @@ function _buildRegexForLiteral(lit) {
     // frase: substring literal no texto LIMPO (sem pontuação)
     return new RegExp(_escapeRegex(core), 'gi');
   }
-  if (core.includes('*')) {
-    // wildcard: '*' -> '.*' no texto LIMPO
-    const pattern = _escapeRegex(core).replace(/\\\*/g, '.*');
+  // aplica mesma semântica do backend:
+  // - termo com *: '*' -> '\\w*' e aplica limites de palavra quando não há * no início/fim
+  // - termo sem *: match exato de palavra: \\bterm\\b
+  const hasWildcard = core.includes('*');
+  if (hasWildcard) {
+    const escaped = _escapeRegex(core).replace(/\\\*/g, '\\w*');
+    const prefixBound = !lit.core.startsWith('*');
+    const suffixBound = !lit.core.endsWith('*');
+    const pattern = (prefixBound ? '\\b' : '') + escaped + (suffixBound ? '\\b' : '');
     return new RegExp(pattern, 'gi');
   }
-  // termo simples: casa em QUALQUER posição; expansão posterior cobre a palavra inteira
-  return new RegExp(_escapeRegex(core), 'gi');
+  // termo simples: palavra exata
+  return new RegExp('\\b' + _escapeRegex(core) + '\\b', 'gi');
 }
 
 function _escapeRegex(s) {
@@ -957,16 +963,8 @@ function highlightHtml(safeHtml, query) {
         let endClean = m.index + (m[0]?.length || 0);
         if (endClean <= startClean) continue;
 
-        // Expansão para palavra inteira para termos não-frase
-        const isPhrase = /"/.test(''+(m.inputToken||'')); // não confiável; reusa lit abaixo
-        // Como não temos referência ao literal aqui, heurística: se o padrão termina com \w* OU contém .*, expandimos.
-        const srcPattern = re.source;
-        const shouldExpandToWord = /\\w\*$/.test(srcPattern) || /\.\*/.test(srcPattern);
-        if (shouldExpandToWord) {
-          // expande para cobrir toda a palavra no TEXTO LIMPO
-          while (startClean > 0 && /\w/.test(clean[startClean - 1])) startClean--;
-          while (endClean < clean.length && /\w/.test(clean[endClean])) endClean++;
-        }
+        // Não expandir além do match: wildcard já usa \w* e pára em espaço/pontuação;
+        // termos simples usam \b...\b (exato).
 
         // Mapeia para índices do ORIGINAL via cMap
         const startOrig = cMap[startClean] ?? 0;

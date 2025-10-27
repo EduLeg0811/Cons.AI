@@ -173,3 +173,12 @@
 .theme-bots .chat-message.user .message-content {
     font-size: var(--text-base);
 }
+
+
+/* Tamanhos de headers nas respostas do RAGBOT */
+.theme-bots .chat-message.bot .message-content .markdown-content h1 { font-size: var(--text-lg); }
+.theme-bots .chat-message.bot .message-content .markdown-content h2 { font-size: var(--text-base); }
+.theme-bots .chat-message.bot .message-content .markdown-content h3 { font-size: var(--text-sm); }
+.theme-bots .chat-message.bot .message-content .markdown-content h4 { font-size: var(--text-xs); }
+.theme-bots .chat-message.bot .message-content .markdown-content h5 { font-size: var(--text-xs); }
+.theme-bots .chat-message.bot .message-content .markdown-content h6 { font-size: var(--text-xs); }

@@ -75,21 +75,55 @@ def generate_llm_answer(
     previous_id = _conversation_last_id.get(chat_id) if use_session else None
 
     # Monta payload
-    llm_str = {
-        "model": model,
-        "tools": [{
-            "type": "file_search",
-            "vector_store_ids": vector_store_ids,
-            "max_num_results": int(LLM_MAX_RESULTS)
-        }],
-        "input": query,
-        "instructions": instructions,
-        "store": True,
-    }
-    if not str(model).startswith("gpt-5"):
-        llm_str["temperature"] = float(temperature)
+
+    logger.info("Vector Store IDs: %s", vector_store_ids)
+    logger.info("Model: %s", model)
+
+   
+
+    # GPT-5
+    # ==============================================
+    if str(model).startswith("gpt-5"):
+        llm_str = {
+            "model": model,
+            "tools": [{
+                "type": "file_search",
+                "vector_store_ids": vector_store_ids,
+                "max_num_results": int(LLM_MAX_RESULTS)
+            }],
+            "input": query,
+            "instructions": instructions,
+            "store": True,
+            "reasoning": { "effort": "low" },
+            "text": { "verbosity": "low" },
+        }
+
+    # GPT-4.1
+    # ==============================================
+    else:
+        llm_str = {
+            "model": model,
+            "tools": [{
+                "type": "file_search",
+                "vector_store_ids": vector_store_ids,
+                "max_num_results": int(LLM_MAX_RESULTS)
+            }],
+            "input": query,
+            "instructions": instructions,
+            "store": True,
+            "temperature": float(temperature)
+        }
+        
+
+    # Adiciona ID da resposta anterior se existir
     if previous_id:
         llm_str["previous_response_id"] = previous_id
+
+    # Log do payload
+    logger.info(
+            "LLM Payload:\n%s",
+            json.dumps(llm_str, indent=2, ensure_ascii=False)
+        )
 
     try:
         attempts = 0
@@ -99,12 +133,25 @@ def generate_llm_answer(
                 # === Chamada principal com timeout ===
                 response = client.with_options(timeout=timeout_s).responses.create(**llm_str)
 
+
+                # Log da resposta
+                logger.info("\n\nLLM Response:\n%s\n\n", response)
+
+
                 # Atualiza o último ID da conversa
                 last_id = getattr(response, "id", None)
                 if last_id and use_session:
                     _conversation_last_id[chat_id] = last_id
 
-                return format_llm_response(response)
+                # Formatted Response
+                formatted_response = format_llm_response(response)
+
+                # Log da resposta formatada
+                logger.info("\n\nFormatted Response:\n%s\n\n", formatted_response)
+
+                return formatted_response
+
+                
 
             except (RateLimitError, APITimeoutError, APIError, APIConnectionError) as ex:
                 last_exc = ex

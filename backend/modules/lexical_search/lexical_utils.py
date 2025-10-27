@@ -394,6 +394,8 @@ def compile_boolean_predicate(query: str) -> Callable[[str], bool]:
       - parênteses    -> opcionais
     """
     q = (query or "").strip()
+    if q and ('"' not in q) and ('*' not in q) and all(op not in q for op in ('&', '|', '!', '(', ')')) and any(ch.isspace() for ch in q):
+        q = '"' + q + '"'
     if not q:
         # query vazia nunca casa nada
         return lambda _: False
@@ -512,6 +514,8 @@ def compile_prefilter(query: str) -> Optional[Callable[[str], bool]]:
     Só ativa para CONJUNÇÃO pura (sem OR) e sem curingas nos literais pré-filtrados.
     """
     q = (query or "").strip()
+    if q and ('"' not in q) and ('*' not in q) and all(op not in q for op in ('&', '|', '!', '(', ')')) and any(ch.isspace() for ch in q):
+        q = '"' + q + '"'
     if not q:
         return None
 

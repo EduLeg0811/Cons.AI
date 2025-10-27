@@ -194,7 +194,12 @@
         if (trigger && panel) {
             trigger.addEventListener('click', function(e) {
                 e.stopPropagation();
-                panel.classList.toggle('open');
+                const isOpen = panel.classList.toggle('open');
+                if (isOpen) {
+                    document.documentElement.setAttribute('data-module-config-open', 'true');
+                } else {
+                    document.documentElement.removeAttribute('data-module-config-open');
+                }
                 try {
                     if (!localStorage.getItem('configPulseSeen_search_verb')) {
                         localStorage.setItem('configPulseSeen_search_verb', 'true');
@@ -282,6 +287,7 @@
                 setTimeout(() => {
                 try { saveBtn.classList.remove('saving'); } catch {}
                 if (panel) panel.classList.remove('open');
+                document.documentElement.removeAttribute('data-module-config-open');
                 }, 500);
 
             });

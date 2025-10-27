@@ -371,12 +371,16 @@
               try { loadConfigForm(); } catch {}
               el.style.display = 'flex';
               el.setAttribute('aria-hidden', 'false');
+              // mark page as having modal open (for CSS blur)
+              document.documentElement.setAttribute('data-config-open', 'true');
             }
             function closeConfigModal() {
               const el = document.getElementById('config-backdrop');
               if (!el) return;
               el.style.display = 'none';
               el.setAttribute('aria-hidden', 'true');
+              // remove modal-open marker
+              document.documentElement.removeAttribute('data-config-open');
             }
             function toggleConfig(){ openConfigModal(); }
 

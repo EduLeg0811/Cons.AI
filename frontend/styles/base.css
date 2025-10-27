@@ -621,6 +621,25 @@ body.dark .book-pill.active {
 /* ===== CONFIG MODAL ===== */
 .config-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 1000; }
 
+/* Blur background when config modal or module options are open */
+html[data-config-open="true"] .navbar,
+html[data-config-open="true"] .main-content,
+html[data-config-open="true"] .footer,
+html[data-config-open="true"] .search-container,
+html[data-config-open="true"] .search-input,
+html[data-config-open="true"] .search-button,
+html[data-module-config-open="true"] .navbar,
+html[data-module-config-open="true"] .main-content,
+html[data-module-config-open="true"] .footer,
+html[data-module-config-open="true"] .search-container,
+html[data-module-config-open="true"] .search-input,
+html[data-module-config-open="true"] .search-button {
+  filter: blur(3px);
+  transition: filter var(--transition-normal);
+  pointer-events: none; /* avoid clicks behind modal */
+  user-select: none;    /* avoid text selection behind modal */
+}
+
 /* Narrow input for temperature number */
 #cfg-temperature-num { width: 90px; }
 
