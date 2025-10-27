@@ -1550,3 +1550,103 @@
 {"event": "llm_response", "value": "**Síntese sobre as Comunidades Extrafísicas (Comunexes) e sua relação com os Cursos Intermissivos**\n\n**Definição:**  \nAs Comunexes são comunidades extrafísicas que atuam no âmbito da interassistência,", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "a6be6aed-4cee-4651-bffb-28f8dd0a1d11", "_server_ts": "2025-10-27T19:11:59.586060Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
+[2025-10-27 20:01Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-27T20:01:25.086Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:25.756408Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:01Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:01:25.139Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:25.788376Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:01Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "c", "length": 1, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:01:33.577Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:33.581735Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:01Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "cenytra", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:01:34.687Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:34.998030Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:01Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "cen", "length": 3, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:01:35.955Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:35.957486Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:01Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "centra", "length": 6, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:01:37.200Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:01:37.509710Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:02Z] event=input_submit page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "input_submit", "trigger": "enter", "field": {"id": "searchInput", "placeholder": "Digite o termo para pesquisar...", "classes": "search-input"}, "value": "central", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:02:03.787Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:02:04.106551Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:02Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "central", "length": 7, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:02:03.788Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:02:04.416746Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:02Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "central\n", "length": 8, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:02:03.789Z", "session_id": "w83fxu1gbamh9dg4ck", "_server_ts": "2025-10-27T20:02:04.417676Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:02Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "TEXTO DE ENTRADA: central.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "1941332e-9bd5-4185-b9ec-1222f085806e", "_server_ts": "2025-10-27T20:02:04.665938Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:02Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "Energia extrafísica; Central de energia; Comunex extrafísica", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "1941332e-9bd5-4185-b9ec-1222f085806e", "_server_ts": "2025-10-27T20:02:09.065040Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-10-27T20:07:01.395Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:02.668122Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:01.537Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:02.760659Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "c", "length": 1, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:09.429Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:09.433345Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=search_input page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_input", "module": "book", "value": "central", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:10.510Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:10.824707Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=input_submit page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "input_submit", "trigger": "enter", "field": {"id": "searchInput", "placeholder": "Digite o termo para pesquisar...", "classes": "search-input"}, "value": "central", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:10.891Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:11.093818Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "central", "length": 7, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:10.892Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:11.204768Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "TEXTO DE ENTRADA: central.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "c1737cd2-31e0-466f-b9cd-ea579b255abf", "_server_ts": "2025-10-27T20:07:14.551020Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "Central Extrafísica; Energia Consciencial; Fluxo Cósmico", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "c1737cd2-31e0-466f-b9cd-ea579b255abf", "_server_ts": "2025-10-27T20:07:18.984901Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-10-27T20:07:43.543Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:43.565682Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=module_click page=/index.html module=ConsBOT ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "ConsBOT", "module_href": "index_ragbot.html", "module_group": "bots", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-10-27T20:07:44.507Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:44.814690Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=page_view page=/index_ragbot.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_ragbot.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:44.537Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:44.847321Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=input_submit page=/index_ragbot.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "input_submit", "trigger": "click", "field": {"id": "searchInput", "placeholder": "Olá conscienciólogo!", "classes": "search-input"}, "value": "O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?", "length": 87, "page": "/index_ragbot.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-10-27T20:07:45.437Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-10-27T20:07:45.439456Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "5865ffec-f726-4198-a798-2708b466f654", "_server_ts": "2025-10-27T20:07:45.747258Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-10-27 20:07Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "### Checklist de análise:\n1. Analisar a questão sobre a definição de Conscienciometria e aplicação do Conscienciograma na autoavaliação.\n2. Buscar referências nos documentos fornecidos, especialmente ", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "5865ffec-f726-4198-a798-2708b466f654", "_server_ts": "2025-10-27T20:07:54.503957Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+

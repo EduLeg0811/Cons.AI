@@ -7,6 +7,8 @@ import faiss
 
 import gc
 import psutil
+import heapq
+import numpy as np
 
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
@@ -67,7 +69,9 @@ def simple_semantic_search(query, source, index_dir):
     # ------------------------------------------------------
     # Busca Semântica em FAISS
     # ------------------------------------------------------
-    all_results = []
+    # Global top-N heap (stores worst-at-top using negative distance to keep smallest distances)
+    # Each entry: (neg_dist, store_id, doc_id)
+    top_heap = []
     try:
 
          # Caso source contenha "LO", substitui "LO" por "LO1", "LO2", "LO3", "LO4"
@@ -82,6 +86,10 @@ def simple_semantic_search(query, source, index_dir):
         vector_store_ids = get_vector_store_id(source)
 
         #logger.info(f"++++++++++ [simple_semantic_search] Vector store IDs: {vector_store_ids}")
+
+        # Pre-embed query once
+        qvec = embeddings.embed_query(query)
+        qvec_np = np.array([qvec], dtype='float32')
 
         for vs_id in vector_store_ids:
 
@@ -105,23 +113,38 @@ def simple_semantic_search(query, source, index_dir):
                 folder_path=index_path,
                 embeddings=embeddings,
                 allow_dangerous_deserialization=True
-                )
+            )
 
             # Log de memória antes
             process = psutil.Process(os.getpid())
             #logger.info(f"[FAISS] Depois de carregar {vs_id}: {process.memory_info().rss / 1024 ** 2:.2f} MB")
 
-            # k-NN clássico com fetch_k=150
+            # Busca FAISS nativa usando o vetor pré-calculado
             #------------------------------------------------------
-            results_with_scores = vectorstore.similarity_search_with_score(
-                query, k=TOP_K, fetch_k=FECTH_K, score_threshold=None
-            )
-          
-            all_results.extend(results_with_scores)
+            try:
+                distances, indices = vectorstore.index.search(qvec_np, FECTH_K)
+            except Exception:
+                # fallback: se falhar por qualquer razão inesperada, libera e segue
+                distances, indices = None, None
+
+            if distances is not None and indices is not None:
+                idx_row = indices[0]
+                dist_row = distances[0]
+                # Mapeia índices para doc_ids e empilha no heap global
+                for dist, idx in zip(dist_row, idx_row):
+                    if idx == -1:
+                        continue
+                    try:
+                        doc_id = vectorstore.index_to_docstore_id[idx]
+                    except Exception:
+                        continue
+                    # Negativo para manter menor distância no heap de tamanho fixo
+                    heapq.heappush(top_heap, (-float(dist), vs_id, doc_id))
+                    if len(top_heap) > TOP_K:
+                        heapq.heappop(top_heap)
 
             # Libera memória imediatamente
             del vectorstore
-            del results_with_scores
             gc.collect()
 
             # Log de memória depois
@@ -133,16 +156,50 @@ def simple_semantic_search(query, source, index_dir):
 
      
         # ------------------------------------------------------
-        # Processa resultados
+        # Materializa somente os documentos finalistas do heap
         # ------------------------------------------------------
+        # Recupera entradas ordenadas por melhor distância (menor primeiro)
+        finalists = []
+        while top_heap:
+            neg_dist, store_id, doc_id = heapq.heappop(top_heap)
+            finalists.append(( -neg_dist, store_id, doc_id ))
+        finalists.sort(key=lambda x: x[0])  # menor distância primeiro
+
         processed_results = []
-        for doc, score in all_results:
-            if hasattr(doc, 'page_content') and hasattr(doc, 'metadata'):
-                # 1) score salvo como número ou None (4 digitos decimais)
-                doc.metadata['score'] = round(_to_float_or_none(score), 4)
-                # normalizar as chaves do metadata já aqui (minúsculas)
-                doc.metadata = {str(k).lower(): v for k, v in doc.metadata.items()}
-                processed_results.append(doc)
+        # Agrupa por store para minimizar loads repetidos
+        by_store = {}
+        for dist, store_id, doc_id in finalists:
+            by_store.setdefault(store_id, []).append((dist, doc_id))
+
+        for store_id, items in by_store.items():
+            index_path = os.path.abspath(os.path.join(index_dir, store_id))
+            if not os.path.exists(os.path.join(index_path, "index.faiss")):
+                continue
+            vectorstore = FAISS.load_local(
+                folder_path=index_path,
+                embeddings=embeddings,
+                allow_dangerous_deserialization=True
+            )
+            try:
+                for dist, doc_id in items:
+                    try:
+                        doc = vectorstore.docstore.search(doc_id)
+                        if not doc:
+                            continue
+                        # garantir atributos
+                        if hasattr(doc, 'metadata'):
+                            md = {str(k).lower(): v for k, v in getattr(doc, 'metadata', {}).items()}
+                        else:
+                            md = {}
+                        # score como distância (quanto menor melhor); manter compatibilidade com 'score'
+                        md['score'] = round(_to_float_or_none(dist), 4)
+                        doc.metadata = md
+                        processed_results.append(doc)
+                    except Exception:
+                        continue
+            finally:
+                del vectorstore
+                gc.collect()
 
             
 
@@ -170,7 +227,30 @@ def simple_semantic_search(query, source, index_dir):
         # Converte resultados para dicionários planos (mantendo meta_score)       
         flat_results = plain_dicts(processed_results)
 
-       
+        # Cleanup temporaries to help GC before returning
+        try:
+            processed_results.clear()
+        except Exception:
+            pass
+        try:
+            finalists.clear()
+        except Exception:
+            pass
+        try:
+            by_store.clear()
+        except Exception:
+            pass
+        try:
+            top_heap.clear()
+        except Exception:
+            pass
+        try:
+            del qvec_np
+            del qvec
+        except Exception:
+            pass
+        gc.collect()
+
         # ------------------------------------------------------
         # Retorna resultados
         # ------------------------------------------------------    
