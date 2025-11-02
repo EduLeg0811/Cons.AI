@@ -52,14 +52,17 @@
  <div class="container">
     <!-- Options Trigger + Panel (dropdown) -->
     <div class="options-wrapper">
+
+        <!-- Toolbar -->
         <div class="search-toolbar">
-            <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
-                <i class="fas fa-file-word fa-2x"></i>
-            </button>
             <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                 <i class="fas fa-sliders-h"></i>
             </button>
+            <button id="downloadDocx" class="download-trigger hidden" title="Download as Word" style="margin-left:auto">
+                <i class="fas fa-file-word fa-2x"></i>
+            </button>
         </div>
+
 
         <!-- Search Container -->
         <div class="search-container">
@@ -76,7 +79,7 @@
 
 
         <!-- Instructions -->
-        <div class="search-hint">
+        <div class="search-hint" id="searchHint">
                     <span>
                         <strong>Configuração:</strong><br>
                         Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong><em>Léxica</em></strong> | <strong><em>Semântica</em></strong>).<br>
@@ -190,6 +193,16 @@
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
         const STORAGE_KEY = 'settings_search_book';
+        const hintEl = document.getElementById('searchHint');
+        function hideSearchHint(){
+            const el = document.getElementById('searchHint');
+            if (!el) return;
+            if (!el.classList.contains('hidden')) el.classList.add('hidden');
+            try { el.setAttribute('aria-hidden','true'); } catch {}
+            try { el.style.display = 'none'; } catch {}
+        }
+        const HINT_TIMEOUT_MS = 30000;
+        try { setTimeout(hideSearchHint, HINT_TIMEOUT_MS); } catch {}
     
         // ================================================================
         // 1. Definição da configuração inicial padrão
@@ -243,6 +256,7 @@
                     }
                 } catch (err) {}
                 document.documentElement.setAttribute('data-config-pulse', 'off');
+                try { hideSearchHint(); } catch {}
             });
     
             // document.addEventListener('click', function(e) {
@@ -343,25 +357,27 @@
     (function(){
       const searchEl = document.getElementById('searchInput');
       const submitBtn = document.getElementById('searchButton');
-      if (searchEl && window.logEvent){
+      if (searchEl){
         // Enter -> search_submit (sem Shift)
         searchEl.addEventListener('keydown', (e)=>{
           try{
             if (e.key === 'Enter' && !e.shiftKey) {
               const val = searchEl.value || '';
               try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-              window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length, trigger: 'enter' });
+              if (window.logEvent) window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length, trigger: 'enter' });
+              try { (function(){ const el = document.getElementById('searchHint'); if (!el) return; if (!el.classList.contains('hidden')) el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); el.style.display='none'; })(); } catch {}
             }
           }catch(err){}
         });
       }
-      if (submitBtn && window.logEvent){
+      if (submitBtn){
         submitBtn.addEventListener('click', ()=>{
           try{
             const val = (document.getElementById('searchInput')?.value) || '';
             try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-            window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length });
+            if (window.logEvent) window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length });
           }catch(e){}
+          try { (function(){ const el = document.getElementById('searchHint'); if (!el) return; if (!el.classList.contains('hidden')) el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); el.style.display='none'; })(); } catch {}
         });
       }
     })();

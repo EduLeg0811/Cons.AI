@@ -2974,3 +2974,303 @@
 {"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T19:20:54.515Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T19:20:54.829078Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
+[2025-11-02 23:10Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "", "mode": "development", "ts": "2025-11-02T23:10:16.718Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:10:17.387020Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:10:16.776Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:10:17.446099Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:10:24.816Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:10:24.825815Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "central", "length": 7, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:10:30.202Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:10:30.522087Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "central", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:10:47.809Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:10:48.115416Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=llm_request page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_request", "value": "TEXTO DE ENTRADA: central.", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "04984c9a-5b25-45ad-b6bb-203c714c8b73", "_server_ts": "2025-11-02T23:10:51.497487Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:10Z] event=llm_response page=/llm_query module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "llm_response", "value": "Energia extrafísica; Centralidade consciencial; Fluxo cósmico", "model": "gpt-4.1-nano", "temperature": 0.3, "chat_id": "04984c9a-5b25-45ad-b6bb-203c714c8b73", "_server_ts": "2025-11-02T23:10:54.519747Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/llm_query"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "central", "length": 7, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:11:13.466Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:14.092400Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:11:36.221Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:36.225879Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:11:38.841Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:39.156418Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:11:40.219Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:40.226102Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:11:40.252Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:40.567112Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:11:48.190Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:48.535483Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:11:55.317Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:55.960929Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=module_click page=/index.html module=Definologia de Verbetes ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Definologia de Verbetes", "module_href": "index_search_verb.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:11:56.285Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:56.291917Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:11Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:11:56.314Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:11:56.619086Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:15Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:15:06.631Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:15:07.391162Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:15Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:15:27.316Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:15:27.321183Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:15Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:15:30.228Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:15:30.549554Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:22.777Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:23.489198Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:24.168Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:24.172011Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:29.785Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:30.097189Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:37.497Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:37.504498Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=search_submit page=/index_search_verb.html module=verb ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "verb", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:43.547Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:43.863752Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:25:52.678Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:52.682961Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=module_click page=/index.html module=Definologia de Verbetes ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Definologia de Verbetes", "module_href": "index_search_verb.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:25:57.478Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:57.797279Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:25Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:25:57.510Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:25:57.828416Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=search_submit page=/index_search_verb.html module=verb ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "verb", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:03.213Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:03.531461Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:26:07.237Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:07.565990Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=module_click page=/index.html module=Questões do Conscienciograma ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Questões do Conscienciograma", "module_href": "index_search_ccg.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:26:09.253Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:09.273364Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=page_view page=/index_search_ccg.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:09.284Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:09.597229Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=search_submit page=/index_search_ccg.html module=ccg ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "ccg", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:14.516Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:14.520652Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_ccg.html", "mode": "development", "ts": "2025-11-02T23:26:19.305Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:19.631807Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_ccg.html", "mode": "development", "ts": "2025-11-02T23:26:20.338Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:20.349531Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:20.366Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:20.673174Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:25.159Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:25.161506Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:26Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campo", "length": 5, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:26:34.881Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:26:35.507212Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:27Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:27:49.069Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:27:49.704486Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:27Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campos", "length": 6, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:27:53.143Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:27:53.145568Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:27Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campos", "length": 6, "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:27:56.708Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:27:57.333881Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:28Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:28:05.071Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:28:05.096305Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:28Z] event=module_click page=/index.html module=Definologia de Verbetes ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Definologia de Verbetes", "module_href": "index_search_verb.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:28:06.300Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:28:06.620075Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:28Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:28:06.336Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:28:06.652151Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:28Z] event=search_submit page=/index_search_verb.html module=verb ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "verb", "value": "campos", "length": 6, "trigger": "enter", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:28:10.243Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:28:10.563489Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:01.116Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:01.767530Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:03.013Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:03.018024Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=search_submit page=/index_search_verb.html module=verb ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "verb", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:10.255Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:10.571979Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:31:23.224Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:23.228427Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=module_click page=/index.html module=Questões do Conscienciograma ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Questões do Conscienciograma", "module_href": "index_search_ccg.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:31:25.151Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:25.463685Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_ccg.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:25.176Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:25.494771Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=search_submit page=/index_search_ccg.html module=ccg ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "ccg", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:30.123Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:30.436605Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_ccg.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:42.019Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:42.327641Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_ccg.html", "mode": "development", "ts": "2025-11-02T23:31:49.460Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:49.495913Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=module_click page=/index.html module=Definologia de Verbetes ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Definologia de Verbetes", "module_href": "index_search_verb.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_ccg.html", "mode": "development", "ts": "2025-11-02T23:31:50.668Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:50.987024Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:50.688Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:51.001951Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:31:58.045Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:58.373732Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=module_click page=/index.html module=Livros & Tratados ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Livros & Tratados", "module_href": "index_search_book.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:31:59.240Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:59.550025Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:31Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:31:59.262Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:31:59.581703Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:32Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:32:07.304Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:32:07.641705Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:32Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:32:11.988Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:32:12.302222Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:35Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:35:57.331Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:35:58.009657Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:36Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:36:02.178Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:36:02.181090Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:40Z] event=page_view page=/index_search_book.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:40:48.608Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:40:49.293740Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:40Z] event=search_submit page=/index_search_book.html module=book ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "book", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_book.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:40:53.620Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:40:53.623173Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:41:01.555Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:01.883646Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=module_click page=/index.html module=Definologia de Verbetes ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Definologia de Verbetes", "module_href": "index_search_verb.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_book.html", "mode": "development", "ts": "2025-11-02T23:41:02.561Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:02.568529Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:02.609Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:02.928077Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:07.242Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:07.569801Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=search_submit page=/index_search_verb.html module=verb ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "verb", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:12.700Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:13.011238Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index_search_verb.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_verb.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:17.083Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:17.090556Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:41:26.317Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:26.956574Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=module_click page=/index.html module=Questões do Conscienciograma ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "module_click", "module_label": "Questões do Conscienciograma", "module_href": "index_search_ccg.html", "module_group": "search", "page": "/index.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index_search_verb.html", "mode": "development", "ts": "2025-11-02T23:41:27.080Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:27.209902Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index_search_ccg.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:27.105Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:27.399968Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=page_view page=/index_search_ccg.html module=— ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "page_view", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:30.303Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:30.308924Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[2025-11-02 23:41Z] event=search_submit page=/index_search_ccg.html module=ccg ip=127.0.0.1 geo=— ua=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gec...
+{"event": "search_submit", "module": "ccg", "value": "campo", "length": 5, "trigger": "enter", "page": "/index_search_ccg.html", "origin": "http://127.0.0.1:5500", "referrer": "http://127.0.0.1:5500/index.html", "mode": "development", "ts": "2025-11-02T23:41:33.199Z", "session_id": "1ykmydy8y97mh9kjpo9", "_server_ts": "2025-11-02T23:41:33.516397Z", "_client_ip": "127.0.0.1", "_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36", "_path": "/log"}
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+

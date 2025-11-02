@@ -48,8 +48,11 @@
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <div class="container">
+
         <!-- Options Trigger + Panel (dropdown) -->
         <div class="options-wrapper">
+
+            <!-- Toolbar -->
             <div class="search-toolbar">
                 <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
@@ -379,7 +382,6 @@
                         try { window.__suppressInputSubmitTs = Date.now(); } catch {}
                         try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length, trigger: 'enter' }); } catch {}
                         hideSearchHint();
-                        e.preventDefault();
                     }
                 });
             }
