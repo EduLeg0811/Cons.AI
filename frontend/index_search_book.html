@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="/Icon.png">
+    
 </head>
 
 <body class="theme-search">
@@ -50,11 +51,11 @@
         <!-- Options Trigger + Panel (dropdown) -->
         <div class="options-wrapper">
             <div class="search-toolbar">
-                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word">
-                    <i class="fas fa-file-word fa-2x"></i>
-                </button>
                 <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
+                </button>
+                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word" style="margin-left:auto">
+                    <i class="fas fa-file-word fa-2x"></i>
                 </button>
             </div>
 
@@ -69,6 +70,29 @@
                     </div>
                 </div>
             </div>
+
+
+            <!-- Instructions -->
+            <div id="searchHint" class="search-hint">
+                <span>
+                    <strong>Dicas de Pesquisa:</strong><br>
+                    Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong>Léxica</strong> | <strong>Semântica</strong>) e escolher os <strong>livros</strong> para pesquisa.<br>
+                    <br>
+                    1. <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> nos textos.<br>
+                    Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
+                    <br>
+                    2. <strong><em>Pesquisa Semântica</em></strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>
+                    Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com o descritivo "Estado Vibracional".<br>
+                    <br>
+                    <strong>Observações sobre os resultados:</strong><br>
+                    1.  <strong>Cosmovisão.</strong> Consulte sempre o livro ou tratado para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
+                    2.  <strong>Páginas.</strong> No momento, a busca não traz o número das páginas. Para isso, localize o trecho exato na fonte original.<br>
+                    3.  <strong>Relatório.</strong> Ao final, clique no botão de <em>download</em> para salvar os resultados em um arquivo .docx.
+                </span>
+            </div>
+
+
+
             <div class="options-panel" id="optionsPanel">
 
                 <div class="options-header" onclick="toggleOptions()">
@@ -175,9 +199,30 @@
     document.addEventListener('DOMContentLoaded', function() {
         initTheme();
         
+        // Pulse do botão de configurações apenas na primeira visita
+        try {
+            if (localStorage.getItem('configPulseSeen_search_book')) {
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+                document.getElementById('optionsTrigger')?.classList.remove('pulsing');
+            } else {
+                document.documentElement.removeAttribute('data-config-pulse');
+                document.getElementById('optionsTrigger')?.classList.add('pulsing');
+            }
+        } catch (e) {}
+
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
+        const hintEl = document.getElementById('searchHint');
+        function hideSearchHint(){
+            const el = document.getElementById('searchHint');
+            if (!el) return;
+            if (!el.classList.contains('hidden')) el.classList.add('hidden');
+            try { el.setAttribute('aria-hidden','true'); } catch {}
+            try { el.style.display = 'none'; } catch {}
+        }
+        const HINT_TIMEOUT_MS = 30000;
+        try { setTimeout(hideSearchHint, HINT_TIMEOUT_MS); } catch {}
         const STORAGE_KEY = 'settings_search_book';
     
         // ================================================================
@@ -231,6 +276,7 @@
                     }
                 } catch (err) {}
                 document.documentElement.setAttribute('data-config-pulse', 'off');
+                try { hideSearchHint(); } catch {}
             });
     
             // document.addEventListener('click', function(e) {
@@ -325,29 +371,24 @@
         (function initSearchLogging(){
             const searchEl = document.getElementById('searchInput');
             const submitBtn = document.getElementById('searchButton');
-            function throttle(fn, wait){ let t=0; return function(){ const now=Date.now(); if(now - t >= wait){ t=now; try{ fn.apply(this, arguments); }catch(e){} } }; }
-            if (searchEl && window.logEvent){
-                const send = throttle(()=>{
-                    const val = searchEl.value || '';
-                    window.logEvent({ event: 'search_input', module: 'book', value: val, length: val.length });
-                }, 1000);
-                searchEl.addEventListener('input', send);
+            if (searchEl){
                 // Enter -> search_submit (sem Shift)
                 searchEl.addEventListener('keydown', (e)=>{
-                    try{
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            const val = searchEl.value || '';
-                            window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length, trigger: 'enter' });
-                        }
-                    }catch(err){}
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        const val = searchEl.value || '';
+                        try { window.__suppressInputSubmitTs = Date.now(); } catch {}
+                        try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length, trigger: 'enter' }); } catch {}
+                        hideSearchHint();
+                        e.preventDefault();
+                    }
                 });
             }
-            if (submitBtn && window.logEvent){
+            if (submitBtn){
                 submitBtn.addEventListener('click', ()=>{
-                    try{
-                        const val = (document.getElementById('searchInput')?.value) || '';
-                        window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length });
-                    }catch(e){}
+                    const val = (document.getElementById('searchInput')?.value) || '';
+                    try { window.__suppressInputSubmitTs = Date.now(); } catch {}
+                    try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length }); } catch {}
+                    hideSearchHint();
                 });
             }
         })();

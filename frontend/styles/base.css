@@ -1252,3 +1252,16 @@ select {
   font-size: var(--text-xs);
   line-height: 1.2;
 }
+
+
+
+
+
+.navbar-logo {
+  width: 24px;     /* ajuste fino: 20–28px conforme preferir */
+  height: 24px;    /* mantém proporção quadrada */
+  margin-right: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+}

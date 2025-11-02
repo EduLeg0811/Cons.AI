@@ -73,6 +73,32 @@
             </div>
         </div>
 
+
+
+        <!-- Instructions -->
+        <div class="search-hint">
+                    <span>
+                        <strong>Configuração:</strong><br>
+                        Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong><em>Léxica</em></strong> | <strong><em>Semântica</em></strong>).<br>
+                        <br>
+                        <strong>1.</strong>  <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> na <strong>Definologia</strong> dos verbetes (e não apenas no título).<br>
+                        Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
+                        <br>
+                        <strong>2.</strong>  <strong><em>Pesquisa Semântica</em></strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>
+                        Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com os descritivos "Estado Vibracional".<br>
+                        <br>
+                        <strong>Observações sobre os resultados:</strong><br>
+                        1.  <strong>Cosmovisão.</strong> Consulte sempre o verbete da Enciclopédia para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
+                        2.  <strong>Link.</strong> Clique no <em>link</em> mostrado para baixar o verbete completo.<br>
+                        3.  <strong>Relatório.</strong> Ao final, clique no botão de <em>download</em> para salvar os resultados em um arquivo .docx.
+                    </span>
+            </div>
+
+
+
+
+
+
         <!-- Painel de opções -->
         <div class="options-panel" id="optionsPanel">
             <div class="options-header" onclick="toggleOptions()">
@@ -149,6 +175,17 @@
     document.addEventListener('DOMContentLoaded', function() {
         initTheme();
         
+        // Pulse do botão de configurações apenas na primeira visita (VERB)
+        try {
+            if (localStorage.getItem('configPulseSeen_search_verb')) {
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+                document.getElementById('optionsTrigger')?.classList.remove('pulsing');
+            } else {
+                document.documentElement.removeAttribute('data-config-pulse');
+                document.getElementById('optionsTrigger')?.classList.add('pulsing');
+            }
+        } catch (e) {}
+
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
@@ -306,18 +343,13 @@
     (function(){
       const searchEl = document.getElementById('searchInput');
       const submitBtn = document.getElementById('searchButton');
-      function throttle(fn, wait){ let t=0; return function(){ const now=Date.now(); if(now - t >= wait){ t=now; try{ fn.apply(this, arguments); }catch(e){} } }; }
       if (searchEl && window.logEvent){
-        const send = throttle(()=>{
-          const val = searchEl.value || '';
-          window.logEvent({ event: 'search_input', module: 'verb', value: val, length: val.length });
-        }, 1000);
-        searchEl.addEventListener('input', send);
         // Enter -> search_submit (sem Shift)
         searchEl.addEventListener('keydown', (e)=>{
           try{
             if (e.key === 'Enter' && !e.shiftKey) {
               const val = searchEl.value || '';
+              try { window.__suppressInputSubmitTs = Date.now(); } catch {}
               window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length, trigger: 'enter' });
             }
           }catch(err){}
@@ -327,6 +359,7 @@
         submitBtn.addEventListener('click', ()=>{
           try{
             const val = (document.getElementById('searchInput')?.value) || '';
+            try { window.__suppressInputSubmitTs = Date.now(); } catch {}
             window.logEvent({ event: 'search_submit', module: 'verb', value: val, length: val.length });
           }catch(e){}
         });

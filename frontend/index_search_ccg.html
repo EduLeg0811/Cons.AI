@@ -73,7 +73,30 @@
             </div>
         </div>
 
-        <!-- Painel de opÃ§Ãµes -->
+
+        <!-- Instructions -->
+        <div class="search-hint">
+                    <span>
+                        <strong>Configuração:</strong><br>
+                        Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong><em>Léxica</em></strong> | <strong><em>Semântica</em></strong>).<br>
+                        <br>
+                        1. <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> nas questões do Conscienciograma.<br>
+                        Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
+                        <br>
+                        2. <strong><em>Pesquisa Semântica</em></strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>
+                        Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com os descritivos "Estado Vibracional".<br>
+                        <br>
+                        <strong>Observações sobre os resultados:</strong><br>
+                        1.  <strong>Cosmovisão.</strong> Consulte sempre a folha do Conscienciograma para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
+                        2.  <strong>Páginas.</strong> No momento, a busca não traz o número das páginas. Para isso, localize o trecho exato na fonte original.<br>
+                        3.  <strong>Relatório.</strong> Ao final, clique no botão de <em>download</em> para salvar os resultados em um arquivo .docx.
+                    </span>
+            </div>
+
+
+
+
+        <!-- Painel de opções -->
         <div class="options-panel" id="optionsPanel">
             <div class="options-header" onclick="toggleOptions()">
                 <h3 class="options-title">Opções de Pesquisa</h3>
@@ -96,7 +119,7 @@
                     </div>
                 </div>
 
-                <!-- Config do MÃ³dulo (pills + opÃ§Ãµes) -->
+                <!-- Config do Modulo (pills + opções) -->
                 <div class="book-pill-static" data-value="CCG" style="background-color: var(--search-primary); color: var(--white);">
                     Conscienciograma
                 </div>
@@ -119,7 +142,7 @@
         </div>
     </div>
 
-    <!-- âœ… Container de resultados CENTRALIZADO -->
+    <!-- Container de resultados CENTRALIZADO -->
     <div id="results" class="results"></div>
 </div>
 
@@ -149,18 +172,29 @@
     document.addEventListener('DOMContentLoaded', function() {
         initTheme();
         
+        // Pulse do botão de configurações apenas na primeira visita (CCG)
+        try {
+            if (localStorage.getItem('configPulseSeen_search_ccg')) {
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+                document.getElementById('optionsTrigger')?.classList.remove('pulsing');
+            } else {
+                document.documentElement.removeAttribute('data-config-pulse');
+                document.getElementById('optionsTrigger')?.classList.add('pulsing');
+            }
+        } catch (e) {}
+
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
         const STORAGE_KEY = 'settings_search_book';
     
         // ================================================================
-        // 1ï¸âƒ£ DefiniÃ§Ã£o da configuraÃ§Ã£o inicial padrÃ£o
+        // 1. Definição da configuração inicial padrão
         // ================================================================
         const FIXED_BOOK = 'CCG';   // ðŸ”¥ Altere aqui se quiser outro livro fixo
         const DEFAULT_SETTINGS = {
-            books: [FIXED_BOOK],        // âœ… Apenas CCG
-            searchType: ['lexical'],     // âœ… LÃ©xica marcada
+            books: [FIXED_BOOK],        // Apenas CCG
+            searchType: ['lexical'],     // Léxica marcada
             maxResults: 10,
             groupResults: false
         };
@@ -171,7 +205,7 @@
         }
     
         // // ================================================================
-        // // 2ï¸âƒ£ Toggle de livros
+        // // 2. Toggle de livros
         // // ================================================================
         // document.querySelectorAll('.book-pill').forEach(pill => {
         //     pill.addEventListener('click', () => {
@@ -180,7 +214,7 @@
         // });
     
         // ================================================================
-        // 3ï¸âƒ£ Toggle de Search Type (LÃ©xico / SemÃ¢ntico)
+        // 3. Toggle de Search Type (Léxico / Semântico)
         // ================================================================
         document.querySelectorAll('.search-type-pill').forEach(pill => {
             pill.addEventListener('click', () => {
@@ -189,7 +223,7 @@
         });
     
         // ================================================================
-        // 4ï¸âƒ£ Abrir/fechar painel
+        // 4. Abrir/fechar painel
         // ================================================================
         if (trigger && panel) {
             trigger.addEventListener('click', function(e) {
@@ -201,8 +235,8 @@
                     document.documentElement.removeAttribute('data-module-config-open');
                 }
                 try {
-                    if (!localStorage.getItem('configPulseSeen_search_verb')) {
-                        localStorage.setItem('configPulseSeen_search_verb', 'true');
+                    if (!localStorage.getItem('configPulseSeen_search_ccg')) {
+                        localStorage.setItem('configPulseSeen_search_ccg', 'true');
                     }
                 } catch (err) {}
                 document.documentElement.setAttribute('data-config-pulse', 'off');
@@ -216,7 +250,7 @@
         }
     
         // ================================================================
-        // 5ï¸âƒ£ Aplicar configuraÃ§Ãµes salvas (ou padrÃ£o)
+        // 5. Aplicar configurações salvas (ou padrão)
         // ================================================================
         (function applySaved() {
             try {
@@ -256,7 +290,7 @@
         })();
     
          // ================================================================
-        // 5ï¸âƒ£ BotÃ£o Salvar
+        // 6. Botão Salvar
         // ================================================================
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
@@ -294,7 +328,7 @@
         }
     
         // ================================================================
-        // 6ï¸âƒ£ FunÃ§Ã£o global para recuperar configs
+        // 7. Função global para recuperar configs
         // ================================================================
         window.getSearchBookSettings = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -306,13 +340,7 @@
     (function(){
       const searchEl = document.getElementById('searchInput');
       const submitBtn = document.getElementById('searchButton');
-      function throttle(fn, wait){ let t=0; return function(){ const now=Date.now(); if(now - t >= wait){ t=now; try{ fn.apply(this, arguments); }catch(e){} } }; }
       if (searchEl && window.logEvent){
-        const send = throttle(()=>{
-          const val = searchEl.value || '';
-          window.logEvent({ event: 'search_input', module: 'ccg', value: val, length: val.length });
-        }, 1000);
-        searchEl.addEventListener('input', send);
         // Enter -> search_submit (sem Shift)
         searchEl.addEventListener('keydown', (e)=>{
           try{

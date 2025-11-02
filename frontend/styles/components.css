@@ -331,22 +331,22 @@
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espa�o interno (topo/baixo/laterais) */   
+    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
     background: var(--gray-100);           /* tokenizado */
     color: var(--gray-700);                /* tokenizado */
-    font-size: var(--text-sm);     /* tamanho da fonte (pega da vari�vel global) */
+    font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
     font-weight: 500;              /* peso da fonte (semibold) */
-    cursor: pointer;               /* cursor de “m�ozinha” ao passar por cima */
-    transition: background 0.2s ease, color 0.2s ease; /* transi��o suave ao mudar cor de fundo e texto */
-    user-select: none;             /* evita sele��o de texto ao clicar */
+    cursor: pointer;               /* cursor de “mãozinha” ao passar por cima */
+    transition: background 0.2s ease, color 0.2s ease; /* transição suave ao mudar cor de fundo e texto */
+    user-select: none;             /* evita seleção de texto ao clicar */
     box-shadow: var(--shadow-sm);  /* sombra leve para dar profundidade */
     border: 1px solid var(--gray-200); /* borda fina e clara ao redor do pill */
-    border-radius: var(--radius-full); /* arredondamento completo (vari�vel global) */
+    border-radius: var(--radius-full); /* arredondamento completo (variável global) */
 }
 
 .book-pill.active {
-    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do m�dulo */
-    color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
+    background: #a5a5a5;         /* ativa/selecionada usa cor do módulo */
+    color: rgb(255, 255, 155);                     /* texto com contraste */
 }
 
 .search-type-checkboxes {
@@ -383,8 +383,8 @@
 
 .search-type-pill.active {
     /*background: var(--primary-900);*/
-    background: var(--module-accent, var(--primary-500));
-    color: #fdff8a;
+    background: var(--search-primary);
+    color: rgb(255, 255, 155);
     box-shadow: var(--shadow-base);
     border-radius: var(--radius-full);
     border: 2px solid var(--gray-200);
@@ -986,3 +986,68 @@ background: var(--module-accent-secondary, var(--primary-600));
     color: #fff;
   }
   
+
+
+        .search-hint {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* reduz o espaço entre o texto e o ícone */
+            
+            margin-top: 8px;
+            margin-bottom: 8px;
+            margin-left: 8px;
+            
+            padding: 0;
+            width: auto;
+            flex: 1 1 auto; /* permite ocupar o espaço disponível e quebrar linha quando necessário */
+            overflow: visible; /* permite quebra em várias linhas */
+            white-space: normal; /* permite quebra em várias linhas */
+            color: var(--gray-800);
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            box-shadow: none;
+            font: 400 var(--text-sm) Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            text-align: left;           /* garante alinhamento do conteúdo do hint */
+            justify-content: flex-start;/* mantém itens do hint à esquerda */
+            line-height: 1.4;
+        }
+        .search-hint strong { color: var(--text-1); font-weight: 800; }
+        .search-hint svg { height: 22px; width: auto; flex-shrink: 0; }
+
+
+        /* Palavras destacadas no hint */
+        .search-hint strong em {
+            color: var(--primary, #0055aa);
+            font-weight: 800; /* reforça o bold */
+            font-style: italic; /* reforça o itálico */
+        }
+
+
+        .search-toolbar {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap; /* mantém tudo na mesma linha */
+        justify-content: flex-start; /* alinhamento base à esquerda */
+        }
+        .search-toolbar .download-trigger,
+        .search-toolbar .options-trigger {
+        flex: 0 0 auto; /* botões não encolhem nem crescem */
+        }
+
+        .search-toolbar #searchHint {
+        flex: 1 1 auto; /* ocupa o espaço entre [Config] e [Download] */
+        min-width: 0;   /* permite encolher e quebrar o texto dentro do hint */
+        }
+        
+        @media (max-width: 480px) {
+            .search-hint { font-size: var(--text-xs); padding: 0; border-radius: 10px; gap: 4px; }
+            .search-hint svg { height: 16px; }
+            .search-hint > span:first-child { overflow: visible; white-space: normal; word-break: break-word; display: block; }
+        }
+        
+        html[data-theme="dark"] .search-hint {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }

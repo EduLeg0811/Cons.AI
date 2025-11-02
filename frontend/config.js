@@ -438,6 +438,7 @@ if (VERSION_DEVELOPMENT) {
   });
 
   (function initGlobalInputLogging(){
+    try { if (window && typeof window === 'object') { if (window.__disableGlobalInputLog !== undefined ? window.__disableGlobalInputLog : true) return; } } catch {}
     const THROTTLE_MS = 800;
     const lastTs = new Map();
     const shouldSkip = (el) => {
@@ -465,6 +466,7 @@ if (VERSION_DEVELOPMENT) {
         const el = e.target;
         if (shouldSkip(el) || !window.logEvent) return;
         if (e.key === 'Enter' && !e.shiftKey) {
+          if (window.__suppressInputSubmitTs && (Date.now() - window.__suppressInputSubmitTs < 600)) { window.__suppressInputSubmitTs = 0; return; }
           const val = (el.value||'').slice(0,200);
           window.logEvent({ event: 'input_submit', trigger: 'enter', field: getFieldMeta(el), value: val, length: val.length });
         }
@@ -477,6 +479,7 @@ if (VERSION_DEVELOPMENT) {
         if (!window.logEvent) return;
         const btn = e.target && (e.target.closest ? e.target.closest('#searchButton') : null);
         if (!btn) return;
+        if (window.__suppressInputSubmitTs && (Date.now() - window.__suppressInputSubmitTs < 600)) { window.__suppressInputSubmitTs = 0; return; }
         // Try to find the primary search input
         const el = document.getElementById('searchInput');
         if (!el || shouldSkip(el)) return;
