@@ -29,7 +29,49 @@ logger = logging.getLogger("cons-ai")
 # Lightweight logging endpoint (append-only JSON Lines)
 # ______________________________________________________________________
 # Grava eventos enviados pelo frontend (page_view, module_click, etc.)
-LOG_DIR = BACKEND_DIR / "logs"
+
+# Detecta ambiente Render (filesystem somente leitura) e escolhe diretório gravável
+def _select_log_dir() -> Path:
+    try:
+        # Preferência: diretório padrão dentro do backend se for gravável
+        default_dir = BACKEND_DIR / "logs"
+        try:
+            default_dir.mkdir(parents=True, exist_ok=True)
+            # Testa escrita
+            test_file = default_dir / ".writetest"
+            with test_file.open("w", encoding="utf-8") as tf:
+                tf.write("ok")
+            try:
+                test_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+            return default_dir
+        except Exception:
+            pass
+
+        # Se não foi possível usar o padrão, tenta variável de ambiente
+        env_dir = os.getenv("LOG_DIR", "").strip()
+        if env_dir:
+            p = Path(env_dir)
+            try:
+                p.mkdir(parents=True, exist_ok=True)
+                return p
+            except Exception:
+                pass
+
+        # Fallback final: /tmp (gravável em plataformas como Render)
+        tmp_dir = Path("/tmp/consai-logs")
+        try:
+            tmp_dir.mkdir(parents=True, exist_ok=True)
+            return tmp_dir
+        except Exception:
+            pass
+    except Exception:
+        pass
+    # Último recurso: diretório padrão (pode falhar em runtime, mas evita crash na importação)
+    return BACKEND_DIR / "logs"
+
+LOG_DIR = _select_log_dir()
 LOG_FILE = LOG_DIR / "access.log"
 LOG_SEPARATOR = "\n" + ("─" * 120) + "\n\n"  # Unicode full-width horizontal rule
 RETENTION_DAYS = 14
@@ -117,9 +159,17 @@ def _daily_log_path(date_str: str) -> Path:
 
 def _ensure_log_dir():
     try:
-        LOG_DIR.mkdir(exist_ok=True)
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
     except Exception:
-        pass
+        # Tenta reescolher o diretório uma vez e criar novamente
+        try:
+            new_dir = _select_log_dir()
+            if new_dir != LOG_DIR:
+                globals()["LOG_DIR"] = new_dir
+                globals()["LOG_FILE"] = new_dir / "access.log"
+            new_dir.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
 
 def _cleanup_old_logs():
     """Delete rotated logs older than RETENTION_DAYS."""
