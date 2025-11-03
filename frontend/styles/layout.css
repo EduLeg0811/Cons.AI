@@ -55,10 +55,14 @@
 }
 
 .navbar-logo {
-    width: 48px;
-    height: 48px;
+    width: 68px;
+    height: 68px;
     object-fit: contain;
     margin-right: var(--space-2);
+    box-shadow: none;
+    filter: none;
+    -webkit-filter: none;
+    text-shadow: none;
 }
 
 .navbar-title {
