@@ -216,7 +216,6 @@
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
-        const hintEl = document.getElementById('searchHint');
         function hideSearchHint(){
             const el = document.getElementById('searchHint');
             if (!el) return;
@@ -224,8 +223,6 @@
             try { el.setAttribute('aria-hidden','true'); } catch {}
             try { el.style.display = 'none'; } catch {}
         }
-        const HINT_TIMEOUT_MS = 30000;
-        try { setTimeout(hideSearchHint, HINT_TIMEOUT_MS); } catch {}
         const STORAGE_KEY = 'settings_search_book';
     
         // ================================================================
