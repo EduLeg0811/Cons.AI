@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const suggestions = [
           'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
-          'Será que já sou um Ser Desperto? Faça uma análise das características necessárias.',
+          'Com posso saber onde me localizo nos níveis da Escala Evolutiva?',
           'O que significa Proéxis e como identificar a própria programação existencial?',
           'O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?',
           'Qual o papel das Reurbanizações Extrafísicas (Reurbexes) no contexto evolutivo do planeta?',

@@ -340,8 +340,16 @@ def get_logs():
         if not fmt and limit == 0:
             limit = 200
 
-        with LOG_FILE.open('r', encoding='utf-8') as f:
-            raw = f.read()
+        # Leitura tolerante a encoding: tenta UTF-8 estrito; em erro, usa 'replace'
+        try:
+            with LOG_FILE.open('r', encoding='utf-8') as f:
+                raw = f.read()
+        except Exception:
+            try:
+                with LOG_FILE.open('rb') as fb:
+                    raw = fb.read().decode('utf-8', errors='replace')
+            except Exception:
+                raw = ''
 
         if not fmt:
             # backward-compatible: return raw; apply limit if requested by splitting blocks
@@ -673,6 +681,14 @@ def view_logs_page():
         else if (mode === 'event') list.sort((a,b) => (a.event||'').localeCompare(b.event||''));
         else if (mode === 'module') list.sort((a,b) => (a.module_label||a.module||'').localeCompare(b.module_label||b.module||''));
         else list.sort((a,b) => getTs(b).localeCompare(getTs(a))); // time_desc
+      }
+      // Fallback: nenhum dado após filtros
+      if (!list || list.length === 0) {
+        if (tbodyEl) {
+          tbodyEl.innerHTML = `<tr><td class=\"mono\" colspan=\"11\">Nenhum log recente encontrado. Tente alterar filtros, aumentar o limite ou aguarde novos eventos.</td></tr>`;
+        }
+        if (counterEl) counterEl.textContent = `N=0 usuários distintos | 0 eventos`;
+        return;
       }
       // Agrupar por usuário (visual): ordena por user key para aproximar e marca inícios de grupo
       const userKey = (x) => (x.session_id || x._client_ip || '').toString();
