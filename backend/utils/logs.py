@@ -529,7 +529,7 @@ def clear_logs():
 @logs_bp.route('/logs/view', methods=['GET'])
 def view_logs_page():
     # Página simples para visualizar os logs em tabela
-    html = """
+    html = r"""
 <!DOCTYPE html>
 <html lang=\"pt-BR\">
 <head>
@@ -677,11 +677,21 @@ def view_logs_page():
     let simpleMode = true; // Simple por padrão
 
     async function fetchLogs() {
-      const res = await fetch('/logs?format=ndjson&limit=200', { cache: 'no-store' });
-      const text = await res.text();
-      return text.split('\n').filter(Boolean).map(line => {
-        try { return JSON.parse(line); } catch (e) { return null; }
-      }).filter(Boolean);
+      console.time('fetchLogs');
+      try {
+        const res = await fetch('/logs?format=ndjson&limit=200', { cache: 'no-store' });
+        const ok = res.ok;
+        const text = await res.text();
+        const lines = text.split('\n').filter(Boolean);
+        console.log('[logs:view] fetch ok=%s lines=%d', ok, lines.length);
+        const parsed = lines.map(line => { try { return JSON.parse(line); } catch (e) { console.warn('[logs:view] JSON parse error', e, line); return null; } }).filter(Boolean);
+        console.timeEnd('fetchLogs');
+        return parsed;
+      } catch (e) {
+        console.error('[logs:view] fetchLogs error', e);
+        console.timeEnd('fetchLogs');
+        throw e;
+      }
     }
 
     function fmtDateTime(iso){
@@ -702,12 +712,16 @@ def view_logs_page():
     function highlight(hay, needle){
       if (!needle) return String(hay||'');
       try {
-        const re = new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig');
+        // Escape regex metacharacters (including / and {}) safely
+        const escaped = needle.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const re = new RegExp(escaped, 'ig');
         return String(hay||'').replace(re, m => `<mark>${m}</mark>`);
       } catch(e){ return String(hay||''); }
     }
 
     function render(data) {
+      console.group('[logs:view] render');
+      console.log('input events=%d', Array.isArray(data) ? data.length : -1);
       const ev = (filterEvent && filterEvent.value) || '';
       const q = (search && search.value || '').toLowerCase();
       let list = data.slice();
@@ -731,6 +745,7 @@ def view_logs_page():
         else if (mode === 'event') list.sort((a,b) => (a.event||'').localeCompare(b.event||''));
         else if (mode === 'module') list.sort((a,b) => (a.module_label||a.module||'').localeCompare(b.module_label||b.module||''));
         else list.sort((a,b) => getTs(b).localeCompare(getTs(a))); // time_desc
+        console.log('filters: ev=%s q="%s" sort=%s -> remaining=%d', ev, q, mode, list.length);
       }
       // Fallback: nenhum dado após filtros
       if (!list || list.length === 0) {
@@ -738,6 +753,7 @@ def view_logs_page():
           tbodyEl.innerHTML = `<tr><td class=\"mono\" colspan=\"11\">Nenhum log recente encontrado. Tente alterar filtros, aumentar o limite ou aguarde novos eventos.</td></tr>`;
         }
         if (counterEl) counterEl.textContent = `N=0 usuários distintos | 0 eventos`;
+        console.groupEnd();
         return;
       }
       // Agrupar por usuário (visual): ordena por user key para aproximar e marca inícios de grupo
@@ -786,8 +802,10 @@ def view_logs_page():
             if (id) uniq.add(id);
         }
         counterEl.textContent = `N=${uniq.size} usuários distintos | ${list.length} eventos`;
+        console.log('rendered rows=%d unique_users=%d', list.length, uniq.size);
       } catch (e) {
         counterEl.textContent = `${list.length} eventos`;
+        console.warn('[logs:view] counter error', e);
       }
 
       // Clickable filters (IP)
@@ -802,13 +820,17 @@ def view_logs_page():
     }
 
     async function load() {
+      console.group('[logs:view] load');
       try {
         const data = await fetchLogs();
         render(data);
+        console.groupEnd();
       } catch(e) {
+        console.error('[logs:view] load error', e);
         if (tbodyEl) {
           tbodyEl.innerHTML = `<tr><td class=\"mono\" colspan=\"11\">Erro ao carregar logs.</td></tr>`;
         }
+        console.groupEnd();
       }
     }
 
@@ -824,22 +846,24 @@ def view_logs_page():
       }
     }
 
-    filterEvent && filterEvent.addEventListener('change', load);
-    groupBy && groupBy.addEventListener('change', load);
-    sortBy && sortBy.addEventListener('change', load);
-    search && search.addEventListener('input', () => { window.clearTimeout(window.__t); window.__t = setTimeout(load, 250); });
-    refreshBtn && refreshBtn.addEventListener('click', load);
-    tzBtn && tzBtn.addEventListener('click', () => { useLocalTZ = !useLocalTZ; tzBtn.textContent = useLocalTZ ? 'UTC' : 'Local'; load(); });
-    viewModeBtn && viewModeBtn.addEventListener('click', () => { simpleMode = !simpleMode; applyViewMode(); });
+    filterEvent && filterEvent.addEventListener('change', () => { console.log('[logs:view] filter:event', filterEvent.value); load(); });
+    groupBy && groupBy.addEventListener('change', () => { console.log('[logs:view] groupBy', groupBy.value); load(); });
+    sortBy && sortBy.addEventListener('change', () => { console.log('[logs:view] sortBy', sortBy.value); load(); });
+    search && search.addEventListener('input', () => { window.clearTimeout(window.__t); window.__t = setTimeout(() => { console.log('[logs:view] search', search.value); load(); }, 250); });
+    refreshBtn && refreshBtn.addEventListener('click', () => { console.log('[logs:view] manual refresh'); load(); });
+    tzBtn && tzBtn.addEventListener('click', () => { useLocalTZ = !useLocalTZ; tzBtn.textContent = useLocalTZ ? 'UTC' : 'Local'; console.log('[logs:view] tz', useLocalTZ ? 'local(-03)' : 'UTC'); load(); });
+    viewModeBtn && viewModeBtn.addEventListener('click', () => { simpleMode = !simpleMode; applyViewMode(); console.log('[logs:view] viewMode', simpleMode ? 'Simple' : 'Complete'); });
     autoBtn && autoBtn.addEventListener('click', () => {
       autoOn = !autoOn;
       autoBtn.textContent = autoOn ? 'Auto✓' : 'Auto';
       if (autoOn) {
         if (autoTimer) window.clearInterval(autoTimer);
         autoTimer = window.setInterval(load, 5000);
+        console.log('[logs:view] auto ON (5s)');
       } else {
         if (autoTimer) window.clearInterval(autoTimer);
         autoTimer = 0;
+        console.log('[logs:view] auto OFF');
       }
     });
     resetBtn && resetBtn.addEventListener('click', () => {
@@ -864,7 +888,7 @@ def view_logs_page():
       }
       load();
     });
-    document.addEventListener('DOMContentLoaded', ()=>{ applyViewMode(); load(); });
+    document.addEventListener('DOMContentLoaded', ()=>{ console.log('[logs:view] DOM ready'); applyViewMode(); load(); });
   </script>
 </body>
 </html>

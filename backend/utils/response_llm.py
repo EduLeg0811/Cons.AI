@@ -76,8 +76,8 @@ def generate_llm_answer(
 
     # Monta payload
 
-    logger.info("Vector Store IDs: %s", vector_store_ids)
-    logger.info("Model: %s", model)
+    #logger.info("Vector Store IDs: %s", vector_store_ids)
+    #logger.info("Model: %s", model)
 
    
 
@@ -120,10 +120,10 @@ def generate_llm_answer(
         llm_str["previous_response_id"] = previous_id
 
     # Log do payload
-    logger.info(
-            "LLM Payload:\n%s",
-            json.dumps(llm_str, indent=2, ensure_ascii=False)
-        )
+    #logger.info(
+    #        "LLM Payload:\n%s",
+    #        json.dumps(llm_str, indent=2, ensure_ascii=False)
+    #    )
 
     try:
         attempts = 0
@@ -135,7 +135,7 @@ def generate_llm_answer(
 
 
                 # Log da resposta
-                logger.info("\n\nLLM Response:\n%s\n\n", response)
+                #logger.info("\n\nLLM Response:\n%s\n\n", response)
 
 
                 # Atualiza o último ID da conversa
@@ -147,7 +147,7 @@ def generate_llm_answer(
                 formatted_response = format_llm_response(response)
 
                 # Log da resposta formatada
-                logger.info("\n\nFormatted Response:\n%s\n\n", formatted_response)
+                #logger.info("\n\nFormatted Response:\n%s\n\n", formatted_response)
 
                 return formatted_response
 

@@ -406,10 +406,6 @@ def display_results_unified(doc, data, search_type):
             if (src == 'LO'):
                 mdText = f"**{it.get("metadata").get('title')}**. {mdText}"
 
-            logger.info("\n\n-----------------------------------------------------------------------------------------------------------------")
-            logger.info(f"mdText: {mdText}")
-            logger.info(f"it: {it}")
-            logger.info(f"src: {src}\n\n")
 
             insert_markdown_into_paragraph(mdText, p)
 
@@ -580,10 +576,6 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                         if (src == 'LO'):
                             mdText = f"**{it.get('title')}**. {mdText}"
 
-                        logger.info("\n\n-----------------------------------------------------------------------------------------------------------------")
-                        logger.info(f"mdText: {mdText}")
-                        logger.info(f"it: {it}")
-                        logger.info(f"src: {src}\n\n")
 
                         insert_markdown_into_paragraph(mdText, p)
 

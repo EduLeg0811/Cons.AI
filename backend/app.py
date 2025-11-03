@@ -86,6 +86,14 @@ def serve_static(path):
         return send_from_directory(frontend_path, path)
     return "File not found", 404
 
+# Serve favicon.ico from existing Icon.png to prevent 404
+@app.route('/favicon.ico')
+def favicon():
+    try:
+        return send_from_directory(frontend_path, 'Icon.png', mimetype='image/png')
+    except Exception:
+        return "", 404
+
 
 # Restrinja origens em produção; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = "*"
