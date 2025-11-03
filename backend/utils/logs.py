@@ -499,10 +499,24 @@ def view_logs_page():
     .input, .select { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:10px 12px; border-radius:8px; min-height:40px; }
     .btn { background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700; letter-spacing:.3px; }
     .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: 0 1px 0 rgba(0,0,0,.3); }
-    table { width:100%; border-collapse: collapse; table-layout: auto; }
+    table { width:100%; border-collapse: collapse; table-layout: fixed; }
     thead th { text-align:left; font-size:12px; color:var(--muted); padding:4px 6px; border-bottom:1px solid var(--border); white-space:nowrap; }
     tbody td { padding:4px 6px; border-bottom:1px solid var(--border); font-size:11.5px; line-height:1.25; vertical-align:top; white-space: normal; word-break: break-word; }
     tbody tr:hover { background: rgba(56,189,248,0.07); }
+    .nowrap { white-space:nowrap; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace; font-size:12px; color:#cbd5e1; }
+    /* Colunas compactas */
+    .col-time { width: 96px; min-width: 84px; }
+    .col-event { width: 108px; min-width: 96px; }
+    .col-module { width: 140px; min-width: 120px; }
+    .col-page { width: 180px; min-width: 140px; }
+    .col-geo { width: 160px; min-width: 120px; }
+    .col-ip { width: 120px; min-width: 100px; }
+    .col-origin { width: 140px; min-width: 120px; }
+    .col-ua { width: 240px; min-width: 180px; }
+    .col-chat { width: 100px; min-width: 90px; }
+    .col-session { width: 140px; min-width: 120px; }
+    .col-value { width: auto; }
     .pill { display:inline-block; padding:1px 6px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.2px; }
     .pill.ev { background:rgba(56,189,248,.18); color:#7dd3fc; border:1px solid rgba(56,189,248,.35); }
     .pill.grp { background:rgba(124,58,237,.18); color:#c4b5fd; border:1px solid rgba(124,58,237,.35); }
@@ -514,20 +528,15 @@ def view_logs_page():
     .pill.evt-llm_request { background:rgba(147,51,234,.18); color:#d8b4fe; border:1px solid rgba(147,51,234,.35); }
     .pill.evt-llm_response { background:rgba(2,132,199,.18); color:#7dd3fc; border:1px solid rgba(2,132,199,.35); }
     .muted { color:var(--muted); font-size:12px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace; font-size:12px; color:#cbd5e1; }
-    .nowrap { white-space:nowrap; }
+    /* Agrupamento visual por usuário */
+    .group-sep td { border-top: 2px solid var(--accent); }
+    .group-start td { border-top: 2px solid var(--accent); }
 
-    /* Resizable columns */
-    th { position: relative; }
-    .resizer { position:absolute; right:0; top:0; height:100%; width:6px; cursor:col-resize; user-select:none; }
-    .resizer:hover { background: rgba(125,211,252,0.25); }
+    /* Ocultação por modo de visualização */
+    .col-adv { display: table-cell; }
+    .mode-simple .col-adv { display: none; }
 
-    /* Log list layout improvements */
-    .log-list { display:flex; flex-direction:column; }
-    .log-item { padding:12px 14px; border-top:1px solid var(--border); }
-    .log-item:first-child { border-top: none; }
-    .log-line { margin:2px 0; line-height:1.35; }
-    .log-line .pill { vertical-align:baseline; }
+    mark { background: rgba(56,189,248,.25); color: inherit; }
   </style>
 </head>
 <body>
@@ -561,17 +570,38 @@ def view_logs_page():
         <button id=\"tz\" class=\"btn\" title=\"Alternar timezone\">UTC</button>
         <button id=\"reset\" class=\"btn\" title=\"Limpa filtros e larguras salvas\">Resetar</button>
         <button id=\"clear-logs\" class=\"btn\" title=\"Apaga o arquivo de logs no servidor\">Limpar Logs</button>
+        <button id=\"viewmode\" class=\"btn\" title=\"Alternar Simple/Complete\">Simple</button>
+        <span class=\"muted\" id=\"counter\" style=\"margin-left:8px\"></span>
       </div>
     </div>
     <div class=\"card\">
-      <div id=\"loglist\" class=\"log-list\"></div>
+      <div id=\"tablewrap\">
+        <table id=\"logtable\" class=\"mode-simple\">
+          <thead>
+            <tr>
+              <th class=\"col-time nowrap\">Data/Hora</th>
+              <th class=\"col-event col-adv\">Evento</th>
+              <th class=\"col-module col-adv\">Módulo</th>
+              <th class=\"col-page\">Página</th>
+              <th class=\"col-value\">Value</th>
+              <th class=\"col-geo\">Geo</th>
+              <th class=\"col-ip col-adv\">IP</th>
+              <th class=\"col-origin col-adv\">Origin</th>
+              <th class=\"col-ua col-adv\">UA</th>
+              <th class=\"col-chat col-adv\">chat_id</th>
+              <th class=\"col-session col-adv\">session_id</th>
+            </tr>
+          </thead>
+          <tbody id=\"logbody\"></tbody>
+        </table>
+      </div>
     </div>
-    <div class=\"muted\" id=\"counter\" style=\"margin-top:8px\"></div>
   </div>
 
   <script>
     const $ = (sel) => document.querySelector(sel);
-    const rowsEl = $('#loglist');
+    const tbodyEl = $('#logbody');
+    const tableEl = $('#logtable');
     const counterEl = $('#counter');
     const filterEvent = $('#filter-event');
     const groupBy = $('#group-by');
@@ -582,9 +612,11 @@ def view_logs_page():
     const tzBtn = $('#tz');
     const resetBtn = $('#reset');
     const clearBtn = $('#clear-logs');
+    const viewModeBtn = $('#viewmode');
     let useLocalTZ = true; // toggle timezone
     let autoOn = false;
     let autoTimer = 0;
+    let simpleMode = true; // Simple por padrão
 
     async function fetchLogs() {
       const res = await fetch('/logs?format=ndjson&limit=200', { cache: 'no-store' });
@@ -633,7 +665,7 @@ def view_logs_page():
           return hay.includes(q);
         });
       }
-      // Ordenação
+      // Ordenação principal
       const getTs = (x) => (x._server_ts||x.ts||'');
       if (sortBy) {
         const mode = sortBy.value;
@@ -642,12 +674,13 @@ def view_logs_page():
         else if (mode === 'module') list.sort((a,b) => (a.module_label||a.module||'').localeCompare(b.module_label||b.module||''));
         else list.sort((a,b) => getTs(b).localeCompare(getTs(a))); // time_desc
       }
+      // Agrupar por usuário (visual): ordena por user key para aproximar e marca inícios de grupo
+      const userKey = (x) => (x.session_id || x._client_ip || '').toString();
+      list.sort((a,b) => userKey(a).localeCompare(userKey(b)) || getTs(b).localeCompare(getTs(a)));
 
-      // Agrupamento
-      const grouping = (groupBy && groupBy.value) || 'none';
-      let html = '';
+      // Renderização em tabela
       const esc = (s) => (String(s||'')).replace(/</g,'&lt;');
-      const renderItem = (x) => {
+      const makeRow = (x, isGroupStart) => {
         const ts = x._server_ts || x.ts || '';
         const f = fmtDateTime(ts);
         const geo = [x.geo_city||'', x.geo_region||'', x.geo_country||''].filter(Boolean).join(', ');
@@ -655,35 +688,31 @@ def view_logs_page():
         const page = (x.page||'').toString();
         const origin = (x.origin||'').toString();
         const evtClass = `pill evt-${(x.event||'').replace(/[^\w-]/g,'_')}`;
-        const ipHtml = `<a href="#" data-filter-ip="${esc(x._client_ip||'')}">${esc(x._client_ip||'')}</a>`;
+        const ipHtml = `<a href=\"#\" data-filter-ip=\"${esc(x._client_ip||'')}\">${esc(x._client_ip||'')}</a>`;
         return `
-          <div class="log-item">
-            <div class="log-line mono nowrap" title="server: ${esc(x._server_ts||'')}">${f.d} | ${f.t}</div>
-            <div class="log-line">Evento: <span class="pill ${evtClass}">${esc(x.event||'')}</span></div>
-            <div class="log-line">${esc(moduleName) || '—'} | ${esc(page) || '—'}</div>
-            <div class="log-line">value: ${highlight(esc(x.value), q)}</div>
-            <div class="log-line">geo: ${esc(geo) || '—'}</div>
-            <div class="log-line">client ip: ${ipHtml}</div>
-            <div class="log-line">origin: ${esc(origin)}</div>
-          </div>`;
+          <tr class="${isGroupStart ? 'group-start' : ''}">
+            <td class="col-time mono nowrap" title="server: ${esc(ts)}">${f.d} ${f.t}</td>
+            <td class="col-event col-adv"><span class=\"pill ${evtClass}\">${esc(x.event||'')}</span></td>
+            <td class="col-module col-adv">${esc(moduleName) || '—'}</td>
+            <td class="col-page">${esc(page) || '—'}</td>
+            <td class="col-value">${highlight(esc(x.value), q)}</td>
+            <td class="col-geo">${esc(geo) || '—'}</td>
+            <td class="col-ip col-adv">${ipHtml}</td>
+            <td class="col-origin col-adv">${esc(origin)}</td>
+            <td class="col-ua col-adv">${esc(x._user_agent||'')}</td>
+            <td class="col-chat col-adv">${esc(x.chat_id||'')}</td>
+            <td class="col-session col-adv">${esc(x.session_id||'')}</td>
+          </tr>`;
       };
-      if (grouping === 'event' || grouping === 'module') {
-        const keyFn = (x) => grouping === 'event' ? (x.event||'') : (x.module_label || x.module || '—');
-        const groups = new Map();
-        for (const x of list) {
-          const k = keyFn(x) || '—';
-          if (!groups.has(k)) groups.set(k, []);
-          groups.get(k).push(x);
-        }
-        html += Array.from(groups.entries()).map(([k, items]) => {
-          const head = `<div class="log-item"><div class="log-line"><strong>${esc(k)}</strong> <span class="muted">(${items.length})</span></div></div>`;
-          const body = items.map(renderItem).join('');
-          return head + body;
-        }).join('');
-      } else {
-        html = list.map(renderItem).join('');
+      let html = '';
+      let lastUser = '';
+      for (const x of list) {
+        const u = userKey(x);
+        const isStart = u !== lastUser;
+        html += makeRow(x, isStart);
+        lastUser = u;
       }
-      rowsEl.innerHTML = html;
+      tbodyEl.innerHTML = html;
       try {
         const uniq = new Set();
         for (const x of list) {
@@ -696,7 +725,7 @@ def view_logs_page():
       }
 
       // Clickable filters (IP)
-      rowsEl.querySelectorAll('[data-filter-ip]').forEach(a => {
+      tbodyEl.querySelectorAll('[data-filter-ip]').forEach(a => {
         a.addEventListener('click', (ev) => {
           ev.preventDefault();
           const ip = a.getAttribute('data-filter-ip') || '';
@@ -711,11 +740,23 @@ def view_logs_page():
         const data = await fetchLogs();
         render(data);
       } catch(e) {
-        rowsEl.innerHTML = `<div class=\"mono\">Erro ao carregar logs.</div>`;
+        if (tbodyEl) {
+          tbodyEl.innerHTML = `<tr><td class=\"mono\" colspan=\"11\">Erro ao carregar logs.</td></tr>`;
+        }
       }
     }
 
-    // No resizable columns needed in vertical list layout
+    // Alternar modo Simple/Complete (mostra/oculta colunas avançadas)
+    function applyViewMode() {
+      if (!tableEl) return;
+      if (simpleMode) {
+        tableEl.classList.add('mode-simple');
+        viewModeBtn.textContent = 'Simple';
+      } else {
+        tableEl.classList.remove('mode-simple');
+        viewModeBtn.textContent = 'Complete';
+      }
+    }
 
     filterEvent && filterEvent.addEventListener('change', load);
     groupBy && groupBy.addEventListener('change', load);
@@ -723,6 +764,7 @@ def view_logs_page():
     search && search.addEventListener('input', () => { window.clearTimeout(window.__t); window.__t = setTimeout(load, 250); });
     refreshBtn && refreshBtn.addEventListener('click', load);
     tzBtn && tzBtn.addEventListener('click', () => { useLocalTZ = !useLocalTZ; tzBtn.textContent = useLocalTZ ? 'UTC' : 'Local'; load(); });
+    viewModeBtn && viewModeBtn.addEventListener('click', () => { simpleMode = !simpleMode; applyViewMode(); });
     autoBtn && autoBtn.addEventListener('click', () => {
       autoOn = !autoOn;
       autoBtn.textContent = autoOn ? 'Auto✓' : 'Auto';
@@ -735,16 +777,14 @@ def view_logs_page():
       }
     });
     resetBtn && resetBtn.addEventListener('click', () => {
-      // limpar larguras persistidas
-      try { localStorage.removeItem('log_col_widths'); } catch {}
       // limpar filtros
       if (filterEvent) filterEvent.value = '';
       if (groupBy) groupBy.value = 'none';
       if (sortBy) sortBy.value = 'time_desc';
       if (search) search.value = '';
-      // limpar larguras aplicadas no DOM
-      const colgroup = document.getElementById('colgroup');
-      if (colgroup) Array.from(colgroup.children).forEach(c => c.style.width = '');
+      // reset de modo
+      simpleMode = true;
+      applyViewMode();
       // recarregar
       load();
     });
@@ -758,7 +798,7 @@ def view_logs_page():
       }
       load();
     });
-    document.addEventListener('DOMContentLoaded', ()=>{ load(); });
+    document.addEventListener('DOMContentLoaded', ()=>{ applyViewMode(); load(); });
   </script>
 </body>
 </html>
