@@ -136,9 +136,9 @@
           <th>Data/Hora</th>
           <th>Event</th>
           <th>Module</th>
-          <th>Page</th>
+          <th class="col-adv">Page</th>
           <th>Value</th>
-          <th class="col-adv">Geo</th>
+          <th>Geo</th>
           <th class="col-adv">IP</th>
           <th class="col-adv">Origin</th>
           <th class="col-adv">UA</th>
@@ -225,9 +225,9 @@
           <td class="mono">${highlight(ts, q)}</td>
           <td><span class="pill">${highlight(evt, q)}</span></td>
           <td>${highlight(mod, q)}</td>
-          <td class="mono">${highlight(page, q)}</td>
+          <td class="col-adv mono">${highlight(page, q)}</td>
           <td>${highlight(val, q)}</td>
-          <td class="col-adv">${highlight(geo, q)}</td>
+          <td>${highlight(geo, q)}</td>
           <td class="col-adv mono">${highlight(ip, q)}</td>
           <td class="col-adv">${highlight(origin, q)}</td>
           <td class="col-adv">${highlight(ua, q)}</td>
@@ -259,6 +259,10 @@
           ).toLowerCase();
           return blob.indexOf(q) !== -1;
         });
+      }
+      // exclude page_view in simple mode
+      if (!state.complete) {
+        rows = rows.filter(r => (r.event || '') !== 'page_view');
       }
       renderRows(rows);
       el.counts.textContent = `Eventos: ${rows.length} (total lido: ${state.data.length})`;
