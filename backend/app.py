@@ -37,8 +37,16 @@ from utils.config import (
     MODEL_LLM,
 )
 from utils.docx_export import build_docx
+from utils.logs import (
+    write_ndjson_line,
+    normalize_event,
+    add_enrichment,
+    read_today_raw,
+    parse_ndjson_lines,
+    pretty_lines,
+    clear_today,
+)
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
-from utils.logs import logs_bp, append_log, LOG_DIR
 
 # Add backend directory to Python path
 BACKEND_DIR = Path(__file__).parent.resolve()
@@ -94,6 +102,14 @@ def favicon():
     except Exception:
         return "", 404
 
+# Friendly alias: /logs/view -> frontend/logs/view.html
+@app.route('/logs/view')
+def logs_view_page():
+    try:
+        return send_from_directory(frontend_path, os.path.join('logs', 'view.html'))
+    except Exception:
+        return "File not found", 404
+
 
 # Restrinja origens em produção; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = "*"
@@ -108,8 +124,6 @@ CORS(app, resources={
     }
 })
 
-# Register logging blueprint (moved from app.py to utils.logs)
-app.register_blueprint(logs_bp)
 
 # Loga um banner de inicialização
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
@@ -233,24 +247,6 @@ class LlmQueryResource(Resource):
                 "chat_id": chat_id,
             }
 
-            # Log only the prompt text for LLM requests
-            try:
-                LOG_DIR.mkdir(exist_ok=True)
-                llm_log = {
-                    "event": "llm_request",
-                    "value": (query or "")[:200],
-                    "model": model,
-                    "temperature": temperature,
-                    "chat_id": chat_id,
-                    "_server_ts": datetime.datetime.utcnow().isoformat() + "Z",
-                    "_client_ip": request.remote_addr,
-                    "_user_agent": request.headers.get("User-Agent"),
-                    "_path": request.path,
-                }
-                append_log(llm_log)
-            except Exception as e:
-                logger.error(f"[llm_request log] failed: {e}")
-
             # Generate LLM answer
             # -------------------
             results = generate_llm_answer(**parameters)
@@ -259,24 +255,6 @@ class LlmQueryResource(Resource):
                 return {"error": results["error"]}, 500
 
             clean_text = results.get("text", "")
-
-            # Log only a short summary of the LLM response
-            try:
-                LOG_DIR.mkdir(exist_ok=True)
-                llm_log_resp = {
-                    "event": "llm_response",
-                    "value": (clean_text or "")[:200],
-                    "model": model,
-                    "temperature": temperature,
-                    "chat_id": chat_id,
-                    "_server_ts": datetime.datetime.utcnow().isoformat() + "Z",
-                    "_client_ip": request.remote_addr,
-                    "_user_agent": request.headers.get("User-Agent"),
-                    "_path": request.path,
-                }
-                append_log(llm_log_resp)
-            except Exception as e:
-                logger.error(f"[llm_response log] failed: {e}")
 
             response = {
                 "text": clean_text,
@@ -447,6 +425,74 @@ api.add_resource(SemanticSearchResource, '/semantic_search')
 api.add_resource(RandomPensataResource, '/random_pensata')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')
+
+# ---------------------- Logs API ----------------------
+@app.route('/log', methods=['POST'])
+def post_log():
+    try:
+        payload = request.get_json(force=True) or {}
+    except Exception:
+        payload = {}
+    # normalize and enrich
+    record = normalize_event(payload)
+    record = add_enrichment(
+        record,
+        headers={k: v for k, v in request.headers.items()},
+        remote_addr=request.remote_addr,
+        user_agent=(request.user_agent.string if request.user_agent else None),
+    )
+    try:
+        write_ndjson_line(record)
+    except Exception as e:
+        logger.error(f"Failed to write log: {e}")
+        return jsonify({"status": "error", "message": "failed to write"}), 500
+    return jsonify({"status": "ok"})
+
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    fmt = (request.args.get('format') or 'raw').lower()
+    try:
+        limit = int(request.args.get('limit', '0') or 0)
+    except ValueError:
+        limit = 0
+
+    raw_text = read_today_raw(limit=limit)
+    if fmt == 'raw':
+        return Response(raw_text, mimetype='text/plain; charset=utf-8')
+
+    records = parse_ndjson_lines(raw_text)
+    if fmt == 'ndjson':
+        # Normalize each record to standard fields, preserving enrichments
+        normalized = []
+        for r in records:
+            base = normalize_event(r if isinstance(r, dict) else {})
+            # keep enrichment if present
+            for k in ['_server_ts', '_client_ip', '_user_agent', '_geo', 'chat_id', 'session_id']:
+                if isinstance(r, dict) and k in r:
+                    base[k] = r[k]
+            normalized.append(base)
+        text = "\n".join(json.dumps(x, ensure_ascii=False) for x in normalized)
+        if text:
+            text += "\n"
+        return Response(text, mimetype='application/x-ndjson; charset=utf-8')
+
+    if fmt == 'pretty':
+        pretty = pretty_lines(records)
+        return Response(pretty, mimetype='text/plain; charset=utf-8')
+
+    # default to raw
+    return Response(raw_text, mimetype='text/plain; charset=utf-8')
+
+
+@app.route('/logs/clear', methods=['DELETE'])
+def clear_logs_today():
+    try:
+        clear_today()
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        logger.error(f"Failed to clear logs: {e}")
+        return jsonify({"status": "error"}), 500
 
 @app.route('/health')
 def health_check():
