@@ -419,9 +419,13 @@
                 // bloqueia rolagem
                 document.documentElement.classList.add('no-scroll');
                 document.body.classList.add('no-scroll');
+                // Esconde o conteúdo de informações no início
+                document.documentElement.removeAttribute('data-show-info');
+                
                 // fade-out do conteúdo ao fundo por 1s
                 document.documentElement.classList.add('fade-out-main');
                 overlay.classList.add('show');
+                
                 // ativa o crossfade em próximo frame (evita salto ao trocar display)
                 requestAnimationFrame(() => {
                   requestAnimationFrame(() => {
@@ -429,20 +433,26 @@
                     img.classList.add('animate');
                   });
                 });
-                // após 3s de zoom, dispara fade de 1s do logo e inicia fade-in do conteúdo (crossfade)
+                
+                // após 3s de zoom, dispara fade de 1s do logo
                 setTimeout(() => {
-                  // garante que o conteúdo que vai aparecer é a página de informações
-                  document.documentElement.setAttribute('data-show-info', 'true');
-                  document.documentElement.classList.remove('fade-out-main');
                   overlay.classList.add('fade');
                 }, 3000);
-                // ao final (3s + 1s), oculta e chama callback
+                
+                // ao final (3s + 1s), mostra as infos, oculta overlay e chama callback
                 setTimeout(() => {
+                  // Remove o overlay e libera a rolagem
                   overlay.classList.remove('visible', 'show', 'fade');
-                  // libera rolagem
                   document.documentElement.classList.remove('no-scroll');
                   document.body.classList.remove('no-scroll');
-                  // conteúdo já iniciou o fade-in aos 3s
+                  
+                  // Remove o fade do conteúdo principal
+                  document.documentElement.classList.remove('fade-out-main');
+                  
+                  // Aplica o atributo data-show-info APÓS remover o overlay
+                  document.documentElement.setAttribute('data-show-info', 'true');
+                  
+                  // Chama o callback
                   if (callback) callback();
                 }, 4000);
               } catch (e) { if (callback) callback(); }
@@ -531,6 +541,7 @@
               if (rangeLabel) rangeLabel.textContent = `${floor} - ${cap} (step 10)`;
               if ($('cfg-openai-ragbot')) $('cfg-openai-ragbot').value = cfg.OPENAI_RAGBOT || 'ALLWV';
               if ($('cfg-full-badges')) $('cfg-full-badges').checked = !!cfg.FULL_BADGES;
+              if ($('cfg-show-mini-records')) $('cfg-show-mini-records').checked = !!cfg.SHOW_MINI_RECORDS;
 
               const range = $('cfg-temperature');
               const num = $('cfg-temperature-num');
@@ -549,6 +560,7 @@
                 MAX_RESULTS_DISPLAY: normalizeMaxResults($('cfg-max-results')?.value ?? getMaxResultsCap()),
                 OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLWV',
                 FULL_BADGES: !!$('cfg-full-badges')?.checked,
+                SHOW_MINI_RECORDS: !!$('cfg-show-mini-records')?.checked,
               };
               try { localStorage.setItem('appConfig', JSON.stringify(next)); } catch {}
               window.CONFIG = { ...(window.CONFIG || {}), ...next };
@@ -622,6 +634,13 @@
               <div class="config-inline">
                 <input id="cfg-full-badges" type="checkbox" />
                 <span class="config-help">Exibe badges completos nas respostas</span>
+              </div>
+            </div>
+            <div class="config-field full">
+              <label for="cfg-show-mini-records">REGISTROS_MINI</label>
+              <div class="config-inline">
+                <input id="cfg-show-mini-records" type="checkbox" />
+                <span class="config-help">Mostra opções de registros mini na busca de livros</span>
               </div>
             </div>
           </div>

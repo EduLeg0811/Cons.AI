@@ -218,6 +218,7 @@ const format_paragraphs_source = (item, sourceName, query) => {
   if (sourceName === 'DAC') return format_paragraph_DAC(item, query);
   if (sourceName === 'CCG') return format_paragraph_CCG(item, query);
   if (sourceName === 'EC')  return format_paragraph_EC(item, query);
+  if (sourceName === 'QUEST') return format_paragraph_QUEST(item, query);
   return format_paragraph_Default(item, query);
 };
 
@@ -498,6 +499,56 @@ const format_paragraph_EC = (item, query) => {
 // ===========================================================================
 // Default: Content_Text  Markdown_Text Title  Number  Score  (+ HIGHLIGHT)
 // ===========================================================================
+const format_paragraph_QUEST = (item, query) => {
+
+
+  const title = item.title || '';
+  const paragraph_number = item.number || '';
+  const score = item.score || 0.00;
+  const text = item.markdown || item.content_text || item.text || '';
+  const author = item.author || '';
+  const date = item.date || '';
+ const source = 'QUEST';
+  
+    // Casos especiais
+    const textCompleted = text;
+
+  // Texto do parágrafo + highlight
+  const rawHtml = renderMarkdown(textCompleted);
+  const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
+  const q = window.__lastSearchQuery || '';
+  const highlighted = highlightHtml(safeHtml, q);
+
+
+  // Monta os badges
+  // -------------------------------------------------------------------------------------------------------------------------
+  let badgeParts = [];
+  if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+  if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+
+  if (FLAG_FULL_BADGES) {
+    if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+    if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
+  }
+
+  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
+  else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
+
+  const metaBadges = badgeParts.join('');
+
+  // ------------------------------------------------------------------------------------------------------------------------- 
+
+  const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
+
+  return finalHtml;
+
+};
+
+
+
+// ===========================================================================
+// Default: Content_Text  Markdown_Text Title  Number  Score  (+ HIGHLIGHT)
+// ===========================================================================
 const format_paragraph_Default = (item, query) => {
 
 
@@ -508,9 +559,9 @@ const format_paragraph_Default = (item, query) => {
   let source = item.source || '';
   source = bookName(source);
 
-
-  // Caso especial 'LO': coloca **title.** em negrito antes da pensata.
-  const textCompleted = (title) ? `**${title}.** ${text}` : text;
+  
+    // Casos especiais
+    const textCompleted = text;
 
   // Texto do parágrafo + highlight
   const rawHtml = renderMarkdown(textCompleted);

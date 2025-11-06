@@ -89,6 +89,9 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
             files_dir / f"{book}.md",
             files_dir / f"{book}.txt",
         ]
+
+        logger.info(f"[lexical_search_in_files] Livro: {book}")
+        logger.info(f"[lexical_search_in_files] Candidates: {candidates}")
         for c in candidates:
             if c.exists():
                 return c
@@ -136,6 +139,7 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
             if ext == ".xlsx":
                 rows = read_excel_first_sheet(path)
                 matches = search_excel_rows(rows, search_term)
+
                 for m in matches:
                     results.append(SearchResult(
                         source=book,
