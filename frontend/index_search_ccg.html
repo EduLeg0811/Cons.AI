@@ -188,7 +188,7 @@
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
-        const STORAGE_KEY = 'settings_search_book';
+        const STORAGE_KEY = 'appConfig_CCG';
         function hideSearchHint(){
             const el = document.getElementById('searchHint');
             if (!el) return;
@@ -200,7 +200,7 @@
         // ================================================================
         // 1. Definição da configuração inicial padrão
         // ================================================================
-        const FIXED_BOOK = 'CCG';   // ðŸ”¥ Altere aqui se quiser outro livro fixo
+        const FIXED_BOOK = 'CCG';   // Altere aqui se quiser outro livro fixo
         const DEFAULT_SETTINGS = {
             books: [FIXED_BOOK],        // Apenas CCG
             searchType: ['lexical'],     // Léxica marcada
@@ -208,7 +208,7 @@
             groupResults: false
         };
     
-        // SÃ³ define se nÃ£o houver configuraÃ§Ã£o anterior
+        // Só define se não houver configuração anterior
         if (!localStorage.getItem(STORAGE_KEY)) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
@@ -340,7 +340,7 @@
         // ================================================================
         // 7. Função global para recuperar configs
         // ================================================================
-        window.getSearchBookSettings = function() {
+        window.getCCGConfig = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         };
 

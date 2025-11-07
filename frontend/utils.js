@@ -326,7 +326,13 @@ function bookName(source) {
     }
     if (source === 'CCG') {
         realName = 'Conscienciograma';
-    }       
+    }    
+    if (source === 'QUEST') {
+        realName = 'Questões Minitertúlia';
+    }   
+     if (source === 'MINI') {
+        realName = 'Anotações Minitertúlia EDU';
+    }   
     return realName;
 }
 

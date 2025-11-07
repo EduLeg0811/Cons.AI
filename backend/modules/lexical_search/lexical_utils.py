@@ -140,6 +140,10 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
                 rows = read_excel_first_sheet(path)
                 matches = search_excel_rows(rows, search_term)
 
+                #logger.info(f"[lexical_search_in_files] search_term: {search_term}")
+                #logger.info(f"[lexical_search_in_files] matches: {matches}")
+                
+
                 for m in matches:
                     results.append(SearchResult(
                         source=book,
@@ -633,10 +637,14 @@ def search_excel_rows(rows: List[Dict[str, Any]], query: str) -> List[Dict[str, 
 
     # primeira coluna de dados (ordem preservada pelo pandas; se vazio, aborta)
     first_row = rows[0]
+
     if not first_row:
         return []
 
     texto_key = list(first_row.keys())[0]  # "primeira coluna"
+
+    #logger.info(f"\n\n[lexical_search_in_files] texto_key: {texto_key}")
+
     pred = compile_boolean_predicate(query)
     pre = compile_prefilter(query)  # pré-filtro barato (pode ser None)
 

@@ -1,52 +1,51 @@
 // config.js
 
-// Global Parameters
-// UI toggles and defaults
-// Whether to show reference badges under each result (fixed global setting)
-const MODEL_LLM='gpt-4.1-nano';
-const MODEL_RAGBOT='gpt-4.1-nano';
-const MODEL_DEEPDIVE='gpt-5-nano';
-const TEMPERATURE=0.3;
-const MAX_RESULTS_DISPLAY=100;
-const MIN_RESULTS_DISPLAY=1;
-const OPENAI_RAGBOT='ALLWV';
-const FULL_BADGES = false;
+// Global Configuration Parameters
+// All configuration keys should use UPPER_SNAKE_CASE for consistency
+const CONFIG = {
+  // Model settings
+  MODEL_LLM: 'gpt-4.1-nano',
+  MODEL_RAGBOT: 'gpt-4.1-nano',
+  
+  // Generation settings
+  TEMPERATURE: 0.3,
+  MAX_RESULTS_DISPLAY: 100,
+  
+  // Feature flags
+  OPENAI_RAGBOT: 'ALLWV',
+  FULL_BADGES: false
+};
 
-// ========================= Runtime Config (overrides) =========================
-// Centralized runtime config object with defaults from the constants above.
+// Storage key for configuration
+const STORAGE_KEY = 'appConfig_main';
+
+// ========================= Runtime Configuration =========================
+// Centralized runtime config object with defaults from CONFIG.
 // Values can be overridden via the Config modal and persisted in localStorage.
-(function initRuntimeConfig(){
-  const defaults = {
-    MODEL_LLM,
-    MODEL_RAGBOT,
-    TEMPERATURE,
-    MAX_RESULTS_DISPLAY,
-    MIN_RESULTS_DISPLAY,
-    OPENAI_RAGBOT,
-    FULL_BADGES,
-  };
-
-  let stored = {};
+(function initRuntimeConfig() {
+  // Load stored config, falling back to defaults
+  let storedConfig = {};
   try {
-    const raw = localStorage.getItem('appConfig');
-    if (raw) stored = JSON.parse(raw) || {};
-  } catch (e) { /* ignore */ }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) storedConfig = JSON.parse(raw) || {};
+  } catch (e) {
+    console.warn('Failed to load config from localStorage:', e);
+  }
 
-  // Shallow merge (only known keys)
-  const cfg = { ...defaults };
-  for (const k of Object.keys(defaults)) {
-    if (stored[k] !== undefined && stored[k] !== null && stored[k] !== '') {
-      cfg[k] = stored[k];
+  // Merge stored config with defaults (only known keys)
+  const runtimeConfig = { ...CONFIG };
+  for (const [key, defaultValue] of Object.entries(CONFIG)) {
+    if (storedConfig[key] !== undefined && storedConfig[key] !== null && storedConfig[key] !== '') {
+      runtimeConfig[key] = storedConfig[key];
     }
   }
 
-  // Expose globally for all modules
-  window.CONFIG_DEFAULTS = defaults;
-  window.CONFIG = cfg;
-
-  // Optional: surface some common flags for easy access in legacy code
-  try { window.USER_MAX_RESULTS = Number(cfg.MAX_RESULTS_DISPLAY) || defaults.MAX_RESULTS_DISPLAY; } catch {}
-  try { window.USER_TEMPERATURE = Number(cfg.TEMPERATURE) ?? defaults.TEMPERATURE; } catch {}
+  // Expose configuration globally
+  window.CONFIG = runtimeConfig;
+  
+  // Backward compatibility (deprecated - modules should use window.CONFIG instead)
+  window.USER_MAX_RESULTS = Number(runtimeConfig.MAX_RESULTS_DISPLAY) || CONFIG.MAX_RESULTS_DISPLAY;
+  window.USER_TEMPERATURE = Number(runtimeConfig.TEMPERATURE) || CONFIG.TEMPERATURE;
 })();
 
 

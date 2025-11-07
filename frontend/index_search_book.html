@@ -99,7 +99,7 @@
             <div class="options-panel" id="optionsPanel">
 
                 <div class="options-header" onclick="toggleOptions()">
-                    <h3 class="options-title">Search Options</h3>
+                    <h3 class="options-title">Opções de Pesquisa</h3>
                     <button class="options-toggle" id="optionsToggle">
                         <i class="fas fa-chevron-down"></i>
                     </button>
@@ -138,8 +138,43 @@
                         <div class="book-pill" data-value="HSR">Homo sapiens reurbanisatus</div>
                         <div class="book-pill" data-value="HSP">Homo sapiens pacificus</div>
                         <div class="book-pill" data-value="PROJ">Projeciologia</div>
+                        <!--<div class="book-pill" data-value="QUEST">Questões Mini</div>-->
+
+                        <!-- ============================================================
+                            Controle de exibição do pill "Questões Mini"
+                            ============================================================ -->
+                        <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                        const container = document.querySelector('.book-checkboxes[data-module="search_book"]');
+                        if (!container) return;
+
+                        // Lê o flag salvo na configuração principal (index.html)
+                        let minitertuliaFlag = false;
+                        try {
+                            const configMain = JSON.parse(localStorage.getItem("appConfig_main") || "{}");
+                            minitertuliaFlag = !!configMain.MINITERTULIA;
+                        } catch (e) {}
+
+                        // Se o flag for true, cria o pill dinamicamente logo após o último book-pill (PROJ)
+                        if (minitertuliaFlag) {
+                            const lastPill = container.querySelector('.book-pill[data-value="PROJ"]');
+                            if (lastPill) {
+                            const div = document.createElement("div");
+                            div.className = "book-pill";
+                            div.dataset.value = "QUEST";
+                            div.textContent = "Questões Mini";
+                            lastPill.insertAdjacentElement("afterend", div);
+                            }
+                        }
+                        });
+                        </script>
+
+
+
+
 
                         <br>
+
 
                         <div class="config-container">
                             <div class="config-options">
@@ -199,6 +234,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         initTheme();
@@ -224,16 +260,11 @@
             try { el.setAttribute('aria-hidden','true'); } catch {}
             try { el.style.display = 'none'; } catch {}
         }
-        const STORAGE_KEY = 'settings_search_book';
+        const STORAGE_KEY = 'appConfig_searchBook';
         
-        // Função para carregar configurações do app
-        function getAppConfig() {
-            try {
-                return JSON.parse(localStorage.getItem('appConfig') || '{}');
-            } catch (e) {
-                return {};
-            }
-        }
+
+
+        
     
         // ================================================================
         // 1. Definição da configuração inicial padrão
@@ -244,101 +275,13 @@
             maxResults: 10,
             groupResults: true
         };
-        
-        // Adiciona os livros mini se a opção estiver ativada
-        function updateMiniRecordsVisibility() {
-            const appConfig = getAppConfig();
-            console.log('Configurações do app:', appConfig);
-            const miniRecordsContainer = document.querySelector('.mini-records-container');
-            const bookCheckboxes = document.querySelector('.book-checkboxes');
-            
-            console.log('bookCheckboxes encontrado?', !!bookCheckboxes);
-            if (!bookCheckboxes) return;
-            
-            // Remove os mini registros existentes
-            if (miniRecordsContainer) {
-                miniRecordsContainer.remove();
-            }
-            
-            if (appConfig.SHOW_MINI_RECORDS) {
-                // Cria o container e adiciona os mini registros
-                const container = document.createElement('div');
-                container.className = 'mini-records-container';
-                container.style.display = 'contents'; // Herda o layout flex do container pai
-                
-                // Cria os botões individualmente para garantir o mesmo comportamento
-                const questPill = document.createElement('div');
-                questPill.className = 'book-pill';
-                questPill.dataset.value = 'QUEST';
-                questPill.textContent = 'Questões Mini';
-                
-                const miniPill = document.createElement('div');
-                miniPill.className = 'book-pill';
-                miniPill.dataset.value = 'MINI';
-                miniPill.textContent = 'Notes Edu Mini';
-                
-                // Adiciona os botões ao container
-                container.appendChild(questPill);
-                container.appendChild(miniPill);
-                
-                // Adiciona os mini registros antes do <br> ou no final do container
-                const brElement = bookCheckboxes.querySelector('br');
-                if (brElement) {
-                    bookCheckboxes.insertBefore(container, brElement);
-                } else {
-                    bookCheckboxes.appendChild(container);
-                }
-                
-                console.log('Mini registros adicionados');
-            } else {
-                console.log('Mini registros desativados');
-            }
-        }
     
         // Só define se não houver configuração anterior
         if (!localStorage.getItem(STORAGE_KEY)) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
         
-        // Função para forçar a atualização dos mini registros
-        function forceUpdateMiniRecords() {
-            console.log('Forçando atualização dos mini registros...');
-            updateMiniRecordsVisibility();
-        }
         
-        // Atualiza a visibilidade dos mini registros quando a página carrega
-        console.log('Página carregada, atualizando mini registros...');
-        updateMiniRecordsVisibility();
-        
-        // Adiciona a função ao escopo global para ser chamada manualmente
-        window.forceUpdateMiniRecords = forceUpdateMiniRecords;
-        
-        // Monitora mudanças no localStorage para atualizar a UI quando a configuração mudar
-        window.addEventListener('storage', function(e) {
-            console.log('Evento de armazenamento detectado:', e.key);
-            if (e.key === 'appConfig') {
-                console.log('Configuração do app alterada, atualizando mini registros...');
-                updateMiniRecordsVisibility();
-            }
-        });
-        
-        // Adiciona um botão temporário para forçar a atualização (pode ser removido depois)
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.createElement('button');
-            btn.textContent = 'Atualizar Mini Registros';
-            btn.style.position = 'fixed';
-            btn.style.bottom = '10px';
-            btn.style.right = '10px';
-            btn.style.zIndex = '9999';
-            btn.style.padding = '10px';
-            btn.style.background = '#4CAF50';
-            btn.style.color = 'white';
-            btn.style.border = 'none';
-            btn.style.borderRadius = '4px';
-            btn.style.cursor = 'pointer';
-            btn.onclick = forceUpdateMiniRecords;
-            document.body.appendChild(btn);
-        });
     
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)

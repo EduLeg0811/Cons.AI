@@ -192,7 +192,7 @@
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
-        const STORAGE_KEY = 'settings_search_book';
+        const STORAGE_KEY = 'appConfig_verb';
         function hideSearchHint(){
             const el = document.getElementById('searchHint');
             if (!el) return;
@@ -344,7 +344,7 @@
         // ================================================================
         // 6. Função global para recuperar configs
         // ================================================================
-        window.getSearchBookSettings = function() {
+        window.getVerbConfig = function() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         };
 

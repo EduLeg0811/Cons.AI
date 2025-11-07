@@ -505,19 +505,26 @@ const format_paragraph_QUEST = (item, query) => {
   const title = item.title || '';
   const paragraph_number = item.number || '';
   const score = item.score || 0.00;
-  const text = item.markdown || item.content_text || item.text || '';
+  const raw_text =  item.raw_text || '';
   const author = item.author || '';
-  const date = item.date || '';
- const source = 'QUEST';
-  
-    // Casos especiais
-    const textCompleted = text;
+  const data = item.date || '';
+  const source = 'QUEST';
+  const [quest_text = '', answer_text = ''] = raw_text.split('|');
+
+  // Tranforma formato da data
+  const date = new Date(data.replace(" ", "T")); // garante compatibilidade ISO
+  const formattedDate = date.toLocaleDateString("pt-BR", { timeZone: "UTC" });
 
   // Texto do parágrafo + highlight
-  const rawHtml = renderMarkdown(textCompleted);
-  const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
-  const q = window.__lastSearchQuery || '';
-  const highlighted = highlightHtml(safeHtml, q);
+  const questHtml = renderMarkdown(quest_text);
+  const answerHtml = renderMarkdown(answer_text);
+  const questSafeHtml = (window.DOMPurify ? DOMPurify.sanitize(questHtml) : questHtml);
+  const answerSafeHtml = (window.DOMPurify ? DOMPurify.sanitize(answerHtml) : answerHtml);
+  const questHighlighted = highlightHtml(questSafeHtml, query);
+  const answerHighlighted = highlightHtml(answerSafeHtml, query);
+
+  console.log("Quest Highlighted: ", questHighlighted);
+  console.log("Answer Highlighted: ", answerHighlighted);
 
 
   // Monta os badges
@@ -525,9 +532,11 @@ const format_paragraph_QUEST = (item, query) => {
   let badgeParts = [];
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
   if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+  if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
+  if (formattedDate)   badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(formattedDate)}</span>`);
+  if (author) badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(author)}</span>`);
 
   if (FLAG_FULL_BADGES) {
-    if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
   }
 
@@ -538,7 +547,26 @@ const format_paragraph_QUEST = (item, query) => {
 
   // ------------------------------------------------------------------------------------------------------------------------- 
 
-  const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
+
+  const finalHtml = `
+  <div class="displaybox-item" style="font-size: 1em; line-height: 1.2;">
+    <div style="display: flex; align-items: baseline; gap: 0.3em; margin: 0.5em 0 0 0; padding: 0;">
+      <span style="color: blue;"><strong>Quest:</strong></span>
+      <span style="margin: 0; padding: 0; display: inline;"><strong>${questHighlighted}</strong></span>
+    </div>
+    <div style="height: 0.6em;"></div> <!-- controla meia linha de espaço -->
+    <div style="display: flex; align-items: baseline; gap: 0.3em; margin: 0 0 1.0em 0; padding: 0;">
+      <span style="color: blue;"><strong>Waldo:</strong></span>
+      <span style="margin: 0; padding: 0; display: inline;">${answerHighlighted}</span>
+    </div>
+    ${metaBadges}
+  </div>
+`.replace(/\n\s*/g, '');
+
+
+
+
+
 
   return finalHtml;
 
@@ -1216,8 +1244,6 @@ function renderMarkdown(mdText) {
 }
 
 
-
-// ===== Utility functions =====
 function escapeHtml(text) {
     if (typeof text !== 'string') return text;
     return text
