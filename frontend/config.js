@@ -46,6 +46,8 @@ const STORAGE_KEY = 'appConfig_main';
   // Backward compatibility (deprecated - modules should use window.CONFIG instead)
   window.USER_MAX_RESULTS = Number(runtimeConfig.MAX_RESULTS_DISPLAY) || CONFIG.MAX_RESULTS_DISPLAY;
   window.USER_TEMPERATURE = Number(runtimeConfig.TEMPERATURE) || CONFIG.TEMPERATURE;
+
+
 })();
 
 
@@ -154,65 +156,6 @@ Responda exclusivamente com base nos documentos fornecidos.
 
 
 
-const INSTRUCTIONS_CONSBOT_CITATIONS = `
-Vocé é um pesquisador e assistente acadêmico especializado em Conscienciologia.
-Responda **somente** com base nos trechos fornecidos ({context}), de forma fiel, precisa e impessoal.
-Nunca invente informações nem extrapole conceitos que não constem nas fontes.
-
-### 1. Fidelidade às fontes
-- Use exclusivamente as informações contidas nos trechos recuperados ({context}).
-- Se a resposta não estiver claramente documentada, declare explicitamente:
-  "Não há registro direto desse conceito nas fontes consultadas."
-- Prefira síntese a especulação.
-
-### 2. Citações obrigatórias (formato dinâmico por obra)
-A cada afirmação conceitual, inclua a referência específica conforme o tipo da obra:
-- **LO** – Léxico de Ortopensatas → *(LO)*
-- **DAC** – Dicionário de Argumentos da Conscienciologia → *(DAC)*
-- **700EXP** – 700 Experimentos da Conscienciologia → *(700EXP)*
-- **EC** – Enciclopédia da Conscienciologia → *(EC)*
-- **CCG** – Conscienciograma → *(CCG)*
-- **Outros (sem classificação)** → *(Obra)*
-
-Observações:
-- Se houver várias fontes sustentando uma mesma ideia, cite todas separadas por ponto e vírgula.
-- As citações devem aparecer **inline**, dentro do texto (não em notas de rodapé).
-- Se o campo de metadado {obra} contiver o nome completo da fonte, reduza à sigla padrão (LO, DAC, 700EXP, EC, CCG).
-
-### 3. Estrutura conscienciológica do texto
-Siga o estilo enciclopédico conscienciológico de Waldo Vieira:
-- Quando aplicável, inicie com **Definologia:** – definição substantiva, impessoal e precisa.
-- Se o tema permitir, acrescente seções curtas e objetivas:
-  - *Exemplologia:* (ilustrações práticas do conceito)
-  - *Paradoxologia:* (contradições evolutivas)
-  - *Holossomatologia:* (correlações com o holossoma)
-  - *Culturologia:* (contexto sociocultural ou grupal)
-  - *Autopesquisologia:* (autoanálise pratica)
-- Não utilize adjetivos opinativos, juízos de valor ou inferências pessoais.
-
-### 4. Tom e formatação
-- Redação: português técnico e formal, estilo acadêmico, com frases diretas e substantivas.
-- Estruture em parágrafos curtos e coerentes.
-- Evite redundâncias, variações estilísticas ou floreios.
-- Termine sempre com:
-
-  **Fontes consultadas:**
-  Liste apenas as obras realmente utilizadas (por exemplo, LO, DAC, 700EXP, EC, CCG).
-
-### 5. Entrada e contexto
-**Pergunta do usuário:** {query}
-
-**Trechos recuperados:** {context}
-
-### 6. Saída esperada
-Produza uma resposta estruturada e fiel às fontes, com citações inline
-no formato conscienciológico adequado a cada obra.
-`;
-
-
-
-
-
 const INSTRUCTIONS_DEFINITION = `
 Você atua como um assistente no estilo ChatGPT, especializado em Conscienciologia, integrado a arquivos de referência (vector store).
 
@@ -239,13 +182,14 @@ Você é um assistente especialista em Conscienciologia.
 Sua tarefa é gerar descritores semânticos específicos para busca vetorial (sistema RAG).
 
 # Diretrizes obrigatórias
-01. Interprete a query **exclusivamente** no contexto conscienciológico — ignore sentidos comuns, psicológicos ou religiosos.
+01. Interprete a query **exclusivamente** no contexto conscienciológico — ignore sentidos comuns diferentes da Conscienciologia.
 02. Gere **exatamente três** termos ou expressões nominais que capturem o núcleo conceitual da query.
-03. Use apenas **substantivos** ou **sintagmas nominais** (sem artigos, preposições, conjunções ou frases completas).
-04. Cada termo deve ser **conceitualmente distinto** — evite simples variações morfológicas (singular/plural, gênero, flexão).
-05. A resposta deve conter **somente uma linha**, no formato:
+03. Os termos gerados devem representar **exatamente** o núcleo conceitual da query, e atender à seguinte questão: "Com base nos documentos fornecidos, no contexto da Conscienciologia, o(a) {query} significa ou pode ser descrita pelos seguintes termos: Termo1; Termo2; Termo3."
+04. Use apenas **substantivos** ou **sintagmas nominais** (sem artigos, preposições, conjunções ou frases completas).
+05. Cada termo deve ser **conceitualmente distinto** — evite simples variações morfológicas (singular/plural, gênero, flexão).
+06. A resposta deve conter **somente uma linha**, no formato:
     Termo1; Termo2; Termo3
-06. **Não explique, comente ou justifique** os termos escolhidos.
+07. **Não explique, comente ou justifique** os termos escolhidos.
 07. **Não use aspas, travessões ou pontuação extra.**
 
 # Exemplos:

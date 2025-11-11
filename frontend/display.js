@@ -520,8 +520,9 @@ const format_paragraph_QUEST = (item, query) => {
   const answerHtml = renderMarkdown(answer_text);
   const questSafeHtml = (window.DOMPurify ? DOMPurify.sanitize(questHtml) : questHtml);
   const answerSafeHtml = (window.DOMPurify ? DOMPurify.sanitize(answerHtml) : answerHtml);
-  const questHighlighted = highlightHtml(questSafeHtml, query);
-  const answerHighlighted = highlightHtml(answerSafeHtml, query);
+  const q = window.__lastSearchQuery || '';
+  const questHighlighted = highlightHtml(questSafeHtml, q);
+  const answerHighlighted = highlightHtml(answerSafeHtml, q);
 
   console.log("Quest Highlighted: ", questHighlighted);
   console.log("Answer Highlighted: ", answerHighlighted);

@@ -74,6 +74,8 @@ async function search_book() {
         // 0. Prepare search    
         // =======================================================================================
         const term = searchInput.value.trim();
+
+
         
         // Validação de termo - sai cedo, mas ainda passa pelo finally
         if (!term) {
@@ -116,13 +118,13 @@ async function search_book() {
         //     books = [];
         // }
 
-        console.log('settings: ', settings);
-        console.log('module: ', module);
-        console.log ('window.STORAGE_KEY: ', window.STORAGE_KEY);
-        console.log('books: ', books);
-        console.log('searchType: ', searchType);
-        console.log('maxResults: ', maxResults);
-        console.log('flag_grouping: ', flag_grouping);
+        // console.log('settings: ', settings);
+        // console.log('module: ', module);
+        // console.log ('window.STORAGE_KEY: ', window.STORAGE_KEY);
+        // console.log('books: ', books);
+        // console.log('searchType: ', searchType);
+        // console.log('maxResults: ', maxResults);
+        // console.log('flag_grouping: ', flag_grouping);
 
         // If no book selected or no search type selected, ask for selection
         if (books.length === 0 || searchType.length === 0) {
@@ -301,7 +303,7 @@ async function search_book() {
         const downloadData = {
             search_term: term,
             search_type: searchType,
-            source_array: uniqueSources,
+            descritivo: uniqueSources,
             max_results: maxResults,
             group_results_by_book: false,
             display_option: 'unified',
@@ -317,6 +319,26 @@ async function search_book() {
 
 
          // =======================================================================================
+         // LOGS
+         // =======================================================================================
+         try {
+          window.logEvent({
+            event: 'search_book',
+            module: 'book',
+            value: term,
+            meta: {
+                search_type: searchType,
+                sources: source,
+                max_results: maxResults,
+                grouping: flag_grouping
+            }
+            });
+         } catch (e) {
+            console.error('Failed to log search_book event:', e);
+         }
+         // =======================================================================================
+
+
 
 
 
