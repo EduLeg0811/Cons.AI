@@ -58,7 +58,7 @@ _conversation_last_id = {}  # chat_id -> último response.id
 def generate_llm_answer(
     query,
     model=MODEL_LLM,
-    vector_store_names="ALLWV",
+    vector_store_names="ALLCONS",
     temperature=TEMPERATURE,
     instructions=INSTRUCTIONS_LLM_BACKEND,
     use_session=True,

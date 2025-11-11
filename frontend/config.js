@@ -12,7 +12,7 @@ const CONFIG = {
   MAX_RESULTS_DISPLAY: 100,
   
   // Feature flags
-  OPENAI_RAGBOT: 'ALLWV',
+  OPENAI_RAGBOT: 'ALLCONS',
   FULL_BADGES: false
 };
 

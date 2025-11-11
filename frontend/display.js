@@ -556,7 +556,7 @@ const format_paragraph_QUEST = (item, query) => {
     </div>
     <div style="height: 0.6em;"></div> <!-- controla meia linha de espaço -->
     <div style="display: flex; align-items: baseline; gap: 0.3em; margin: 0 0 1.0em 0; padding: 0;">
-      <span style="color: blue;"><strong>Waldo:</strong></span>
+      <span style="color: red;"><strong>Waldo:</strong></span>
       <span style="margin: 0; padding: 0; display: inline;">${answerHighlighted}</span>
     </div>
     ${metaBadges}

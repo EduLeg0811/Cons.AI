@@ -27,6 +27,8 @@ from utils.config import (
     MODEL_LLM,
     OPENAI_API_KEY,
     OPENAI_ID_ALLWV,
+    OPENAI_ID_EDUNOTES,
+    OPENAI_ID_ALLCONS,
     TEMPERATURE,
     TOP_K,
     FAISS_ID_LO1,

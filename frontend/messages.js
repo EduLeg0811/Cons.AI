@@ -59,7 +59,7 @@ const TOOL_MESSAGES = {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       '<br>',
-      'O <strong>ConsGPT</strong> é o chatbot mais avançado em (IA) <em>inteligência artificial</em>. ',
+      'O <strong>ConsGPT</strong> é o chatbot da OpenAI treinado com os livros e tratados da Conscienciologia. ',
       'Ótimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',

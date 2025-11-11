@@ -593,25 +593,24 @@ function showMessage(container, message, type = 'error') {
   `;
 }
 
-// Intercept Home ('.back-button') clicks to abort requests and reset chat_id before navigation
+// Intercept Home ('.back-button') clicks: navigate immediately; cleanup fire-and-forget
 (function(){
   function isHomeButton(el){ return !!(el && el.classList && el.classList.contains('back-button')); }
-  async function onClick(ev){
+  function onClick(ev){
     const a = ev.target && ev.target.closest && ev.target.closest('a');
     if (!a || !isHomeButton(a)) return;
     ev.preventDefault();
-    try {
-      // Abort all in flight requests, if helper is present
-      if (typeof window.abortAllRequests === 'function') {
-        try { window.abortAllRequests(); } catch {}
-      }
-      // Reset LLM chat_id in both scopes
-      try { await resetLLM('default'); } catch {}
-      try { await resetLLM('ragbot'); } catch {}
-    } finally {
-      const href = a.getAttribute('href') || 'index.html';
-      try { window.location.assign(href); } catch { window.location.href = href; }
-    }
+
+    // Abort any in-flight requests synchronously if possible
+    try { if (typeof window.abortAllRequests === 'function') window.abortAllRequests(); } catch {}
+
+    // Fire-and-forget cleanup (do not block navigation)
+    try { if (typeof resetLLM === 'function') resetLLM('default'); } catch {}
+    try { if (typeof resetLLM === 'function') resetLLM('ragbot'); } catch {}
+
+    // Navigate immediately
+    const href = a.getAttribute('href') || 'index.html';
+    try { window.location.assign(href); } catch { window.location.href = href; }
   }
   document.addEventListener('click', onClick, true);
 })();

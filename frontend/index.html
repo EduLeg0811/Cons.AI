@@ -554,7 +554,7 @@
                 config.MODEL_RAGBOT = config.MODEL_RAGBOT || "gpt-4.1-nano";
                 config.TEMPERATURE = config.TEMPERATURE ?? 0.3;
                 config.MAX_RESULTS_DISPLAY = config.MAX_RESULTS_DISPLAY || 100;
-                config.OPENAI_RAGBOT = config.OPENAI_RAGBOT || "ALLWV";
+                config.OPENAI_RAGBOT = config.OPENAI_RAGBOT || "ALLCONS";
                 config.FULL_BADGES = !!config.FULL_BADGES;
                 config.MINITERTULIA = !!config.MINITERTULIA;
 
@@ -624,7 +624,7 @@
                   ),
                   
                   // Feature flags
-                  OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLWV',
+                  OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || 'ALLCONS',
                   FULL_BADGES: !!$('cfg-full-badges')?.checked,
                   MINITERTULIA: !!$('cfg-minitertulia')?.checked,
                 };
@@ -709,6 +709,7 @@
               <select id="cfg-openai-ragbot">
                 <option value="ALLWV">ALLWV</option>
                 <option value="EDUNOTES">EDUNOTES</option>
+                <option value="ALLCONS">ALLCONS</option>
               </select>
             </div>
             <div class="config-field full">

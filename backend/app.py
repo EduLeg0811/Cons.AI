@@ -45,6 +45,7 @@ from utils.logs import (
     parse_ndjson_lines,
     pretty_lines,
     clear_today,
+    clear_all,
 )
 from utils.response_llm import generate_llm_answer, reset_conversation_memory
 
@@ -492,6 +493,15 @@ def clear_logs_today():
         return jsonify({"status": "ok"})
     except Exception as e:
         logger.error(f"Failed to clear logs: {e}")
+        return jsonify({"status": "error"}), 500
+
+@app.route('/logs/clear_all', methods=['DELETE'])
+def clear_logs_all():
+    try:
+        deleted = clear_all()
+        return jsonify({"status": "ok", "deleted": deleted})
+    except Exception as e:
+        logger.error(f"Failed to clear all logs: {e}")
         return jsonify({"status": "error"}), 500
 
 @app.route('/health')

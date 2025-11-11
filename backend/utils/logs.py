@@ -332,3 +332,30 @@ def clear_today() -> None:
     with open(path, "w", encoding="utf-8"):
         pass
 
+
+def clear_all() -> int:
+    """Delete all access-*.log files in the logs directory. Returns count deleted."""
+    folder = resolve_log_dir()
+    deleted = 0
+    try:
+        for name in os.listdir(folder):
+            if not name.startswith("access-") or not name.endswith(".log"):
+                continue
+            fpath = os.path.join(folder, name)
+            try:
+                os.remove(fpath)
+                deleted += 1
+            except Exception:
+                pass
+    except Exception:
+        pass
+    # Ensure an empty file for today exists after clearing
+    try:
+        path_today = get_daily_log_path()
+        _ensure_dir(os.path.dirname(path_today))
+        with open(path_today, "a", encoding="utf-8"):
+            pass
+    except Exception:
+        pass
+    return deleted
+
