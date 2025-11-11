@@ -13,6 +13,17 @@
     <link rel="icon" type="image/png" href="/Icon.png">
 </head>
 
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9C5503JC6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z9C5503JC6');
+</script>
+
 <body class="theme-search">
 
 
@@ -188,7 +199,7 @@
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
-        const STORAGE_KEY = 'appConfig_CCG';
+        
         function hideSearchHint(){
             const el = document.getElementById('searchHint');
             if (!el) return;
@@ -196,7 +207,10 @@
             try { el.setAttribute('aria-hidden','true'); } catch {}
             try { el.style.display = 'none'; } catch {}
         }
-    
+
+        // Set global STORAGE_KEY for this module
+        window.STORAGE_KEY = 'appConfig_CCG';
+
         // ================================================================
         // 1. Definição da configuração inicial padrão
         // ================================================================
@@ -209,8 +223,8 @@
         };
     
         // Só define se não houver configuração anterior
-        if (!localStorage.getItem(STORAGE_KEY)) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
+        if (!localStorage.getItem(window.STORAGE_KEY)) {
+            localStorage.setItem(window.STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
     
         // // ================================================================
@@ -264,13 +278,13 @@
         // ================================================================
         (function applySaved() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
+                const raw = localStorage.getItem(window.STORAGE_KEY);
                 if (!raw) return;
                 const saved = JSON.parse(raw);
     
                 // Tipo de Modulo
                 saved.module = 'ccg';
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
     
                 // Search Type
@@ -304,27 +318,28 @@
         // ================================================================
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
-                const books = [FIXED_BOOK]; // ðŸ”¥ Sempre forÃ§ado
+                const books = [FIXED_BOOK]; // Sempre forçado
     
                 const searchType = Array.from(document.querySelectorAll('.search-type-pill.active'))
                     .map(p => p.dataset.value);
                 const maxInput = document.getElementById('maxResults');
                 const rawMax = maxInput?.value ?? 10;
                 const maxResults = normalizeMaxResults(rawMax);
-                const groupResults = true; // ðŸ”¥ Sempre agrupado
+                const groupResults = true; // Sempre agrupado
     
                   // Merge com settings existentes, preservando 'books'
                   let saved = {};
                 
-                try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
+                try { saved = JSON.parse(localStorage.getItem(window.STORAGE_KEY) || '{}'); } catch (e) {}
                 const newSettings = Object.assign({}, saved, {
-                    module: 'verb',
+                    module: 'ccg',
                     searchType,
                     maxResults,
-                    groupResults
+                    groupResults,
+                    books
                 });
                 
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(newSettings));
 
                 // feedback visual de salvando (500ms), depois fecha painel
                 try { saveBtn.classList.add('saving'); } catch {}
@@ -337,12 +352,6 @@
             });
         }
     
-        // ================================================================
-        // 7. Função global para recuperar configs
-        // ================================================================
-        window.getCCGConfig = function() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        };
 
         
     });

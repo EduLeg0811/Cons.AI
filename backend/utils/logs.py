@@ -155,19 +155,44 @@ def _tail_lines(path: str, limit: int) -> List[str]:
 
 
 def read_today_raw(limit: Optional[int] = None) -> str:
-    """Return raw NDJSON text (tail) for today's file."""
-    path = get_daily_log_path()
-    if not os.path.exists(path):
+    """Return raw NDJSON text from all log files.
+    
+    Args:
+        limit: Maximum number of lines to return across all files. If None, returns all lines.
+    """
+    log_dir = resolve_log_dir()
+    all_lines = []
+    
+    try:
+        # Get all log files sorted by modification time (newest first)
+        log_files = []
+        for fname in os.listdir(log_dir):
+            if fname.startswith("access-") and fname.endswith(".log"):
+                fpath = os.path.join(log_dir, fname)
+                mtime = os.path.getmtime(fpath)
+                log_files.append((mtime, fpath))
+        
+        # Sort by modification time (newest first)
+        log_files.sort(reverse=True, key=lambda x: x[0])
+        
+        # Read all lines from all files
+        for _, fpath in log_files:
+            try:
+                with open(fpath, "r", encoding="utf-8") as f:
+                    file_lines = f.readlines()
+                    all_lines.extend(file_lines)
+            except (IOError, OSError):
+                continue
+        
+        # Apply limit if specified
+        if limit and limit > 0:
+            all_lines = all_lines[-limit:]
+            
+        return "".join(all_lines)
+        
+    except Exception as e:
+        print(f"Error reading log files: {str(e)}")
         return ""
-    if not limit or limit <= 0:
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                return f.read()
-        except FileNotFoundError:
-            return ""
-    # tail
-    lines = _tail_lines(path, int(limit))
-    return "\n".join(lines) + ("\n" if lines else "")
 
 
 def parse_ndjson_lines(text: str) -> List[Dict[str, Any]]:

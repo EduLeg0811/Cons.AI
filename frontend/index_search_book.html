@@ -13,6 +13,15 @@
     <link rel="icon" type="image/png" href="/Icon.png">
     
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9C5503JC6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z9C5503JC6');
+</script>
 
 <body class="theme-search">
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -260,7 +269,9 @@
             try { el.setAttribute('aria-hidden','true'); } catch {}
             try { el.style.display = 'none'; } catch {}
         }
-        const STORAGE_KEY = 'appConfig_searchBook';
+        
+        // Set global STORAGE_KEY for this module
+        window.STORAGE_KEY = 'appConfig_searchBook';
         
 
 
@@ -277,8 +288,8 @@
         };
     
         // Só define se não houver configuração anterior
-        if (!localStorage.getItem(STORAGE_KEY)) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
+        if (!localStorage.getItem(window.STORAGE_KEY)) {
+            localStorage.setItem(window.STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
         
         
@@ -342,13 +353,13 @@
         // ================================================================
         (function applySaved() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
+                const raw = localStorage.getItem(window.STORAGE_KEY);
                 if (!raw) return;
                 const saved = JSON.parse(raw);
 
                 // Tipo de Modulo
                 saved.module = 'book';
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
                 // Livros
                 if (Array.isArray(saved.books)) {
@@ -397,7 +408,7 @@
                 const groupResults = !!document.getElementById('groupResults')?.checked;
     
                 const settings = { books, searchType, maxResults, groupResults };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
 
                 
                 // feedback visual de salvando (500ms), depois fecha painel
@@ -410,11 +421,7 @@
                 
             });
         }
-        // 7. Função global de acesso
-        // ================================================================
-        window.getSearchBookSettings = function() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        };
+       
 
         // ================================================================
         // 8. Log de entradas digitadas e submissões

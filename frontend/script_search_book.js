@@ -1,6 +1,5 @@
 // script_search_book.js
 
-
 let controller = null;
 
       
@@ -71,8 +70,6 @@ async function search_book() {
 
     try {
 
-        
-        
         // =======================================================================================
         // 0. Prepare search    
         // =======================================================================================
@@ -95,35 +92,36 @@ async function search_book() {
       
         // =======================================================================================
         // 1. Recupera dados gravados no modulo    
-        // =======================================================================================
-        const settings = getSearchBookSettings();
+        const settings = JSON.parse(localStorage.getItem(window.STORAGE_KEY) || "{}");
         const maxResults = settings.maxResults || 10;
         const searchType = settings.searchType || [];
-
-        // Tipo de modulo da chamada
         const module = settings.module || 'book';
+        const books = settings.books || [];
+        const flag_grouping = settings.groupResults || false;
 
-        // Livros selecionados e tipo de pesquisa do modulo Search Book
-        let books = [];
-        let flag_grouping = false;
+        // // Livros selecionados e tipo de pesquisa do modulo Search Book
+        // let books = [];
+        // let flag_grouping = false;
 
-        if (module === 'book') {
-            books = settings.books || [];
-            flag_grouping = settings.groupResults || false;
-        } else if (module === 'verb') {
-            books = ['EC'];
-            flag_grouping = false; 
-        } else if (module === 'ccg') {
-            books = ['CCG'];
-            flag_grouping = settings.groupResults || false; 
-        } else {
-            books = [];
-        }
+        // if (module === 'book') {
+        //     books = settings.books || [];
+        //     flag_grouping = settings.groupResults || false;
+        // } else if (module === 'verb') {
+        //     books = ['EC'];
+        //     flag_grouping = false; 
+        // } else if (module === 'ccg') {
+        //     books = ['CCG'];
+        //     flag_grouping = settings.groupResults || false; 
+        // } else {
+        //     books = [];
+        // }
 
+        console.log('settings: ', settings);
+        console.log('module: ', module);
+        console.log ('window.STORAGE_KEY: ', window.STORAGE_KEY);
         console.log('books: ', books);
         console.log('searchType: ', searchType);
         console.log('maxResults: ', maxResults);
-        console.log('module: ', module);
         console.log('flag_grouping: ', flag_grouping);
 
         // If no book selected or no search type selected, ask for selection
