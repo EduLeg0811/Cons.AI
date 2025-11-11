@@ -1258,8 +1258,8 @@ select {
 
 
 .navbar-logo {
-  width: 24px;     /* ajuste fino: 20–28px conforme preferir */
-  height: 24px;    /* mantém proporção quadrada */
+  width: 20px;     /* ajuste fino: 20–28px conforme preferir */
+  height: 20px;    /* mantém proporção quadrada */
   margin-right: 8px;
   display: inline-block;
   vertical-align: middle;

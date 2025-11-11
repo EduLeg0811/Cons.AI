@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="icon" type="image/png" href="/Icon.png">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+
     <!-- style.overrides.css merged into style.bundle.css -->
     <style>
       /* Overlay do zoom do logo */
       #logo-intro-overlay {
         position: fixed;
-        left: 0; right: 0; top: 64px; bottom: 0; /* abaixo da navbar */
+        left: 0; right: 0; top: 0; bottom: 0; /* cobre inclusive a navbar */
         display: none;
         align-items: center;
         justify-content: center;
@@ -28,12 +31,12 @@
       #logo-intro-overlay.fade { animation: logoFadeOut 1s ease-in-out forwards; }
 
       .logo-intro-img {
-        width: 80px; height: 80px;
+        width: 160px; height: 160px;
         object-fit: contain;
         will-change: transform, opacity;
       }
       /* 3s: zoom do centro até preencher */
-      .logo-intro-img.animate { animation: logoFadeIn 1s ease-out forwards, logoZoom 3s ease-in-out forwards; }
+      .logo-intro-img.animate { animation: logoFadeIn 2s ease-out forwards, logoZoom 5s ease-in-out forwards; }
 
       @keyframes logoZoom {
         0% {
@@ -62,11 +65,20 @@
       /* Bloqueio de rolagem durante o efeito */
       html.no-scroll, body.no-scroll { overflow: hidden; }
       /* Fade-out do conteúdo de fundo durante a intro */
-      .navbar, .main-content, .footer { transition: opacity 1s ease; }
+      .navbar, .main-content, .footer { transition: opacity 2s ease; }
       html.fade-out-main .navbar,
       html.fade-out-main .main-content,
       html.fade-out-main .footer { opacity: 0; }
     </style>
+    <script>
+      // Pré-aplica tela em branco e bloqueio de rolagem no PRIMEIRO acesso da sessão
+      // Executa o mais cedo possível para evitar flash de conteúdo
+      try {
+        if (!sessionStorage.getItem('logoIntroShown')) {
+          document.documentElement.classList.add('no-scroll', 'fade-out-main');
+        }
+      } catch (e) { /* ignore */ }
+    </script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -369,7 +381,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-text">
-                2025 Cons-IA Toolbox de IA da Conscienciologia
+                ©2025 Cons-IA Toolbox de IA da Conscienciologia
             </div>
             <div class="footer-contact">
                 <span>Fale com o Diretor:</span>
@@ -390,6 +402,8 @@
     <script src="utils.js"></script>
     <script src="messages.js"></script>
     <script>
+
+
       // Delegated click logger for module cards
       document.addEventListener('click', function(e){
         try {
@@ -446,12 +460,12 @@
                   });
                 });
                 
-                // após 3s de zoom, dispara fade de 1s do logo
+                // após 5s de zoom + 2s estável, dispara fade de 1s do logo
                 setTimeout(() => {
                   overlay.classList.add('fade');
-                }, 3000);
+                }, 7000);
                 
-                // ao final (3s + 1s), mostra as infos, oculta overlay e chama callback
+                // ao final (5s + 2s + 1s), oculta overlay e chama callback
                 setTimeout(() => {
                   // Remove o overlay e libera a rolagem
                   overlay.classList.remove('visible', 'show', 'fade');
@@ -461,12 +475,9 @@
                   // Remove o fade do conteúdo principal
                   document.documentElement.classList.remove('fade-out-main');
                   
-                  // Aplica o atributo data-show-info APÓS remover o overlay
-                  document.documentElement.setAttribute('data-show-info', 'true');
-                  
                   // Chama o callback
                   if (callback) callback();
-                }, 4000);
+                }, 8000);
               } catch (e) { if (callback) callback(); }
             }
 
@@ -486,15 +497,14 @@
                   // Já aplica o estado de informações antes da animação,
                   // para evitar flash do estado anterior quando o overlay some
                   document.documentElement.setAttribute('data-show-info', 'true');
-                  // Executa a animação do logo enquanto o overlay cobre a tela
-                  playLogoIntro(() => {
-                    // nada a fazer aqui; conteúdo já está no modo info
-                  });
+                  // Não aciona mais animação de logo ao clicar no ícone de info
                 } else {
                   // Desliga imediatamente
                   document.documentElement.setAttribute('data-show-info', 'false');
                 }
             }
+
+           
 
             // Initialize theme when DOM is loaded
             document.addEventListener('DOMContentLoaded', initTheme);
@@ -509,6 +519,18 @@
                     // If localStorage unavailable, ignore
                 }
             });
+
+
+             // Play logo intro once per session (first visit only)
+            document.addEventListener('DOMContentLoaded', function () {
+              try {
+                if (!sessionStorage.getItem('logoIntroShown')) {
+                  sessionStorage.setItem('logoIntroShown', 'true');
+                  playLogoIntro();
+                }
+              } catch (e) { /* ignore */ }
+            });
+
 
             
             // ==================== Config Modal Logic ====================
