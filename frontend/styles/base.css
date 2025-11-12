@@ -1255,13 +1255,3 @@ select {
 
 
 
-
-
-.navbar-logo {
-  width: 20px;     /* ajuste fino: 20–28px conforme preferir */
-  height: 20px;    /* mantém proporção quadrada */
-  margin-right: 8px;
-  display: inline-block;
-  vertical-align: middle;
-  object-fit: contain;
-}
