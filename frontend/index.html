@@ -36,7 +36,7 @@
         will-change: transform, opacity;
       }
       /* 3s: zoom do centro até preencher */
-      .logo-intro-img.animate { animation: logoFadeIn 2s ease-out forwards, logoZoom 5s ease-in-out forwards; }
+      .logo-intro-img.animate { animation: logoFadeIn 2s ease-out forwards, logoZoom 3s ease-in-out forwards; }
 
       @keyframes logoZoom {
         0% {
@@ -65,7 +65,7 @@
       /* Bloqueio de rolagem durante o efeito */
       html.no-scroll, body.no-scroll { overflow: hidden; }
       /* Fade-out do conteúdo de fundo durante a intro */
-      .navbar, .main-content, .footer { transition: opacity 2s ease; }
+      .navbar, .main-content, .footer { transition: opacity 1s ease; }
       html.fade-out-main .navbar,
       html.fade-out-main .main-content,
       html.fade-out-main .footer { opacity: 0; }
@@ -460,12 +460,12 @@
                   });
                 });
                 
-                // após 5s de zoom + 2s estável, dispara fade de 1s do logo
+                // após 4s de zoom + 1s estável, dispara fade de 1s do logo
                 setTimeout(() => {
                   overlay.classList.add('fade');
-                }, 7000);
+                }, 4000);
                 
-                // ao final (5s + 2s + 1s), oculta overlay e chama callback
+                // ao final (4s + 1s + 1s), oculta overlay e chama callback
                 setTimeout(() => {
                   // Remove o overlay e libera a rolagem
                   overlay.classList.remove('visible', 'show', 'fade');
@@ -477,7 +477,7 @@
                   
                   // Chama o callback
                   if (callback) callback();
-                }, 8000);
+                }, 5000);
               } catch (e) { if (callback) callback(); }
             }
 
