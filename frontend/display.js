@@ -766,27 +766,41 @@ function showBotMetainfo(container, metaData) {
   // Extrair metadados relevantes
   const md = extractMetadata(metaData, 'ragbot');
 
+  console.log('<<< showBotMetainfo >>> [md]: ', md);
+
   const citations = (md?.citations || metaData?.citations || '').toString();
   const totalTokens = md?.total_tokens_used ?? metaData?.total_tokens_used;
   const model = md?.model ?? metaData?.model;
   const temperature = md?.temperature ?? metaData?.temperature;
+  const verbosity = md?.verbosity ?? metaData?.verbosity;
+  const effort = md?.reasoning_effort ?? metaData?.reasoning_effort;
 
-
+  model_str = String(model);
+  const bookNames = extractBookNames(citations);
   const badgeParts = [];
-  if (model) {
-    badgeParts.push(`<span class="metadata-badge estilo1">${escapeHtml(model)}</span>`);
-  }
-  if (temperature !== undefined) {
+
+  // Model Name
+  badgeParts.push(`<span class="metadata-badge estilo1">${escapeHtml(model)}</span>`);
+
+
+  // GPT-5 or GPT-5.1
+  if (model_str.includes('gpt-5')) {
+    
+    badgeParts.push(`<span class="metadata-badge estilo3">Verbosity: ${escapeHtml(verbosity)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo3">Effort: ${escapeHtml(effort)}</span>`);
+
+
+  } else {
+    
     badgeParts.push(`<span class="metadata-badge estilo3">Temp: ${escapeHtml(temperature)}</span>`);
   }
-  if (totalTokens !== undefined) {
-    badgeParts.push(`<span class="metadata-badge estilo4">Tokens: ${escapeHtml(totalTokens)}</span>`);
-  }
-  if (citations.length > 2) {
-    // retira texto de citations após o ":" e elimina o primeiro caracter " "
-    citations_book = citations.split(':')[0].trim();
-    badgeParts.push(`<span class="metadata-badge estilo2">Refs: ${escapeHtml(citations_book)}</span>`);
-  }
+
+
+  // All Models (complements)
+  badgeParts.push(`<span class="metadata-badge estilo2">Refs: ${escapeHtml(bookNames)}</span>`);
+  badgeParts.push(`<span class="metadata-badge estilo4">Tokens: ${escapeHtml(totalTokens)}</span>`);
+
+
 
   // Remove badges anteriores
   const oldMeta = container.querySelector('.metadata-container');

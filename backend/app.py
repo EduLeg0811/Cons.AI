@@ -230,8 +230,17 @@ class LlmQueryResource(Resource):
             temperature = float(data.get("temperature", 0.3))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
-            effort = data.get("effort", "low")
-            max_output_tokens = data.get("max_output_tokens", 50)
+            reasoning_effort = data.get("reasoning_effort", "none")
+            verbosity = data.get("verbosity", "low")
+            # Optional timeout/retry controls
+            try:
+                timeout_s = int(data.get("timeout_s", 60))
+            except Exception:
+                timeout_s = 60
+            try:
+                max_retries = int(data.get("max_retries", 2))
+            except Exception:
+                max_retries = 2
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
             chat_id = safe_str(data.get("chat_id", "")) \
@@ -246,6 +255,10 @@ class LlmQueryResource(Resource):
                 "instructions": instructions,
                 "use_session": use_session,
                 "chat_id": chat_id,
+                "reasoning_effort": reasoning_effort,
+                "verbosity": verbosity,
+                "timeout_s": timeout_s,
+                "max_retries": max_retries,
             }
 
             # Generate LLM answer
@@ -260,12 +273,15 @@ class LlmQueryResource(Resource):
             response = {
                 "text": clean_text,
                 "citations": results.get("file_citations", "No citations"),
-                "file_citations": results.get("file_citations", "No citations"),
                 "total_tokens_used": results.get("total_tokens_used", "N/A"),
                 "search_type": "ragbot",
                 "type": "ragbot",
                 "model": model,
                 "temperature": temperature,
+                "reasoning_effort": reasoning_effort,
+                "verbosity": verbosity,
+                "timeout_s": timeout_s,
+                "max_retries": max_retries,
                 # Retorne o chat_id para o frontend persistir
                 "chat_id": chat_id,
             }

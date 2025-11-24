@@ -2,11 +2,14 @@ import json
 import logging
 import os
 import re
+import re
+import re
 import time
 
 from dotenv import load_dotenv
 from openai import OpenAI
 from openai import APIError, APIConnectionError, RateLimitError, APITimeoutError
+
 
 from utils.config import (
     DEFAULT_VECTOR_STORE_OPENAI,
@@ -14,22 +17,39 @@ from utils.config import (
     LLM_MAX_RESULTS,
     MODEL_LLM,
     OPENAI_API_KEY,
-    TEMPERATURE,
-    OPENAI_ID_ALLWV,
     OPENAI_ID_ALLCONS,
+    OPENAI_ID_ALLWV,
     OPENAI_ID_EDUNOTES,
+    TEMPERATURE,
 )
 
+
+
+#................................................
+# Variáveis de ambiente
+#.................................................
 load_dotenv()
+  
+
 logger = logging.getLogger(__name__)
+
+
+
+#................................................
+# Controle de sessão
+#................................................
+# removidos: variáveis de sessão não são utilizadas
+
 
 # Memória simples por conversa (somente em memória / por processo)
 _conversation_last_id = {}  # chat_id -> último response.id
 
 
-  
 
-logger = logging.getLogger(__name__)
+
+# =============================================================================
+# Função principal para gerar resposta do LLM
+# =============================================================================
 
 
 # =============================================================================
@@ -38,16 +58,13 @@ logger = logging.getLogger(__name__)
 def generate_llm_answer(
     query,
     model=MODEL_LLM,
-    vector_store_names=DEFAULT_VECTOR_STORE_OPENAI,
+    vector_store_names="ALLCONS",
     temperature=TEMPERATURE,
     instructions=INSTRUCTIONS_LLM_BACKEND,
     use_session=True,
     chat_id="default",
-    timeout_s: int = 60,
+    timeout_s: int = 20,
     max_retries: int = 2,
-    # novos parâmetros opcionais para GPT-5 / GPT-5.1
-    reasoning_effort: str = "none",   # "none" | "minimal" | "low" | "medium" | "high"
-    verbosity: str = "low",          # "low" | "medium" | "high"
 ):
     client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -57,117 +74,119 @@ def generate_llm_answer(
     vector_store_ids = get_vector_store_ids(vector_store_names)
     previous_id = _conversation_last_id.get(chat_id) if use_session else None
 
-    # -------------------------------------------------------------------------
-    # Monta payload da Responses API
-    # -------------------------------------------------------------------------
-    model_str = str(model)
+    # Monta payload
 
-    # Branch para GPT-5 / GPT-5.1 (não usar temperature, usar reasoning/text)
-    if model_str.startswith("gpt-5"):
+    #logger.info("Vector Store IDs: %s", vector_store_ids)
+    #logger.info("Model: %s", model)
+
+   
+
+    # GPT-5
+    # ==============================================
+    if str(model).startswith("gpt-5"):
         llm_str = {
             "model": model,
             "tools": [{
                 "type": "file_search",
                 "vector_store_ids": vector_store_ids,
-                "max_num_results": int(LLM_MAX_RESULTS),
+                "max_num_results": int(LLM_MAX_RESULTS)
             }],
             "input": query,
             "instructions": instructions,
             "store": True,
-            "reasoning": {"effort": reasoning_effort},
-            "text": {"verbosity": verbosity},
+            "reasoning": { "reasoning_effort": "low" },
+            "text": { "verbosity": "low" },
         }
 
-    # Branch para modelos "clássicos" (gpt-4.1, gpt-4o, etc.) ➜ usam temperature
+    # GPT-4.1
+    # ==============================================
     else:
         llm_str = {
             "model": model,
             "tools": [{
                 "type": "file_search",
                 "vector_store_ids": vector_store_ids,
-                "max_num_results": int(LLM_MAX_RESULTS),
+                "max_num_results": int(LLM_MAX_RESULTS)
             }],
             "input": query,
             "instructions": instructions,
             "store": True,
-            "temperature": float(temperature),
+            "temperature": float(temperature)
         }
+        
 
-    # Adiciona ID da resposta anterior se existir (conversa multi-turn)
+    # Adiciona ID da resposta anterior se existir
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
-    logger.debug(f"\n\nPayload para LLM: {llm_str}\n\n")
+    # Log do payload
+    #logger.info(
+    #        "LLM Payload:\n%s",
+    #        json.dumps(llm_str, indent=2, ensure_ascii=False)
+    #    )
 
-    # -------------------------------------------------------------------------
-    # Chamada com retry + timeout
-    # -------------------------------------------------------------------------
     try:
         attempts = 0
         last_exc = None
-
         while attempts <= max_retries:
             try:
-                response = client.with_options(timeout=timeout_s).responses.create(
-                    **llm_str
-                )
+                # === Chamada principal com timeout ===
+                response = client.with_options(timeout=timeout_s).responses.create(**llm_str)
+
+
+                # Log da resposta
+                #logger.info("\n\nLLM Response:\n%s\n\n", response)
+
 
                 # Atualiza o último ID da conversa
                 last_id = getattr(response, "id", None)
                 if last_id and use_session:
                     _conversation_last_id[chat_id] = last_id
 
-                # Formata para o frontend
+                # Formatted Response
                 formatted_response = format_llm_response(response)
+
+                # Log da resposta formatada
+                #logger.info("\n\nFormatted Response:\n%s\n\n", formatted_response)
+
                 return formatted_response
+
+                
 
             except (RateLimitError, APITimeoutError, APIError, APIConnectionError) as ex:
                 last_exc = ex
                 if attempts >= max_retries:
                     raise
+                # backoff exponencial simples com pequeno jitter
                 backoff = min(2 ** attempts, 8)
                 time.sleep(backoff + 0.1 * attempts)
                 attempts += 1
-
             except Exception as ex:
-                # Erros inesperados: não faz retry
+                # Erros não esperados: não retry
                 raise ex
 
     except Exception as e:
         logger.error(f"Erro ao gerar resposta LLM: {str(e)}")
         return {"error": f"Falha ao gerar resposta: {str(e)}"}
 
-
-
-
-
 # =============================================================================
-# Função para obter IDs dos Vector Stores
-# =============================================================================
+
+
+
+
 def get_vector_store_ids(vector_store_names):
 
-    # Accept list of IDs or a single label/ID
-    def resolve_one(name_or_id):
-        if not name_or_id:
-            return DEFAULT_VECTOR_STORE_OPENAI
-        s = str(name_or_id).strip()
-        # If caller already passed an OpenAI Vector Store ID, use as-is
-        if s.startswith("vs_"):
-            return s
-        # Accept known labels
-        if s.upper() == "ALLWV":
-            return OPENAI_ID_ALLWV
-        if s.upper() == "ALLCONS":
-            return OPENAI_ID_ALLCONS
-        if s.upper() == "EDUNOTES":
-            return OPENAI_ID_EDUNOTES
-        # Fallback to default
-        return DEFAULT_VECTOR_STORE_OPENAI
-
-    if isinstance(vector_store_names, (list, tuple)):
-        return [resolve_one(x) for x in vector_store_names if x]
+    vector_store_ids = []
+    if vector_store_names == "ALLWV":
+        vector_store_ids.append(OPENAI_ID_ALLWV)
+    elif vector_store_names == "ALLCONS":
+        vector_store_ids.append(OPENAI_ID_ALLCONS)
+    elif vector_store_names == "EDUNOTES":
+        vector_store_ids.append(OPENAI_ID_EDUNOTES)
     else:
-        return [resolve_one(vector_store_names)]
+        vector_store_ids.append(DEFAULT_VECTOR_STORE_OPENAI)
+
+    return vector_store_ids
 
 
 # =============================================================================

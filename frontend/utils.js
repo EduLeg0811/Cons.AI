@@ -351,6 +351,8 @@ function extractMetadata(data, type) {
     // Convert single object to array if needed
     const dataArray = Array.isArray(data) ? data : [data];
     const metadata = {};
+
+    console.log('<<< extractMetadata >>> [data]: ', data);
   
   
     // Common metadata fieldS
@@ -359,7 +361,7 @@ function extractMetadata(data, type) {
     // Type-specific field mappings and processing
     const TYPE_CONFIG = {
       ragbot: {
-        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature']
+        metadataFields: [...COMMON_FIELDS, 'citations', 'total_tokens_used', 'model', 'temperature', 'verbosity', 'reasoning_effort']
       },
       lexical: {
         metadataFields: [...COMMON_FIELDS]
@@ -415,7 +417,38 @@ function extractMetadata(data, type) {
   
   
 
+// Extract the book names from the citations, without the paragraph numbers and the file extensions
+function extractBookNames(citations) {
 
+  if (!citations) return '';
+  const text = String(citations).trim();
+  if (!text) return '';
+
+  const seen = new Set();
+  const names = [];
+
+  text
+    .split(';')                      // segmentos: "NOME.ext: números"
+    .map(s => s.trim())
+    .filter(Boolean)
+    .forEach(seg => {
+      // pega a parte antes de ":" (nome do arquivo/livro)
+      let name = seg.split(':')[0].trim();
+
+      // remove extensão e pontuação final
+      name = name.replace(/\.(md|pdf|txt)$/i, '').replace(/[.,;:\s]+$/g, '').trim();
+
+      // colapsa espaços múltiplos
+      name = name.replace(/\s+/g, ' ');
+
+      if (name && !seen.has(name)) {
+        seen.add(name);
+        names.push(name);
+      }
+    });
+
+  return names.join('; ');
+}
 
 
   

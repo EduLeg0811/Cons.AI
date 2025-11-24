@@ -59,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (controller) controller.abort();
         controller = new AbortController();
         let timeoutId = null;
-        timeoutId = setTimeout(() => controller.abort(), 30000); // 30s
+        // Align with fetch timeout (set in call_llm via timeout_ms). Use a slightly shorter local timer to ensure consistent abort.
+        timeoutId = setTimeout(() => controller.abort(), 110000); // 110s
 
 
         let chatMessage_id = null;
@@ -119,7 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
             chat_id: chat_id
           };
           
-          const response = await call_llm(paramRAGbot);
+          const response = await call_llm({
+            ...paramRAGbot,
+            timeout_ms: 120000, // 120s to accommodate server retries and OpenAI latency
+            signal: controller.signal
+          });
           
           if (response.chat_id) {
             setChatId(response.chat_id, RAGBOT_CHAT_SCOPE);

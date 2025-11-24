@@ -4,12 +4,12 @@
 // All configuration keys should use UPPER_SNAKE_CASE for consistency
 const CONFIG = {
   // Model settings
-  MODEL_LLM: 'gpt-4.1-nano',
-  MODEL_RAGBOT: 'gpt-4.1-nano',
+  MODEL_LLM: 'gpt-4.1',
+  MODEL_RAGBOT: 'gpt-5.1',
   
   // Generation settings
   TEMPERATURE: 0.3,
-  MAX_RESULTS_DISPLAY: 100,
+  MAX_RESULTS_DISPLAY: 200,
   
   // Feature flags
   OPENAI_RAGBOT: 'ALLCONS',
@@ -139,8 +139,9 @@ Responda exclusivamente com base nos documentos fornecidos.
 - Responda no idioma do usuário, utilizando um tom acadêmico e natural, semelhante ao de um professor universitário claro e preciso.
 - Responda *SOMENTE* com base nos documentos fornecidos.
 - Forneça respostas completas, divididas em parágrafos breves e objetivos.
+- Máximo de 10 parágrafos, exceto quando o usuário solicitar explicitamente resposta mais longa ou com mais parágrafos.
 - Prefira listagens numéricas (01., 02., ...) quando apropriado.
-- Estruture as respostas, sempre que possível, em: 1) **Título da Resposta em uma frase**; 2) breve **Definição**; 3) **Argumentação** (resposta direta da query do usuário, priorizando as listagens numéricas 01. , 02. , etc) e **Conclusão** (breve síntese).
+- Estruture as respostas, sempre que possível, em: 1) **Título da Resposta em uma frase**; 2) breve definição: **Definologia**; 3) **Argumentação** (resposta direta da query do usuário, priorizando as listagens numéricas 01. , 02. , etc) e **Conclusão** (breve síntese).
 - Utilize SEMPRE Markdown limpo na resposta.
 - Destaque termos-chave com *itálico*, **negrito**, ou ***negrito-itálico*** conforme o contexto.
 - Use listas numeradas para orientar passos/processos, e tabelas em Markdown para comparações.

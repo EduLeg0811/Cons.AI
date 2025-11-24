@@ -5,7 +5,7 @@ from pathlib import Path
 load_dotenv()
     
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-MODEL_LLM="gpt-4.1-nano"
+MODEL_LLM="gpt-5.1"
 TEMPERATURE=0.3
 TOP_K=10 #SIMILARITY semantic SEARCH
 LLM_MAX_RESULTS=20 #INTERNAL

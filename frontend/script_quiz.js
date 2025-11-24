@@ -93,8 +93,8 @@ async function quiz() {
         const paramQuestion = {
             query: '`Gerar nova pergunta com outra temática diferente das anteriores.',
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-            effort: 'medium',
-            max_output_tokens: 350,
+            reasoning_effort: 'low',
+            verbosity: 'low',
             // Temperatura mais baixa para perguntas mais objetivas e consistentes
             temperature: 0.3,
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
