@@ -103,23 +103,11 @@
       thead .col-adv { display: none; }
       .col-adv { display: none !important; }
     }
-    /* Feedback highlight */
-    .fb-banner { margin: 12px 0; padding: 12px; border-radius: 10px; border:1px solid #2b3a4e; background: linear-gradient(180deg,#0f1a24,#0c141c); box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
-    .fb-item { background:#0e1520; border:1px solid #233042; border-radius:8px; padding:10px; color:#e8eaf0; }
-    .fb-meta { font-size: 12px; color:#a7aebb; margin-bottom:6px; display:flex; gap:8px; flex-wrap:wrap; }
-    .fb-text { white-space: pre-wrap; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Logs Viewer</h1>
-    <div id="fbTop" class="fb-banner" style="display:none;">
-      <h2>Último Feedback recebido</h2>
-      <div id="fbBox" class="fb-item">
-        <div class="fb-meta"><span id="fbWhen"></span><span class="pill">feedback_message</span></div>
-        <div id="fbText" class="fb-text"></div>
-      </div>
-    </div>
     <div class="toolbar">
       <div class="left">
         <button id="btnRefresh">Atualizar</button>
@@ -179,10 +167,6 @@
     const el = {
       tbody: document.getElementById('tbody'),
       counts: document.getElementById('counts'),
-      fbTop: document.getElementById('fbTop'),
-      fbBox: document.getElementById('fbBox'),
-      fbText: document.getElementById('fbText'),
-      fbWhen: document.getElementById('fbWhen'),
       btnRefresh: document.getElementById('btnRefresh'),
       chkAuto: document.getElementById('chkAuto'),
       chkMode: document.getElementById('chkMode'),
@@ -234,29 +218,6 @@
       const hh = pad(d.getHours());
       const mm = pad(d.getMinutes());
       return `${day}/${mon}/${year} - ${hh}:${mm}`;
-    }
-
-    function renderFeedbackHighlight() {
-      if (!Array.isArray(state.data) || !state.data.length) {
-        el.fbTop.style.display = 'none';
-        el.fbText.textContent = '';
-        el.fbWhen.textContent = '';
-        return;
-      }
-      let latest = null;
-      for (let i = state.data.length - 1; i >= 0; i--) {
-        const r = state.data[i] || {};
-        if (safeStr(r.event) === 'feedback_message' && safeStr(r.value)) { latest = r; break; }
-      }
-      if (!latest) {
-        el.fbTop.style.display = 'none';
-        el.fbText.textContent = '';
-        el.fbWhen.textContent = '';
-        return;
-      }
-      el.fbTop.style.display = '';
-      el.fbText.textContent = safeStr(latest.value);
-      el.fbWhen.textContent = formatTs(latest._server_ts || latest.ts || '');
     }
 
     function renderRows(rows) {
@@ -338,7 +299,6 @@
           catch { /* ignore malformed */ }
         }
         state.data = data;
-        renderFeedbackHighlight();
         applyFilters();
       } catch (err) {
         console.log('[logs:view] fetch error', err);
@@ -398,4 +358,3 @@
   </script>
 </body>
 </html>
-

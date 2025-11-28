@@ -395,23 +395,42 @@
 
             </div>
         </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+
+                <div class="footer-feedback">
+                    <button id="feedbackPill" class="pill pill-action" type="button" aria-haspopup="dialog" aria-controls="feedbackOverlay">Envie seu feedback</button>
+                </div>
+
+                <div class="footer-text">
+                    ©2025 Cons-IA.org
+                </div>
+                
+                <div class="footer-contact">
+                    <span>Fale com o Diretor:</span>
+                    <a href="mailto:eduardo.azevedo.ccci@gmail.com">
+                        <i class="fas fa-envelope"></i>
+                        <span class="email"><em>transmentor@interludium.ccce</em></span>
+                    </a>
+                </div>
+            </div>
+        </footer>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-text">
-                ©2025 Cons-IA Toolbox de IA da Conscienciologia
-            </div>
-            <div class="footer-contact">
-                <span>Fale com o Diretor:</span>
-                <a href="mailto:eduardo.azevedo.ccci@gmail.com">
-                    <i class="fas fa-envelope"></i>
-                    <span class="email"><em>transmentor@interludium.ccce</em></span>
-                </a>
-            </div>
+    <!-- Feedback Overlay -->
+    <div id="feedbackOverlay" class="fb-overlay" role="dialog" aria-modal="true" aria-labelledby="fbTitle" hidden>
+      <div class="fb-dialog">
+        <h3 id="fbTitle">Enviar Feedback</h3>
+        <p class="fb-help">Sua mensagem será enviada aos desenvolvedores.</p>
+        <textarea id="fbInput" rows="4" placeholder="Escreva aqui sua mensagem..."></textarea>
+        <div class="fb-actions">
+          <button id="fbSend" class="btn primary" type="button">Enviar</button>
+          <button id="fbCancel" class="btn" type="button">Cancelar</button>
         </div>
-    </footer>
+        <div id="fbStatus" class="fb-status" aria-live="polite"></div>
+      </div>
+    </div>
 
     <!-- Overlay de animação do logo -->
     <div id="logo-intro-overlay" aria-hidden="true">
@@ -445,11 +464,59 @@
           }
         } catch (err) { /* noop */ }
       });
-    </script>
 
 
 
-    <script>
+      // Feedback pill interactions
+      (function setupFeedback(){
+        const pill = document.getElementById('feedbackPill');
+        const overlay = document.getElementById('feedbackOverlay');
+        const input = document.getElementById('fbInput');
+        const sendBtn = document.getElementById('fbSend');
+        const cancelBtn = document.getElementById('fbCancel');
+        const status = document.getElementById('fbStatus');
+
+        function openOverlay(){
+          try { status.textContent = ''; } catch {}
+          overlay.hidden = false;
+          input.value = '';
+          input.focus();
+        }
+        function closeOverlay(){ overlay.hidden = true; }
+        function send(){
+          const msg = (input.value || '').trim();
+          if (!msg) { status.textContent = 'Digite uma mensagem.'; input.focus(); return; }
+          try {
+            if (window.logEvent) {
+              window.logEvent({ event: 'feedback_message', module: 'feedback', value: msg });
+              status.textContent = 'Feedback enviado! Agradecemos sua mensagem.';
+            } else {
+            // fallback direta ao endpoint
+            const payload = {
+              event: 'feedback_message',
+              module: 'feedback',
+              value: msg,
+              page: (location && location.pathname) || undefined,
+              origin: (location && location.origin) || (location.protocol + '//' + location.host),
+              referrer: document.referrer || ''
+            };
+            fetch((window.apiBaseUrl||'') + '/log', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+              .then(() => status.textContent = 'Feedback enviado! Agradecemos sua mensagem.')
+              .catch(() => status.textContent = 'Falha ao enviar. Tente novamente.');
+          }
+          } catch { status.textContent = 'Falha ao enviar. Tente novamente.'; }
+          setTimeout(closeOverlay, 2000);
+        }
+
+        pill?.addEventListener('click', openOverlay);
+        cancelBtn?.addEventListener('click', closeOverlay);
+        sendBtn?.addEventListener('click', send);
+        input?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) send(); });
+        overlay?.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+      })();
+
+
+
             // Info toggle (expand/collapse badge descriptions)
             function playLogoIntro(callback){
               try {
