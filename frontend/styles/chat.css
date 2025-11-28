@@ -44,13 +44,13 @@
 }
 
 .message-avatar.user {
-    background: #a7a7a7;        /* verde bem claro */
-    color: #ffffff;             /* verde escuro para o ícone/letra */
+    background: #fafafa;        /* verde bem claro */
+    color: #576557;             /* verde escuro para o ícone/letra */
 }
 
 .message-content.user {
-    background: #a7a7a7;        /* verde bem claro */
-    color: #ffffff;             /* verde escuro para o ícone/letra */
+    background: #fafafa;        /* verde bem claro */
+    color: #576557;             /* verde escuro para o ícone/letra */
     
 }
 
@@ -174,23 +174,33 @@
 .theme-bots .chat-message.bot .message-content {
     width: 100%;
     flex: 1;
-    padding: var(--space-5) var(--space-6); /* tighter now that bot has no avatar */
+    padding: var(--space-5) var(--space-6); /* área respirada para o texto principal */
 }
 
 .theme-bots .chat-input-wrapper { margin-top: auto; }
 
+/* Listas principais: levemente mais compactas que parágrafos, com recuo suave */
 .theme-bots .chat-message.bot .message-content .markdown-content ul,
 .theme-bots .chat-message.bot .message-content .markdown-content ol {
-    margin: 0.8em 0;
-    padding-left: 0;             /* remove recuo extra */
-    list-style-position: inside; /* coloca números/bullets no mesmo alinhamento do texto */
+    margin: 0.7em 0 0.7em 0;
+    padding-left: 1.25em;        /* recuo clássico de lista */
+    list-style-position: outside;
     font-size: var(--text-sm);
-    line-height: 1.4;
+    line-height: 1.55;
 }
 
+/* Parágrafo imediatamente antes/depois de lista: separação visual suave */
+.theme-bots .chat-message.bot .message-content .markdown-content p + ul,
+.theme-bots .chat-message.bot .message-content .markdown-content p + ol,
+.theme-bots .chat-message.bot .message-content .markdown-content ul + p,
+.theme-bots .chat-message.bot .message-content .markdown-content ol + p {
+    margin-top: 0.5em;
+}
+
+/* Conteúdo dentro de cada item permanece em fluxo normal */
 .theme-bots .chat-message.bot .message-content .markdown-content li p {
-    display: inline; /* evita quebra após o índice */
-    margin: 0;       /* remove espaçamento extra */
+    display: block;
+    margin: 0.1em 0 0.1em 0;
 }
 
 .theme-bots .chat-send-btn:hover:not(:disabled) { background: var(--bots-secondary); }
@@ -217,14 +227,16 @@
 .theme-bots .chat-message.bot .message-content .markdown-content {
     color: var(--gray-800);
     font-size: var(--text-sm);
-    line-height: 1.6;
+    line-height: 1.65;            /* um pouco mais solto para blocos longos */
     word-break: break-word;
 }
 
 .theme-bots .chat-message.bot .message-content .markdown-content > :first-child { margin-top: 0; }
 .theme-bots .chat-message.bot .message-content .markdown-content > :last-child { margin-bottom: 0; }
 
-.theme-bots .chat-message.bot .message-content .markdown-content p { margin: 0.7em 0; }
+.theme-bots .chat-message.bot .message-content .markdown-content p {
+    margin: 0.72em 0;             /* leve respiro entre parágrafos */
+}
 .theme-bots .chat-message.bot .message-content .markdown-content strong { font-weight: 700; }
 .theme-bots .chat-message.bot .message-content .markdown-content em { font-style: italic; }
 
@@ -254,15 +266,31 @@
     color: var(--primary-700);
 }
 
-/* Listas aninhadas mais elegantes */
+/* Listas aninhadas mais elegantes (níveis > 1 genéricos) */
 .theme-bots .chat-message.bot .message-content .markdown-content ul ul,
 .theme-bots .chat-message.bot .message-content .markdown-content ol ol,
 .theme-bots .chat-message.bot .message-content .markdown-content ul ol,
 .theme-bots .chat-message.bot .message-content .markdown-content ol ul {
-    margin: 0.4em 0 0.4em 1.25em;
+    margin: 0.35em 0 0.35em 1.2em;
     font-size: 0.95em;
 }
-.theme-bots .chat-message.bot .message-content .markdown-content li + li { margin-top: 0.25em; }
+
+/* Caso específico: bullets como subitens de lista numerada
+   ol > li > ul  → bullets alinhados ao texto do item numerado superior */
+.theme-bots .chat-message.bot .message-content .markdown-content ol > li > ul {
+    margin: 0.35em 0 0.35em 0;  /* usa o mesmo alinhamento horizontal do texto do li */
+    padding-left: 0;            /* remove recuo extra para não jogar o texto mais para a direita */
+    list-style-position: inside;/* marcador passa a fazer parte da coluna do texto, e não da coluna do número */
+}
+
+/* Compactação diferenciada: bullets ligeiramente mais compactos que listas numeradas */
+.theme-bots .chat-message.bot .message-content .markdown-content ul li + li {
+    margin-top: 0.18em;
+}
+
+.theme-bots .chat-message.bot .message-content .markdown-content ol li + li {
+    margin-top: 0.3em;
+}
 
 /* Citações (blockquote) */
 .theme-bots .chat-message.bot .message-content .markdown-content blockquote {
@@ -339,8 +367,8 @@
     .theme-bots .chat-message.bot .message-content .markdown-content pre { padding: var(--space-4); }
 
     /* Badges e texto explicativo menores em telas responsivas */
-    .ragbot-mode-badge { font-size: 0.8rem; padding: 0.35rem 0.85rem; }
-    .ragbot-mode-description { font-size: 0.8rem; }
+    .ragbot-mode-badge { font-size: 0.7rem; padding: 0.35rem 0.85rem; }
+    .ragbot-mode-description { font-size: 0.6rem; }
 }
 
 @media (max-width: 480px) {

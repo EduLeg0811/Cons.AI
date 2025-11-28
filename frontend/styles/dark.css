@@ -157,6 +157,50 @@
 
 [data-theme="dark"] .btn { background: #1f2937; color:#e5e7eb; border-color:#374151; }
 
+/* ===== DARK MODE — RAGBOT CHAT ===== */
+
+/* Balão principal da resposta do RagBOT: cartão levemente destacado sobre o fundo */
+[data-theme="dark"] .theme-bots .chat-message.bot .message-content {
+    background: rgba(15, 23, 42, 0.95);        /* superfície quase sólida */
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+/* Texto markdown no RagBOT em dark: mantém tipografia clara e confortável */
+[data-theme="dark"] .theme-bots .chat-message.bot .message-content .markdown-content {
+    color: var(--gray-800);
+}
+
+/* Links ligeiramente mais claros em dark para contraste melhor */
+[data-theme="dark"] .theme-bots .chat-message.bot .message-content .markdown-content a {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .theme-bots .chat-message.bot .message-content .markdown-content a:hover {
+    color: #bfdbfe;
+}
+
+/* Badges de modo RagBOT (Waldo / English / etc.) no dark: fundo suave e texto claro */
+[data-theme="dark"] .theme-bots .ragbot-mode-badge {
+    background-color: rgba(16, 185, 129, 0.22);   /* verde suave translúcido */
+    color: var(--gray-900);                       /* texto claro */
+    border: 1px solid rgba(45, 212, 191, 0.55);
+}
+
+/* Sugestões iniciais (initial-quests) em modo escuro — desktops */
+[data-theme="dark"] .initial-quests-badge {
+    background: #1f2937;
+    color: var(--gray-800);
+    border: 1px solid var(--gray-700);
+}
+
+[data-theme="dark"] .initial-quests-badge:hover,
+[data-theme="dark"] .initial-quests-badge:active,
+[data-theme="dark"] .initial-quests-badge:focus {
+    background: #273549;
+    color: var(--gray-900);
+}
+
 /* Removido bloco menos completo de [data-theme="dark"] .save-btn.saving (mantida versão mais completa abaixo com !important e box-shadow)
    Motivo: evitar sobreposição desnecessária mantendo a regra consolidada. */
 

@@ -93,6 +93,7 @@
                 <span style="font-size: 0.9rem;">
                     <strong style="color: #007BFF; font-size: 1.1rem;">Instruções:</strong><br><br>
                     Clique no ícone de <em>configurações</em> acima para selecionar a <strong>base de dados</strong> do chat.<br>
+                    Máximo de 2 bibliotecas simultâneas.
                 </span>
             </div>
 
@@ -112,9 +113,18 @@
                     <!-- Config do Modulo (pills + opções) -->
 
                     <div class="book-checkboxes" data-module="search_book" data-mode="multi">
-                        <div class="book-pill" data-value="ALLWV">Bibliografia Waldo Vieira</div>
-                        <div class="book-pill" data-value="AUTORES">Autores Diversos Editares</div>
-                        <div class="book-pill" data-value="ENGLISH">Sources in English</div>
+                        <div class="book-option">
+                            <div class="book-pill" data-value="ALLWV">Bibliografia Waldo Vieira</div>
+                            <div class="book-desc">Livros & Tratados de autoria de Waldo Vieira</div>
+                        </div>
+                        <div class="book-option">
+                            <div class="book-pill" data-value="AUTORES">Autores Diversos</div>
+                            <div class="book-desc">Livros de outros autores da Conscienciologia</div>
+                        </div>
+                        <div class="book-option">
+                            <div class="book-pill" data-value="ENGLISH"><em>Bibliography in English</em></div>
+                            <div class="book-desc">Fontes conscienciológicas em língua inglesa</div>
+                        </div>
                         
 
                         <!-- ============================================================
@@ -137,10 +147,21 @@
                             const lastPill = container.querySelector('.book-pill[data-value="ENGLISH"]');
                             if (lastPill) {
                             const div = document.createElement("div");
-                            div.className = "book-pill";
-                            div.dataset.value = "MINI";
-                            div.textContent = "Registros Minitertúlia";
-                            lastPill.insertAdjacentElement("afterend", div);
+                            div.className = "book-option";
+
+                            const pill = document.createElement("div");
+                            pill.className = "book-pill";
+                            pill.dataset.value = "MINI";
+                            pill.textContent = "Registros Minitertúlia";
+
+                            const desc = document.createElement("div");
+                            desc.className = "book-desc";
+                            desc.textContent = "Anotações diversas das minitertúlias conscienciológicas.";
+
+                            div.appendChild(pill);
+                            div.appendChild(desc);
+
+                            lastPill.parentElement.insertAdjacentElement("afterend", div);
                             }
                         }
                         });
@@ -252,7 +273,8 @@
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
         //    Regra: no máximo 2 book-pill ativos simultaneamente.
-        //    Se um 3º for selecionado, desmarca automaticamente o mais antigo.
+        //    Novo comportamento: ao atingir 2 ativos, o usuário precisa
+        //    desselecionar manualmente um deles para escolher outro.
         // ================================================================
         document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
             const pill = e.target.closest('.book-pill');
@@ -263,28 +285,20 @@
                 const isActive = pill.classList.contains('active');
                 const activePills = Array.from(container.querySelectorAll('.book-pill.active'));
 
+                // Se já está ativo, apenas desmarca
                 if (isActive) {
                     pill.classList.remove('active');
-                    try { delete pill.dataset.selectedAt; } catch (err) {}
                     return;
                 }
 
+                // Se já existem 2 ativos e o usuário tentar ativar um terceiro,
+                // não faz nada: é preciso primeiro desselecionar manualmente.
                 if (activePills.length >= 2) {
-                    let oldest = activePills[0];
-                    let oldestTs = parseInt(oldest.dataset.selectedAt || '0', 10) || 0;
-                    for (let i = 1; i < activePills.length; i++) {
-                        const ts = parseInt(activePills[i].dataset.selectedAt || '0', 10) || 0;
-                        if (ts <= oldestTs) {
-                            oldest = activePills[i];
-                            oldestTs = ts;
-                        }
-                    }
-                    oldest.classList.remove('active');
-                    try { delete oldest.dataset.selectedAt; } catch (err) {}
+                    return;
                 }
 
+                // Ativa o novo pill (ainda abaixo do limite de 2)
                 pill.classList.add('active');
-                try { pill.dataset.selectedAt = String(Date.now()); } catch (err) {}
             }
         });
 

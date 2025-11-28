@@ -89,6 +89,7 @@
                 <span>
                     <strong>Dicas de Pesquisa:</strong><br>
                     Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong>Léxica</strong> | <strong>Semântica</strong>) e escolher os <strong>livros</strong> para pesquisa.<br>
+                    Máximo de 5 livros simultâneos por pesquisa.
                     <br>
                     1. <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> nos textos.<br>
                     Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
@@ -299,7 +300,8 @@
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
         //    Regra: no máximo 5 book-pill ativos simultaneamente.
-        //    Se um 6º for selecionado, desmarca automaticamente o mais antigo.
+        //    Novo comportamento: ao atingir 5 ativos, o usuário precisa
+        //    desselecionar manualmente um deles para escolher outro.
         // ================================================================
         document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
             // Verifica se o clique foi em um .book-pill ou em um de seus filhos
@@ -311,32 +313,20 @@
                 const isActive = pill.classList.contains('active');
                 const activePills = Array.from(container.querySelectorAll('.book-pill.active'));
 
-                // Se já está ativo, apenas desmarca e limpa timestamp
+                // Se já está ativo, apenas desmarca
                 if (isActive) {
                     pill.classList.remove('active');
-                    try { delete pill.dataset.selectedAt; } catch (err) {}
                     return;
                 }
 
                 // Se já houver 5 ativos e o usuário clicar em um 6º,
-                // desmarca o MAIS ANTIGO (menor data-selected-at)
+                // não faz nada: é preciso primeiro desselecionar manualmente.
                 if (activePills.length >= 5) {
-                    let oldest = activePills[0];
-                    let oldestTs = parseInt(oldest.dataset.selectedAt || '0', 10) || 0;
-                    for (let i = 1; i < activePills.length; i++) {
-                        const ts = parseInt(activePills[i].dataset.selectedAt || '0', 10) || 0;
-                        if (ts <= oldestTs) {
-                            oldest = activePills[i];
-                            oldestTs = ts;
-                        }
-                    }
-                    oldest.classList.remove('active');
-                    try { delete oldest.dataset.selectedAt; } catch (err) {}
+                    return;
                 }
 
-                // Ativa o novo e registra timestamp
+                // Ativa o novo pill (ainda abaixo do limite de 5)
                 pill.classList.add('active');
-                try { pill.dataset.selectedAt = String(Date.now()); } catch (err) {}
             }
         });
 

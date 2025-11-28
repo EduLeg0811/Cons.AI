@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mapeia cada book para o respectivo rótulo exibido no badge
         const bookToLabel = {
           'ALLWV':   'Bibliografia Waldo Vieira',
-          'AUTORES': 'Autores Diversos Editares',
+          'AUTORES': 'Autores Diversos',
           'REVISTAS':'Artigos de Periódicos',
           'MINI':    'Minitertúlia',
           'ENGLISH': 'Bibliography in English'
@@ -723,8 +723,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const g = parseInt(base.slice(2, 4), 16);
                 const b = parseInt(base.slice(4, 6), 16);
 
-                // Mistura 90% branco + 10% da cor base para ficar bem suave
-                const mix = (c) => Math.round(255 - (255 - c) * 0.1);
+                // Mistura 95% branco + 5% da cor base para ficar bem suave
+                const mix = (c) => Math.round(255 - (255 - c) * 0.05);
                 const lr = mix(r);
                 const lg = mix(g);
                 const lb = mix(b);

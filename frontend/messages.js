@@ -14,34 +14,11 @@ const PANEL_DESCRIPTIONS = {
 
   'Busca IA': [
   '<span class="panel-desc-lead">Pesquisa em Livros por IA</span>',
-  '<br><br>',
-  '<span class="panel-desc-sm">',
-  '<strong>Orientações gerais:</strong><br>',
-  'Clique no ícone de <em>configurações</em> para selecionar a busca <em>léxica</em> e / ou <em>semântica</em>.<br>',
-  '<br>',
-  '1. <strong>Léxica</strong>: procura pelo termo <em>exato</em>.<br>',
-  'Permite busca avançada com operadores lógicos & (AND), | (OR), ! (NOT), * (WILDCARD).<br>',
-  '<br>',
-  '2. <strong>Semântica</strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>',
-  'Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com os descritivos "bioenergias" e "EC".<br>',
-  '<br>',
-  '<strong>Observações sobre os resultados:</strong><br>',
-  '<strong>1.</strong> Consulte sempre o livro original para ver o texto no entorno, a fim de ter uma melhor visão de conjunto e compreensão do contexto.<br>',
-  '<strong>2.</strong> No momento, a busca não traz o número das páginas, mas indica quando possível o capítulo, seção, verbete ou título de entrada. Para localizar exatamente o trecho encontrado, consulte o livro ou tratado original.<br>',
-  '</span>',
-  '<br>'
 ].join('\n'),
 
   'Apps IA': [
     '<span class="panel-desc-lead">Aplicativos de IA para Pesquisa</span>',
-    '<br><br>',
-    '<span class="panel-desc-sm">',
-    '<strong>Orientações gerais:</strong><br>',
-    'Lembre-se que sou uma <em>IA</em> (Inteligência Artificial), e infelizmente ainda não possuo <strong>IE</strong> (Inteligência Evolutiva).<br>',
-    'Por isso, mantenha sempre o senso crítico e aplique o <em>Princípio da Descrença</em>.<br>',
-    'Consulte as fontes originais para se certificar das respostas.<br>',
-    '</span>',
-    '<br>',
+    
   ].join('\n'),
 
   'Links Externos': '<span class="panel-desc-lead">Links e Recursos Úteis</span>',
@@ -59,7 +36,7 @@ const TOOL_MESSAGES = {
     short: '<em>ChatGPT da OpenAI</em>',
     extra: [
       '<br>',
-      'O <strong>ConsGPT</strong> é o chatbot da OpenAI treinado com os livros e tratados da Conscienciologia. ',
+      'O <strong>ConsGPT</strong> é o chatbot da OpenAI treinado com os livros e tratados da Conscienciologia.<br>',
       'Ótimo para brainstorming, resumos e conversas em geral.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente enviar o texto que está escrevendo e pedir para ele dar <em>sugestões de melhoria</em>.<br>',
@@ -73,7 +50,7 @@ const TOOL_MESSAGES = {
     short: '<em>NotebookLM da Google</em>',
     extra: [
       '<br>',
-      'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia. ',
+      'O <strong>ConsLM</strong> é o NotebookLM do Google Gemini, alimentado com os textos e tratados da Conscienciologia.<br>',
       'Excelente para resumos e busca de informações em livros, pois fornece a <em>referência</em> do trecho encontrado.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente a seção lateral do <em>studio</em>, com Podcasts e tutoriais de Conscienciologia.<br>',
@@ -91,7 +68,12 @@ const TOOL_MESSAGES = {
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
-      '<strong>3.</strong> Aproveite as <em>sugestões de perguntas iniciais</em>, para ter boas ideias do que extrair da IA.'
+      '<strong>3.</strong> Aproveite as <em>sugestões de perguntas iniciais</em>, para ter boas ideias do que extrair da IA.',
+      '<br><br>',
+      '<strong>NOVIDADES: </strong><br>',
+      '* Fontes conscienciológicas em <em>inglês</em> e outros idiomas.<br>',
+      '* Livros de autores diversos da Conscienciologia.<br>',
+      '* Registros das <em>Minitertúlias Conscienciológicas</em>.<br>',
     ].join('\n')
   },
 
@@ -117,35 +99,24 @@ const TOOL_MESSAGES = {
     short: 'Pesquisa em livros e tratados',
     extra: [
       '<br>',
-      '<strong>Instruções:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Escolha o tipo de busca desejado (<em>léxica</em> ou <em>semântica</em>).<br>',
-      '<strong>3.</strong> Selecione os <em>livros</em> para pesquisa.<br>',
-      '<strong>4.</strong> Ajuste o número máximo de resultados.<br>',
-      '<strong>5.</strong> Defina a saída em lista corrida ou <em>agrupada por livro</em>.<br>',
-      '<br>',
-      '<strong>Termo de Pesquisa:</strong><br>',
-      '<strong>1.</strong> Digite o termo para pesquisa.<br>',
-      '<strong>2.</strong> Use operadores lógicos (&, |, !, *) para combinar termos.<br>',
-      '<strong>3.</strong> Ao final, clique no ícone do Word para baixar a listagem.',
+      'Ferramenta de <strong>busca de palavras</strong> nos livros e tratados do professor Waldo Vieira.<br>',
+      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Ao final, é possível baixar um <em>documento Word</em> com a listagem completa dos resultados.',
     ].join('\n')
   },
 
 
   // Tool: Search_Verbetes
   'Definologia de Verbetes': {
-    short: 'Pesquisa na Definologia dos verbetes',
+    short: 'Pesquisa na Definologia de verbetes',
     extra: [
       '<br>',
-      '<strong>Instruções:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
-      '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
-      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
-      '<strong>5.</strong> Também é possível baixar o PDF do verbete completo.<br>',
+      'Ferramenta de <strong>busca de palavras</strong> na <em>Definologia</em> dos verbetes - e não apenas nos títulos.<br>',
+      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
+      'Baixe o <em>PDF do verbete</em> diretamente na janela de resultados.',
     ].join('\n')
   },
-
 
 
   // Tool: Search_CCG
@@ -153,36 +124,11 @@ const TOOL_MESSAGES = {
     short: 'Pesquisa no Conscienciograma',
     extra: [
       '<br>',
-      '<strong>Instruções:</strong><br>',
-      '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-      '<strong>2.</strong> Escolha o tipo de busca desejado.<br>',
-      '<strong>3.</strong> Ajuste o número máximo de resultados.<br>',
-      '<strong>4.</strong> Ao final, clique no ícone do Word para baixar a listagem.<br>',
+      'Ferramenta de <strong>busca de palavras</strong> nas <em>Questões do Conscienciograma</em>.<br>',
+      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
     ].join('\n')
   },
-
-
-
-
-// Tool: Caderno de Estudos
-'Caderno de Estudos': {
-  short: '<em>Pesquisa profunda (deep research)</em>',
-  extra: [
-    '<br>',
-    'Realiza pesquisa profunda em livros, tratados e verbetes. ',
-    'Monta um Caderno de Estudos completo sobre o tema. ',
-    'Utiliza algoritmos de IA com GPT-5 da OpenAI (última geração). ',
-    'Realiza busca <em>léxica</em> e <em>semântica</em> conjugadas. ',
-    'Ótimo para montar compilação de referência para pesquisas, preparação de aulas ou escrita de livros e verbetes.',
-    '<br>',
-    '<strong>Dicas:</strong><br>',
-    '<strong>1.</strong> Clique no ícone de <em>configurações</em>.<br>',
-    '<strong>2.</strong> Experimente combinações e variações de termos para obter melhores resultados.<br>',
-    '<strong>3.</strong> Por utilizar o GPT-5 com reasoning, a pesquisa pode levar vários minutos para concluir.<br>',
-    '<strong>4.</strong> Ao final, clique no ícone do Word para baixar o caderno de estudos.'
-  ].join('\n')
-},
-
 
 
   // Tool: Bibliomancia Digital
@@ -191,8 +137,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA. ',
-      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.',
-      '<br>',
+      'Simula digitalmente a <em>bibliomancia</em>, que é o procedimento de abrir ao acaso uma página de um livro para alimentar a autopesquisa.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Use-o para instigar as <em>sincronicidades</em>.<br>',
       '<strong>2.</strong> Compare a sua interpretação da pensata (hermenêutica) com a da IA.<br>',
