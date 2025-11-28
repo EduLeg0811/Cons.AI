@@ -458,9 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Mapeia cada book para o respectivo rótulo exibido no badge
         const bookToLabel = {
           'ALLWV':   'Bibliografia Waldo Vieira',
-          'AUTORES': 'Livros Autores Diversos',
+          'AUTORES': 'Autores Diversos Editares',
           'REVISTAS':'Artigos de Periódicos',
-          'MINI':    'MiniTertúlia',
+          'MINI':    'Minitertúlia',
           'ENGLISH': 'Bibliography in English'
         };
 

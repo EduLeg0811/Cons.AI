@@ -579,8 +579,7 @@ document.getElementById('btn-new-conv')?.addEventListener('click', () => resetCo
       const saved = localStorage.getItem('theme');
       if (saved === 'dark' || saved === 'light') return saved;
     } catch {}
-    // fallback to system preference
-    try { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch {}
+    // fallback: always start in light mode on first access
     return 'light';
   }
 
