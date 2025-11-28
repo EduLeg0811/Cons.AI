@@ -251,12 +251,40 @@
     
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
+        //    Regra: no máximo 2 book-pill ativos simultaneamente.
+        //    Se um 3º for selecionado, desmarca automaticamente o mais antigo.
         // ================================================================
         document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
-            // Verifica se o clique foi em um .book-pill ou em um de seus filhos
             const pill = e.target.closest('.book-pill');
             if (pill) {
-                pill.classList.toggle('active');
+                const container = pill.closest('.book-checkboxes');
+                if (!container) return;
+
+                const isActive = pill.classList.contains('active');
+                const activePills = Array.from(container.querySelectorAll('.book-pill.active'));
+
+                if (isActive) {
+                    pill.classList.remove('active');
+                    try { delete pill.dataset.selectedAt; } catch (err) {}
+                    return;
+                }
+
+                if (activePills.length >= 2) {
+                    let oldest = activePills[0];
+                    let oldestTs = parseInt(oldest.dataset.selectedAt || '0', 10) || 0;
+                    for (let i = 1; i < activePills.length; i++) {
+                        const ts = parseInt(activePills[i].dataset.selectedAt || '0', 10) || 0;
+                        if (ts <= oldestTs) {
+                            oldest = activePills[i];
+                            oldestTs = ts;
+                        }
+                    }
+                    oldest.classList.remove('active');
+                    try { delete oldest.dataset.selectedAt; } catch (err) {}
+                }
+
+                pill.classList.add('active');
+                try { pill.dataset.selectedAt = String(Date.now()); } catch (err) {}
             }
         });
 
@@ -312,11 +340,22 @@
                 saved.module = 'ragbot';
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
-                // Livros
+                // Livros (clamp: garantir no máximo 2 ativos ao aplicar config + timestamps)
                 if (Array.isArray(saved.books)) {
                     const set = new Set(saved.books);
-                    document.querySelectorAll('.book-pill').forEach(pill => {
-                        pill.classList.toggle('active', set.has(pill.dataset.value));
+                    const pills = Array.from(document.querySelectorAll('.book-pill'));
+                    let activeCount = 0;
+                    let baseTs = Date.now();
+
+                    pills.forEach(pill => {
+                        const shouldActivate = set.has(pill.dataset.value) && activeCount < 2;
+                        pill.classList.toggle('active', shouldActivate);
+                        if (shouldActivate) {
+                            activeCount++;
+                            try { pill.dataset.selectedAt = String(baseTs + activeCount); } catch (err) {}
+                        } else {
+                            try { delete pill.dataset.selectedAt; } catch (err) {}
+                        }
                     });
                 }
     
