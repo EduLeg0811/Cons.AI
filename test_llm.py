@@ -8,6 +8,8 @@ import json
 import re
 from typing import Dict, Any, List, Optional
 
+from dotenv import load_dotenv
+
 import streamlit as st
 from openai import OpenAI, APIError, APIConnectionError, RateLimitError, APITimeoutError
 
@@ -84,7 +86,7 @@ st.markdown(
 
     .payload-card h3, .response-card h3 {
         margin-top: 0;
-        font-size: 1.05rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: #e5e7eb;
     }
@@ -92,11 +94,10 @@ st.markdown(
     .response-text {
         padding: 0.75rem 0.9rem;
         border-radius: 0.75rem;
-        background-color: #020617;
         border: 1px dashed rgba(75,85,99,0.9);
         max-height: 380px;
         overflow-y: auto;
-        font-size: 0.93rem;
+        font-size: 0.9rem;
     }
 
     .timer-pill {
@@ -264,6 +265,7 @@ def response_to_dict(resp_obj: Any) -> Dict[str, Any]:
 # --------------------------------------------------------------------
 st.title("🔬 Teste de LLM · OpenAI Responses API")
 
+load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY", "")
 if not api_key:
     st.error("OPENAI_API_KEY não encontrado no ambiente. Defina a variável antes de usar.")
@@ -286,10 +288,10 @@ with col_left:
         model = st.selectbox(
             "Modelo",
             options=[
-                "gpt-5.1-mini",
-                "gpt-5-mini",
+                "gpt-5.1",
+                "gpt-5-nano",
                 "gpt-4.1-mini",
-                "gpt-4.1",
+                "gpt-4.1-nano",
             ],
             index=0,
             help="Modelos mais recentes recomendados para uso com Responses API.",
@@ -346,7 +348,7 @@ with col_left:
         st.markdown("##### Vector Store (file_search opcional)", unsafe_allow_html=True)
         vs_ids_str = st.text_input(
             "Vector store IDs (opcional, separados por vírgula)",
-            value="",
+            value="vs_6912908250e4819197e23fe725e04fae",
             help="Exemplo: vs_abc123, vs_def456. Se vazio, não usa file_search.",
         )
 

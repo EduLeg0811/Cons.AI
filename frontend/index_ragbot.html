@@ -27,11 +27,11 @@
 
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
     <!-- Navbar -->
     <nav class="navbar">
-
         <div class="navbar-container">
-
             <div class="navbar-controls">
                 <a href="index.html" class="back-button" title="Back to Home">
                     <i class="fas fa-home"></i>
@@ -41,59 +41,141 @@
             <div class="navbar-center">
                 <div class="navbar-text">
                     <div class="navbar-title-modules">ConsBOT</div>
-                    <div class="navbar-subtitle-modules">Assistente de IA</div>
+                    <div class="navbar-subtitle-modules">IA da Conscienciologia</div>
                 </div>
             </div>
 
-
             <div class="navbar-controls">
-
-                <button class="navbar-control-btn new-convo-btn" title="New Conversation" onclick="resetConversation('ragbot')">
-                    <i class="fa-regular fa-file"></i>
-                  </button>
-                  
                 <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
                 </button>
-
             </div>
         </div>
     </nav>
 
 
+
+
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-    <div class="chat-container">
+    <div class="container">
 
-        <!-- Options Panel --> 
-        <div>
-            <br>
-            <br>
-            <br>
-        </div>
+        <!-- Options Trigger + Panel (dropdown) -->
+        <div class="options-wrapper">
 
-          <!-- Search Container -->
-          <div class="search-container">
-            <div class="search-row">
-                <div class="search-input-wrapper">
-                    <textarea id="searchInput" placeholder="Olá conscienciólogo!" class="search-input" rows="1"></textarea>
-                    <button id="searchButton" class="chat-send-btn" aria-label="Send Message">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                
+            <!-- Toolbar -->
+            <div class="search-toolbar">
+                <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+        
             </div>
-        </div>
 
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <textarea id="searchInput" placeholder="Digite o termo para pesquisar..." class="search-input" rows="1"></textarea>
+                        <button id="searchButton" class="search-button" aria-label="Search">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            
         <!-- Chat Messages -->
         <div class="chat-messages" id="chatMessages"></div>
 
-        <div id="results" class="results hidden">
-            <!-- Results will be displayed here for download functionality -->
+            <!-- Instructions -->
+            <div id="searchHint" class="search-hint">
+                <span>
+                    <strong>Instruções:</strong><br><br>
+                    1. Clique no ícone de <em>configurações</em> acima para selecionar a <strong>base de dados</strong> do chat.<br>
+                    <br>
+                    2. Para reiniciar, clique no ícone <em>new</em> no topo da página
+                </span>
+            </div>
+
+
+
+            <div class="options-panel" id="optionsPanel">
+
+                <div class="options-header" onclick="toggleOptions()">
+                    <h3 class="options-title">Opções do ConsBOT</h3>
+                    <button class="options-toggle" id="optionsToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+
+                <div class="options-content" id="optionsContent">
+
+
+                    <!-- Config do Modulo (pills + opções) -->
+
+                    <div class="book-checkboxes" data-module="search_book" data-mode="multi">
+                        <div class="book-pill" data-value="ALLWV">Bibliografia Waldo Vieira</div>
+                        <div class="book-pill" data-value="AUTORES">Autores Diversos Editares</div>
+                        <div class="book-pill" data-value="ENGLISH">Sources in English</div>
+                        
+
+                        <!-- ============================================================
+                            Controle de exibição do pill "Questões Mini"
+                            ============================================================ -->
+                        <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                        const container = document.querySelector('.book-checkboxes[data-module="search_book"]');
+                        if (!container) return;
+
+                        // Lê o flag salvo na configuração principal (index.html)
+                        let minitertuliaFlag = false;
+                        try {
+                            const configMain = JSON.parse(localStorage.getItem("appConfig_main") || "{}");
+                            minitertuliaFlag = !!configMain.MINITERTULIA;
+                        } catch (e) {}
+
+                        // Se o flag for true, cria o pill dinamicamente logo após o último book-pill (PROJ)
+                        if (minitertuliaFlag) {
+                            const lastPill = container.querySelector('.book-pill[data-value="ENGLISH"]');
+                            if (lastPill) {
+                            const div = document.createElement("div");
+                            div.className = "book-pill";
+                            div.dataset.value = "MINI";
+                            div.textContent = "Registros Minitertúlia";
+                            lastPill.insertAdjacentElement("afterend", div);
+                            }
+                        }
+                        });
+                        </script>
+
+                        <br>
+
+
+                        <div class="config-container">
+                            <div class="config-actions">
+                                <!-- Botão salvar -->
+                                <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div id="results" class="results"></div>
+
     </div>
-  
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
 
     <!-- Dependencies -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
@@ -106,29 +188,229 @@
     <script src="utils.js"></script>
     <script src="display.js"></script>
     <script src="bridge.js"></script>
-    <script src="download.js"></script>
     <script src="script_ragbot.js"></script>
 
-    <script>
-        // Auto-resize textarea
-        document.getElementById('searchInput').addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
 
-        // Handle Enter key (send message) and Shift+Enter (new line)
-        document.getElementById('searchInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('searchButton').click();
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initTheme();
+        
+        // Pulse do botão de configurações apenas na primeira visita
+        try {
+            if (localStorage.getItem('configPulseSeen_ragbot')) {
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+                document.getElementById('optionsTrigger')?.classList.remove('pulsing');
+            } else {
+                document.documentElement.removeAttribute('data-config-pulse');
+                document.getElementById('optionsTrigger')?.classList.add('pulsing');
+            }
+        } catch (e) {}
+
+        const trigger = document.getElementById('optionsTrigger');
+        const panel = document.getElementById('optionsPanel');
+        const saveBtn = document.querySelector('.save-btn');
+
+        function hideSearchHint(){
+            const el = document.getElementById('searchHint');
+            if (!el) return;
+            if (!el.classList.contains('hidden')) el.classList.add('hidden');
+            try { el.setAttribute('aria-hidden','true'); } catch {}
+            try { el.style.display = 'none'; } catch {}
+        }
+        
+        // Se o usuário já configurou o RagBOT pelo menos uma vez, não mostrar
+        // mais o bloco de instruções ao abrir a página.
+        try {
+            if (localStorage.getItem('appConfig_ragbot_used') === 'true') {
+                hideSearchHint();
+            }
+        } catch (e) {}
+        
+        // Set global STORAGE_KEY for this module
+        window.STORAGE_KEY = 'appConfig_ragbot';
+        
+
+
+        
+    
+        // ================================================================
+        // 1. Definição da configuração inicial padrão
+        // ================================================================
+        const DEFAULT_SETTINGS = {
+            books: ['ALLWV'],      
+        };
+    
+        // Só define se não houver configuração anterior
+        if (!localStorage.getItem(window.STORAGE_KEY)) {
+            localStorage.setItem(window.STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
+        }
+        
+        
+    
+        // ================================================================
+        // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
+        // ================================================================
+        document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
+            // Verifica se o clique foi em um .book-pill ou em um de seus filhos
+            const pill = e.target.closest('.book-pill');
+            if (pill) {
+                pill.classList.toggle('active');
             }
         });
 
-        // Theme is provided by config.js (initTheme/toggleTheme)
-        document.addEventListener('DOMContentLoaded', initTheme);
+        // Inicializa os botões existentes
+        document.querySelectorAll('.book-pill').forEach(pill => {
+            pill.style.cursor = 'pointer'; // Garante que o cursor mude para pointer
+        });
+    
+          
+        // ================================================================
+        // 4. Abrir/fechar painel
+        // ================================================================
+        if (trigger && panel) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // O botão de configurações APENAS ABRE o painel, se ele estiver fechado.
+                // O fechamento é feito exclusivamente pelo botão Salvar.
+                const isOpen = panel.classList.contains('open');
+                if (!isOpen) {
+                    panel.classList.add('open');
+                    document.documentElement.setAttribute('data-module-config-open', 'true');
+                    // Ao abrir a janela de configuração do ConsBOT, limpamos a tela
+                    // (conversas e sugestões), mantendo apenas a caixa de entrada visível.
+                    try {
+                        if (window.resetLLM) {
+                            resetLLM('ragbot');
+                        }
+                    } catch (err) {}
+                }
+                try {
+                    if (!localStorage.getItem('configPulseSeen_ragbot')) {
+                        localStorage.setItem('configPulseSeen_ragbot', 'true');
+                    }
+                } catch (err) {}
+                document.documentElement.setAttribute('data-config-pulse', 'off');
+                try { hideSearchHint(); } catch {}
+            });
+
+        }
+    
+    
+    
+        // ================================================================
+        // 5. Aplicar configurações salvas (ou padrão)
+        // ================================================================
+        (function applySaved() {
+            try {
+                const raw = localStorage.getItem(window.STORAGE_KEY);
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+
+                // Tipo de Modulo
+                saved.module = 'ragbot';
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
+    
+                // Livros
+                if (Array.isArray(saved.books)) {
+                    const set = new Set(saved.books);
+                    document.querySelectorAll('.book-pill').forEach(pill => {
+                        pill.classList.toggle('active', set.has(pill.dataset.value));
+                    });
+                }
+    
+            } catch (e) {
+                console.warn('Failed to apply saved settings', e);
+            }
+        })();
+    
+        // ================================================================
+        // 6. Botão salvar atualiza o localStorage
+        // ================================================================
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                let books = Array.from(document.querySelectorAll('.book-pill.active'))
+                    .map(p => p.dataset.value);
+
+                // Se nenhum modo estiver selecionado, força o modo padrão "Waldo" (ALLWV)
+                if (!books || books.length === 0) {
+                    books = ['ALLWV'];
+                    try {
+                        const waldoPill = document.querySelector('.book-pill[data-value="ALLWV"]');
+                        if (waldoPill) waldoPill.classList.add('active');
+                    } catch (e) {}
+                }
+                const settings = { books };
+                localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
+
+                // Marca que o usuário já configurou o RagBOT pelo menos uma vez
+                try {
+                    localStorage.setItem('appConfig_ragbot_used', 'true');
+                } catch (e) {}
+
+                // Limpa a tela (chat + resultados) para alinhar com a nova configuração
+                try {
+                    if (window.resetLLM) {
+                        resetLLM('ragbot');
+                    }
+                } catch (e) {}
+
+                // feedback visual de salvando (500ms), depois fecha painel
+                try { saveBtn.classList.add('saving'); } catch {}
+                setTimeout(() => {
+                    try { saveBtn.classList.remove('saving'); } catch {}
+                    if (panel) panel.classList.remove('open');
+                    document.documentElement.removeAttribute('data-module-config-open');
+
+                    // Após o painel fechar (mesmo delay de 500ms), reaplica a configuração
+                    // no RagBOT para desenhar badges e sugestões sem sobrepor a animação.
+                    try {
+                        if (window.ragbotApplyConfig) {
+                            window.ragbotApplyConfig();
+                        }
+                    } catch (e) {
+                        console.warn('Falha ao reaplicar config do RagBOT após salvar', e);
+                    }
+                }, 500);
+                
+            });
+        }
+       
+
+        // ================================================================
+        // 8. Log de entradas digitadas e submissões
+        // ================================================================
+        (function initSearchLogging(){
+            const searchEl = document.getElementById('searchInput');
+            const submitBtn = document.getElementById('searchButton');
+            if (searchEl){
+                // Enter -> search_submit (sem Shift)
+                searchEl.addEventListener('keydown', (e)=>{
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault(); // evita quebra de linha no textarea
+                        const val = searchEl.value || '';
+                        try { window.__suppressInputSubmitTs = Date.now(); } catch {}
+                        try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length, trigger: 'enter' }); } catch {}
+                        hideSearchHint();
+                        // Dispara o mesmo fluxo do botão de envio
+                        if (submitBtn) {
+                            submitBtn.click();
+                        }
+                    }
+                });
+            }
+            if (submitBtn){
+                submitBtn.addEventListener('click', ()=>{
+                    const val = (document.getElementById('searchInput')?.value) || '';
+                    try { window.__suppressInputSubmitTs = Date.now(); } catch {}
+                    try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length }); } catch {}
+                    hideSearchHint();
+                });
+            }
+        })();
+    });
     </script>
-</body>
-</html>
-
-
-

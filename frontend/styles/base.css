@@ -40,6 +40,7 @@
     --search-secondary: #38bdf8;
     --bots-primary: #10b981;
     --bots-secondary: #34d399;
+    
     /* Swapped palettes: Apps <-> Utils */
     --apps-primary: #7c3aed;
     --apps-secondary: #a855f7;
@@ -1144,14 +1145,14 @@ select {
     gap: 8px;
   }
 
-/* Estilo dos bot�es ("pills") */
+/* Estilo dos botoes ("pills") */
   .initial-quests-badge {
     border: 1px solid var(--gray-300);
     background: #f0faf1; /* verde clarinho */
     color: #000000;
     text-align: left;
     padding: 6px 10px;
-    border-radius: 9999px;
+    border-radius: 8px;
     transition: background 0.2s ease-in-out;
     cursor: pointer;
   }

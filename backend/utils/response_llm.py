@@ -16,8 +16,11 @@ from utils.config import (
     OPENAI_API_KEY,
     TEMPERATURE,
     OPENAI_ID_ALLWV,
-    OPENAI_ID_ALLCONS,
     OPENAI_ID_EDUNOTES,
+    OPENAI_ID_ENGLISH,
+    OPENAI_ID_REVISTAS,
+    OPENAI_ID_AUTORES,
+    OPENAI_ID_MINI,
 )
 
 load_dotenv()
@@ -157,10 +160,17 @@ def get_vector_store_ids(vector_store_names):
         # Accept known labels
         if s.upper() == "ALLWV":
             return OPENAI_ID_ALLWV
-        if s.upper() == "ALLCONS":
-            return OPENAI_ID_ALLCONS
         if s.upper() == "EDUNOTES":
             return OPENAI_ID_EDUNOTES
+        if s.upper() == "ENGLISH":
+            return OPENAI_ID_ENGLISH
+        if s.upper() == "REVISTAS":
+            return OPENAI_ID_REVISTAS
+        if s.upper() == "AUTORES":
+            return OPENAI_ID_AUTORES
+        if s.upper() == "MINI":
+            return OPENAI_ID_MINI
+
         # Fallback to default
         return DEFAULT_VECTOR_STORE_OPENAI
 

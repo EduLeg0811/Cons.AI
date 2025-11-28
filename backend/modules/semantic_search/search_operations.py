@@ -28,7 +28,11 @@ from utils.config import (
     OPENAI_API_KEY,
     OPENAI_ID_ALLWV,
     OPENAI_ID_EDUNOTES,
-    OPENAI_ID_ALLCONS,
+    OPENAI_ID_ENGLISH,
+    OPENAI_ID_REVISTAS,
+    OPENAI_ID_AUTORES,
+    OPENAI_ID_MINI,
+    OPENAI_ID_BLOGTERT,
     TEMPERATURE,
     TOP_K,
     FAISS_ID_LO1,
@@ -433,8 +437,6 @@ def get_vector_store_id(sources):
             vector_store_ids.append(FAISS_ID_ECWV)
         elif source == "ECALL_DEF" or source == "EC":
             vector_store_ids.append(FAISS_ID_ECALL_DEF)
-        elif source == "ALLCONS":
-            vector_store_ids.append(FAISS_ID_MANUAIS)
         elif source == "ALLWV":
             vector_store_ids.extend([
                 FAISS_ID_LO, FAISS_ID_ECWV, FAISS_ID_HSRP,

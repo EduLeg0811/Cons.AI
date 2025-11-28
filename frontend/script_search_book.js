@@ -36,8 +36,6 @@ async function search_book() {
 
     console.log('<<< search_book >>>');
 
-    // Reset LLM data
-    await resetLLM();
 
     // Save original button state for restoration
     const originalButtonState = {
@@ -101,30 +99,6 @@ async function search_book() {
         const books = settings.books || [];
         const flag_grouping = settings.groupResults || false;
 
-        // // Livros selecionados e tipo de pesquisa do modulo Search Book
-        // let books = [];
-        // let flag_grouping = false;
-
-        // if (module === 'book') {
-        //     books = settings.books || [];
-        //     flag_grouping = settings.groupResults || false;
-        // } else if (module === 'verb') {
-        //     books = ['EC'];
-        //     flag_grouping = false; 
-        // } else if (module === 'ccg') {
-        //     books = ['CCG'];
-        //     flag_grouping = settings.groupResults || false; 
-        // } else {
-        //     books = [];
-        // }
-
-        // console.log('settings: ', settings);
-        // console.log('module: ', module);
-        // console.log ('window.STORAGE_KEY: ', window.STORAGE_KEY);
-        // console.log('books: ', books);
-        // console.log('searchType: ', searchType);
-        // console.log('maxResults: ', maxResults);
-        // console.log('flag_grouping: ', flag_grouping);
 
         // If no book selected or no search type selected, ask for selection
         if (books.length === 0 || searchType.length === 0) {

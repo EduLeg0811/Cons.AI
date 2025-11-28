@@ -116,6 +116,7 @@
 
                 <div class="options-content" id="optionsContent">
 
+
                     <!-- Search Type Toggle -->
                     <div class="search-type-checkboxes" data-module="search_type" data-mode="multi">
 
@@ -262,6 +263,7 @@
         const trigger = document.getElementById('optionsTrigger');
         const panel = document.getElementById('optionsPanel');
         const saveBtn = document.querySelector('.save-btn');
+
         function hideSearchHint(){
             const el = document.getElementById('searchHint');
             if (!el) return;
@@ -340,11 +342,7 @@
                 try { hideSearchHint(); } catch {}
             });
     
-            // document.addEventListener('click', function(e) {
-            //     if (panel.classList.contains('open') && !panel.contains(e.target) && !trigger.contains(e.target)) {
-            //         panel.classList.remove('open');
-            //     }
-            // });
+            
         }
     
         // ================================================================

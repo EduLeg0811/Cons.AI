@@ -436,7 +436,12 @@ function extractBookNames(citations) {
       let name = seg.split(':')[0].trim();
 
       // remove extensão e pontuação final
-      name = name.replace(/\.(md|pdf|txt)$/i, '').replace(/[.,;:\s]+$/g, '').trim();
+      name = name.replace(/\.(md|pdf|txt|docx)$/i, '').replace(/[.,;:\s]+$/g, '').trim();
+
+      // Caso especial de Lexico de Ortopensatas_x, retira a partir do "_"
+      if (name.startsWith('Lexico')) {
+        name = name.replace(/_\d+$/, '');
+      }
 
       // colapsa espaços múltiplos
       name = name.replace(/\s+/g, ' ');
