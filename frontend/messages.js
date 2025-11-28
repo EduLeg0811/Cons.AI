@@ -101,7 +101,7 @@ const TOOL_MESSAGES = {
       '<br>',
       'Ferramenta de <strong>busca de palavras</strong> nos livros e tratados do professor Waldo Vieira.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
-      'Ao final, é possível baixar um <em>documento Word</em> com a listagem completa dos resultados.',
+      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>.',
     ].join('\n')
   },
 
@@ -114,7 +114,7 @@ const TOOL_MESSAGES = {
       'Ferramenta de <strong>busca de palavras</strong> na <em>Definologia</em> dos verbetes - e não apenas nos títulos.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
-      'Baixe o <em>PDF do verbete</em> diretamente na janela de resultados.',
+      'Abra o <em>PDF do verbete</em> diretamente na janela de resultados.',
     ].join('\n')
   },
 
