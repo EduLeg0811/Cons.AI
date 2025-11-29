@@ -643,8 +643,8 @@
 
 .metadata-badge.estilo1 {
     /* info-like */
-    background: #e6eeff;
-    color: var(--gray-800);
+    background: #e3ecff;
+    color:var(--gray-800);
     border-color: var(--gray-300);
 }
 
@@ -664,7 +664,15 @@
 
 .metadata-badge.estilo4 {
     /* warning */
-    background: #fceec8;
+    background: #fff6dc;
+    color: var(--gray-800);
+    border-color: var(--gray-300);
+}
+
+
+.metadata-badge.estilo5 {
+    /* warning */
+    background: #dcffff;
     color: var(--gray-800);
     border-color: var(--gray-300);
 }
@@ -1059,6 +1067,20 @@ background: var(--module-accent-secondary, var(--primary-600));
         flex: 1 1 auto; /* ocupa o espaço entre [Config] e [Download] */
         min-width: 0;   /* permite encolher e quebrar o texto dentro do hint */
         }
+
+        /* Em index_ragbot.html: botão New Conversation com mesmo estilo do options-trigger */
+        .search-toolbar .new-convo-btn {
+            /*margin-left: auto;              /* empurra para a direita */
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+        }
         
         @media (max-width: 480px) {
             .search-hint { font-size: var(--text-xs); padding: 0; border-radius: 10px; gap: 4px; }
@@ -1258,9 +1280,9 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 /* Footer feedback pill override */
 .footer .pill.pill-action {
-  background: var(--bots-primary);     /* escolha a cor: ex. var(--primary-500), var(--apps-primary), #0ea5e9 */
+  background: #b9a95f;     /* escolha a cor: ex. var(--primary-500), var(--apps-primary), #0ea5e9 */
   border-color: var(--bots-primary);
-  color: #fff;
+  color: #ffffff;
   font-size: var(--text-base);
 }
 .footer .pill.pill-action:hover { background: var(--bots-secondary); }

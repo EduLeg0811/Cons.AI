@@ -209,6 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       
           // Remove initial suggestions if present (manual message sent)
+          try { searchInput.dataset.lastQuery = term; } catch {}
+
+          // Remove initial suggestions if present (manual message sent)
           try {
             const initial = document.getElementById('initial-quests');
             if (initial) initial.remove();
@@ -491,10 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!container) {
             container = document.createElement('div');
             container.id = 'ragbot-current-mode-container';
-            // Container em bloco, abaixo da linha de busca, com texto alinhado à direita
-            container.style.display = 'block';
-            container.style.marginTop = '0.25rem';
-            container.style.textAlign = 'right';
           }
 
           // Insere o container imediatamente após a .search-row (nova linha)
@@ -507,9 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
           // Limpa badges anteriores
           container.innerHTML = '';
 
-          // Cor fixa para todos os badges de modo: laranja claro suave
-          const modeBadgeColor = '#fff5e5ff';
-
           // Cria um badge por modo configurado, lado a lado
           set.forEach(bookKey => {
             const label = bookToLabel[bookKey];
@@ -517,16 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const badge = document.createElement('span');
             badge.className = 'ragbot-mode-badge ragbot-mode-current';
             badge.textContent = label;
-            badge.style.display = 'inline-block';
-            badge.style.marginLeft = '0.25rem';
-            badge.style.borderRadius = '999px';
-
-            // **Borda cinza suave**
-            badge.style.border = '1px solid #d4d4d4';   // cinza ~ var(--gray-300)
-
-            try {
-              badge.style.backgroundColor = modeBadgeColor;
-            } catch {}
             container.appendChild(badge);
           });
         }
@@ -616,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
+    // Remove all user messages
     function removeUserMessages() {
       if (!chatMessages) return;
       const userMessages = chatMessages.querySelectorAll('.chat-message.user');
@@ -703,37 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Linha de badges
         const row = document.createElement('div');
         row.className = 'initial-quests-row';
-    
+
         suggestions.forEach((q) => {
           const badge = document.createElement('button');
           badge.type = 'button';
           badge.className = 'badge initial-quests-badge';
           badge.textContent = q;
 
-          // Ajusta a cor de fundo das sugestões para harmonizar com o tema RagBOT,
-          // usando um verde bem claro/suave derivado de --bots-primary.
-          try {
-            const root = document.documentElement;
-            if (root) {
-              const primary = getComputedStyle(root).getPropertyValue('--bots-primary').trim();
-              if (primary && primary.startsWith('#')) {
-                const hex = primary.replace('#', '');
-                const base = hex.length === 8 ? hex.slice(0, 6) : hex;
-                const r = parseInt(base.slice(0, 2), 16);
-                const g = parseInt(base.slice(2, 4), 16);
-                const b = parseInt(base.slice(4, 6), 16);
-
-                // Mistura 95% branco + 5% da cor base para ficar bem suave
-                const mix = (c) => Math.round(255 - (255 - c) * 0.05);
-                const lr = mix(r);
-                const lg = mix(g);
-                const lb = mix(b);
-
-                badge.style.backgroundColor = `rgb(${lr}, ${lg}, ${lb})`;
-              }
-            }
-          } catch {}
-    
           badge.addEventListener('click', () => {
             // Preenche input e envia
             if (searchInput) {
@@ -807,4 +769,27 @@ function resetLLM(scope = 'default') {
 
     // A partir daqui, as sugestões só serão exibidas novamente
     // quando o usuário clicar em um modo (setRagbotMode), que chama initialQuests('fixed').
+}
+
+
+// ----------------------------------------------------------------------------
+// resetRagbot
+// - Reseta o LLM
+// ----------------------------------------------------------------------------
+function resetRagbot () {
+
+  resetLLM('ragbot');
+
+  // Limpar o localStore do Ragbot
+
+  try {
+    localStorage.removeItem('appConfig_ragbot');
+    localStorage.removeItem('appConfig_ragbot_used');
+    localStorage.removeItem('configPulseSeen_ragbot');
+  } catch {}
+
+
+  // Hard Reset da página (reload)
+  window.location.reload(true);
+
 }

@@ -69,6 +69,10 @@
                 <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
                 </button>
+
+                <button class="navbar-control-btn new-convo-btn" title="New Conversation" onclick="resetRagbot()">
+                    <i class="fa-regular fa-file"></i>
+                </button>
         
             </div>
 
@@ -84,11 +88,7 @@
                 </div>
             </div>
 
-            
-        <!-- Chat Messages -->
-        <div class="chat-messages" id="chatMessages"></div>
-
-           <!-- Instructions -->
+            <!-- Instructions -->
             <div id="searchHint" class="search-hint">
                 <span style="font-size: 0.9rem;">
                     <strong style="color: #007BFF; font-size: 1.1rem;">Instruções:</strong><br><br>
@@ -96,6 +96,9 @@
                     Máximo de 2 bibliotecas simultâneas.
                 </span>
             </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages"></div>
 
 
             <div class="options-panel" id="optionsPanel">
@@ -442,7 +445,8 @@
                 searchEl.addEventListener('keydown', (e)=>{
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault(); // evita quebra de linha no textarea
-                        const val = searchEl.value || '';
+                        const raw = searchEl.dataset?.lastQuery || searchEl.value || '';
+                        const val = raw;
                         try { window.__suppressInputSubmitTs = Date.now(); } catch {}
                         try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length, trigger: 'enter' }); } catch {}
                         hideSearchHint();
@@ -455,7 +459,9 @@
             }
             if (submitBtn){
                 submitBtn.addEventListener('click', ()=>{
-                    const val = (document.getElementById('searchInput')?.value) || '';
+                    const el = document.getElementById('searchInput');
+                    const raw = el && el.dataset ? (el.dataset.lastQuery || el.value || '') : ((el && el.value) || '');
+                    const val = raw;
                     try { window.__suppressInputSubmitTs = Date.now(); } catch {}
                     try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length }); } catch {}
                     hideSearchHint();

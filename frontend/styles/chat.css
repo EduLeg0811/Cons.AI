@@ -44,19 +44,28 @@
 }
 
 .message-avatar.user {
-    background: #fafafa;        /* verde bem claro */
-    color: #576557;             /* verde escuro para o ícone/letra */
+    background: #f6fff8;        /* verde bem claro */
+    color: #3a513a;             /* verde escuro para o ícone/letra */
 }
 
 .message-content.user {
-    background: #fafafa;        /* verde bem claro */
-    color: #576557;             /* verde escuro para o ícone/letra */
+    background: #f6fff8;        /* verde bem claro */
+    color: #3a513a;             /* verde escuro para o ícone/letra */
     
 }
 
 .theme-bots .chat-message.user .message-content p {
     margin: 0;
 }
+
+
+
+/* Badges de sugestões iniciais do RagBOT: mesma paleta das mensagens do usuário */
+.theme-bots .initial-quests-badge {
+    background: #f6fff8;
+    color: #3a513a;
+}
+
 
 .chat-input-container {
     background: transparent;
@@ -215,6 +224,7 @@
     font-size: var(--text-base);
 }
 
+
 /* Tamanhos de headers nas respostas do RAGBOT */
 .theme-bots .chat-message.bot .message-content .markdown-content h1 { font-size: var(--text-lg); }
 .theme-bots .chat-message.bot .message-content .markdown-content h2 { font-size: var(--text-base); }
@@ -276,11 +286,12 @@
 }
 
 /* Caso específico: bullets como subitens de lista numerada
-   ol > li > ul  → bullets alinhados ao texto do item numerado superior */
-.theme-bots .chat-message.bot .message-content .markdown-content ol > li > ul {
-    margin: 0.35em 0 0.35em 0;  /* usa o mesmo alinhamento horizontal do texto do li */
-    padding-left: 0;            /* remove recuo extra para não jogar o texto mais para a direita */
-    list-style-position: inside;/* marcador passa a fazer parte da coluna do texto, e não da coluna do número */
+   ol li > ul (com ou sem <p> intermediário) → bullets alinhados com o TEXTO do item numerado,
+   sem recuo horizontal extra além da própria lista. */
+.theme-bots .chat-message.bot .message-content .markdown-content ol li > ul {
+    margin: 0.35em 0 0.35em 0;   /* nenhuma margem horizontal extra em relação ao li */
+    padding-left: 1.25em;        /* mesmo padding das listas principais */
+    list-style-position: outside;
 }
 
 /* Compactação diferenciada: bullets ligeiramente mais compactos que listas numeradas */
@@ -383,20 +394,17 @@
 
 
 
+/* Temas do RagBot - Waldo, Ingles, etc */
 
-
-/* Temas do RagBot - Waldo, Inlges, etc */
-
-
-/* Container dos botões */
- .ragbot-modes {
+/* Container dos botões da barra principal de modos */
+.ragbot-modes {
     display: flex;
     flex-direction: column;   /* cada modo em uma linha */
     gap: 0.4rem;
     margin-bottom: 1rem;
- }
+}
 
- .ragbot-mode-row {
+.ragbot-mode-row {
     display: flex;            /* badge + descrição na mesma linha */
     align-items: center;
     gap: 0.5rem;
@@ -405,6 +413,13 @@
 .ragbot-mode-description {
     color: #777777;           /* cinza ~50% para o texto explicativo */
     font-size: 0.85rem;
+}
+
+/* Container dos badges de modos ATIVOS abaixo da linha de busca */
+#ragbot-current-mode-container {
+    display: block;
+    margin-top: 0.25rem;
+    text-align: right;
 }
 
 /* Botões genéricos */
@@ -423,6 +438,15 @@
 /* ---- COR DO BADGE DE MODO: segue sempre o tema atual (--bots-primary) ----     */
 .theme-bots .ragbot-mode-badge {
     background-color: var(--bots-primary);
+}
+
+/* Badges que exibem os modos atualmente ativos (abaixo da search-row) */
+.theme-bots .ragbot-mode-badge.ragbot-mode-current {
+    display: inline-block;
+    margin-left: 0.25rem;
+    border-radius: 999px;
+    border: 1px solid #d4d4d4;          /* cinza ~ var(--gray-300) */
+    background-color: #fff6dc;        /* laranja claro suave */
 }
 
 

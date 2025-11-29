@@ -786,13 +786,13 @@ function showBotMetainfo(container, metaData) {
   // GPT-5 or GPT-5.1
   if (model_str.includes('gpt-5')) {
     
-    badgeParts.push(`<span class="metadata-badge estilo3">Verbosity: ${escapeHtml(verbosity)}</span>`);
-    badgeParts.push(`<span class="metadata-badge estilo3">Effort: ${escapeHtml(effort)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo5">Verbosity: ${escapeHtml(verbosity)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo5">Effort: ${escapeHtml(effort)}</span>`);
 
 
   } else {
     
-    badgeParts.push(`<span class="metadata-badge estilo3">Temp: ${escapeHtml(temperature)}</span>`);
+    badgeParts.push(`<span class="metadata-badge estilo5">Temp: ${escapeHtml(temperature)}</span>`);
   }
 
 
