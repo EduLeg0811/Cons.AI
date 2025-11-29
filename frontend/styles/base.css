@@ -180,32 +180,55 @@ body:not([class]) .navbar-container .config-toggle {
     margin-left: auto;
 }
 
-/* Subtle pulsing background for the info-toggle on homepage */
+
+
+/* Subtle fade-in/fade-out for the info-toggle icon on homepage */
 @keyframes infoPulse {
-    0%   { background-color: var(--gray-100); }
-    12.5% { background-color: var(--gray-100); }
-    25%  { background-color: var(--gray-100); }
-    37.5% { background-color: var(--gray-100); }
-    50%  { background-color: var(--gray-100); }
-    62.5% { background-color: var(--pulse-yellow); }
-    75%  { background-color: var(--pulse-yellow); }
-    87.5% { background-color: var(--pulse-yellow); }
-    100% { background-color: var(--pulse-yellow); }
+    /* 0–1s: quase apagado (10%) */
+    0% {
+        opacity: 0.1;
+        transform: scale(0.96);
+    }
+    25% {
+        opacity: 0.1;
+        transform: scale(0.96);
+    }
+
+    /* 1–2s: fade-in 10% → 100% */
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* 2–3s: mantém 100% */
+    75% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* 3–4s: fade-out 100% → 10% */
+    100% {
+        opacity: 0.1;
+        transform: scale(0.96);
+    }
 }
 
+
+
+
 /* Pause the pulse on hover/focus to avoid clash with hover styles */
-.navbar-control-btn.info-toggle:hover,
-.navbar-control-btn.info-toggle:focus-visible {
+.navbar-control-btn.info-toggle:hover .navbar-logo,
+.navbar-control-btn.info-toggle:focus-visible .navbar-logo {
     animation: none;
 }
 
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
-    .navbar-control-btn.info-toggle { animation: none; }
+    .navbar-control-btn.info-toggle .navbar-logo { animation: none; }
 }
 
 /* Stop pulsing once user has interacted (set by JS) */
-html[data-info-pulse="off"] .navbar-control-btn.info-toggle {
+html[data-info-pulse="off"] .navbar-control-btn.info-toggle .navbar-logo {
     animation: none;
 }
 
@@ -329,17 +352,11 @@ html:not([data-show-info="true"]) .tool-panel .panel-header .panel-info p {
 /* ===== OPTIONS DROPDOWN (ICON TRIGGER) ===== */
 .options-wrapper { position: relative; }
 
-/* Subtle pulsing background for the info-toggle on homepage */
+/* Subtle pulsing background for the options trigger (sem amarelo) */
 @keyframes configPulse {
     0%   { background-color: var(--gray-100); }
-    12.5% { background-color: var(--gray-100); }
-    25%  { background-color: var(--gray-100); }
-    37.5% { background-color: var(--gray-100); }
-    50%  { background-color: var(--gray-100); }
-    62.5% { background-color: var(--pulse-yellow); }
-    75%  { background-color: var(--pulse-yellow); }
-    87.5% { background-color: var(--pulse-yellow); }
-    100% { background-color: var(--pulse-yellow); }
+    50%  { background-color: var(--gray-200); }
+    100% { background-color: var(--gray-100); }
 }
 
 html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }

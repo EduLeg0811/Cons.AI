@@ -137,7 +137,19 @@
 }
 
 .navbar-control-btn.info-toggle {
-    animation: infoPulse 1s ease-in-out infinite;
+    background: transparent; /* deixa só o ícone visível sobre a navbar */
+}
+
+/* Aplica o fade-in/fade-out suave ao ícone principal (icon.png) */
+.navbar-control-btn.info-toggle .navbar-logo {
+    background-color: var(--white); /* fundo sólido branco no modo claro */
+    border-radius: var(--radius-xl);
+    animation: infoPulse 4s ease-in-out infinite;
+}
+
+/* Modo escuro: fundo totalmente escuro para o ícone principal */
+body.dark .navbar-control-btn.info-toggle .navbar-logo {
+    background-color: var(--gray-900);
 }
 
 .panel-info {
