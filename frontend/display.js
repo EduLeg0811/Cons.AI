@@ -780,7 +780,7 @@ function showBotMetainfo(container, metaData) {
   const badgeParts = [];
 
   // Model Name
-  badgeParts.push(`<span class="metadata-badge estilo1">${escapeHtml(model)}</span>`);
+  badgeParts.push(`<span class="metadata-badge estilo4">${escapeHtml(model)}</span>`);
 
 
   // GPT-5 or GPT-5.1
@@ -798,7 +798,7 @@ function showBotMetainfo(container, metaData) {
 
   // All Models (complements)
   badgeParts.push(`<span class="metadata-badge estilo2">Refs: ${escapeHtml(bookNames)}</span>`);
-  badgeParts.push(`<span class="metadata-badge estilo4">Tokens: ${escapeHtml(totalTokens)}</span>`);
+  badgeParts.push(`<span class="metadata-badge estilo1">Tokens: ${escapeHtml(totalTokens)}</span>`);
 
 
 

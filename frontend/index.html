@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/styles/style.css">
 
-    <!-- Claro (padrão) -->
-    <link rel="icon" type="image/png" href="/icon.png" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" href="icon.png">
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -189,10 +188,12 @@
                                 <p></p>
                                 <div class="tool-info-extra"></div>
                             </div>
+                            <span>
+                                <img src="/styles/flagUK.png" alt="Icon" class="icon-uk">
+                            </span>
                             <span class="badge-new">
                                 New
                             </span>
-
                             
                         </a>
 
@@ -232,8 +233,8 @@
                                 <div class="tool-info-extra"></div>
                             </div>
 
-                            <span class="badge-hot">
-                                Hot 
+                              <span>
+                                <img src="/styles/star3d.png" alt="Icon" class="icon-uk">
                             </span>
                         </a>
 
@@ -247,9 +248,14 @@
                                 <div class="tool-info-extra"></div>
                             </div>
 
-                            <span class="badge-hot">
+                            <!-- <span class="badge-hot">
                                 Hot 
+                            </span> -->
+
+                             <span>
+                                <img src="/styles/star3d.png" alt="Icon" class="icon-uk">
                             </span>
+            
                         </a>
 
                         <a href="index_search_ccg.html" class="tool-card lexical-compact compact">
@@ -317,8 +323,8 @@
                                 <div class="tool-info-extra"></div>
                             </div>
 
-                            <span class="badge-hot">
-                                Hot 
+                              <span>
+                                <img src="/styles/star3d.png" alt="Icon" class="icon-uk">
                             </span>
                         </a>
 
@@ -505,7 +511,7 @@
               .catch(() => status.textContent = 'Falha ao enviar. Tente novamente.');
           }
           } catch { status.textContent = 'Falha ao enviar. Tente novamente.'; }
-          setTimeout(closeOverlay, 2000);
+          setTimeout(closeOverlay, 1000);
         }
 
         pill?.addEventListener('click', openOverlay);

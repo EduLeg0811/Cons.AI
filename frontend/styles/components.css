@@ -1171,13 +1171,19 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 
 
-
-
-/* NEW Badge */
-.badge-new {
+/* Wrapper da bandeira + selo New */
+.badge-wrapper {
     position: absolute;
     top: 0.4rem;
     right: 0.4rem;
+
+    display: inline-flex;    /* bandeira + badge lado a lado */
+    align-items: center;     /* centraliza verticalmente */
+    gap: 4px;                /* espaço entre bandeira e "New" */
+}
+
+/* NEW Badge */
+.badge-new {
     transform: translateY(-8%);
     display: inline-flex;
     align-items: center;
@@ -1194,17 +1200,16 @@ background: var(--module-accent-secondary, var(--primary-600));
     user-select: none;
     text-shadow: 0 1px 2px rgba(0,0,0,0.22);
 
-    /* Amarelo suave levemente mais forte */
+    /* Amarelo suave com contraste levemente mais forte */
     background: linear-gradient(
-        110deg,
-        #ffe89a 0%,     /* pastel ainda claro        */
-        #ffd96a 35%,    /* centro mais vivo           */
-        #ffefb8 65%,    /* retorno suave              */
-        #ffe89a 100%
+    110deg,
+    #ffe38a 0%,     /* início um pouco mais visível  */
+    #ffd04e 35%,    /* ponto de destaque mais vivo   */
+    #fff0c8 65%,    /* retorno suave e claro         */
+    #ffe38a 100%
     );
     background-size: 250% 100%;
-    box-shadow: 0 8px 18px rgba(255, 200, 90, 0.45);
-
+    box-shadow: 0 8px 18px rgba(255, 185, 60, 0.48);
 
     animation: badgeNewSweep 4s ease-in-out infinite;
 }
@@ -1263,10 +1268,6 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 
 
-
-
-
-
 /* =============================================================
    Feedback: footer layout, pill button e overlay/modal
    Centralização dos estilos usados em index.html
@@ -1280,13 +1281,13 @@ background: var(--module-accent-secondary, var(--primary-600));
 
 /* Footer feedback pill override */
 .footer .pill.pill-action {
-  background: #b9a95f;     /* escolha a cor: ex. var(--primary-500), var(--apps-primary), #0ea5e9 */
-  border-color: var(--bots-primary);
-  color: #ffffff;
+  background: var(--gray-50);     /* escolha a cor: ex. var(--primary-500), var(--apps-primary), #0ea5e9 */
+  border-color: var(--gray-300);
+  color: #0b2475;
   font-size: var(--text-base);
 }
-.footer .pill.pill-action:hover { background: var(--bots-secondary); }
-.footer .pill.pill-action:active { background: #0f9a74; } /* ajuste conforme paleta */
+.footer .pill.pill-action:hover { background: #bce7dc; color: #000000; }
+.footer .pill.pill-action:active { background: #a0c6bc; color: #000000; } /* ajuste conforme paleta */
 
 /* Pill base */
 /* (removido: base duplicada de .pill e seus hovers; mantém-se a base original definida anteriormente) */

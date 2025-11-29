@@ -648,7 +648,22 @@ html[data-module-config-open="true"] .search-button {
 .navbar-center { display: flex; align-items: center; gap: 12px; justify-content: center; flex: 1; }
 
 /* Small icon utility */
-.icon-26 { width:26px; height:26px; display:block; }
+.icon-26 { 
+    width: 26px;
+    height: 26px;
+    display: inline-block;   /* antes estava block */
+    vertical-align: middle;  /* opcional: alinha com o texto */
+}
+
+
+/* Small icon Flag UK */
+.icon-uk {
+    width: 34px;
+    height: 34px;
+    display: inline-block;   /* antes estava block */
+    vertical-align: middle;  /* opcional: alinha com o texto */
+    margin-right: 10px;   /* aumenta o espaço antes do badge */
+}
 
 /* Action hints under primary buttons */
 .action-hint { margin-top: 24px; color: var(--gray-500); font-size: var(--text-base); }
