@@ -340,7 +340,7 @@
 }
 
 .book-pill {
-    min-width: 200px;
+    min-width: 160px;
     height: 36px;                  /* altura fixa de cada pill */
     display: flex;
     align-items: center;
@@ -361,7 +361,11 @@
 
 .book-desc {
     font-size: var(--text-xs);
-    color: var(--gray-700);
+    color: var(--gray-600);
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;  
+    margin-right: 10px;
 }
 
 .book-pill.active {
@@ -752,6 +756,7 @@
 
 .theme-toggle:hover {
     transform: rotate(180deg);
+
 }
 
 .theme-toggle .fa-sun {
@@ -896,7 +901,7 @@ background: var(--module-accent-secondary, var(--primary-600));
     width: 100%;                   /* faz o pill ocupar toda a largura do container */
     height: 36px;                  /* altura fixa de cada pill */
     text-align: center;            /* centraliza o texto na horizontal */
-    padding: 8px;                  /* espa�o interno (topo/baixo/laterais) */   
+    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
     background: var(--gray-100);           /* tokenizado */
     color: var(--gray-700);                /* tokenizado */
     font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */

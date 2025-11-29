@@ -318,6 +318,12 @@ html:not([data-show-info="true"]) .tool-panel .panel-header .panel-info p {
     width: 100%;
 }
 
+/* When info mode is on, hide special highlight icons so only text/descriptions are visible */
+[data-show-info="true"] .icon-uk,
+[data-show-info="true"] .icon-star {
+    display: none !important;
+}
+
 /* ===== CONTAINER LAYOUTS ===== */
 .container {
     max-width: 1200px;
@@ -675,11 +681,20 @@ html[data-module-config-open="true"] .search-button {
 
 /* Small icon Flag UK */
 .icon-uk {
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
     display: inline-block;   /* antes estava block */
-    vertical-align: middle;  /* opcional: alinha com o texto */
-    margin-right: 10px;   /* aumenta o espaço antes do badge */
+    vertical-align: top;  /* opcional: alinha com o texto */
+    margin-right: 4px;   /* aumenta o espaço antes do badge */
+}
+
+/* Small icon STAR */
+.icon-star {
+    width: 24px;
+    height: 24px;
+    display: inline-block;   /* antes estava block */
+    vertical-align: top;  /* opcional: alinha com o texto */
+    margin-right: 0px;   /* aumenta o espaço antes do badge */
 }
 
 /* Action hints under primary buttons */
