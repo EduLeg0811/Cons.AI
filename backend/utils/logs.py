@@ -154,7 +154,7 @@ def _tail_lines(path: str, limit: int) -> List[str]:
         return []
 
 
-def read_today_raw(limit: Optional[int] = None) -> str:
+def read_all_raw(limit: Optional[int] = None) -> str:
     """Return raw NDJSON text from all log files.
     
     Args:

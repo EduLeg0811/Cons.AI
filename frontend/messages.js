@@ -96,7 +96,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_Book
   'Livros & Tratados': {
-    short: 'Busca nos livros e tratados',
+    short: 'Busca de palavras em livros',
     extra: [
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> nos livros e tratados do professor Waldo Vieira.<br>',

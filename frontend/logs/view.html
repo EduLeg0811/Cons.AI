@@ -134,8 +134,8 @@
       <select id="selLimit">
         <option value="50">50</option>
         <option value="100">100</option>
-        <option value="200" selected>200</option>
-        <option value="500">500</option>
+        <option value="200">200</option>
+        <option value="500" selected>500</option>
       </select>
       <button id="btnClear" class="secondary">Zerar dia</button>
       <button id="btnClearAll" class="secondary">Limpar tudo</button>
@@ -172,7 +172,7 @@
       data: [],
       filter: '',
       sort: 'desc',
-      limit: 200,
+      limit: 500,
       complete: false,
     };
 
@@ -367,7 +367,7 @@
     });
     el.txtSearch.addEventListener('input', (e) => { state.filter = e.target.value; applyFilters(); });
     el.selSort.addEventListener('change', (e) => { state.sort = e.target.value; applyFilters(); });
-    el.selLimit.addEventListener('change', (e) => { state.limit = parseInt(e.target.value, 10) || 200; fetchLogs(); });
+    el.selLimit.addEventListener('change', (e) => { state.limit = parseInt(e.target.value, 10) || 500; fetchLogs(); });
     el.btnClear.addEventListener('click', async () => {
       console.log('[logs:view] clear');
       try {

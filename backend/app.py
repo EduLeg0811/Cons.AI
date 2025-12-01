@@ -41,7 +41,7 @@ from utils.logs import (
     write_ndjson_line,
     normalize_event,
     add_enrichment,
-    read_today_raw,
+    read_all_raw,
     parse_ndjson_lines,
     pretty_lines,
     clear_today,
@@ -474,7 +474,7 @@ def get_logs():
     except ValueError:
         limit = 0
 
-    raw_text = read_today_raw(limit=limit)
+    raw_text = read_all_raw(limit=limit)
     if fmt == 'raw':
         return Response(raw_text, mimetype='text/plain; charset=utf-8')
 
