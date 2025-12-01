@@ -390,9 +390,9 @@ function parseQuizResponse(response) {
         // 4️⃣ Garantia de exatamente 4 opções
         if (opcoes.length < 4) while (opcoes.length < 4) opcoes.push('');
 
-        console.debug('[QUIZ PARSER] Nível extraído:', nivel);
-        console.debug('[QUIZ PARSER] Pergunta extraída:', pergunta);
-        console.debug('[QUIZ PARSER] Opções extraídas:', opcoes);
+        //console.debug('[QUIZ PARSER] Nível extraído:', nivel);
+        //console.debug('[QUIZ PARSER] Pergunta extraída:', pergunta);
+        //console.debug('[QUIZ PARSER] Opções extraídas:', opcoes);
 
         return { nivel, pergunta, opcoes };
     } catch (e) {

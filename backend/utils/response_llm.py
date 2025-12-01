@@ -100,7 +100,7 @@ def generate_llm_answer(
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
-    logger.debug(f"\n\nPayload para LLM: {llm_str}\n\n")
+    logger.info(f"\n\nPayload para LLM:\n{json.dumps(llm_str, indent=2, ensure_ascii=False)}\n\n")
 
     # -------------------------------------------------------------------------
     # Chamada com retry + timeout
@@ -174,8 +174,16 @@ def get_vector_store_ids(vector_store_names):
         # Fallback to default
         return DEFAULT_VECTOR_STORE_OPENAI
 
+    
+    # Achata um nível de listas aninhadas: [[id1], [id2]] -> [id1, id2]
     if isinstance(vector_store_names, (list, tuple)):
-        return [resolve_one(x) for x in vector_store_names if x]
+        flat = []
+        for x in vector_store_names:
+            if isinstance(x, (list, tuple)):
+                flat.extend(y for y in x if y)
+            else:
+                flat.append(x)
+        return [resolve_one(x) for x in flat if x]
     else:
         return [resolve_one(vector_store_names)]
 

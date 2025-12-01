@@ -25,10 +25,10 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
   //container.innerHTML = '';
 
   
-  console.log("showSortedData*** [query]:", query); 
-  console.log("showSortedData*** [flag_grouping]:", flag_grouping); 
-  console.log("showSortedData*** [sortedData]:", sortedData);
-  console.log("showSortedData*** [FLAG_FULL_BADGES]:", FLAG_FULL_BADGES);
+  //console.log("showSortedData*** [query]:", query); 
+  //console.log("showSortedData*** [flag_grouping]:", flag_grouping); 
+  //console.log("showSortedData*** [sortedData]:", sortedData);
+  //console.log("showSortedData*** [FLAG_FULL_BADGES]:", FLAG_FULL_BADGES);
   
   
   
@@ -524,8 +524,8 @@ const format_paragraph_QUEST = (item, query) => {
   const questHighlighted = highlightHtml(questSafeHtml, q);
   const answerHighlighted = highlightHtml(answerSafeHtml, q);
 
-  console.log("Quest Highlighted: ", questHighlighted);
-  console.log("Answer Highlighted: ", answerHighlighted);
+  //console.log("Quest Highlighted: ", questHighlighted);
+  //console.log("Answer Highlighted: ", answerHighlighted);
 
 
   // Monta os badges
@@ -766,7 +766,7 @@ function showBotMetainfo(container, metaData) {
   // Extrair metadados relevantes
   const md = extractMetadata(metaData, 'ragbot');
 
-  console.log('<<< showBotMetainfo >>> [md]: ', md);
+  //console.log('<<< showBotMetainfo >>> [md]: ', md);
 
   const citations = (md?.citations || metaData?.citations || '').toString();
   const totalTokens = md?.total_tokens_used ?? metaData?.total_tokens_used;
@@ -1156,7 +1156,7 @@ function getSearchQuery(data) {
   ].filter(v => typeof v === 'string' && v.trim() !== '');
 
   if (!candidates.length) {
-    console.log('||| Display.js|||  getSearchQuery final term: (vazio)');
+    //console.log('||| Display.js|||  getSearchQuery final term: (vazio)');
     return '';
   }
 
@@ -1181,7 +1181,7 @@ function getSearchQuery(data) {
     .normalize('NFD')                // separa base + diacríticos
     .replace(/[\u0300-\u036f]/g, ''); // remove os diacríticos
 
-  console.log('||| Display.js|||  getSearchQuery final term:', term);
+  //console.log('||| Display.js|||  getSearchQuery final term:', term);
   return term;
 }
 

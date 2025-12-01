@@ -23,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
-
-    
+  
 
 //______________________________________________________________________________________________
 // Search Book
@@ -34,7 +32,7 @@ async function search_book() {
 
     
 
-    console.log('<<< search_book >>>');
+    //console.log('<<< search_book >>>');
 
 
     // Save original button state for restoration
@@ -157,44 +155,64 @@ async function search_book() {
 
         if (searchType.includes('semantic')) {
         
+
             // =======================================================================================
             // 2. Descritivo
             // =======================================================================================
+            let newTerm = term;
+            const flag_descritivos = window.CONFIG?.DESCRITIVOS ?? false;
+            
+            //console.log('flag_descritivos', flag_descritivos)
+
+            if (flag_descritivos) {
+
+           
                 
-            insertLoading(resultsDiv, "Descritivos: " + term);    
+                insertLoading(resultsDiv, "Descritivos: " + term);    
 
-            const paramRAGbotDesc = {
-                query: "TEXTO DE ENTRADA: " + term + ".",
-                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-                temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
-                vector_store_id: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-                instructions: SEMANTIC_DESCRIPTION,
-                use_session: true,
-                chat_id: chat_id        
-            };
-        
-            const descJson = await call_llm(paramRAGbotDesc);
+                const paramRAGbotDesc = {
+                    query: "TEXTO DE ENTRADA: " + term + ".",
+                    model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
+                    temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+                    vector_store_names: [(window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT)],
+                    instructions: SEMANTIC_DESCRIPTION,
+                    use_session: true,
+                    chat_id: chat_id        
+                };
             
-            if (descJson.chat_id) chat_id = descJson.chat_id;
-            
-            // Monta termo expandido (Descritivos)
-            const newTerm = term + ': ' + descJson.text;
-            
-            respHistory.descritivo = {
-                text: descJson.text,
-                citations: descJson.citations || [],
-                model: descJson.model,
-                temperature: descJson.temperature,
-                tokens: descJson.total_tokens_used
-            };
+                const descJson = await call_llm(paramRAGbotDesc);
+                
+                if (descJson.chat_id) chat_id = descJson.chat_id;
+                
+                // Monta termo expandido (Descritivos)
+                newTerm = term + ': ' + descJson.text;
+                
+                respHistory.descritivo = {
+                    text: descJson.text,
+                    citations: descJson.citations || [],
+                    model: descJson.model,
+                    temperature: descJson.temperature,
+                    tokens: descJson.total_tokens_used
+                };
 
-            // Exibe descritivos
-            removeLoading(resultsDiv);
+                // Exibe descritivos
+                removeLoading(resultsDiv);
 
-            descJson.ref = "Descritivos"
-            showSimple(resultsDiv, descJson);
+                descJson.ref = "Descritivos"
+                showSimple(resultsDiv, descJson);
+
+             }  else {
+
+                 respHistory.descritivo = {
+                    text: '',
+                    citations: [],
+                    model: '',
+                    temperature: 0.0,
+                    tokens: 0
+                };
+
+             }
             
-
 
             // =======================================================================================
             // 4. semantic
@@ -249,8 +267,8 @@ async function search_book() {
        const sortedData = sortData(uniqueData);
 
         // Mostra no console os vetores ordenados
-        console.log('lexicalAndSemantic: ', lexicalAndSemantic);
-        console.log('sortedData: ', sortedData);
+        //console.log('lexicalAndSemantic: ', lexicalAndSemantic);
+        //console.log('sortedData: ', sortedData);
 
         
         // =======================================================================================
@@ -260,7 +278,7 @@ async function search_book() {
         const container = document.getElementById('results');
         showSortedData(container, sortedData, term, flag_grouping);
 
-        console.log("<< script_search_book >>  --- sortedData FINAL", sortedData);
+        //console.log("<< script_search_book >>  --- sortedData FINAL", sortedData);
 
 
         // =======================================================================================
@@ -277,7 +295,7 @@ async function search_book() {
         const downloadData = {
             search_term: term,
             search_type: searchType,
-            descritivo: uniqueSources,
+            source_array: uniqueSources,
             max_results: maxResults,
             group_results_by_book: false,
             display_option: 'unified',

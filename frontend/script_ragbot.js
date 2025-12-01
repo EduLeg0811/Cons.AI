@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             signal: controller.signal
           });
           
-          console.info('[ragbot] full response from backend:', response);
+          //console.info('[ragbot] full response from backend:', response);
           
           // Handle special cases: error or abort case
           if (!response || response.error || response.abort) {

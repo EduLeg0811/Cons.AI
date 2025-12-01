@@ -103,9 +103,9 @@ function updateResults(data) {
     // };
 
 
-    console.log('lastResults: ', lastResults);
-    console.log('currentSearchTerm: ', currentSearchTerm);
-    console.log('currentSearchType: ', currentSearchType);
+    //console.log('lastResults: ', lastResults);
+    //console.log('currentSearchTerm: ', currentSearchTerm);
+    //console.log('currentSearchType: ', currentSearchType);
 
    // Verificar se há resultados em lexical ou semantic antes de inicializar o botão de download
     if ((data.lexical && data.lexical.length > 0) || (data.semantic && data.semantic.length > 0)) {
@@ -174,9 +174,9 @@ async function downloadResults(format, payload, searchTerm, searchType) {
   const search_type = payload?.search_type || searchType || '';
   
 
-  console.log('********bridge.js - download*** [payload]:', payload);
-  console.log('********bridge.js - download*** [search_term]:', search_term);
-  console.log('********bridge.js - download*** [search_type]:', search_type);
+  //console.log('********bridge.js - download*** [payload]:', payload);
+  //console.log('********bridge.js - download*** [search_term]:', search_term);
+  //console.log('********bridge.js - download*** [search_type]:', search_type);
  
   // Sanitize and trim the search term for the filename
   let safeTerm = (search_term || 'results')

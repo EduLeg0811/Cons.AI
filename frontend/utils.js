@@ -127,7 +127,7 @@ function sortData(uniqueData) {
 //______________________________________________________________________________________________
 function delDuplicateItems(flattenedData) {
 
-  console.log('<<< delDuplicateItems >>> [flattenedData]: ', flattenedData);
+  //console.log('<<< delDuplicateItems >>> [flattenedData]: ', flattenedData);
 
   if (!Array.isArray(flattenedData)) return [];
 
@@ -266,7 +266,7 @@ function limitResultsPerSource(results, maxPerSource) {
 //______________________________________________________________________________________________
 function llm_formatResponse(responseData) {
 
-    console.log('RAW llm_formatResponse:', responseData);
+    //console.log('RAW llm_formatResponse:', responseData);
 
     const formattedResponse = {
         text: responseData.text,
@@ -352,7 +352,7 @@ function extractMetadata(data, type) {
     const dataArray = Array.isArray(data) ? data : [data];
     const metadata = {};
 
-    console.log('<<< extractMetadata >>> [data]: ', data);
+    //console.log('<<< extractMetadata >>> [data]: ', data);
   
   
     // Common metadata fieldS

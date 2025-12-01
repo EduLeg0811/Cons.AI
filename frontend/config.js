@@ -13,7 +13,8 @@ const CONFIG = {
   
   // Feature flags
   OPENAI_RAGBOT: 'ALLWV',
-  FULL_BADGES: false
+  FULL_BADGES: false,
+  DESCRITIVOS: true,
 };
 
 // Storage key for configuration
@@ -218,8 +219,8 @@ Sua tarefa é gerar descritores semânticos específicos para busca vetorial (si
 
 # Diretrizes obrigatórias
 01. Interprete a query **exclusivamente** no contexto conscienciológico — ignore sentidos comuns diferentes da Conscienciologia.
-02. Gere **exatamente três** termos ou expressões nominais que capturem o núcleo conceitual da query.
-03. Os termos gerados devem representar **exatamente** o núcleo conceitual da query, e atender à seguinte questão: "Com base nos documentos fornecidos, no contexto da Conscienciologia, o(a) {query} significa ou pode ser descrita pelos seguintes termos: Termo1; Termo2; Termo3."
+02. Gere **exatamente três** termos que capturem o núcleo conceitual da query.
+03. Os termos gerados devem atender à seguinte questão: "Com base nos documentos fornecidos, no contexto da Conscienciologia, o(a) {query} significa ou pode ser descrita pelos seguintes termos: Termo1; Termo2; Termo3."
 04. Use apenas **substantivos** ou **sintagmas nominais** (sem artigos, preposições, conjunções ou frases completas).
 05. Cada termo deve ser **conceitualmente distinto** — evite simples variações morfológicas (singular/plural, gênero, flexão).
 06. A resposta deve conter **somente uma linha**, no formato:
