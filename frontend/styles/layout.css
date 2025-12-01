@@ -140,12 +140,54 @@
     background: transparent; /* deixa só o ícone visível sobre a navbar */
 }
 
-/* Aplica o fade-in/fade-out suave ao ícone principal (icon.png) */
-.navbar-control-btn.info-toggle .navbar-logo {
-    background-color: var(--white); /* fundo sólido branco no modo claro */
-    border-radius: var(--radius-xl);
-    animation: infoPulse 4s ease-in-out infinite;
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gray-200);
+    z-index: 1000;
 }
+
+/* Ajuste do tamanho do icone do topo: diminua width/height/font-size aqui */
+.navbar-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: var(--text-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Theming per module to match index card identities */
+.theme-search .navbar-icon {
+    background: linear-gradient(135deg, var(--search-primary) 0%, var(--search-secondary) 100%);
+}
+
+body:not([class]) .navbar-text {
+    flex-direction: row;
+    gap: var(--space-2);
+}
+
+body:not([class]) .navbar-heading {
+    align-items: center;
+}
+
+
+
+
+
+
+
 
 /* Modo escuro: fundo totalmente escuro para o ícone principal */
 body.dark .navbar-control-btn.info-toggle .navbar-logo {

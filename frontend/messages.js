@@ -96,10 +96,10 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_Book
   'Livros & Tratados': {
-    short: 'Pesquisa em livros e tratados',
+    short: 'Busca nos livros e tratados',
     extra: [
       '<br>',
-      'Ferramenta de <strong>busca de palavras</strong> nos livros e tratados do professor Waldo Vieira.<br>',
+      'Ferramenta de <strong>busca de termos</strong> nos livros e tratados do professor Waldo Vieira.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>.',
     ].join('\n')
@@ -108,10 +108,10 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_Verbetes
   'Definologia de Verbetes': {
-    short: 'Pesquisa na Definologia de verbetes',
+    short: 'Busca na Definologia dos verbetes',
     extra: [
       '<br>',
-      'Ferramenta de <strong>busca de palavras</strong> na <em>Definologia</em> dos verbetes - e não apenas nos títulos.<br>',
+      'Ferramenta de <strong>busca de termos</strong> na <em>Definologia</em> dos verbetes - e não apenas nos títulos.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
       'Abra o <em>PDF do verbete</em> diretamente na janela de resultados.',
@@ -121,10 +121,10 @@ const TOOL_MESSAGES = {
 
   // Tool: Search_CCG
   'Questões do Conscienciograma': {
-    short: 'Pesquisa no Conscienciograma',
+    short: 'Busca no Conscienciograma',
     extra: [
       '<br>',
-      'Ferramenta de <strong>busca de palavras</strong> nas <em>Questões do Conscienciograma</em>.<br>',
+      'Ferramenta de <strong>busca de termos</strong> nas <em>Questões do Conscienciograma</em>.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
     ].join('\n')

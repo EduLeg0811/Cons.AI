@@ -148,6 +148,17 @@
     background: linear-gradient(135deg, var(--utils-primary) 0%, var(--utils-secondary) 100%);
 }
 
+/* OpenAI icon: linhas brancas no modo claro */
+.tool-icon.openai img {
+    filter: brightness(0) invert(1); /* preto → branco */
+}
+
+/* Modo escuro: usar linhas pretas no ícone OpenAI */
+html[data-theme="dark"] .tool-icon.openai img,
+body.dark .tool-icon.openai img {
+    filter: none; /* remove inversão → volta a ficar preto */
+}
+
 .tool-info {
     flex: 1;
     display: flex;
@@ -330,23 +341,23 @@
 .book-checkboxes {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
 }
 
 .book-option {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 4px;
 }
 
 .book-pill {
     min-width: 160px;
-    height: 36px;                  /* altura fixa de cada pill */
+    height: 32px;                  /* altura fixa de cada pill */
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 8px;                  /* espaço interno (topo/baixo/laterais) */   
+    padding: 6px;                  /* espaço interno (topo/baixo/laterais) */   
     background: var(--gray-100);           /* tokenizado */
     color: var(--gray-700);                /* tokenizado */
     font-size: var(--text-sm);     /* tamanho da fonte (pega da variável global) */
@@ -362,10 +373,10 @@
 .book-desc {
     font-size: var(--text-xs);
     color: var(--gray-600);
-    margin-left: 10px;
-    margin-bottom: 10px;
-    margin-top: 10px;  
-    margin-right: 10px;
+    margin-left: 6px;
+    margin-bottom: 6px;
+    margin-top: 6px;  
+    margin-right: 6px;
 }
 
 .book-pill.active {

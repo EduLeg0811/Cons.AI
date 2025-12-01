@@ -181,40 +181,42 @@ body:not([class]) .navbar-container .config-toggle {
 }
 
 
-
 /* Subtle fade-in/fade-out for the info-toggle icon on homepage */
 @keyframes infoPulse {
-    /* 0–1s: quase apagado (10%) */
+    /* início levemente visível e um pouco menor */
     0% {
-        opacity: 0.1;
-        transform: scale(0.96);
-    }
-    25% {
-        opacity: 0.1;
-        transform: scale(0.96);
+        opacity: 0.2;
+        transform: scale(0.985);
     }
 
-    /* 1–2s: fade-in 10% → 100% */
+    /* sobe de forma contínua até o pico */
+    25% {
+        opacity: 0.5;
+        transform: scale(0.992);
+    }
+
     50% {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1.0);
     }
 
-    /* 2–3s: mantém 100% */
+    /* desce de forma contínua de volta */
     75% {
-        opacity: 1;
-        transform: scale(1);
+        opacity: 0.5;
+        transform: scale(0.992);
     }
 
-    /* 3–4s: fade-out 100% → 10% */
     100% {
-        opacity: 0.1;
-        transform: scale(0.96);
+        opacity: 0.2;
+        transform: scale(0.985);
     }
 }
 
-
-
+.navbar-control-btn.info-toggle .navbar-logo {
+    background-color: var(--white);
+    border-radius: var(--radius-xl);
+    animation: infoPulse 5s linear infinite; /* linear para eliminar degraus */
+}
 
 /* Pause the pulse on hover/focus to avoid clash with hover styles */
 .navbar-control-btn.info-toggle:hover .navbar-logo,
@@ -231,6 +233,38 @@ body:not([class]) .navbar-container .config-toggle {
 html[data-info-pulse="off"] .navbar-control-btn.info-toggle .navbar-logo {
     animation: none;
 }
+
+
+
+/* Dark mode toggle: apenas o ícone, sem “pílula” de fundo */
+.navbar-control-btn.theme-toggle {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Garantir que no hover não volte fundo */
+.navbar-control-btn.theme-toggle:hover,
+.navbar-control-btn.theme-toggle:focus-visible {
+    background: transparent;
+    box-shadow: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ===== MAIN CONTENT ===== */
 .main-content {
