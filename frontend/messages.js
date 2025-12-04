@@ -101,7 +101,7 @@ const TOOL_MESSAGES = {
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> nos livros e tratados do professor Waldo Vieira.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
-      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>.',
+      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.',
     ].join('\n')
   },
 
@@ -126,7 +126,7 @@ const TOOL_MESSAGES = {
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> nas <em>Questões do Conscienciograma</em>.<br>',
       'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
-      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
+      'Ao final baixe a listagem completa dos resultados em <em>Word</em>.',
     ].join('\n')
   },
 
