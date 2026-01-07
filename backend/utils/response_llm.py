@@ -64,6 +64,7 @@ def generate_llm_answer(
     # Monta payload da Responses API
     # -------------------------------------------------------------------------
     model_str = str(model)
+   
 
     # Branch para GPT-5 / GPT-5.1 (não usar temperature, usar reasoning/text)
     if model_str.startswith("gpt-5"):
