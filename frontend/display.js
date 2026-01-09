@@ -641,56 +641,64 @@ function showTitle(container, text) {
 
 
 // ________________________________________________________________________________________
-// Show Simple
+// Show Simple (HTML corrigido)
 // ________________________________________________________________________________________
 function showSimple(container, data) {
-    const text = data.text;
-    const ref = data.ref || "";
-    const mdHtml = renderMarkdown(text);
+  const text = data?.text ?? '';
+  const ref = data?.ref ?? '';
+  const mdHtml = renderMarkdown(text);
 
-    const html = `
+  const html = `
     <div class="displaybox-container simple">
       <div class="displaybox-content">
         <div class="displaybox-text markdown-content">
           ${mdHtml}
-        <div class="simple-ref">${ref}</div>
+          <div class="simple-ref">${ref}</div>
+        </div>
       </div>
     </div>`;
-    container.insertAdjacentHTML('beforeend', html);
+
+  container.insertAdjacentHTML('beforeend', html);
 }
 
 
 
 
 // ________________________________________________________________________________________
-// Show Quiz  ✅ FINAL COM NIVEL E PERGUNTA
+// Show Quiz ✅ (layout preservado; quizId para evitar pintar a caixa errada)
+// - ATUALIZAÇÃO: agora retorna o quizId gerado (além de manter __lastQuizId)
 // ________________________________________________________________________________________
 function showQuiz(container, data) {
   if (!container) {
     console.error('Results container not found');
-    return;
+    return null;
   }
 
-  // ✅ Extração segura de dados
-  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta.trim() : '';
-  const nivel = typeof data?.nivel === 'string' ? data.nivel.trim() : '';
+  // ID incremental por render (garante referência estável do quiz atual)
+  const quizId = (container.__quizSeq = (container.__quizSeq || 0) + 1);
+  container.__lastQuizId = quizId;
 
-  // ✅ Badge de nível (estilo preservado)
+  // Extração segura
+  const pergunta = typeof data?.pergunta === 'string' ? data.pergunta.trim() : '';
+  const nivel    = typeof data?.nivel === 'string'    ? data.nivel.trim()    : '';
+
+  // Badge de nível (layout preservado)
   const nivelHtml = nivel
     ? `<div class="quiz-level-badge metadata-badge estilo1">${nivel}</div>`
     : '';
 
-  // ✅ Garantir 4 opções mesmo que venham incompletas
+  // Garantir 4 opções
   let opcoes = Array.isArray(data?.opcoes) ? data.opcoes.slice(0, 4) : [];
   while (opcoes.length < 4) opcoes.push('');
 
-  // ✅ Renderiza opções com Markdown
+  // Opções com Markdown (layout preservado)
   const optionsHtml = opcoes
     .map((opt, idx) => {
-      const rendered = renderMarkdown(String(opt || `Opção ${idx + 1}`));
+      const rawOpt = String(opt || `Opção ${idx + 1}`);
+      const rendered = renderMarkdown(rawOpt);
       return `
-        <div class="quiz-option-row" data-index="${idx}">
-          <button type="button" class="quiz-badge-btn" data-index="${idx}">
+        <div class="quiz-option-row" data-quiz-id="${quizId}" data-index="${idx}">
+          <button type="button" class="quiz-badge-btn" data-quiz-id="${quizId}" data-index="${idx}">
             <span class="metadata-badge estilo2 quiz-badge">${idx + 1}</span>
           </button>
           <div class="quiz-option-text markdown-content">${rendered}</div>
@@ -698,14 +706,14 @@ function showQuiz(container, data) {
     })
     .join('');
 
-  // ✅ Renderiza pergunta com Markdown
+  // Pergunta com Markdown (layout preservado)
   const qHtml = pergunta
     ? `<div class="quiz-question markdown-content">${renderMarkdown(pergunta)}</div>`
     : '';
 
-  // ✅ HTML Final (layout 100% mantido)
+  // HTML Final (layout 100% mantido)
   const html = `
-    <div class="displaybox-container quiz-box">
+    <div class="displaybox-container quiz-box" data-quiz-id="${quizId}">
       <div class="displaybox-content">
         <div class="displaybox-text">
           ${nivelHtml}
@@ -717,12 +725,11 @@ function showQuiz(container, data) {
       </div>
     </div>`;
 
-  // ✅ Adiciona ao container sem remover histórico visual externo
   container.insertAdjacentHTML('beforeend', html);
 
-  // ✅ Event delegation (uma única vez)
+  // Event delegation (uma única vez): destaca selecionado e bloqueia novas seleções
   if (!container.__quizClickBound) {
-    container.addEventListener('click', function(ev) {
+    container.addEventListener('click', function (ev) {
       const btn = ev.target.closest('.quiz-badge-btn');
       const row = btn ? btn.closest('.quiz-option-row') : ev.target.closest('.quiz-option-row');
       if (!row) return;
@@ -730,13 +737,11 @@ function showQuiz(container, data) {
       const box = row.closest('.quiz-box');
       if (!box) return;
 
-      // ✅ Destaque visual do selecionado
-      try {
-        const badge = row.querySelector('.metadata-badge');
-        if (badge) badge.classList.add('selected');
-      } catch {}
+      // Destaque visual do selecionado (preserva comportamento atual)
+      const badge = row.querySelector('.metadata-badge');
+      if (badge) badge.classList.add('selected');
 
-      // ✅ Bloqueia novas seleções
+      // Bloqueia novas seleções nesse quiz-box
       box.querySelectorAll('button.quiz-badge-btn').forEach(b => {
         b.disabled = true;
         b.style.cursor = 'default';
@@ -745,7 +750,15 @@ function showQuiz(container, data) {
 
     container.__quizClickBound = true;
   }
+
+  // ✅ NOVO: devolve o quizId para o chamador (evita depender de __lastQuizId)
+  return quizId;
 }
+
+// Disponibiliza no escopo global (compatível com o restante do sistema)
+try {
+  if (typeof window !== 'undefined') window.showQuiz = showQuiz;
+} catch {}
 
 
 
@@ -833,6 +846,8 @@ function insertLoading(container, message = 'Carregando…') {
     </div>
   `);
 }
+
+
 
 function removeLoading(container) {
   if (!container) return;
