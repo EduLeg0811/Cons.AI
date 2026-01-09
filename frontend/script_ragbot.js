@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (currentRagbotVectorStore === 'ENGLISH') {
             searchInput.placeholder = 'Hello, Conscientiologist!';
           } else {
-            searchInput.placeholder = 'Olá conscienciólogo!';
+            searchInput.placeholder = 'Sobre o que gostaria de conversar?';
           }
         }
       } catch {}
