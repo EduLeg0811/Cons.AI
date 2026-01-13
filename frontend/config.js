@@ -4,12 +4,13 @@
 // All configuration keys should use UPPER_SNAKE_CASE for consistency
 const CONFIG = {
   // Model settings
-  MODEL_LLM: 'gpt-5.2',
+  MODEL_LLM: 'gpt-4.1-mini',
   MODEL_RAGBOT: 'gpt-5.2',
+ 
   
   // Generation settings
   TEMPERATURE: 0.3,
-  MAX_RESULTS_DISPLAY: 200,
+  MAX_RESULTS_DISPLAY: 100,
   
   // Feature flags
   OPENAI_RAGBOT: 'ALLWV',

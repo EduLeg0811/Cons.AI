@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: COMMENTARY_INSTRUCTIONS,               
+            instructions: COMMENTARY_INSTRUCTIONS               
         };
 
          const commentaryData = await call_llm(paramRAGbot);

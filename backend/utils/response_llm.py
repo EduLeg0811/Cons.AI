@@ -66,8 +66,9 @@ def generate_llm_answer(
     model_str = str(model)
    
 
-    # Branch para GPT-5 / GPT-5.1 (não usar temperature, usar reasoning/text)
-    if model_str.startswith("gpt-5"):
+   
+    # Branch para GPT-5.2 (temperature, usar reasoning/text)
+    if model_str.startswith("gpt-5.2"):
         llm_str = {
             "model": model,
             "tools": [{
@@ -78,8 +79,25 @@ def generate_llm_answer(
             "input": query,
             "instructions": instructions,
             "store": True,
-            "reasoning": {"effort": reasoning_effort},
-            "text": {"verbosity": verbosity},
+            "reasoning": {"effort": "none"},
+            "text": {"verbosity": "low"},
+            "temperature": float(temperature),
+        }
+
+    # Branch para GPT-5 / GPT-5.1 (não usar temperature, usar reasoning/text)
+    elif model_str.startswith("gpt-5"):
+        llm_str = {
+            "model": model,
+            "tools": [{
+                "type": "file_search",
+                "vector_store_ids": vector_store_ids,
+                "max_num_results": int(LLM_MAX_RESULTS),
+            }],
+            "input": query,
+            "instructions": instructions,
+            "store": True,
+            "reasoning": {"effort": "low"},
+            "text": {"verbosity": "low"},
         }
 
     # Branch para modelos "clássicos" (gpt-4.1, gpt-4o, etc.) ➜ usam temperature
