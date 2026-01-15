@@ -68,7 +68,6 @@ logger.info("CONS-AI toolbox")
 
 # Lista de IPs bloqueados (adicione os IPs que deseja bloquear)
 BLOCKED_IPS = [
-    "177.220.182.58",  # Exemplo de IP a ser bloqueado
     "177.220.172.254",
     # Adicione outros IPs conforme necessário
 ]

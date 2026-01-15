@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clean previous results
         resultsDiv.innerHTML = '';
         let chatMessage_id = null;
+        const fullBadges = window.CONFIG ? !!window.CONFIG.FULL_BADGES : false;
 
 
          // =======================================================================================
@@ -312,7 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
           //console.log('<<Script_RAGbot>> metaData:', metaData);
           
           const botMessageEl = document.getElementById(chatMessage_id).querySelector('.message-content');
-          showBotMetainfo(botMessageEl, metaData); 
+          if (fullBadges) {
+            showBotMetainfo(botMessageEl, metaData); 
+          }
           
           
           // Store in chat history

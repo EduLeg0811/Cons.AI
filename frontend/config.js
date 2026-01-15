@@ -5,7 +5,8 @@
 const CONFIG = {
   // Model settings
   MODEL_LLM: 'gpt-4.1-mini',
-  MODEL_RAGBOT: 'gpt-5.2',
+  // MODEL_RAGBOT: 'gpt-5.2',
+  MODEL_RAGBOT: 'gpt-4.1-mini',
  
   
   // Generation settings
