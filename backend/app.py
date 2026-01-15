@@ -27,6 +27,7 @@ import time
 from flask import Flask, Response, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 from flask_restful import Api, Resource
+from functools import wraps
 
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
@@ -64,6 +65,23 @@ logging.basicConfig(
 logger = logging.getLogger("cons-ai")
 logger.setLevel(logging.INFO)
 logger.info("CONS-AI toolbox")
+
+# Lista de IPs bloqueados (adicione os IPs que deseja bloquear)
+BLOCKED_IPS = [
+    "177.220.182.58",  # Exemplo de IP a ser bloqueado
+    "177.220.172.254",
+    # Adicione outros IPs conforme necessário
+]
+
+def ip_block_filter(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        client_ip = request.remote_addr
+        if client_ip in BLOCKED_IPS:
+            logger.warning(f"IP bloqueado tentando acessar ragbot: {client_ip}")
+            return {"error": "Acesso negado"}, 403
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 
@@ -216,6 +234,7 @@ class SemanticSearchResource(Resource):
 # 3. LLM Query
 # ______________________________________________________________________
 class LlmQueryResource(Resource):
+    @ip_block_filter
     def post(self):
         try:
             data = request.get_json(force=True)
