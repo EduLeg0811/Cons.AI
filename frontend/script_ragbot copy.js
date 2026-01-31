@@ -7,32 +7,55 @@ const FIXED_QUESTIONS = {
     'List five essential steps I need to take in order to begin the practice of Tenepes (Penta).',
     'How can I determine where I stand on the Evolutionary Scale of the Consciousness?',
     'What does Proexis (Existential Program) mean, and how can one identify their own existential programming?',
+    'What is Conscientiometry, and how can the Conscientiogram be applied in personal self-evaluation?',
     'What is the role of Extraphysical Reurbanizations (Reurbexes) in the evolutionary context of the planet?',
     'Discuss the Extraphysical Communities (Communexes) and their connection with Intermissive Courses.',
+    'How can I know if I am an Existential Completist (Complexis)? Which indicators should I observe?',
+    'What are the main signs of energetic self-deassimilation (deassim)?',
+    'I have several potential topics for writing my book. Could you help me select some of them and indicate possible conscientiological approaches?',
+    'I had a projection in which I saw myself wearing clothing from another era. I will describe it so you can suggest the possible time and location for my retrocognitive research (retrocognition).',
   ],
 
   REVISTAS: [
     'Como desenvolver a sinalética parapsíquica na prática assistencial?',
     'Quais são os principais desafios na implantação da cosmoética na vida cotidiana?',
     'De que forma posso promover o meu desassédio pessoal?',
+    'O que é a pangrafia parapsíquica e como pode ser desenvolvida?',
     'Como identificar uma consciex amparadora?',
+    'O que é mobilização básica de energias (MBE)?',
+    'Liste 10 diferenças entre parapsiquismo primário e avançado.',
+    'Quais são as etapas do ciclo multiexistencial pessoal (CMP)?',
     'O que são pensenes patológicos?',
+    'O que é o encapsulamento energético?',
   ],
 
   AUTORES: [
+    'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
+    'Com posso saber onde me localizo nos níveis da Escala Evolutiva?',
+    'O que significa Proéxis e como identificar a própria programação existencial?',
+    'O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?',
+    'Qual o papel das Reurbanizações Extrafísicas (Reurbexes) no contexto evolutivo do planeta?',
+    'Fale sobre as Comunidades Extrafísicas (Comunexes) e sua relação com os Cursos Intermissivos.',
     'Como saber se sou completista na proéxis? Quais indicadores devo observar?',
     'Cite os principais sinais da autodesassimilação energética (desassim).',
-    'O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?',
-    'Faça uma comparação entre recin e recéxis',
-    'Fale sobre o papel da Autopesquisa na Conscienciologia e como aplicá-la na prática diária',
+    'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
+    'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
   ],
+
+
 
   MINI: [
     'Quais são as principais características do evoluciólogo, e como sua atuação difere da de outros amparadores?',
+    'De que modo as comunexes evoluídas influenciam nos resgates extrafísicos durante as reurbexes?',
+    'Quais são os principais desafios dos intermissivistas ao tentar manter a lucidez contínua nas projeções?',
     'Quais são os indicadores do completismo existencial mais debatidos nas minitertúlias, e como avaliá-los?',
+    'De que maneira a anticonflitividade é considerada fundamental para a assistência avançada?',
     'Como o conceito de autodesassedialidade é explorado nos debates avançados das minitertúlias?',
+    'Como a Conscienciologia aborda a questão do autodesassédio mentalsomático?',
     'Quais os exemplos de parafenômenos avançados relatados e analisados nas minitertúlias?',
     'Como a Pré-Intermissiologia aborda a questão da liderança interassistencial e seus efeitos evolutivos?',
+    'Quais são as diferenças entre o evoluciólogo júnior (planetário) e o evoluciólogo sênior (interplanetário)?',
+    'Quais são os principais atributos conscienciais para alcançar o patamar de evoluciólogo?',
   ],
 
   // Lista padrão em português (usada para WALDO ou qualquer outro modo não mapeado acima)
@@ -40,8 +63,13 @@ const FIXED_QUESTIONS = {
     'Liste 5 coisas que preciso fazer para iniciar a prática da Tenepes.',
     'Com posso saber onde me localizo nos níveis da Escala Evolutiva?',
     'O que significa Proéxis e como identificar a própria programação existencial?',
+    'O que é a Conscienciometria e como aplicar o Conscienciograma na autoavaliação pessoal?',
     'Qual o papel das Reurbanizações Extrafísicas (Reurbexes) no contexto evolutivo do planeta?',
     'Fale sobre as Comunidades Extrafísicas (Comunexes) e sua relação com os Cursos Intermissivos.',
+    'Como saber se sou completista na proéxis? Quais indicadores devo observar?',
+    'Cite os principais sinais da autodesassimilação energética (desassim).',
+    'Estou com várias ideias de tema para escrever o meu livro. Pode me ajudar a selecionar algumas, e me apontar possíveis abordagens conscienciológicas?',
+    'Tive uma projeção em que me vi com roupas de época. Vou descrever para você indicar o possível período e local, para minha pesquisa retrocognitiva.',
   ],
 };
 
@@ -99,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
 
         const set = new Set(books || ['ALLWV']);
-        //console.log('ragbotApplyConfig: books encontrados:', Array.from(set));
 
         // Heurística simples de prioridade: ENGLISH > AUTORES > REVISTAS > WALDO
         let initialMode = 'WALDO';
@@ -210,6 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
           // Add user message to chat
           chatMessage_id = addChatMessage('user', term);
 
+          // Add loading message
+          //const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
+
+             
           //call_ragbot
           //*****************************************************************************************
           // 
@@ -249,6 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
             signal: controller.signal
           });
           
+          //console.info('[ragbot] full response from backend:', response);
+          
           // Handle special cases: error or abort case
           if (!response || response.error || response.abort) {
             const errorMessage = response?.error || response?.message || 'Erro ao chamar o backend.';
@@ -271,6 +304,13 @@ document.addEventListener('DOMContentLoaded', () => {
           // Mostra os metadados do response em Badges, logo após o texto da resposta
           // ------------------------------------------------------------------------   
           const metaData = extractMetadata(response, 'ragbot');
+          // const citations = metaData?.citations;
+          // const total_tokens_used = metaData?.total_tokens_used;
+          // const model = metaData?.model;
+          // const temperature = metaData?.temperature;
+          // const vector_store_names = window.CONFIG?.OPENAI_RAGBOT;
+
+          //console.log('<<Script_RAGbot>> metaData:', metaData);
           
           const botMessageEl = document.getElementById(chatMessage_id).querySelector('.message-content');
           if (fullBadges) {
@@ -293,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const loadingMessages = document.querySelectorAll('.chat-message.loading');
             loadingMessages.forEach(msg => msg.remove());
             
-            addChatMessage('bot', `Sorry, there was an error: ${error.name === 'AbortError' ? 'Request timed out' : error.message || 'An unexpected error occurred'}`);
+            chatMessage_id = addChatMessage('bot', `Sorry, there was an error: ${error.name === 'AbortError' ? 'Request timed out' : error.message || 'An unexpected error occurred'}`);
 
         } finally {
           // Re-enable the search button and restore original state
@@ -309,7 +349,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
    
 
-
+          
+            // Dismiss loading state
+            //removeChatMessageById(chatMessage_id);
           
     }
 
@@ -318,35 +360,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Seletor de modo do RAGbot (WALDO / AUTORES / REVISTAS / INGLÊS)
     //______________________________________________________________________________________________
     async function setRagbotMode(mode) {
-      
       switch (mode) {
         case 'AUTORES':
+          // 2) AUTORES: OPENAI_RAGBOT = "AUTORES"; INSTRUCTIONS_RAGBOT = INST_AUTORES
           currentRagbotVectorStore = 'AUTORES';
           currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
           break;
 
         case 'REVISTAS':
+          // 3) REVISTAS: OPENAI_RAGBOT = "REVISTAS"; INSTRUCTIONS_RAGBOT = INST_REVISTAS
           currentRagbotVectorStore = 'REVISTAS';
           currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
           break;
 
         case 'ENGLISH':
+          // 4) INGLES: OPENAI_RAGBOT = "INGLES"; INSTRUCTIONS_RAGBOT = INST_INGLES
           currentRagbotVectorStore = 'ENGLISH';
           currentRagbotInstructions = INST_ENGLISH;
           break;
 
         case 'WALDO':
         default:
+          // 1) WALDO: OPENAI_RAGBOT = "ALLWV"; INSTRUCTIONS_RAGBOT = INST_NORMAL
           currentRagbotVectorStore = 'ALLWV';
           currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
           break;
 
         case 'MINI':
+          // 5) MINI: OPENAI_RAGBOT = "MINI"; INSTRUCTIONS_RAGBOT = INST_MINI
           currentRagbotVectorStore = 'MINI';
           currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
           break;
       }
-
 
       // Reflete no CONFIG, caso outros módulos usem
       try {
@@ -354,6 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.CONFIG.OPENAI_RAGBOT = currentRagbotVectorStore;
         window.CONFIG.INSTRUCTIONS_RAGBOT = currentRagbotInstructions;
       } catch {}
+
+      // Tema de cor permanece fixo para o RagBOT; não alteramos mais a cor global por modo.
 
       // Ajusta o placeholder da caixa de entrada conforme o modo selecionado
       try {
@@ -363,12 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             searchInput.placeholder = 'Sobre o que gostaria de conversar?';
           }
-        } else {
-          console.warn('setRagbotMode: searchInput não encontrado');
         }
-      } catch (e) {
-        console.warn('setRagbotMode: Erro ao configurar placeholder:', e);
-      }
+      } catch {}
 
       // Exibe a linha de busca somente após a escolha do modo
       try {
@@ -418,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const set = new Set(books || ['ALLWV']);
 
+        // Mapeia cada book para o respectivo rótulo exibido no badge
         const bookToLabel = {
           'ALLWV':   'Bibliografia Waldo Vieira',
           'AUTORES': 'Autores Diversos',
@@ -426,6 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
           'ENGLISH': 'Bibliography in English'
         };
 
+        // Posiciona os badges em um container dedicado logo ABAIXO da linha inteira de busca
+        // (.search-row: textarea + botão), em uma nova linha alinhada à direita.
         let searchRow = null;
         try {
           if (searchInput && typeof searchInput.closest === 'function') {
@@ -434,9 +480,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
 
         if (!searchRow && searchInput && searchInput.parentNode && searchInput.parentNode.parentNode) {
+          // Fallback: assume estrutura padrão .search-row > .search-input-wrapper > textarea
           searchRow = searchInput.parentNode.parentNode;
         }
 
+        // Só desenha os badges de modo se o usuário já tiver passado pela
+        // configuração pelo menos uma vez.
         let canRenderBadges = false;
         try {
           canRenderBadges = localStorage.getItem('appConfig_ragbot_used') === 'true';
@@ -450,14 +499,17 @@ document.addEventListener('DOMContentLoaded', () => {
             container.id = 'ragbot-current-mode-container';
           }
 
+          // Insere o container imediatamente após a .search-row (nova linha)
           if (searchRow.nextSibling) {
             rowParent.insertBefore(container, searchRow.nextSibling);
           } else {
             rowParent.appendChild(container);
           }
 
+          // Limpa badges anteriores
           container.innerHTML = '';
 
+          // Cria um badge por modo configurado, lado a lado
           set.forEach(bookKey => {
             const label = bookToLabel[bookKey];
             if (!label) return;
@@ -469,9 +521,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch {}
 
+      // Disponibiliza um reset global dos modos RagBot (volta para WALDO)
       window.resetRagbotModes = function () {
         try {
-          setRagbotMode('WALDO');
+          setRagbotMode('WALDO');  // modo padrão
         } catch (e) {
           console.warn('resetRagbotModes: falha ao resetar modo RagBot', e);
         }
@@ -482,14 +535,18 @@ document.addEventListener('DOMContentLoaded', () => {
     //______________________________________________________________________________________________
     // addChatMessage
     //______________________________________________________________________________________________
+    // Function to add chat messages
     function addChatMessage(sender, content, isLoading = false) {
 
+     
         const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${sender}${isLoading ? ' loading' : ''}`;
         messageDiv.id = messageId;
         
+        // Build avatar only when needed to avoid extra left-side circles
         let avatar = null;
+        // Show avatar only for the user; never for the bot
         const shouldShowAvatar = (sender === 'user');
         if (shouldShowAvatar) {
             avatar = document.createElement('div');
@@ -501,6 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContent.className = `message-content${sender === 'user' ? ' user' : ''}`;
         
         if (sender === 'bot' && !isLoading) {
+            // Render markdown for bot messages and wrap with markdown-content for styling
             const rawHtml = renderMarkdown(content);
             const safeHtml = window.DOMPurify ? window.DOMPurify.sanitize(rawHtml) : rawHtml;
             messageContent.innerHTML = `<div class="markdown-content">${safeHtml}</div>`;
@@ -511,15 +569,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (avatar) messageDiv.appendChild(avatar);
         messageDiv.appendChild(messageContent);
         
+        
+        // Keep chronological order: append at the bottom
+        // Insert logic: keep newest question at the top (no scroll dependency)
         if (sender === 'user') {
+            // Always place user's question at the very top
             if (chatMessages.firstChild) {
                 chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
             } else {
                 chatMessages.appendChild(messageDiv);
             }
         } else {
+            // Bot message (including loading): place right below the latest user message at top
             const firstEl = chatMessages.firstElementChild;
             if (firstEl && firstEl.classList && firstEl.classList.contains('user')) {
+                // Insert after the first (top) user message
                 if (firstEl.nextSibling) {
                     chatMessages.insertBefore(messageDiv, firstEl.nextSibling);
                 } else {
@@ -527,6 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } else {
+                // Fallback: if no user message found, append at top
                 if (chatMessages.firstChild) {
                     chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
                 } else {
@@ -551,6 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove old chat messages while keeping the latest user question at top
     function cleanChat() {
         try {
+            // Remove initial suggestions if still present
             const initial = document.getElementById('initial-quests');
             if (initial) initial.remove();
         } catch {}
@@ -558,6 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!chatMessages) return;
 
         const first = chatMessages.firstElementChild;
+        // If the first element is the latest user message, keep it and remove the rest
         if (first && first.classList && first.classList.contains('user')) {
             let node = first.nextSibling;
             while (node) {
@@ -566,6 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 node = next;
             }
         } else {
+            // Otherwise, clear everything for a clean slate
             chatMessages.textContent = '';
         }
     }
@@ -577,6 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------------------------
     async function initialQuests(quest_type) {
   
+        // Não mostrar se já houver mensagens
         if (chatMessages && chatMessages.children && chatMessages.children.length > 0) return;
 
         let suggestions = [];
@@ -585,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (quest_type === 'fixed') {
 
           let key;
-          
           if (currentRagbotVectorStore === 'ENGLISH') {
             key = 'ENGLISH';
           } else if (currentRagbotVectorStore === 'REVISTAS') {
@@ -595,6 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (currentRagbotVectorStore === 'MINI') {
             key = 'MINI';
           } else {
+            // WALDO ou qualquer outro modo: sugestões padrão em português
             key = 'DEFAULT_PT';
           }
 
@@ -606,11 +675,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }  
     
-    
+        // Container principal
         const wrap = document.createElement('div');
         wrap.id = 'initial-quests';
         wrap.className = 'initial-quests';
     
+        // Título sutil (em português ou inglês, conforme o modo)
         const title = document.createElement('div');
         if (currentRagbotVectorStore === 'ENGLISH') {
           title.textContent = 'Sample questions:';
@@ -619,6 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         title.className = 'initial-quests-title';
     
+        // Linha de badges
         const row = document.createElement('div');
         row.className = 'initial-quests-row';
 
@@ -629,6 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
           badge.textContent = q;
 
           badge.addEventListener('click', () => {
+            // Preenche input e envia
             if (searchInput) {
               searchInput.value = q;
               try {
@@ -639,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (searchButton) {
               searchButton.click();
             }
+            // Remove sugestões após primeiro clique
             try {
               wrap.remove();
             } catch {}
@@ -650,6 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wrap.appendChild(title);
         wrap.appendChild(row);
     
+        // Inserir no topo do chat
         if (chatMessages && chatMessages.firstChild) {
           chatMessages.insertBefore(wrap, chatMessages.firstChild);
         } else if (chatMessages) {
@@ -657,110 +731,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     }
-
-    // -------------------------------------------------------------------------------
-    // Generate initial suggestions using LLM (10 questions)
-    // -------------------------------------------------------------------------------
-    async function generateInitialQuestionsLLM(count = 5) {
-      // Define idioma conforme modo
-      const isEnglish = (currentRagbotVectorStore === 'ENGLISH');
-
-      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-      // ALTERAÇÃO ÚNICA NESTA FUNÇÃO: prompt adaptado por modo (assinatura temática)
-      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-      const mode = (currentRagbotVectorStore || 'ALLWV'); // ALLWV/AUTORES/REVISTAS/MINI/ENGLISH
-
-      // Prompt: retorna SOMENTE JSON (array de strings)
-      const prompt = isEnglish
-        ? `Generate ${count} short, high-quality sample questions for a Conscienciology RAG chatbot.
-Return ONLY a valid JSON array of strings (no markdown, no commentary).
-Rules:
-- Questions must be varied (practice, concepts, self-research, techniques).
-- Avoid duplicates and near-duplicates.
-- Keep each question under 160 characters.
-- Do not number the items.`
-
-        : `Gere ${count} sugestões de perguntas curtas e inteligentes para um RAGbot de Conscienciologia.
-Retorne SOMENTE um JSON válido no formato: ["pergunta 1", "pergunta 2", ...] (sem markdown, sem comentários).
-Regras:
-- Varie as questões (prática, conceitos, autopesquisa, técnicas, dúvidas comuns).
-- Evite duplicatas e quase-duplicatas.
-- Cada pergunta com no máximo 160 caracteres.
-- Não numere os itens.`;
-
-      console.log('generateInitialQuestionsLLM: Usando prompt em', isEnglish ? 'inglês' : 'português');
-
-      // Chamada LLM
-      const param = {
-        query: prompt,
-        model: "gpt-4.1-mini",
-        temperature: 0.7,
-        vector_store_names: currentRagbotVectorStore || 'ALLWV',
-        instructions: currentRagbotInstructions,
-        reasoning_effort: "none",
-        verbosity: "low",
-        use_session: false
-      };
-
-      let response;
-      try {
-        response = await call_llm({ ...param, timeout_ms: 120000, signal: controller?.signal });
-      } catch (e) {
-        console.warn('[generateInitialQuestionsLLM] call_llm failed:', e);
-        return null;
-      }
-
-      const rawText = (response?.text ?? response?.response ?? '').trim();
-      if (!rawText) return null;
-
-      // Parser robusto: tenta JSON direto; se vier com lixo, extrai primeiro bloco [...]
-      function tryParseJsonArray(text) {
-        try {
-          const parsed = JSON.parse(text);
-          return Array.isArray(parsed) ? parsed : null;
-        } catch {}
-
-        const start = text.indexOf('[');
-        const end = text.lastIndexOf(']');
-        if (start >= 0 && end > start) {
-          const slice = text.slice(start, end + 1);
-          try {
-            const parsed2 = JSON.parse(slice);
-            return Array.isArray(parsed2) ? parsed2 : null;
-          } catch {}
-        }
-        return null;
-      }
-
-      let arr = tryParseJsonArray(rawText);
-      if (!arr) return null;
-
-      // Sanitização + filtro
-      arr = arr
-        .map(x => (typeof x === 'string' ? x.trim() : ''))
-        .filter(Boolean);
-
-      // Remove duplicatas (case-insensitive)
-      const seen = new Set();
-      const unique = [];
-      for (const q of arr) {
-        const key = q.toLowerCase();
-        if (!seen.has(key)) {
-          seen.add(key);
-          unique.push(q);
-        }
-        if (unique.length >= count) break;
-      }
-
-      // Exige mínimo razoável
-      if (unique.length < Math.min(6, count)) return null;
-
-      return unique.slice(0, count);
-    }
-
-    // Expor para resetRagbot (fora do DOMContentLoaded)
-    window.ragbotGenerateInitialQuestsLLM = generateInitialQuestionsLLM;
 
     // Expor função para reexibir as sugestões iniciais após reset de conversa
     window.ragbotShowInitialQuests = initialQuests;
@@ -807,60 +777,22 @@ function resetLLM(scope = 'default') {
 
 // ----------------------------------------------------------------------------
 // resetRagbot
-// - Reseta o LLM e mostra novas sugestões geradas por LLM na tela inicial
+// - Reseta o LLM
 // ----------------------------------------------------------------------------
-async function resetRagbot () {
+function resetRagbot () {
 
   resetLLM('ragbot');
 
   // Limpar o localStore do Ragbot
+
   try {
     localStorage.removeItem('appConfig_ragbot');
     localStorage.removeItem('appConfig_ragbot_used');
     localStorage.removeItem('configPulseSeen_ragbot');
   } catch {}
 
-  // Manter o modo atual (não força WALDO para preservar ENGLISH se selecionado)
-  // Comentado para não sobrescrever o modo ENGLISH
-  // try {
-  //   if (typeof window.resetRagbotModes === 'function') {
-  //     window.resetRagbotModes();
-  //   }
-  // } catch {}
 
-  // Gera 5 novas sugestões via LLM e mostra na tela inicial
-  try {
-    const gen = window.ragbotGenerateInitialQuestsLLM;
-    if (typeof gen === 'function') {
-      const questions = await gen(5);
-      
-      if (Array.isArray(questions) && questions.length > 0) {
-        window.alleatory_questions = questions;
+  // Hard Reset da página (reload)
+  window.location.reload(true);
 
-        // Exibe sugestões iniciais "aleatory"
-        if (typeof window.ragbotShowInitialQuests === 'function') {
-          console.log('resetRagbot: Exibindo sugestões aleatórias...');
-          window.ragbotShowInitialQuests('aleatory');
-          return;
-        }
-      } else {
-        console.log('resetRagbot: Nenhuma pergunta válida recebida, usando fallback...');
-      }
-    } else {
-      console.log('resetRagbot: Função generateInitialQuestionsLLM não encontrada');
-    }
-  } catch (e) {
-    console.warn('resetRagbot: falha ao gerar sugestões via LLM', e);
-  }
-
-  // Fallback: se falhar, mostra as fixas
-  try {
-    console.log('resetRagbot: Usando fallback - mostrando perguntas fixas...');
-    if (typeof window.ragbotShowInitialQuests === 'function') {
-      window.ragbotShowInitialQuests('fixed');
-    }
-  } catch {}
 }
-
-// Alias opcional, caso seu app chame reset_ragBot em outro ponto:
-window.reset_ragBot = resetRagbot;
