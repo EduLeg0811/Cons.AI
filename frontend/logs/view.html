@@ -101,6 +101,51 @@
     .status-ok { color: var(--ok); }
     .status-err { color: var(--err); }
 
+    /* Toggle Switch Styles */
+    .toggle-switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    .toggle-switch input[type="checkbox"] {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      background-color: #233042;
+      border-radius: 24px;
+      transition: 0.3s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
     @media (max-width: 800px) {
       .toolbar { grid-template-columns: 1fr 1fr 1fr; }
       .toolbar .left { grid-column: 1 / -1; }
@@ -128,7 +173,11 @@
       <div class="left">
         <button id="btnRefresh">Atualizar</button>
         <label class="mono"><input type="checkbox" id="chkAuto"> Auto (5s)</label>
-        <label class="mono"><input type="checkbox" id="chkMode"> Modo Completo</label>
+        <label class="mono toggle-switch">
+          <input type="checkbox" id="chkMode">
+          <span class="slider"></span>
+          Modo Completo
+        </label>
       </div>
       <input type="text" id="txtSearch" placeholder="Busca (substring, sem regex)">
       <select id="selSort">
@@ -407,14 +456,11 @@
     
     // Initialize mode based on checkbox state
     function initializeMode() {
-      state.complete = el.chkMode.checked;
-      if (state.complete) {
-        el.table.classList.remove('simple');
-        console.log('[logs:view] inicializado em modo completo');
-      } else {
-        el.table.classList.add('simple');
-        console.log('[logs:view] inicializado em modo simples');
-      }
+      // Forçar estado inicial em "Simples"
+      el.chkMode.checked = false;
+      state.complete = false;
+      el.table.classList.add('simple');
+      console.log('[logs:view] inicializado em modo simples (forçado)');
     }
     
     // Call initialization after DOM is ready
