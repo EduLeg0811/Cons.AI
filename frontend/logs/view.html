@@ -151,6 +151,7 @@
           <th>Module</th>
           <th class="col-adv">Page</th>
           <th>Value</th>
+          <th class="col-adv">Meta</th>
           <th>Geo</th>
           <th class="col-adv">IP</th>
           <th class="col-adv">Origin</th>
@@ -160,7 +161,7 @@
         </tr>
       </thead>
       <tbody id="tbody">
-        <tr><td class="muted" colspan="11">Carregando…</td></tr>
+        <tr><td class="muted" colspan="12">Carregando…</td></tr>
       </tbody>
     </table>
   </div>
@@ -261,7 +262,7 @@
     function renderRows(rows) {
       const q = state.filter;
       if (!rows.length) {
-        el.tbody.innerHTML = '<tr><td class="muted" colspan="11">Nenhum evento.</td></tr>';
+        el.tbody.innerHTML = '<tr><td class="muted" colspan="12">Nenhum evento.</td></tr>';
         return;
       }
       const html = rows.map(r => {
@@ -270,6 +271,7 @@
         const mod = safeStr(r.module || r.module_label);
         const page = safeStr(r.page);
         const val = safeStr(r.value);
+        const meta = r.meta ? JSON.stringify(r.meta) : '';
         const geo = geoToStr(r._geo);
         const ip = safeStr(r._client_ip);
         const origin = safeStr(r.origin);
@@ -282,6 +284,7 @@
           <td>${highlight(mod, q)}</td>
           <td class="col-adv mono">${highlight(page, q)}</td>
           <td>${highlight(val, q)}</td>
+          <td class="col-adv mono">${highlight(meta, q)}</td>
           <td>${highlight(geo, q)}</td>
           <td class="col-adv mono">${highlight(ip, q)}</td>
           <td class="col-adv">${highlight(origin, q)}</td>
@@ -308,7 +311,7 @@
         rows = rows.filter(r => {
           const blob = (
             safeStr(r._server_ts) + ' ' + safeStr(r.event) + ' ' + safeStr(r.module) + ' ' +
-            safeStr(r.page) + ' ' + safeStr(r.value) + ' ' + safeStr(geoToStr(r._geo)) + ' ' +
+            safeStr(r.page) + ' ' + safeStr(r.value) + ' ' + safeStr(r.meta ? JSON.stringify(r.meta) : '') + ' ' + safeStr(geoToStr(r._geo)) + ' ' +
             safeStr(r._client_ip) + ' ' + safeStr(r.origin) + ' ' + safeStr(r._user_agent) + ' ' +
             safeStr(r.chat_id) + ' ' + safeStr(r.session_id)
           ).toLowerCase();
@@ -341,7 +344,7 @@
         applyFilters();
       } catch (err) {
         console.log('[logs:view] fetch error', err);
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="11">Falha ao buscar logs: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao buscar logs: ${safeStr(err.message || err)}</td></tr>`;
         el.counts.textContent = '';
       }
     }
@@ -374,7 +377,7 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         await fetchLogs();
       } catch (err) {
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="11">Falha ao limpar: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao limpar: ${safeStr(err.message || err)}</td></tr>`;
       }
     });
 
@@ -386,7 +389,7 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         await fetchLogs();
       } catch (err) {
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="11">Falha ao limpar tudo: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao limpar tudo: ${safeStr(err.message || err)}</td></tr>`;
       }
     });
 

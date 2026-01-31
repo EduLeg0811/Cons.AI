@@ -52,7 +52,7 @@ async function search_book() {
     }
 
     // Início da lógica de busca (antiga search_book_internal)
-    //console.log('<<< search_book >>>');
+    console.log('<<< search_book >>>');
 
     // Save original button state for restoration
     const originalButtonState = {
@@ -222,12 +222,11 @@ async function search_book() {
             event: 'search_performed',
             module: 'book',
             trigger: trigger,
-            term: term.trim(),
+            value: term.trim(),
             meta: {
                 sources: source,
                 max_results: maxResults,
-                grouping: flag_grouping,
-                term_length: term.trim().length
+                grouping: flag_grouping
             }
             });
          } catch (e) {
