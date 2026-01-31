@@ -23,7 +23,8 @@
       background: var(--bg);
       color: var(--text);
     }
-    .wrap {max-width: 100%; margin: 0; padding: 16px;}
+    .wrap {width: 100vw; margin: 0; padding: 16px; box-sizing: border-box;}
+    body {margin: 0; padding: 0; overflow-x: auto;}
     h1 {font-size: 18px; margin: 0 0 10px; font-weight: 600;}
 
     .toolbar {
@@ -62,6 +63,7 @@
 
     table {
       width: 100%;
+      min-width: 900px;
       border-collapse: collapse;
       background: var(--panel);
       border: 1px solid var(--border);
@@ -91,8 +93,9 @@
     mark { background: #393; color: #fff; padding: 0 2px; border-radius: 2px; }
 
     .counts { color: var(--muted); font-size: 12px; margin: 8px 0; }
-    .col-adv { display: table-cell; }
+    .col-adv { display: none; }
     .simple .col-adv { display: none; }
+    :not(.simple) .col-adv { display: table-cell !important; }
     .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12px; word-break: break-all; }
     .muted { color: var(--muted); }
     .status-ok { color: var(--ok); }
@@ -155,14 +158,11 @@
           <th class="col-adv">Meta</th>
           <th>Geo</th>
           <th class="col-adv">IP</th>
-          <th class="col-adv">Origin</th>
           <th class="col-adv">UA</th>
-          <th class="col-adv">chat_id</th>
-          <th class="col-adv">session_id</th>
         </tr>
       </thead>
       <tbody id="tbody">
-        <tr><td class="muted" colspan="12">Carregando…</td></tr>
+        <tr><td class="muted" colspan="9">Carregando…</td></tr>
       </tbody>
     </table>
   </div>
@@ -263,7 +263,7 @@
     function renderRows(rows) {
       const q = state.filter;
       if (!rows.length) {
-        el.tbody.innerHTML = '<tr><td class="muted" colspan="12">Nenhum evento.</td></tr>';
+        el.tbody.innerHTML = '<tr><td class="muted" colspan="9">Nenhum evento.</td></tr>';
         return;
       }
       const html = rows.map(r => {
@@ -275,10 +275,7 @@
         const meta = r.meta ? JSON.stringify(r.meta, null, 2) : '';
         const geo = geoToStr(r._geo);
         const ip = safeStr(r._client_ip);
-        const origin = safeStr(r.origin);
         const ua = safeStr(r._user_agent);
-        const chat = safeStr(r.chat_id);
-        const sid = safeStr(r.session_id);
         return `<tr>
           <td class="mono">${highlight(ts, q)}</td>
           <td><span class="pill">${highlight(evt, q)}</span></td>
@@ -288,10 +285,7 @@
           <td class="col-adv mono" style="max-width: 200px; overflow-x: auto;">${highlight(meta, q)}</td>
           <td>${highlight(geo, q)}</td>
           <td class="col-adv mono">${highlight(ip, q)}</td>
-          <td class="col-adv">${highlight(origin, q)}</td>
           <td class="col-adv">${highlight(ua, q)}</td>
-          <td class="col-adv mono">${highlight(chat, q)}</td>
-          <td class="col-adv mono">${highlight(sid, q)}</td>
         </tr>`;
       }).join('');
       el.tbody.innerHTML = html;
@@ -313,8 +307,7 @@
           const blob = (
             safeStr(r._server_ts) + ' ' + safeStr(r.event) + ' ' + safeStr(r.module) + ' ' +
             safeStr(r.page) + ' ' + safeStr(r.value) + ' ' + safeStr(r.meta ? JSON.stringify(r.meta) : '') + ' ' + safeStr(geoToStr(r._geo)) + ' ' +
-            safeStr(r._client_ip) + ' ' + safeStr(r.origin) + ' ' + safeStr(r._user_agent) + ' ' +
-            safeStr(r.chat_id) + ' ' + safeStr(r.session_id)
+            safeStr(r._client_ip) + ' ' + safeStr(r._user_agent)
           ).toLowerCase();
           return blob.indexOf(q) !== -1;
         });
@@ -345,7 +338,7 @@
         applyFilters();
       } catch (err) {
         console.log('[logs:view] fetch error', err);
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao buscar logs: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="9">Falha ao buscar logs: ${safeStr(err.message || err)}</td></tr>`;
         el.counts.textContent = '';
       }
     }
@@ -365,8 +358,15 @@
     });
     el.chkMode.addEventListener('change', () => {
       state.complete = el.chkMode.checked;
-      if (state.complete) el.table.classList.remove('simple');
-      else el.table.classList.add('simple');
+      console.log('[logs:view] modo completo:', state.complete);
+      if (state.complete) {
+        el.table.classList.remove('simple');
+        console.log('[logs:view] removida classe simple, colunas avançadas devem aparecer');
+      }
+      else {
+        el.table.classList.add('simple');
+        console.log('[logs:view] adicionada classe simple');
+      }
     });
     el.txtSearch.addEventListener('input', (e) => { state.filter = e.target.value; applyFilters(); });
     el.selSort.addEventListener('change', (e) => { state.sort = e.target.value; applyFilters(); });
@@ -378,7 +378,7 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         await fetchLogs();
       } catch (err) {
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao limpar: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="9">Falha ao limpar: ${safeStr(err.message || err)}</td></tr>`;
       }
     });
 
@@ -390,7 +390,7 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         await fetchLogs();
       } catch (err) {
-        el.tbody.innerHTML = `<tr><td class="status-err" colspan="12">Falha ao limpar tudo: ${safeStr(err.message || err)}</td></tr>`;
+        el.tbody.innerHTML = `<tr><td class="status-err" colspan="9">Falha ao limpar tudo: ${safeStr(err.message || err)}</td></tr>`;
       }
     });
 
