@@ -124,10 +124,13 @@ def favicon():
 @app.route('/logs/view')
 def logs_view_page():
     try:
+        import time
         response = send_from_directory(frontend_path, os.path.join('logs', 'view.html'))
-        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
+        response.headers['Last-Modified'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        response.headers['ETag'] = f'"{int(time.time())}"'
         return response
     except Exception:
         return "File not found", 404
