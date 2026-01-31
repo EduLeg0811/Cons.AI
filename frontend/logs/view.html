@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Logs Viewer v2025-01-31-20:57</title>
+  <title>Logs Viewer v2025-01-31-20:23-FIXED</title>
   <script src="../config.js"></script>
   <style>
     :root {
@@ -196,7 +196,7 @@
       table: document.getElementById('tbl'),
     };
 
-    console.log('[logs:view] load');
+    console.log('[logs:view] load - VERSION v2025-01-31-20:23-FIXED');
 
     function safeStr(v) { return (v === undefined || v === null) ? '' : String(v); }
 
@@ -357,16 +357,24 @@
       if (el.chkAuto.checked) startAuto(); else stopAuto();
     });
     el.chkMode.addEventListener('change', () => {
+      console.log('[logs:view] checkbox change event triggered');
       state.complete = el.chkMode.checked;
       console.log('[logs:view] modo completo:', state.complete);
       if (state.complete) {
         el.table.classList.remove('simple');
         console.log('[logs:view] removida classe simple, colunas avançadas devem aparecer');
+        console.log('[logs:view] table classes:', el.table.className);
       }
       else {
         el.table.classList.add('simple');
         console.log('[logs:view] adicionada classe simple');
+        console.log('[logs:view] table classes:', el.table.className);
       }
+    });
+    
+    // Adicionar evento click também para garantir funcionamento
+    el.chkMode.addEventListener('click', () => {
+      console.log('[logs:view] checkbox click event triggered');
     });
     el.txtSearch.addEventListener('input', (e) => { state.filter = e.target.value; applyFilters(); });
     el.selSort.addEventListener('change', (e) => { state.sort = e.target.value; applyFilters(); });
