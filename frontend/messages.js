@@ -77,20 +77,6 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
- // Tool: ConsAGENT (RAG chatbot)
- 'ConsAGENT': {
-  short: '<em>Agente OpenAI (experimental)</em>',
-  extra: [
-    '<br>',
-    'O <strong>ConsAGENT</strong> é um projeto experimental de agente de IA (Chatkit OpenAI) da Conscienciologia. ',
-    'Ele pode interagir com você e direcionar de modo inteligente sua solicitação. ',
-    'Ainda está em <em>fase de desenvolvimento</em>, mas já consegue resolver problemas, responder perguntas e fornecer informações sobre a Conscienciologia.<br>',
-    '<strong>Dicas:</strong><br>',
-    '<strong>1.</strong> Análise da escrita de Verbetes.<br>',
-    '<strong>2.</strong> Auxílio na elaboração de definições e exemplos.<br>',
-    '<strong>3.</strong> Mais funcionalidades em breve...'
-  ].join('\n')
-},
 
   // -----------------------------------------------------------------------------------------------------------------------
 
@@ -100,7 +86,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> nos livros e tratados do professor Waldo Vieira.<br>',
-      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Realiza pesquisa <em>léxica</em> de palavras ou termos.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.',
     ].join('\n')
   },
@@ -112,7 +98,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> na <em>Definologia</em> dos verbetes - e não apenas nos títulos.<br>',
-      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Realiza pesquisa <em>léxica</em> de palavras ou termos.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.<br>',
       'Abra o <em>PDF do verbete</em> diretamente na janela de resultados.',
     ].join('\n')
@@ -125,7 +111,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'Ferramenta de <strong>busca de termos</strong> nas <em>Questões do Conscienciograma</em>.<br>',
-      'Realiza pesquisa <em>léxica</em> e/ou <em>semântica</em>.<br>',
+      'Realiza pesquisa <em>léxica</em> de palavras ou termos.<br>',
       'Ao final baixe a listagem completa dos resultados em <em>Word</em>.',
     ].join('\n')
   },
@@ -133,7 +119,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Bibliomancia Digital
   'Bibliomancia Digital': {
-    short: '<em>Sorteio de ortopensata do Léxico</em>',
+    short: '<em>Sorteio de ortopensatas do Léxico</em>',
     extra: [
       '<br>',
       'Busca aleatoriamente uma pensata do LO e comenta com auxílio da IA. ',
@@ -145,7 +131,7 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
-  
+  /* 
   // Tool: Quiz Conscienciológico
   'Quiz Conscienciológico': {
     short: '<em>Quiz de perguntas & respostas</em>',
@@ -158,7 +144,7 @@ const TOOL_MESSAGES = {
       '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',
     ].join('\n')
   },
-
+ */
 
   // Tool: ICGE (external)
     'ICGE': {
@@ -175,7 +161,7 @@ const TOOL_MESSAGES = {
       'Site da Encyclossapiens.',
     ].join('\n'),
   },
-
+/* 
   
   // Tool: Portal da Conscienciologia (external)
   'Portal da Conscienciologia': {
@@ -184,7 +170,7 @@ const TOOL_MESSAGES = {
       'Portal geral da CCCI.',
     ].join('\\n'),
   },
-
+ */
   // Tool: Portal de Periódicos (external)
   'Portal de Periódicos': {
     short: '<em>Portal de periódicos da Conscienciologia</em>',
@@ -198,24 +184,15 @@ const TOOL_MESSAGES = {
 
 
 
-// '<strong>Observação:</strong> os sistemas RAG funcionam com busca vetorial. No momento, o ConsBOT não possui informações do <em>número da página</em> das fontes de referência. ',
-//       'Para obter essa informação, é necessário consultar o livro na edição desejada. ',
-//       'O ConsBOT é um <em>minimecanismo</em> de IA em evolução.',
-
-
-
-
 // Map visible H3 titles in index.html to canonical keys in TOOL_MESSAGES
 const TOOL_ALIASES = {
   'OpenAI ConsGPT': 'ConsGPT',
   'Google ConsLM': 'ConsLM',
-  'ConsAGENT': 'ConsAGENT',
   'Pesquisa em Livros & Tratados': 'Livros & Tratados', // ajuste aqui
   'Definologia de Verbetes': 'Definologia de Verbetes',
   'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
   'Bibliomancia Digital': 'Bibliomancia Digital',
-  'Caderno de Estudos': 'Caderno de Estudos'
 };
 
 // Apply messages to the DOM
@@ -238,7 +215,7 @@ function applyMessages() {
         if (panel.classList.contains('bots')) {
           descr = 'Assistentes de conversação';
         } else if (panel.classList.contains('busca')) {
-          descr = 'Pesquisa léxica e semântica';
+          descr = 'Pesquisa léxica nos livros';
         } else if (panel.classList.contains('apps')) {
           descr = 'Aplicativos para autopesquisa';
         } else if (panel.classList.contains('utils')) {

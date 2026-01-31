@@ -161,13 +161,6 @@ function delDuplicateItems(flattenedData) {
 
 
 
-
-
-
-
-
-
-
 // Runtime helpers for MAX_RESULTS_DISPLAY
 function getMaxResultsCap() {
   const fallback = typeof MAX_RESULTS_DISPLAY === 'number' ? MAX_RESULTS_DISPLAY : 200;

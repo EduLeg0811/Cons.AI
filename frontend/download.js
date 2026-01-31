@@ -5,7 +5,7 @@ let currentSearchTerm = '';
 
 /**
  * Initialize download buttons for a specific search type
- * @param {string} searchType - Type of search (lexical, semantic, verbetopedia, mancia, ragbot)
+ * @param {string} searchType
  * @param {string} searchTerm - Current search term
  */
 function initDownloadButtons(searchType, searchTerm = '') {
@@ -47,6 +47,22 @@ function initDownloadButtons(searchType, searchTerm = '') {
  * Handle DOCX download button click
  */
 async function handleDocxDownload() {
+    // LOG de download iniciado
+    try {
+        if (window.logEvent) {
+            window.logEvent({
+                event: 'download_initiated',
+                module: currentSearchType || 'unknown',
+                format: 'docx',
+                term: currentSearchTerm || '',
+                meta: {
+                    results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Failed to log download event:', e);
+    }
    
       
     const button = this;
@@ -59,8 +75,44 @@ async function handleDocxDownload() {
     
     try {
         await downloadResults('docx', lastResults, currentSearchTerm, currentSearchType);
+        
+        // LOG de download concluído com sucesso
+        try {
+            if (window.logEvent) {
+                window.logEvent({
+                    event: 'download_completed',
+                    module: currentSearchType || 'unknown',
+                    format: 'docx',
+                    term: currentSearchTerm || '',
+                    meta: {
+                        results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Failed to log download completed event:', e);
+        }
     } catch (error) {
         console.error('Download failed:', error);
+        
+        // LOG de download falhou
+        try {
+            if (window.logEvent) {
+                window.logEvent({
+                    event: 'download_failed',
+                    module: currentSearchType || 'unknown',
+                    format: 'docx',
+                    term: currentSearchTerm || '',
+                    meta: {
+                        error: error.message || 'Unknown error',
+                        results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Failed to log download failed event:', e);
+        }
+        
         alert('Download failed. Please try again.');
     } finally {
         if (button) {
@@ -89,26 +141,9 @@ function updateResults(data) {
     const searchType = data.search_type;
 
 
-    // Verificar data contém dados em lexical ou semantic, e apenas se houver dados inicializa o botão de download
-    // const data = {
-    //     search_term: term,
-    //     search_type: 'lexical',
-    //     source_array: uniqueSources,
-    //     max_results: maxResults,
-    //     group_results_by_book: groupResults,
-    //     definologia: null,
-    //     descritivo: null,
-    //     lexical: responseData.results,
-    //     semantic: null
-    // };
-
-
-    //console.log('lastResults: ', lastResults);
-    //console.log('currentSearchTerm: ', currentSearchTerm);
-    //console.log('currentSearchType: ', currentSearchType);
 
    // Verificar se há resultados em lexical ou semantic antes de inicializar o botão de download
-    if ((data.lexical && data.lexical.length > 0) || (data.semantic && data.semantic.length > 0)) {
+    if ((data.lexical && data.lexical.length > 0)) {
 
         lastResults = data;
         currentSearchTerm = term;

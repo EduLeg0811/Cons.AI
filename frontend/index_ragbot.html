@@ -457,7 +457,6 @@
                         const raw = searchEl.dataset?.lastQuery || searchEl.value || '';
                         const val = raw;
                         try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-                        try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length, trigger: 'enter' }); } catch {}
                         hideSearchHint();
                         // Dispara o mesmo fluxo do botão de envio
                         if (submitBtn) {
@@ -472,7 +471,6 @@
                     const raw = el && el.dataset ? (el.dataset.lastQuery || el.value || '') : ((el && el.value) || '');
                     const val = raw;
                     try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-                    try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'ragbot', value: val, length: val.length }); } catch {}
                     hideSearchHint();
                 });
             }

@@ -48,7 +48,7 @@ def generate_llm_answer(
     chat_id="default",
     timeout_s: int = 60,
     max_retries: int = 2,
-    # novos parâmetros opcionais para GPT-5 / GPT-5.1
+    # novos parâmetros opcionais para GPT-5 / GPT-5.1 / GPT-5.2
     reasoning_effort: str = "none",   # "none" | "minimal" | "low" | "medium" | "high"
     verbosity: str = "low",          # "low" | "medium" | "high"
 ):
@@ -347,19 +347,6 @@ def extract_citations_string(response_main) -> str:
     return "; ".join(parts)
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

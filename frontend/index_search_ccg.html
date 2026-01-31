@@ -42,7 +42,7 @@
             <div class="navbar-center">
                 <div class="navbar-text">
                     <div class="navbar-title-modules">Conscienciograma</div>
-                    <div class="navbar-subtitle-modules">Busca Léxica e Semântica</div>
+                    <div class="navbar-subtitle-modules">Busca Léxica</div>
                 </div>
             </div>
 
@@ -98,13 +98,9 @@
                     </span>
 
                         <strong>Configuração:</strong><br>
-                        Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong><em>Léxica</em></strong> | <strong><em>Semântica</em></strong>).<br>
-                        <br>
-                        1. <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> nas questões do Conscienciograma.<br>
-                        Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
-                        <br>
-                        2. <strong><em>Pesquisa Semântica</em></strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>
-                        Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com os descritivos "Estado Vibracional".<br>
+                        1.  Entre a palavra ou frase <em>exata</em> nas questões do Conscienciograma.<br>
+                        2.  Use termos curtos e específicos para resultados mais precisos.<br>
+                        3.  Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
                         <br>
                         <strong>Observações sobre os resultados:</strong><br>
                         1.  <strong>Cosmovisão.</strong> Consulte sempre a folha do Conscienciograma para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
@@ -126,18 +122,7 @@
             </div>
 
             <div class="options-content" id="optionsContent">
-                <!-- Search Type Toggle -->
-                <div class="search-type-checkboxes" data-module="search_type" data-mode="multi">
-                    <div class="search-type-option">
-                        <div class="search-type-pill" data-value="lexical">Léxica</div>
-                        <div class="search-type-label">Busca por termos exatos</div>
-                    </div>
 
-                    <div class="search-type-option">
-                        <div class="search-type-pill" data-value="semantic">Semântica</div>
-                        <div class="search-type-label">Busca por afinidade de sentido</div>
-                    </div>
-                </div>
 
                 <!-- Config do Modulo (pills + opções) -->
                 <div class="book-pill-static" data-value="CCG" style="background-color: var(--search-primary); color: var(--white);">
@@ -234,24 +219,7 @@
             localStorage.setItem(window.STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
         }
     
-        // // ================================================================
-        // // 2. Toggle de livros
-        // // ================================================================
-        // document.querySelectorAll('.book-pill').forEach(pill => {
-        //     pill.addEventListener('click', () => {
-        //         pill.classList.toggle('active');
-        //     });
-        // });
-    
-        // ================================================================
-        // 3. Toggle de Search Type (Léxico / Semântico)
-        // ================================================================
-        document.querySelectorAll('.search-type-pill').forEach(pill => {
-            pill.addEventListener('click', () => {
-                pill.classList.toggle('active');
-            });
-        });
-    
+        
         // ================================================================
         // 4. Abrir/fechar painel
         // ================================================================
@@ -293,15 +261,7 @@
                 saved.module = 'ccg';
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
-    
-                // Search Type
-                if (Array.isArray(saved.searchType)) {
-                    const set = new Set(saved.searchType);
-                    document.querySelectorAll('.search-type-pill').forEach(pill => {
-                        pill.classList.toggle('active', set.has(pill.dataset.value));
-                    });
-                }
-    
+        
                 // Max Results
                 if (typeof saved.maxResults === 'number') {
                     const inp = document.getElementById('maxResults');
@@ -327,8 +287,6 @@
             saveBtn.addEventListener('click', function() {
                 const books = [FIXED_BOOK]; // Sempre forçado
     
-                const searchType = Array.from(document.querySelectorAll('.search-type-pill.active'))
-                    .map(p => p.dataset.value);
                 const maxInput = document.getElementById('maxResults');
                 const rawMax = maxInput?.value ?? 10;
                 const maxResults = normalizeMaxResults(rawMax);
@@ -340,7 +298,6 @@
                 try { saved = JSON.parse(localStorage.getItem(window.STORAGE_KEY) || '{}'); } catch (e) {}
                 const newSettings = Object.assign({}, saved, {
                     module: 'ccg',
-                    searchType,
                     maxResults,
                     groupResults,
                     books
@@ -373,8 +330,15 @@
             if (e.key === 'Enter' && !e.shiftKey) {
               const val = searchEl.value || '';
               try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-              if (window.logEvent) window.logEvent({ event: 'search_submit', module: 'ccg', value: val, length: val.length, trigger: 'enter' });
-              try { (function(){ const el = document.getElementById('searchHint'); if (!el) return; if (!el.classList.contains('hidden')) el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); el.style.display='none'; })(); } catch {}
+              try { 
+                const el = document.getElementById('searchHint'); 
+                if (!el) return; 
+                if (!el.classList.contains('hidden')) {
+                  el.classList.add('hidden'); 
+                  el.setAttribute('aria-hidden','true'); 
+                  el.style.display='none'; 
+                }
+              } catch {}
             }
           }catch(err){}
         });
@@ -384,12 +348,18 @@
           try{
             const val = (document.getElementById('searchInput')?.value) || '';
             try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-            if (window.logEvent) window.logEvent({ event: 'search_submit', module: 'ccg', value: val, length: val.length });
           }catch(e){}
-          try { (function(){ const el = document.getElementById('searchHint'); if (!el) return; if (!el.classList.contains('hidden')) el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); el.style.display='none'; })(); } catch {}
+          try { 
+            const el = document.getElementById('searchHint'); 
+            if (!el) return; 
+            if (!el.classList.contains('hidden')) {
+              el.classList.add('hidden'); 
+              el.setAttribute('aria-hidden','true'); 
+              el.style.display='none'; 
+            }
+          } catch {}
         });
       }
     })();
     </script>
     
-

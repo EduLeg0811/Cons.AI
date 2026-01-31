@@ -237,6 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
           // Add user message to chat
           chatMessage_id = addChatMessage('user', term);
 
+          // LOG de mensagem enviada
+          try {
+            if (window.logEvent) {
+              window.logEvent({
+                event: 'chat_message_sent',
+                module: 'ragbot',
+                value: term,
+                meta: {
+                  mode: currentRagbotVectorStore,
+                  chat_id: getOrCreateChatId(RAGBOT_CHAT_SCOPE),
+                  message_length: term.length
+                }
+              });
+            }
+          } catch (e) {
+            console.error('Failed to log chat message:', e);
+          }
+
           // Add loading message
           //const loadingId = addChatMessage('bot', '<i class="fas fa-spinner fa-spin"></i> Thinking...', true);
 
@@ -289,12 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
           
-          
-          // *****************************************************************************************
-
           // Add bot message
           const botText = response.text ?? response.response ?? '';
           chatMessage_id = addChatMessage('bot', botText, false);
+
+          // LOG de resposta recebida
+          try {
+            if (window.logEvent) {
+              window.logEvent({
+                event: 'chat_response_received',
+                module: 'ragbot',
+                value: botText.substring(0, 100), // primeiros 100 chars
+                meta: {
+                  mode: currentRagbotVectorStore,
+                  chat_id: chat_id,
+                  response_length: botText.length,
+                  metadata: extractMetadata(response, 'ragbot')
+                }
+              });
+            }
+          } catch (e) {
+            console.error('Failed to log chat response:', e);
+          }
 
           // Clear input
           searchInput.value = '';
@@ -325,8 +359,25 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: new Date().toISOString()
           });
 
-
         } catch (error) {
+            // LOG de erro do chat
+            try {
+              if (window.logEvent) {
+                window.logEvent({
+                  event: 'chat_error',
+                  module: 'ragbot',
+                  value: error.message,
+                  meta: {
+                    error_type: error.name,
+                    mode: currentRagbotVectorStore,
+                    chat_id: getOrCreateChatId(RAGBOT_CHAT_SCOPE)
+                  }
+                });
+              }
+            } catch (e) {
+              console.error('Failed to log chat error:', e);
+            }
+
             console.error('Error in ragbot:', error);
 
             // Remove loading message and show error
@@ -347,14 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           controller = null;
         }
-   
 
-          
-            // Dismiss loading state
-            //removeChatMessageById(chatMessage_id);
-          
     }
-
 
     //______________________________________________________________________________________________
     // Seletor de modo do RAGbot (WALDO / AUTORES / REVISTAS / INGLÊS)
@@ -368,33 +413,33 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
 
         case 'REVISTAS':
-          // 3) REVISTAS: OPENAI_RAGBOT = "REVISTAS"; INSTRUCTIONS_RAGBOT = INST_REVISTAS
-          currentRagbotVectorStore = 'REVISTAS';
-          currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
-          break;
+            // 3) REVISTAS: OPENAI_RAGBOT = "REVISTAS"; INSTRUCTIONS_RAGBOT = INST_REVISTAS
+            currentRagbotVectorStore = 'REVISTAS';
+            currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
+            break;
 
         case 'ENGLISH':
-          // 4) INGLES: OPENAI_RAGBOT = "INGLES"; INSTRUCTIONS_RAGBOT = INST_INGLES
-          currentRagbotVectorStore = 'ENGLISH';
-          currentRagbotInstructions = INST_ENGLISH;
-          break;
+            // 4) INGLES: OPENAI_RAGBOT = "INGLES"; INSTRUCTIONS_RAGBOT = INST_INGLES
+            currentRagbotVectorStore = 'ENGLISH';
+            currentRagbotInstructions = INST_ENGLISH;
+            break;
 
         case 'WALDO':
         default:
-          // 1) WALDO: OPENAI_RAGBOT = "ALLWV"; INSTRUCTIONS_RAGBOT = INST_NORMAL
-          currentRagbotVectorStore = 'ALLWV';
-          currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
-          break;
+            // 1) WALDO: OPENAI_RAGBOT = "ALLWV"; INSTRUCTIONS_RAGBOT = INST_NORMAL
+            currentRagbotVectorStore = 'ALLWV';
+            currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
+            break;
 
         case 'MINI':
-          // 5) MINI: OPENAI_RAGBOT = "MINI"; INSTRUCTIONS_RAGBOT = INST_MINI
-          currentRagbotVectorStore = 'MINI';
-          currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
-          break;
-      }
+            // 5) MINI: OPENAI_RAGBOT = "MINI"; INSTRUCTIONS_RAGBOT = INST_MINI
+            currentRagbotVectorStore = 'MINI';
+            currentRagbotInstructions = INSTRUCTIONS_RAGBOT;
+            break;
+    }
 
-      // Reflete no CONFIG, caso outros módulos usem
-      try {
+    // Reflete no CONFIG, caso outros módulos usem
+    try {
         if (!window.CONFIG) window.CONFIG = {};
         window.CONFIG.OPENAI_RAGBOT = currentRagbotVectorStore;
         window.CONFIG.INSTRUCTIONS_RAGBOT = currentRagbotInstructions;

@@ -91,7 +91,7 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
         ]
 
         logger.info(f"[lexical_search_in_files] Livro: {book}")
-        logger.info(f"[lexical_search_in_files] Candidates: {candidates}")
+        #logger.info(f"[lexical_search_in_files] Candidates: {candidates}")
         for c in candidates:
             if c.exists():
                 return c

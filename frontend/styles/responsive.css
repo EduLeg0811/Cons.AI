@@ -142,7 +142,8 @@
 
 /* Verbetopedia and CCG TITLE on very small screens */
 .page-verbetopedia .verbetopedia-header .header-text,
-.page-ccg .verbetopedia-header .header-text {
+.page-ccg .verbetopedia-header .header-text, 
+.page-search-book .search-hint {
     margin-bottom: 0.2em;
     font-size: var(--text-xs);
 }

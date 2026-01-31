@@ -232,7 +232,7 @@ const format_paragraph_LO = (item, query) => {
 
     const title = item.title || '';
     const paragraph_number = item.number || '';
-    const score = item.score || 0.00;
+    const score = 0.00;
     const text = item.markdown || item.content_text || item.text || '';
     let source = item.source || '';
     source = bookName(source);
@@ -258,10 +258,6 @@ const format_paragraph_LO = (item, query) => {
       if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
-
-    if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
-
     const metaBadges = badgeParts.join('');
 
     // ------------------------------------------------------------------------------------------------------------------------- 
@@ -307,9 +303,6 @@ const format_paragraph_DAC = (item, query) => {
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
    
-    if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-      else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
-
     metaBadges = badgeParts.join('');
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -375,9 +368,6 @@ const format_paragraph_CCG = (item, query) => {
       if (score > 0.0)     badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
   }
-
-  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
  
   const metaBadges = badgeParts.join('');
 
@@ -461,9 +451,6 @@ const format_paragraph_EC = (item, query) => {
     }
   }
   
-  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-    else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
-
   const metaBadges = badgeParts.join('');
   // -------------------------------------------------------------------------------------------------------------------------
 
@@ -541,9 +528,6 @@ const format_paragraph_QUEST = (item, query) => {
     if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
   }
 
-  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-  else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
-
   const metaBadges = badgeParts.join('');
 
   // ------------------------------------------------------------------------------------------------------------------------- 
@@ -563,10 +547,6 @@ const format_paragraph_QUEST = (item, query) => {
     ${metaBadges}
   </div>
 `.replace(/\n\s*/g, '');
-
-
-
-
 
 
   return finalHtml;
@@ -609,9 +589,6 @@ const format_paragraph_Default = (item, query) => {
     if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
     if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
   }
-
-  if (score == 0.0) badgeParts.push(`<span class="metadata-badge estilo3">Exata</span>`)
-  else badgeParts.push(`<span class="metadata-badge estilo4">Contextual</span>`);
 
   const metaBadges = badgeParts.join('');
 

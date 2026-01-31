@@ -320,35 +320,6 @@
                     </div>
                 </div>
 
-
-
-                <!-- semantic Panel
-                <div class="tool-panel sem">
-                    <div class="panel-header">
-                        <div class="panel-info">
-                            <h2>Deep Research IA</h2>
-                            <p></p>
-                        </div>
-                    </div>
-                    <div class="tools-list">
-                        
-                        <a href="index_deepdive.html" class="tool-card compact">
-                            <div class="tool-icon semantic">
-                                <i class="fa-solid fa-book-open-reader"></i>
-                            </div>
-                            <div class="tool-info">
-                                <h3>Caderno de Estudos</h3>
-                                <p></p>
-                                <div class="tool-info-extra"></div>
-                            </div>
-                        </a>
-
-                    </div>
-                </div>
-            -->
-
-
-
                 <!-- Utils Panel -->
                 <div class="tool-panel utils">
                     <div class="panel-header">
@@ -380,16 +351,7 @@
                             </div>
                         </a>
 
-                        <a href="https://conscienciologia.org.br/" class="tool-card compact" target="_blank" rel="noopener noreferrer">
-                            <div class="tool-icon encyclopedia">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                            <div class="tool-info">
-                                <h3>Portal da Conscienciologia</h3>
-                                <p></p>
-                            </div>
-                        </a>
-
+                      
                         <a href="https://periodicos.conscienciologia.org.br/" class="tool-card compact" target="_blank" rel="noopener noreferrer">
                             <div class="tool-icon encyclopedia">
                                 <i class="fas fa-globe"></i>
@@ -460,7 +422,7 @@
           if (!card) return;
           const panel = card.closest('.tool-panel');
           const panelClasses = panel ? Array.from(panel.classList) : [];
-          const groups = ['bots','search','apps','semantic','utils'];
+          const groups = ['bots','search','apps','utils'];
           const module_group = panelClasses.find(c => groups.includes(c));
           const module_label = (card.querySelector('h3')?.textContent || card.getAttribute('aria-label') || card.textContent || '').trim();
           const module_href = card.getAttribute('href') || '';
@@ -807,7 +769,6 @@
               <label for="cfg-model-llm">MODEL_LLM</label>
               <select id="cfg-model-llm">
                 <option value="gpt-5.2">gpt-5.2</option>
-                <option value="gpt-5.1">gpt-5.1</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
                 <option value="gpt-4.1-mini">gpt-4.1-mini</option>
               </select>
@@ -816,7 +777,6 @@
               <label for="cfg-model-ragbot">MODEL_RAGBOT</label>
               <select id="cfg-model-ragbot">
                 <option value="gpt-5.2">gpt-5.2</option>
-                <option value="gpt-5.1">gpt-5.1</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
                 <option value="gpt-4.1-mini">gpt-4.1-mini</option>
               </select>

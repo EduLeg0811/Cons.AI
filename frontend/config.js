@@ -5,8 +5,8 @@
 const CONFIG = {
   // Model settings
   MODEL_LLM: 'gpt-4.1-mini',
-  // MODEL_RAGBOT: 'gpt-5.2',
-  MODEL_RAGBOT: 'gpt-4.1-mini',
+  MODEL_RAGBOT: 'gpt-5.2',
+  //MODEL_RAGBOT: 'gpt-4.1-mini',
  
   
   // Generation settings
@@ -73,8 +73,8 @@ window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 // Central mapping of group -> colors (primary/secondary). Changing here updates UI theme.
 window.GROUP_COLORS = window.GROUP_COLORS || {
   search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
-  apps:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
-  semantic: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
+  //semantic:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
+  apps: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
   bots:   { primary: '#10b981', secondary: '#34d399' }, // green
   utils:  { primary: '#f87171', secondary: '#fca5a5' }, // light red (Links Externos)
 };
@@ -85,11 +85,7 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
   // Search tools
   lexical: 'search',
   lexverb: 'search',
-  // semantic apps
-  semantic: 'semantic',
-  verbetopedia: 'semantic',
-  ccg: 'semantic',
-  deepdive: 'semantic',
+  ccg: 'search',
   // Bots
   ragbot: 'bots',
   // Other apps
@@ -111,10 +107,6 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
     if (C.apps) {
       root.style.setProperty('--apps-primary', C.apps.primary);
       root.style.setProperty('--apps-secondary', C.apps.secondary || C.apps.primary);
-    }
-    if (C.semantic) {
-      root.style.setProperty('--sem-primary', C.semantic.primary);
-      root.style.setProperty('--sem-secondary', C.semantic.secondary || C.semantic.primary);
     }
     if (C.bots) {
       root.style.setProperty('--bots-primary', C.bots.primary);
@@ -205,26 +197,6 @@ Você é um assistente ChatGPT especializado em Conscienciologia, com acesso a a
 - "A {termo} é ..." para termos femininos.
 Use apenas os documentos disponíveis de Conscienciologia como fonte. Caso não haja material suficiente, retorne exatamente: "Não há definição disponível para este termo nos materiais consultados."
 Realce termos-chave em ordem crescente: *itálico*, **negrito**, ***negrito-itálico***. Não inclua listas, títulos, cabeçalhos, notas, exemplos, explicações adicionais ou citações de referência. A saída deve ser apenas o parágrafo final, em Markdown limpo, sem metainstruções.
-`;
-
-
-
-const SEMANTIC_DESCRIPTION = `
-Você é um assistente especialista em Conscienciologia. Gere descritores semânticos para busca vetorial (RAG), conforme abaixo:
-Diretrizes:
-1. Considere apenas o contexto conscienciológico; ignore outros significados.
-2. Gere exatamente três termos que representem o núcleo conceitual da query.
-3. Responda: "No contexto da Conscienciologia, {query} pode ser descrita pelos seguintes termos: Termo1; Termo2; Termo3."
-4. Use apenas substantivos ou sintagmas nominais (sem artigos, preposições, conjunções ou frases completas).
-5. Cada termo deve ser conceitualmente distinto; evite variações morfológicas.
-6. A saída deve ser uma linha única, no formato:
-Termo1; Termo2; Termo3
-7. Não explique, comente ou justifique os termos.
-8. Não use aspas, travessões ou pontuação extra.
-Exemplos:
-- Query: Proéxis; Saída: programação existencial; curso intermissivo; compléxis
-- Query: Serenão; Saída: consciência serenona; megafraternidade; evoluciólogo
-- Query: Dia Matemático; Saída: homeostase holossomática; autocoerência; autodesassédio
 `;
 
 
@@ -442,6 +414,11 @@ if (VERSION_DEVELOPMENT) {
       try {
         const el = e.target;
         if (shouldSkip(el) || !window.logEvent) return;
+        
+        // EXCLUIR inputs de busca para evitar logs duplicados
+        if (el.id && (el.id.includes('searchInput') || el.id.includes('Input'))) return;
+        if (el.className && el.className.includes('search')) return;
+        
         if (e.key === 'Enter' && !e.shiftKey) {
           if (window.__suppressInputSubmitTs && (Date.now() - window.__suppressInputSubmitTs < 600)) { window.__suppressInputSubmitTs = 0; return; }
           const val = (el.value||'').slice(0,200);
@@ -453,13 +430,13 @@ if (VERSION_DEVELOPMENT) {
     // Log on explicit Send/Click of the search button (when not using a form submit)
     document.addEventListener('click', function(e){
       try {
-        if (!window.logEvent) return;
-        const btn = e.target && (e.target.closest ? e.target.closest('#searchButton') : null);
-        if (!btn) return;
-        if (window.__suppressInputSubmitTs && (Date.now() - window.__suppressInputSubmitTs < 600)) { window.__suppressInputSubmitTs = 0; return; }
-        // Try to find the primary search input
-        const el = document.getElementById('searchInput');
+        const el = e.target;
         if (!el || shouldSkip(el)) return;
+        
+        // EXCLUIR botões de busca para evitar logs duplicados
+        if (el.id && (el.id.includes('searchButton') || el.id.includes('Button'))) return;
+        if (el.className && el.className.includes('search')) return;
+        
         const val = (el.value||'').slice(0,200);
         const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
         window.logEvent({ event: 'input_submit', trigger: 'click', field: getFieldMeta(el), value: val, length: val.length });

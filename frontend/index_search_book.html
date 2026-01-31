@@ -38,7 +38,7 @@
             <div class="navbar-center">
                 <div class="navbar-text">
                     <div class="navbar-title-modules">Livros & Tratados</div>
-                    <div class="navbar-subtitle-modules">Busca Léxica e Semântica</div>
+                    <div class="navbar-subtitle-modules">Busca Léxica</div>
                 </div>
             </div>
 
@@ -88,20 +88,17 @@
             <div id="searchHint" class="search-hint">
                 <span>
 
-                    <span style="font-size: 0.8rem !important;">
+                    <span style="font-size: 0.9rem !important;">
                     <strong>Busca de <strong><em>palavras</em></strong> ou <strong><em>termos</em></strong> nas fontes selecionadas</strong><br>
                     <br>
                  
                     
                     <strong>Dicas de Pesquisa:</strong><br>
-                    Clique no ícone de <em>configurações</em> acima para selecionar o modo de busca (<strong>Léxica</strong> | <strong>Semântica</strong>) e escolher os <strong>livros</strong> para pesquisa.<br>
-                    Máximo de 5 livros simultâneos por pesquisa.<br>
-                    <br>
-                    1. <strong><em>Pesquisa Léxica</em></strong>: procura pelo termo <em>exato</em> nos textos.<br>
-                    Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
-                    <br>
-                    2. <strong><em>Pesquisa Semântica</em></strong>: procura por parágrafos com <em>afinidade de conteúdo</em> ao termo pesquisado.<br>
-                    Por exemplo, ao buscar por "EV", a IA irá retornar também trechos com o descritivo "Estado Vibracional" e "bioenergias".<br>
+                    1.  Clique no ícone de <em>configurações</em> acima para escolher os <strong>livros</strong> para pesquisa.<br>
+                    2.  Máximo de 5 livros simultâneos por pesquisa.<br>
+                    3.  Entre com a palavra ou frase <em>exata</em> para buscar nos textos.<br>
+                    4.  Use termos curtos e específicos para resultados mais precisos.<br>
+                    5.  Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
                     <br>
                     <strong>Observações sobre os resultados:</strong><br>
                     1.  <strong>Cosmovisão.</strong> Consulte sempre o livro ou tratado para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
@@ -114,32 +111,8 @@
 
             <div class="options-panel" id="optionsPanel">
 
-                <div class="options-header" onclick="toggleOptions()">
-                    <h3 class="options-title">Opções de Pesquisa</h3>
-                    <button class="options-toggle" id="optionsToggle">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
-
+               
                 <div class="options-content" id="optionsContent">
-
-
-                    <!-- Search Type Toggle -->
-                    <div class="search-type-checkboxes" data-module="search_type" data-mode="multi">
-
-                        <!-- Opção Léxica -->
-                        <div class="search-type-option">
-                            <div class="search-type-pill" data-value="lexical">Léxica</div>
-                            <div class="search-type-label">Busca por termos exatos</div>
-                        </div>
-
-                        <!-- Opção Semântica -->
-                        <div class="search-type-option">
-                            <div class="search-type-pill" data-value="semantic">Semântica</div>
-                            <div class="search-type-label">Busca por afinidade de sentido</div>
-                        </div>
-
-                    </div>
 
 
                     <!-- Config do Modulo (pills + opções) -->
@@ -341,15 +314,7 @@
             pill.style.cursor = 'pointer'; // Garante que o cursor mude para pointer
         });
     
-        // ================================================================
-        // 3. Toggle de Search Type (Léxico / Semântico)
-        // ================================================================
-        document.querySelectorAll('.search-type-pill').forEach(pill => {
-            pill.addEventListener('click', () => {
-                pill.classList.toggle('active');
-            });
-        });
-    
+       
         // ================================================================
         // 4. Abrir/fechar painel
         // ================================================================
@@ -405,15 +370,7 @@
                         }
                     });
                 }
-    
-                // Search Type
-                if (Array.isArray(saved.searchType)) {
-                    const set = new Set(saved.searchType);
-                    document.querySelectorAll('.search-type-pill').forEach(pill => {
-                        pill.classList.toggle('active', set.has(pill.dataset.value));
-                    });
-                }
-    
+        
                 // Max Results
                 if (typeof saved.maxResults === 'number') {
                     const inp = document.getElementById('maxResults');
@@ -437,14 +394,12 @@
             saveBtn.addEventListener('click', function() {
                 const books = Array.from(document.querySelectorAll('.book-pill.active'))
                     .map(p => p.dataset.value);
-                const searchType = Array.from(document.querySelectorAll('.search-type-pill.active'))
-                    .map(p => p.dataset.value);
                 const maxInput = document.getElementById('maxResults');
                 const rawMax = maxInput?.value ?? 10;
                 const maxResults = normalizeMaxResults(rawMax);
                 const groupResults = !!document.getElementById('groupResults')?.checked;
     
-                const settings = { books, searchType, maxResults, groupResults };
+                const settings = { books, maxResults, groupResults };
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
 
                 
@@ -472,7 +427,6 @@
                     if (e.key === 'Enter' && !e.shiftKey) {
                         const val = searchEl.value || '';
                         try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-                        try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length, trigger: 'enter' }); } catch {}
                         hideSearchHint();
                     }
                 });
@@ -481,7 +435,6 @@
                 submitBtn.addEventListener('click', ()=>{
                     const val = (document.getElementById('searchInput')?.value) || '';
                     try { window.__suppressInputSubmitTs = Date.now(); } catch {}
-                    try { window.logEvent && window.logEvent({ event: 'search_submit', module: 'book', value: val, length: val.length }); } catch {}
                     hideSearchHint();
                 });
             }

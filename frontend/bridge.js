@@ -1,6 +1,5 @@
 // escopo de módulo
 let _lexicalController = null;
-let _semanticController = null;
 let _llmQueryController = null;
 let _randomPensataController = null;
 let _downloadController = null;  // Added download controller
@@ -69,73 +68,6 @@ async function call_lexical(parameters) {
       throw error;
   }
 }
-
-
-
-//_________________________________________________________
-// semantic Search
-//_________________________________________________________
-async function call_semantic(parameters) {
-
-
-  if (_semanticController) _semanticController.abort();
-  _semanticController = new AbortController();
-
-
-    console.log(' SEMANTIC SEARCH REQUEST:', {
-        endpoint: `${apiBaseUrl}/semantic_search`,
-        parameters: JSON.parse(JSON.stringify(parameters)) // Deep clone
-    });
-
-    try {
-        const response = await fetch(apiBaseUrl + '/semantic_search', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(parameters),
-            signal: _semanticController.signal
-        });
-
-        if (!response.ok) {
-            const err = await response.text().catch(() => '');
-            throw new Error(`HTTP ${response.status} ${err}`);
-        }
-
-        const responseData = await response.json();
-        
-        console.log(' SEMANTIC SEARCH RESPONSE:', {
-            data: responseData,
-            type: typeof responseData,
-            isArray: Array.isArray(responseData),
-            keys: Object.keys(responseData)
-        });
-        
-        // Log detailed structure if it's an object
-        if (responseData && typeof responseData === 'object') {
-            console.debug(' SEMANTIC SEARCH RESPONSE STRUCTURE:', {
-                firstLevelKeys: Object.keys(responseData),
-                sampleFirstItem: responseData[0] ? 
-                    Object.keys(responseData[0]) : 'No items in response'
-            });
-        }
-
-          // Format response
-          const formattedResponse = {
-            count: responseData.length,
-            search_type: "semantic",
-            term: parameters.term,
-            results: responseData,
-          };
-
-        console.log(`********bridge.js - call_semantic*** [formattedResponse]:`, formattedResponse);
-
-        return formattedResponse;
-
-    } catch (error) {
-        console.error(' SEMANTIC SEARCH EXCEPTION:', error);
-        throw error;
-    }
-}
-
 
 
 
@@ -295,7 +227,6 @@ async function call_download(format, payload) {
 // ---------------------------------------------------------
 function abortAllRequests() {
   try { _lexicalController?.abort(); } catch {}
-  try { _semanticController?.abort(); } catch {}
   try { _llmQueryController?.abort(); } catch {}
   try { _randomPensataController?.abort(); } catch {}
   try { _downloadController?.abort(); } catch {}

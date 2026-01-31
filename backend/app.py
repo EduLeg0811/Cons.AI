@@ -31,9 +31,7 @@ from functools import wraps
 
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
-from modules.semantic_search.search_operations import simple_semantic_search
 from utils.config import (
-    FAISS_INDEX_DIR,
     FILES_SEARCH_DIR,
     MODEL_LLM,
 )
@@ -72,24 +70,26 @@ BLOCKED_IPS = [
     # Adicione outros IPs conforme necessário
 ]
 
+def extract_client_ip(headers, remote_addr):
+    """Extrai o IP real do cliente usando a mesma lógica do sistema de logs"""
+    xff = headers.get("X-Forwarded-For") or headers.get("x-forwarded-for")
+    if xff:
+        # pick first IP
+        return xff.split(",")[0].strip()
+    return remote_addr or ""
+
 def ip_block_filter(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        client_ip = request.remote_addr
+        client_ip = extract_client_ip(request.headers, request.remote_addr)
+        logger.info(f"IP do cliente detectado: {client_ip}")  # Log para debug
+        
         if client_ip in BLOCKED_IPS:
             logger.warning(f"IP bloqueado tentando acessar ragbot: {client_ip}")
             return {"error": "Acesso negado"}, 403
         return f(*args, **kwargs)
     return decorated_function
 
-
-
-# Checagem de sanidade do FAISS_INDEX_DIR
-try:
-    contents = os.listdir(FAISS_INDEX_DIR)
-    sizes = {f: os.path.getsize(os.path.join(FAISS_INDEX_DIR, f)) for f in contents}
-except Exception as e:
-    logger.error(f"[SANITY CHECK] Falha ao acessar FAISS_DIR={FAISS_INDEX_DIR} | err={e}")
 
 
 # SERVER CONFIGURATION
@@ -147,11 +147,11 @@ CORS(app, resources={
 IS_RENDER = bool(os.getenv("RENDER"))  # Render define RENDER=1
 backend_url = os.getenv("RENDER_EXTERNAL_URL", "http://localhost:5000")
 logger.info(
-    "Boot API | env=%s | base_url=%s | cors_origins=%s | files=%s | faiss=%s",
+    "Boot API | env=%s | base_url=%s | cors_origins=%s | files=%s",
     "render" if IS_RENDER else "local",
     backend_url,
     CORS_ALLOWED_ORIGINS,
-    FILES_SEARCH_DIR, FAISS_INDEX_DIR
+    FILES_SEARCH_DIR,
 )
 
 
@@ -196,36 +196,6 @@ class LexicalSearchResource(Resource):
 
         except Exception as e:
             error_response, status_code, headers = handle_search_error(e, "lexical search")
-            return error_response, status_code, headers
-
-
-# ______________________________________________________________________
-# 2. semantic Search
-# ______________________________________________________________________
-class SemanticSearchResource(Resource):
-    def post(self):
-        try:
-            payload = request.get_json(force=True)
-            term = safe_str(payload.get("term", ""))
-
-            source = payload.get("source", [])
-
-            if not term:
-                raise ValueError("Search term is required")
-
-            # Run FAISS-backed search
-            processed_results = simple_semantic_search(
-                query=term,
-                source=source,
-                index_dir=FAISS_INDEX_DIR,
-            )
-
-
-
-            return processed_results, 200, get_search_headers('semantic')
-
-        except Exception as e:
-            error_response, status_code, headers = handle_search_error(e, "semantic search")
             return error_response, status_code, headers
 
 
@@ -400,7 +370,6 @@ def handle_search_error(error: Exception, context: str = "search") -> Tuple[Dict
     
     Args:
         error: The exception that was raised
-        context: Context for the error (e.g., 'lexical search', 'semantic search')
         
     Returns:
         Tuple of (error_response, status_code, headers)
@@ -432,7 +401,7 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
     Get standard headers for search responses.
     
     Args:
-        search_type: Type of search ('lexical' or 'semantic')
+        search_type: Type of search ('lexical')
         
     Returns:
         Dict with standard response headers
@@ -447,16 +416,9 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
 
 
 
-
-
-
-
-
-
 # ====================== Routes ======================
 api.add_resource(LlmQueryResource, '/llm_query')
 api.add_resource(LexicalSearchResource, '/lexical_search')
-api.add_resource(SemanticSearchResource, '/semantic_search')
 api.add_resource(RandomPensataResource, '/random_pensata')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')

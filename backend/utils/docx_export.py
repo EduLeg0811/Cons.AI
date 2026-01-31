@@ -68,23 +68,11 @@ def build_docx(data: dict, group_results_by_book: bool):
     # Extração de dados básicos
     # =============================================================
     search_term = data.get("search_term", "")
-    search_type = data.get("search_type", [])
     source_array = data.get("source_array", [])
-    display_option = data.get("display_option", "unified")
-
-    defText = data.get("definologia", {}).get("text") or ""
-    descText = data.get("descritivo", {}).get("text") or ""
+    display_option = data.get("display_option", "simple")
 
     # Tipo de busca (para exibir no cabeçalho)
-    searchTypeTxt = ""
-    if "lexical" in search_type and "semantic" in search_type:
-        searchTypeTxt = "Léxica & Semântica"
-    elif "lexical" in search_type:
-        searchTypeTxt = "Léxica"
-    elif "semantic" in search_type:
-        searchTypeTxt = "Semântica"
-    else:
-        searchTypeTxt = "Desconhecida"
+    searchTypeTxt = "Léxica"
 
     # Fonte textual
     source_names = [bookName(src) for src in source_array]
@@ -131,13 +119,6 @@ def build_docx(data: dict, group_results_by_book: bool):
     p.space_after = Pt(6)
     p.space_before = Pt(6)
 
-    # Tipo de pesquisa
-    p = doc.add_paragraph()
-    p.add_run("Tipo de pesquisa: ").bold = True
-    p.add_run(searchTypeTxt)
-    p.space_after = Pt(6)
-    p.space_before = Pt(6)
-
     # Display option
     p = doc.add_paragraph()
     p.add_run("Display Option: ").bold = True
@@ -154,9 +135,8 @@ def build_docx(data: dict, group_results_by_book: bool):
     # 2. Estatística geral
     # =============================================================
 
-    # Reutiliza o agrupamento do display_results_unified
+    # Reutiliza o agrupamento do display_results
     array_data_lexical = flatten_data(data, fields=["lexical"], sort_fields=[("number", "crescent")])
-    array_data_semantic = flatten_data(data, fields=["semantic"], sort_fields=[("score", "decrescent")])
 
     newData = {}
 
@@ -179,11 +159,10 @@ def build_docx(data: dict, group_results_by_book: bool):
             obj = dict(original)
             obj.setdefault("source", src)
             obj.setdefault("field", field)
-            newData.setdefault(src, {"lexical": [], "semantic": []})[field].append(obj)
+            newData.setdefault(src, {"lexical": []})[field].append(obj)
 
     # Agrupar lexical e semantic
     _add_items(array_data_lexical, "lexical")
-    _add_items(array_data_semantic, "semantic")
 
     # Cabeçalho da seção
     p = doc.add_paragraph()
@@ -192,8 +171,7 @@ def build_docx(data: dict, group_results_by_book: bool):
     # Impressão final por fonte com detalhamento
     for src, groups in newData.items():
         n_lex = len(groups["lexical"])
-        n_sem = len(groups["semantic"])
-        total = n_lex + n_sem
+        total = n_lex
         livro = bookName(src)
 
         # Linha principal por source
@@ -204,54 +182,15 @@ def build_docx(data: dict, group_results_by_book: bool):
         p.paragraph_format.space_before = Pt(3)
         p.paragraph_format.space_after = Pt(3)
 
-        # Sub-linha detalhada lexical
-        p_lex = doc.add_paragraph()
-        p_lex.paragraph_format.left_indent = Cm(1)
-        p_lex.add_run("Léxica: ").bold = True
-        p_lex.add_run(str(n_lex))
-        p_lex.paragraph_format.space_before = Pt(0)
-        p_lex.paragraph_format.space_after = Pt(0)
-
-        # Sub-linha detalhada semantic
-        p_sem = doc.add_paragraph()
-        p_sem.paragraph_format.left_indent = Cm(1)
-        p_sem.add_run("Semântica: ").bold = True
-        p_sem.add_run(str(n_sem))
-        p_sem.paragraph_format.space_before = Pt(0)
-        p_sem.paragraph_format.space_after = Pt(6)
-
     doc.add_paragraph("")
     doc.add_paragraph("")
 
 
 
-
-
-
-
-
-    # 3. Definologia e Descritivo
+    # 4. Resultados (simple)
     # =============================================================
-    if len(defText) > 2:
-        p = doc.add_paragraph()
-        p.add_run("Definição: ").bold = True
-        insert_markdown_into_paragraph(defText, p)
-        doc.add_paragraph("")
-
-    if len(descText) > 2:
-        p = doc.add_paragraph()
-        p.add_run("Descritivos: ").bold = True
-        insert_markdown_into_paragraph(descText, p)
-        doc.add_paragraph("")
-
-
-    # 4. Resultados (simple / unified)
-    # =============================================================
-    if display_option == "simple":
-        display_results_simple(doc, data, search_type, group_results_by_book)
-    elif display_option == "unified":
-        display_results_unified(doc, data, search_type)
-
+    display_results_simple(doc, data, group_results_by_book)
+    
 
     # 5. Legenda
     # =============================================================
@@ -263,12 +202,6 @@ def build_docx(data: dict, group_results_by_book: bool):
     p.runs[0].bold = True
     p.space_before = Pt(6)
 
-    if "semantic" in search_type or "deepdive" in search_type:
-        p1 = doc.add_paragraph()
-        run1 = p1.add_run("@ :  ")
-        run1.bold = True
-        p1.add_run("score de similaridade semântica (0 = máxima correspondência)")
-        p1.space_before = Pt(6)
 
     p2 = doc.add_paragraph()
     run2 = p2.add_run("# :  ")
@@ -292,196 +225,13 @@ def build_docx(data: dict, group_results_by_book: bool):
 
 
 
-
-
-
-#_________________________________________________________
-# display_results_unified       
-#_________________________________________________________
-def display_results_unified(doc, data, search_type):
-
-    # 1. Extrai arrays já ordenados separadamente
-    # ==========================================
-    array_data_lexical = flatten_data(
-        data, fields=["lexical"], sort_fields=[("number", "crescent")]
-    )
-    array_data_semantic = flatten_data(
-        data, fields=["semantic"], sort_fields=[("score", "decrescent")]
-    )
-
-
-
-    # 2. Agrupa lexical e semantic por fonte
-    # =======================================
-    newData = {}
-
-    def _normalize_source(value):
-        if isinstance(value, list):
-            for candidate in value:
-                if candidate:
-                    return str(candidate)
-            return "Unknown"
-        if value in (None, ""):
-            return "Unknown"
-        return str(value)
-
-    def _add_items(items, field):
-        for original in items or []:
-            if not isinstance(original, dict):
-                continue
-            src_value = original.get("source") or original.get("source_array")
-            src = _normalize_source(src_value)
-            obj = dict(original)
-            obj.setdefault("source", src)
-            obj.setdefault("field", field)
-            newData.setdefault(src, {"lexical": [], "semantic": []})[field].append(obj)
-
-    # separa lexical e semantic por fonte
-    _add_items(array_data_lexical, "lexical")
-    _add_items(array_data_semantic, "semantic")
-
-    # eliminar duplicados pelo campo "text"
-    def _normalize_text(txt):
-        if not txt:
-            return ""
-        return " ".join(txt.lower().split())
-
-    for src, groups in newData.items():
-        for field in ["lexical", "semantic"]:
-            seen = set()
-            unique_items = []
-            for it in groups[field]:
-                txt = (
-                    it.get("text")
-                    or it.get("content_text")
-                    or it.get("markdown")
-                    or (it.get("metadata") or {}).get("markdown")
-                    or ""
-                )
-                norm = _normalize_text(txt)
-                if norm not in seen:
-                    seen.add(norm)
-                    unique_items.append(it)
-            newData[src][field] = unique_items
-
-    # mostrar resultados por fonte
-    for src, groups in newData.items():
-        if not groups["lexical"] and not groups["semantic"]:
-            continue
-
-          
-        # Subtítulo da fonte
-        doc.add_paragraph("")
-        src_title = doc.add_paragraph()
-        run = src_title.add_run(bookName(src))
-        run.font.size = Pt(12)
-        run.font.bold = True
-        run.font.color.rgb = RGBColor(0, 100, 200)
-        src_title.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        doc.add_paragraph("")
-
-        counter = 0
-
-
-
-        # Primeiro lexical
-        for it in groups["lexical"]:
-            counter += 1
-            mdText = (
-                (it.get("metadata") or {}).get("markdown")
-                or it.get("markdown")
-                or it.get("content_text")
-                or it.get("text")
-                or ""
-            )
-            p = doc.add_paragraph()
-            num_run = p.add_run(f"{counter}. ")
-            num_run.bold = True
-            num_run.font.color.rgb = RGBColor(0, 0, 200)
-            num_run.font.size = Pt(9)
-
-            if src in ("EC", "ECALL_DEF", "ECWV", "ECALL"):
-                mdText = f"**Definologia.** {mdText}"
-
-            if (src == 'LO'):
-                mdText = f"**{it.get("metadata").get('title')}**. {mdText}"
-
-
-            insert_markdown_into_paragraph(mdText, p)
-
-            metaInfo = createMetaInfo(it, src)
-            metaInfo_p = doc.add_paragraph(metaInfo)
-            metaInfo_p.runs[0].font.size = Pt(8)
-            metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
-
-            doc.add_paragraph("")
-
-          
-
-
-        # Linha divisória entre lexical e semantic
-        if groups["lexical"] and groups["semantic"]:
-            last_p = doc.paragraphs[-1]  # pega o último
-            last_p._element.getparent().remove(last_p._element)  # remove inline
-            divider_p = doc.add_paragraph()
-            _add_bottom_border(divider_p, color="888888", size_eights_pt=8)
-            doc.add_paragraph("")
-        else:
-            doc.add_paragraph("")
-
-
-        # Depois semantic
-        for it in groups["semantic"]:
-            counter += 1
-            mdText = (
-                (it.get("metadata") or {}).get("markdown")
-                or it.get("markdown")
-                or it.get("content_text")
-                or it.get("text")
-                or ""
-            )
-            p = doc.add_paragraph()
-            num_run = p.add_run(f"{counter}. ")
-            num_run.bold = True
-            num_run.font.color.rgb = RGBColor(0, 0, 200)
-            num_run.font.size = Pt(9)
-
-            if src in ("EC", "ECALL_DEF", "ECWV", "ECALL"):
-                mdText = f"**Definologia.** {mdText}"
-            if src == "LO":
-                mdText = f"**{it.get('title')}**. {mdText}"
-
-
-            insert_markdown_into_paragraph(mdText, p)
-
-            metaInfo = createMetaInfo(it, src)
-            metaInfo_p = doc.add_paragraph(metaInfo)
-            metaInfo_p.runs[0].font.size = Pt(8)
-            metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
-
-            doc.add_paragraph("")
-
-
-
-
-
-
 #_________________________________________________________
 # display_results_simple       
 #_________________________________________________________
-def display_results_simple(doc, data, search_type, group_results_by_book):
+def display_results_simple(doc, data, group_results_by_book):
 
-
-    if search_type == "lexical":
-        array_search_loop = ["lexical"]
-    elif search_type == "lexverb":
-        array_search_loop = ["lexical"]
-    elif search_type == "semantic":
-        array_search_loop = ["semantic"]
-    elif search_type == "deepdive":
-        array_search_loop = ["lexical", "semantic"]
-
-
+    array_search_loop = ["lexical"]
+    
 
     # Itera nos modos de pesquisa (lexical, semantic) ou ambos (deepdive)
     for current_search_mode in array_search_loop:
@@ -495,109 +245,62 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
     # ---------------------------------------------------------
     # 1. Lexical
     # ---------------------------------------------------------
-    if current_search_mode == "lexical":
-
-        search_mode_txt = "Pesquisa Léxica"
-        array_data = flatten_data(
-            data, fields=["lexical"], sort_fields=[("number", "crescent")]
-        )
+    search_mode_txt = "Pesquisa Léxica"
+    array_data = flatten_data(
+        data, fields=["lexical"], sort_fields=[("number", "crescent")]
+    )
 
 
-        if array_data:
+    if array_data:
 
-            
-            badge_p = doc.add_paragraph()
-            run = badge_p.add_run("Resultados da Pesquisa Léxica")
-            
-            run.font.size = Pt(14)
-            run.font.bold = True
-            run.font.color.rgb = RGBColor(0, 100, 0)
-            badge_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-            divider_p = doc.add_paragraph()
-            _add_bottom_border(divider_p, size_eights_pt=9)
-            doc.add_paragraph("")
-            doc.add_paragraph("")
-
-           
-            if (group_results_by_book):
-                
-                # Agrupar resultados por source
-                # -----------------------------
-                grouped = {}
-                for it in array_data:
-                    src = it.get("source") or it.get("source_array") or "Unknown"
-                    grouped.setdefault(src, []).append(it)
-
-                # Iterar por fonte
-                for src, items in grouped.items():
-
-                    doc.add_paragraph("")
-                    doc.add_paragraph("")
         
-                    # Subtítulo com o nome da fonte
-                    src_title = doc.add_paragraph()
-                    run = src_title.add_run(bookName(src))
-                    run.font.size = Pt(12)
-                    run.font.bold = True
-                    run.font.color.rgb = RGBColor(0, 100, 200)
-                    src_title.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                    doc.add_paragraph("")
-                    doc.add_paragraph("")
+        badge_p = doc.add_paragraph()
+        run = badge_p.add_run("Resultados da Pesquisa Léxica")
+        
+        run.font.size = Pt(14)
+        run.font.bold = True
+        run.font.color.rgb = RGBColor(0, 100, 0)
+        badge_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-                    # Linha divisória
-                    # divider_src = doc.add_paragraph()
-                    # _add_bottom_border(divider_src)
-                    # doc.add_paragraph("")
+        divider_p = doc.add_paragraph()
+        _add_bottom_border(divider_p, size_eights_pt=9)
+        doc.add_paragraph("")
+        doc.add_paragraph("")
 
-                    # Iterar pelos itens daquela fonte
-                    for it in items:
-                        
-                        mdText = (
-                            (it.get("metadata") or {}).get("markdown")
-                            or it.get("markdown")
-                            or it.get("content_text")
-                            or it.get("text")
-                            or ""
-                        )
+        
+        if (group_results_by_book):
+            
+            # Agrupar resultados por source
+            # -----------------------------
+            grouped = {}
+            for it in array_data:
+                src = it.get("source") or it.get("source_array") or "Unknown"
+                grouped.setdefault(src, []).append(it)
 
-
-                        # Novo parágrafo com número
-                        p = doc.add_paragraph()
-                        num_run = p.add_run(f"{counter}. ")
-                        num_run.bold = True
-                        num_run.font.color.rgb = RGBColor(0, 0, 200)
-                        num_run.font.size = Pt(9)
-
-                        # Ajustes especiais (livros, verbetes, etc)
-                        if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
-                            mdText = f"**Definologia.** {mdText}"
-
-                        if (src == 'LO'):
-                            mdText = f"**{it.get('title')}**. {mdText}"
-
-
-                        insert_markdown_into_paragraph(mdText, p)
-
-                        metaInfo = createMetaInfo(it, src)
-                        metaInfo_p = doc.add_paragraph(metaInfo)
-                        metaInfo_p.runs[0].font.size = Pt(8)
-                        metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
-                        metaInfo_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-
-                        doc.add_paragraph("")
-                        counter += 1
-
-
-            # ELSE: sem agrupamento
-            # ---------------------
-            else:
+            # Iterar por fonte
+            for src, items in grouped.items():
 
                 doc.add_paragraph("")
-                
+                doc.add_paragraph("")
+    
+                # Subtítulo com o nome da fonte
+                src_title = doc.add_paragraph()
+                run = src_title.add_run(bookName(src))
+                run.font.size = Pt(12)
+                run.font.bold = True
+                run.font.color.rgb = RGBColor(0, 100, 200)
+                src_title.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                doc.add_paragraph("")
+                doc.add_paragraph("")
 
-                for it in array_data:
-                    src    = it.get("source") or it.get("source_array") or ""
+                # Linha divisória
+                # divider_src = doc.add_paragraph()
+                # _add_bottom_border(divider_src)
+                # doc.add_paragraph("")
+
+                # Iterar pelos itens daquela fonte
+                for it in items:
+                    
                     mdText = (
                         (it.get("metadata") or {}).get("markdown")
                         or it.get("markdown")
@@ -606,6 +309,7 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                         or ""
                     )
 
+
                     # Novo parágrafo com número
                     p = doc.add_paragraph()
                     num_run = p.add_run(f"{counter}. ")
@@ -613,16 +317,16 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                     num_run.font.color.rgb = RGBColor(0, 0, 200)
                     num_run.font.size = Pt(9)
 
-                    # Se for verbete da EC, antepor "Definologia."
+                    # Ajustes especiais (livros, verbetes, etc)
                     if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
                         mdText = f"**Definologia.** {mdText}"
 
-                    # Insere o texto Markdown neste parágrafo
+                    if (src == 'LO'):
+                        mdText = f"**{it.get('title')}**. {mdText}"
+
+
                     insert_markdown_into_paragraph(mdText, p)
 
-
-                    # 5. Metadados
-                    # =============================================================
                     metaInfo = createMetaInfo(it, src)
                     metaInfo_p = doc.add_paragraph(metaInfo)
                     metaInfo_p.runs[0].font.size = Pt(8)
@@ -633,157 +337,48 @@ def display_results_simple(doc, data, search_type, group_results_by_book):
                     counter += 1
 
 
-
-    # ---------------------------------------------------------
-    # 2. Semantic
-    # ---------------------------------------------------------
-    if current_search_mode == "semantic":
-
-        search_mode_txt = "Pesquisa Semântica"
-        array_data = flatten_data(
-            data, fields=["semantic"], sort_fields=[("score", "crescent")]
-        )
-
-
-        if array_data:
-
-            badge_p = doc.add_paragraph()
-            run = badge_p.add_run("Resultados da " + search_mode_txt+ " (ordenados por similaridade)")
-    
-            run.font.size = Pt(12)
-            run.font.bold = True
-            run.font.color.rgb = RGBColor(0, 100, 0)
-            badge_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-            #divider_p = doc.add_paragraph()
-            divider_p = doc.add_paragraph()
-            _add_bottom_border(divider_p, size_eights_pt=10)
+        # ELSE: sem agrupamento
+        # ---------------------
+        else:
 
             doc.add_paragraph("")
             
 
-            # Agrupa por livros (simple)
-            # ==========================
-            if (group_results_by_book):
-                
-            
-                grouped = {}
-                for it in array_data:
-                    src = it.get("source") or it.get("source_array") or "Unknown"
-                    grouped.setdefault(src, []).append(it)
+            for it in array_data:
+                src    = it.get("source") or it.get("source_array") or ""
+                mdText = (
+                    (it.get("metadata") or {}).get("markdown")
+                    or it.get("markdown")
+                    or it.get("content_text")
+                    or it.get("text")
+                    or ""
+                )
 
-                # Iterar por fonte
-                for src, items in grouped.items():
+                # Novo parágrafo com número
+                p = doc.add_paragraph()
+                num_run = p.add_run(f"{counter}. ")
+                num_run.bold = True
+                num_run.font.color.rgb = RGBColor(0, 0, 200)
+                num_run.font.size = Pt(9)
 
-                    doc.add_paragraph("")
-                    doc.add_paragraph("")
-        
-                    # Subtítulo com o nome da fonte
-                    src_title = doc.add_paragraph()
-                    run = src_title.add_run(bookName(src))
-                    run.font.size = Pt(12)
-                    run.font.bold = True
-                    run.font.color.rgb = RGBColor(0, 100, 200)
-                    src_title.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                    doc.add_paragraph("")
-                    doc.add_paragraph("")
+                # Se for verbete da EC, antepor "Definologia."
+                if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
+                    mdText = f"**Definologia.** {mdText}"
 
-                    # Linha divisória
-                    # divider_src = doc.add_paragraph()
-                    # _add_bottom_border(divider_src)
-                    # doc.add_paragraph("")
-
-                    # Iterar pelos itens daquela fonte
-                    for it in items:
-                        
-                        mdText = (
-                            (it.get("metadata") or {}).get("markdown")
-                            or it.get("markdown")
-                            or it.get("content_text")
-                            or it.get("text")
-                            or ""
-                        )
-
-                        # Novo parágrafo com número
-                        p = doc.add_paragraph()
-                        num_run = p.add_run(f"{counter}. ")
-                        num_run.bold = True
-                        num_run.font.color.rgb = RGBColor(0, 0, 200)
-                        num_run.font.size = Pt(9)
-
-                        # Ajustes especiais
-                        if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
-                            mdText = f"**Definologia.** {mdText}"
-
-                        if (src == 'LO'):
-                            mdText = f"**{it.get('title')}**. {mdText}"
-
-                        insert_markdown_into_paragraph(mdText, p)
-
-                        metaInfo = createMetaInfo(it, src)
-                        metaInfo_p = doc.add_paragraph(metaInfo)
-                        metaInfo_p.runs[0].font.size = Pt(8)
-                        metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
-                        metaInfo_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-
-                        doc.add_paragraph("")
-                        counter += 1
+                # Insere o texto Markdown neste parágrafo
+                insert_markdown_into_paragraph(mdText, p)
 
 
-            # ELSE: sem agrupamento
-            # ---------------------
-            else:
+                # 5. Metadados
+                # =============================================================
+                metaInfo = createMetaInfo(it, src)
+                metaInfo_p = doc.add_paragraph(metaInfo)
+                metaInfo_p.runs[0].font.size = Pt(8)
+                metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
+                metaInfo_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
                 doc.add_paragraph("")
-                
-
-                for it in array_data:
-                    src    = it.get("source") or it.get("source_array") or ""
-                    mdText = (
-                        (it.get("metadata") or {}).get("markdown")
-                        or it.get("markdown")
-                        or it.get("content_text")
-                        or it.get("text")
-                        or ""
-                    )
-
-                    # Novo parágrafo com número
-                    p = doc.add_paragraph()
-                    num_run = p.add_run(f"{counter}. ")
-                    num_run.bold = True
-                    num_run.font.color.rgb = RGBColor(0, 0, 200)
-                    num_run.font.size = Pt(9)
-
-
-                    # Se for verbete da EC, antepor "Definologia."
-                    if src in ('EC', 'ECALL_DEF', 'ECWV', 'ECALL'):
-                        mdText = f"**Definologia.** {mdText}"
-
-                    # Se for pensata do LO, antepor Titulo em negrito antes do texto
-                    if (src ==  'LO'):
-                        mdText = f"**{it.get('title')}**. {mdText}"
-
-
-                    # Insere o texto Markdown neste parágrafo
-                    insert_markdown_into_paragraph(mdText, p)
-
-
-                    # 5. Metadados
-                    # =============================================================
-                    metaInfo = createMetaInfo(it, src)
-                    metaInfo_p = doc.add_paragraph(metaInfo)
-                    metaInfo_p.runs[0].font.size = Pt(8)
-                    metaInfo_p.runs[0].font.color.rgb = RGBColor(150, 0, 50)
-                    metaInfo_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-
-                    doc.add_paragraph("")
-                    counter += 1                                                                                    
-
-
-
-
-
-
+                counter += 1
 
 
 
@@ -838,7 +433,7 @@ def insert_markdown_into_paragraph(mdText, paragraph):
 #_________________________________________________________  
 def flatten_data(
     data,
-    fields=["lexical", "semantic"],
+    fields=["lexical"],
     sort_fields=[("number", "crescent")],
     ignore_accents=False
 ):

@@ -195,7 +195,6 @@
     };
 
     console.log('[logs:view] load');
-    try { if (window.logEvent) window.logEvent({ event: 'logs_view_open', module: 'logs', page: '/logs/view' }); } catch {}
 
     function safeStr(v) { return (v === undefined || v === null) ? '' : String(v); }
 
@@ -356,7 +355,7 @@
     }
 
     // Events
-    el.btnRefresh.addEventListener('click', () => { try { if (window.logEvent) window.logEvent({ event: 'logs_view_refresh', module: 'logs', meta: { limit: state.limit, filter: state.filter, sort: state.sort, complete: state.complete } }); } catch {} fetchLogs(); });
+    el.btnRefresh.addEventListener('click', () => { fetchLogs(); });
     el.chkAuto.addEventListener('change', () => {
       if (el.chkAuto.checked) startAuto(); else stopAuto();
     });
@@ -377,7 +376,6 @@
       } catch (err) {
         el.tbody.innerHTML = `<tr><td class="status-err" colspan="11">Falha ao limpar: ${safeStr(err.message || err)}</td></tr>`;
       }
-      try { if (window.logEvent) window.logEvent({ event: 'logs_clear', module: 'logs' }); } catch {}
     });
 
     // Limpar todos os logs (todas as datas)
@@ -390,7 +388,6 @@
       } catch (err) {
         el.tbody.innerHTML = `<tr><td class="status-err" colspan="11">Falha ao limpar tudo: ${safeStr(err.message || err)}</td></tr>`;
       }
-      try { if (window.logEvent) window.logEvent({ event: 'logs_clear_all', module: 'logs' }); } catch {}
     });
 
     // initial

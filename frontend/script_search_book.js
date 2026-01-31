@@ -2,7 +2,7 @@
 
 let controller = null;
 
-      
+  
 // registra os listeners UMA única vez
 document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('searchButton');
@@ -26,14 +26,33 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
 //______________________________________________________________________________________________
-// Search Book
+// Search Book (função principal com validação e lógica completa)
 //______________________________________________________________________________________________
 async function search_book() {
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
+    const term = searchInput.value.trim();
 
+    // Contar palavras e validar
+    const wordCount = term.split(/\s+/).filter(word => word.length > 0).length;
+    if (wordCount > 3 && !window.__skipWordCountValidation) {
+        showMessageWithButtons(resultsDiv, 'Este módulo é para busca simples de palavras nos livros. Para fazer perguntas ou conversar com a IA, use os módulos ConsGPT, ConsLM ou ConsBot', 'info');
+        return;
+    }
     
+    // Reseta flag se existir
+    if (window.__skipWordCountValidation) {
+        window.__skipWordCountValidation = false;
+    }
+    
+    // Validação de termo
+    if (!term) {
+        resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
+        return;
+    }
 
+    // Início da lógica de busca (antiga search_book_internal)
     //console.log('<<< search_book >>>');
-
 
     // Save original button state for restoration
     const originalButtonState = {
@@ -61,30 +80,17 @@ async function search_book() {
         showMessage(resultsDiv, 'A pesquisa demorou demais e foi cancelada. Tente novamente.', 'error');
     }, TIMEOUT_MS);
 
-
-
-
     try {
-
         // =======================================================================================
         // 0. Prepare search    
         // =======================================================================================
-        const term = searchInput.value.trim();
-
-
-        
-        // Validação de termo - sai cedo, mas ainda passa pelo finally
-        if (!term) {
-            resultsDiv.innerHTML = '<p class="error">Please enter a search term</p>';
-            return;
-        }
+        // term já foi validado acima
 
         // Prepare respHistory object
         let respHistory = {
             definologia: {},
             descritivo: {},
             lexical: [],
-            semantic: [],
         };
        
       
@@ -92,14 +98,13 @@ async function search_book() {
         // 1. Recupera dados gravados no modulo    
         const settings = JSON.parse(localStorage.getItem(window.STORAGE_KEY) || "{}");
         const maxResults = settings.maxResults || 10;
-        const searchType = settings.searchType || [];
         const module = settings.module || 'book';
         const books = settings.books || [];
         const flag_grouping = settings.groupResults || false;
 
 
         // If no book selected or no search type selected, ask for selection
-        if (books.length === 0 || searchType.length === 0) {
+        if (books.length === 0) {
             showMessage(resultsDiv, 'Selecione pelo menos um livro e um tipo de busca.', 'error');
             return;
         }
@@ -113,8 +118,6 @@ async function search_book() {
 
         let chat_id = null;
 
-
-        if (searchType.includes('lexical')) {
                 
             // =======================================================================================
             // 1. Lexical
@@ -151,98 +154,6 @@ async function search_book() {
 
             removeLoading(resultsDiv);
     
-        } 
-
-        if (searchType.includes('semantic')) {
-        
-
-            // =======================================================================================
-            // 2. Descritivo
-            // =======================================================================================
-            let newTerm = term;
-            const flag_descritivos = window.CONFIG?.DESCRITIVOS ?? false;
-            
-            //console.log('flag_descritivos', flag_descritivos)
-
-            if (flag_descritivos) {
-
-           
-                
-                insertLoading(resultsDiv, "Descritivos: " + term);    
-
-                const paramRAGbotDesc = {
-                    query: "TEXTO DE ENTRADA: " + term + ".",
-                    model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-                    temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
-                    vector_store_names: [(window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT)],
-                    instructions: SEMANTIC_DESCRIPTION,
-                    use_session: true,
-                    chat_id: chat_id        
-                };
-            
-                const descJson = await call_llm(paramRAGbotDesc);
-                
-                if (descJson.chat_id) chat_id = descJson.chat_id;
-                
-                // Monta termo expandido (Descritivos)
-                newTerm = term + ': ' + descJson.text;
-                
-                respHistory.descritivo = {
-                    text: descJson.text,
-                    citations: descJson.citations || [],
-                    model: descJson.model,
-                    temperature: descJson.temperature,
-                    tokens: descJson.total_tokens_used
-                };
-
-                // Exibe descritivos
-                removeLoading(resultsDiv);
-
-                descJson.ref = "Descritivos"
-                showSimple(resultsDiv, descJson);
-
-             }  else {
-
-                 respHistory.descritivo = {
-                    text: '',
-                    citations: [],
-                    model: '',
-                    temperature: 0.0,
-                    tokens: 0
-                };
-
-             }
-            
-
-            // =======================================================================================
-            // 4. semantic
-            // =======================================================================================
-            insertLoading(resultsDiv, "Busca Semantica");
-
-            //call_semantic
-            //*************************************************
-            const paramSem = {
-                term: newTerm,
-                source: source,
-                model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
-            };
-            const semJson = await call_semantic(paramSem);
-            //*************************************************
-
-            
-            // Restrict display to first maxResults PER SOURCE (NEW)
-            if (semJson.results && Array.isArray(semJson.results)) {
-                semJson.results = limitResultsPerSource(semJson.results, maxResults);
-            } else {
-                semJson.results = [];
-            }
-
-            // Monta respHistory.semantic (já limitado por fonte)
-            respHistory.semantic = Array.isArray(semJson.results) 
-                ? semJson.results 
-                : [];
-
-        }
 
 
         // =======================================================================================
@@ -250,9 +161,7 @@ async function search_book() {
         // =======================================================================================
 
         // Junta os itens de lexical e semantic de cada source]
-        let lexicalAndSemantic = [
-            ...(searchType.includes('lexical') ? respHistory.lexical || [] : []),
-            ...(searchType.includes('semantic') ? respHistory.semantic || [] : []),
+        let lexicalAndSemantic = [ ...(respHistory.lexical || []),
         ];
         
 
@@ -266,10 +175,6 @@ async function search_book() {
         // Rotina tambem elimina as duplicatas
        const sortedData = sortData(uniqueData);
 
-        // Mostra no console os vetores ordenados
-        //console.log('lexicalAndSemantic: ', lexicalAndSemantic);
-        //console.log('sortedData: ', sortedData);
-
         
         // =======================================================================================
         // Display Results
@@ -281,6 +186,7 @@ async function search_book() {
         //console.log("<< script_search_book >>  --- sortedData FINAL", sortedData);
 
 
+
         // =======================================================================================
         // Assemble Download Data
         // =======================================================================================
@@ -288,21 +194,16 @@ async function search_book() {
         // Extrair as fontes únicas
         let uniqueSources = [
             ...respHistory.lexical.map(r => r.source),
-            ...respHistory.semantic.map(r => r.source)
           ];
           uniqueSources = [...new Set(uniqueSources)];
           
         const downloadData = {
             search_term: term,
-            search_type: searchType,
             source_array: uniqueSources,
             max_results: maxResults,
             group_results_by_book: false,
-            display_option: 'unified',
-            definologia: respHistory.definologia,
-            descritivo: respHistory.descritivo,
+            display_option: 'simple',
             lexical: respHistory.lexical,
-            semantic: respHistory.semantic
         };
 
         // Update results using centralized function
@@ -314,22 +215,25 @@ async function search_book() {
          // LOGS
          // =======================================================================================
          try {
+          // Determinar trigger (enter ou click)
+          const trigger = (event && event.type === 'click') ? 'click' : 'enter';
+          
           window.logEvent({
-            event: 'search_book',
+            event: 'search_performed',
             module: 'book',
-            value: term,
+            trigger: trigger,
+            term: term.trim(),
             meta: {
-                search_type: searchType,
                 sources: source,
                 max_results: maxResults,
-                grouping: flag_grouping
+                grouping: flag_grouping,
+                term_length: term.trim().length
             }
             });
          } catch (e) {
-            console.error('Failed to log search_book event:', e);
+            console.error('Failed to log search_performed event:', e);
          }
          // =======================================================================================
-
 
 
 
@@ -346,5 +250,51 @@ async function search_book() {
     }
 }
 
-});
 
+
+
+// ______________________________________________________________________________________________
+// Função personalizada para exibir mensagem com botões
+// ______________________________________________________________________________________________
+function showMessageWithButtons(container, message, type = 'info') {
+    const classes = {
+        error: 'msg-error',
+        info: 'msg-info',
+        success: 'msg-success'
+    };
+   container.innerHTML = `
+    <div class="search-message ${classes[type] || ''}">
+        <div>${message}</div>
+        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+
+            <button onclick="window.location.href='index.html'" class="search-button" style="background: #10b981; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
+                Conversar com a IA
+            </button>
+
+            <button onclick="proceedWithSearch()" class="search-button" style="background: #0ea5e9; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
+                Continuar com a pesquisa nos livros
+            </button>
+       
+        </div>
+    </div>
+`;
+}
+
+// ______________________________________________________________________________________________
+// Função global para prosseguir com a busca
+// ______________________________________________________________________________________________
+window.proceedWithSearch = function() {
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
+    const term = searchInput.value.trim();
+    
+    // Limpa a mensagem de aviso
+    resultsDiv.innerHTML = '';
+    
+    // Continua com a busca original (chamando search_book novamente, mas agora sem validação)
+    // Para evitar loop infinito, vamos criar uma flag global
+    window.__skipWordCountValidation = true;
+    search_book();
+};
+
+});
