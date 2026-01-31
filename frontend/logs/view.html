@@ -111,9 +111,12 @@
     }
     
     .toggle-switch input[type="checkbox"] {
+      position: absolute;
       opacity: 0;
-      width: 0;
-      height: 0;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+      z-index: 2;
     }
     
     .slider {
@@ -176,7 +179,7 @@
         <label class="mono toggle-switch">
           <input type="checkbox" id="chkMode">
           <span class="slider"></span>
-          Modo Completo
+          <span style="margin-left: 8px;">Modo Completo</span>
         </label>
       </div>
       <input type="text" id="txtSearch" placeholder="Busca (substring, sem regex)">
