@@ -396,6 +396,21 @@
 
     // initial
     fetchLogs();
+    
+    // Initialize mode based on checkbox state
+    function initializeMode() {
+      state.complete = el.chkMode.checked;
+      if (state.complete) {
+        el.table.classList.remove('simple');
+        console.log('[logs:view] inicializado em modo completo');
+      } else {
+        el.table.classList.add('simple');
+        console.log('[logs:view] inicializado em modo simples');
+      }
+    }
+    
+    // Call initialization after DOM is ready
+    initializeMode();
   </script>
 </body>
 </html>
