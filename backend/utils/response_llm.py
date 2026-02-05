@@ -119,7 +119,7 @@ def generate_llm_answer(
     if previous_id:
         llm_str["previous_response_id"] = previous_id
 
-    logger.info(f"\n\nPayload para LLM:\n{json.dumps(llm_str, indent=2, ensure_ascii=False)}\n\n")
+    #logger.info(f"\n\nPayload para LLM:\n{json.dumps(llm_str, indent=2, ensure_ascii=False)}\n\n")
 
     # -------------------------------------------------------------------------
     # Chamada com retry + timeout

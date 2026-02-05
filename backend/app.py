@@ -61,7 +61,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("cons-ai")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 logger.info("CONS-AI toolbox")
 
 # Lista de IPs bloqueados (adicione os IPs que deseja bloquear)
@@ -69,6 +69,13 @@ BLOCKED_IPS = [
     "177.220.172.254",
     # Adicione outros IPs conforme necessário
 ]
+
+# Rate-limit por IP para /llm_query (contagem diaria em memoria)
+IP_DAILY_ACCESS = {}
+IP_DAILY_ACCESS_LOCK = threading.Lock()
+FORCE_MODEL_THRESHOLD = 5
+BLOCK_THRESHOLD = 20
+FORCED_MODEL = "gpt-4.1-mini"
 
 def extract_client_ip(headers, remote_addr):
     """Extrai o IP real do cliente usando a mesma lógica do sistema de logs"""
@@ -124,14 +131,7 @@ def favicon():
 @app.route('/logs/view')
 def logs_view_page():
     try:
-        import time
-        response = send_from_directory(frontend_path, os.path.join('logs', 'view.html'))
-        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-        response.headers['Last-Modified'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT')
-        response.headers['ETag'] = f'"{int(time.time())}"'
-        return response
+        return send_from_directory(frontend_path, os.path.join('logs', 'view.html'))
     except Exception:
         return "File not found", 404
 
@@ -237,6 +237,48 @@ class LlmQueryResource(Resource):
             except Exception:
                 max_retries = 2
 
+            client_ip = extract_client_ip(request.headers, request.remote_addr)
+            today = datetime.date.today().isoformat()
+            model_forced = False
+            forced_model = None
+            limit_status = "normal"
+
+            with IP_DAILY_ACCESS_LOCK:
+                ip_entry = IP_DAILY_ACCESS.get(client_ip)
+                if not ip_entry or ip_entry.get("date") != today:
+                    ip_entry = {"date": today, "count": 0}
+                ip_entry["count"] += 1
+                access_count_today = ip_entry["count"]
+                IP_DAILY_ACCESS[client_ip] = ip_entry
+
+            if access_count_today >= BLOCK_THRESHOLD:
+                logger.warning(
+                    "IP bloqueado por limite diario | ip=%s | date=%s | count=%s",
+                    client_ip,
+                    today,
+                    access_count_today,
+                )
+                return {
+                    "error": "Limite diario de acessos atingido para este IP. Tente novamente amanha.",
+                    "access_count_today": access_count_today,
+                    "limit_status": "blocked",
+                }, 429
+
+            if access_count_today >= FORCE_MODEL_THRESHOLD:
+                model = FORCED_MODEL
+                model_forced = True
+                forced_model = FORCED_MODEL
+                limit_status = "forced_model"
+
+            logger.info(
+                "Rate control /llm_query | ip=%s | date=%s | count=%s | status=%s | model=%s",
+                client_ip,
+                today,
+                access_count_today,
+                limit_status,
+                model,
+            )
+
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
             chat_id = safe_str(data.get("chat_id", "")) \
                        or safe_str(request.headers.get("X-Chat-Id", "")) \
@@ -279,6 +321,10 @@ class LlmQueryResource(Resource):
                 "max_retries": max_retries,
                 # Retorne o chat_id para o frontend persistir
                 "chat_id": chat_id,
+                "access_count_today": access_count_today,
+                "model_forced": model_forced,
+                "forced_model": forced_model,
+                "limit_status": limit_status,
             }
 
             return response, 200
@@ -513,5 +559,3 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-
