@@ -307,7 +307,7 @@ Avalie se a resposta do usuário para uma questão de Quiz sobre Conscienciologi
 
 
 
-VERSION_DEVELOPMENT = true
+VERSION_DEVELOPMENT = false
 
 // =================== API Configuration (DEV/PROD) ===================
 // LEMBRAR DE MUDAR TAMBÃ‰M EM APP.PY
