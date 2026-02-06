@@ -120,6 +120,22 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
 })();
 
 
+window.APP_DEBUG = false; // true em dev, false em produção
+
+(function setupConsole() {
+  if (window.APP_DEBUG) return;
+
+  const noop = () => {};
+  console.log = noop;
+  console.debug = noop;
+  console.info = noop;
+  //console.warn = noop;
+  // mantenha console.error se quiser ver erros reais
+  // console.error = noop; // opcional
+})();
+
+
+
 const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbetes/';
 
 
@@ -307,10 +323,10 @@ Avalie se a resposta do usuário para uma questão de Quiz sobre Conscienciologi
 
 
 
-VERSION_DEVELOPMENT = false
+VERSION_DEVELOPMENT = true
 
 // =================== API Configuration (DEV/PROD) ===================
-// LEMBRAR DE MUDAR TAMBÃ‰M EM APP.PY
+// LEMBRAR DE MUDAR TAMBEM EM APP.PY
 // ====================================================================
 // # Restrinja origens em produção; inclua localhost para dev
 // FRONTEND_ORIGINS = [
