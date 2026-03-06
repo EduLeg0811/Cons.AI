@@ -133,11 +133,21 @@ const TOOL_MESSAGES = {
 
   // Tool: BiblioWV
   'Bibliografia': {
-    short: '<em>Monta bibliografia de livros</em>',
+    short: '<em>Bibliografia de livros Waldo Vieira</em>',
     extra: [
       '<br>',
       'Seleciona uma obra de Waldo Vieira e monta a referência bibliográfica em formato <strong>simples</strong> ou <strong>BEE</strong>.<br>',
       'Permite informar as páginas e gera o resultado com a marcação de páginas em ordem crescente.',
+    ].join('\n')
+  },
+
+  // Tool: Biblio Verbetes
+  'Bibliografia de Verbetes': {
+    short: '<em>Listagem e bibliografia de verbetes</em>',
+    extra: [
+      '<br>',
+      'Recebe uma lista textual de verbetes e retorna separadamente a <strong>Listagem de Verbetes</strong> e a <strong>Bibliografia de Verbetes</strong>.<br>',
+      'Aceita separadores por vírgula, ponto-e-vírgula e quebra de linha.',
     ].join('\n')
   },
 
@@ -259,6 +269,8 @@ function applyMessages() {
           canonical = 'Bibliomancia Digital';
         } else if (href.includes('index_biblio_wv.html')) {
           canonical = 'Bibliografia';
+        } else if (href.includes('index_biblio_verbete.html')) {
+          canonical = 'Bibliografia de Verbetes';
         } else if (href.includes('index_quiz.html')) {
           canonical = 'Quiz Conscienciológico';
         } else if (href.includes('index_deepdive.html')) {
@@ -289,6 +301,9 @@ function applyMessages() {
         }
         if (!msg && href2.includes('index_biblio_wv.html')) {
           msg = TOOL_MESSAGES['Bibliografia'] || msg;
+        }
+        if (!msg && href2.includes('index_biblio_verbete.html')) {
+          msg = TOOL_MESSAGES['Bibliografia de Verbetes'] || msg;
         }
         if (!msg && href2.includes('index_quiz.html')) {
           msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;

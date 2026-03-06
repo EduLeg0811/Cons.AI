@@ -3,6 +3,7 @@ let _lexicalController = null;
 let _llmQueryController = null;
 let _randomPensataController = null;
 let _biblioWvController = null;
+let _insertRefVerbeteController = null;
 let _downloadController = null;  // Added download controller
 
 function canUseRelativeApiFallback() {
@@ -247,6 +248,35 @@ async function call_biblio_wv_build(parameters) {
 }
 window.call_biblio_wv_build = call_biblio_wv_build;
 
+async function call_insert_ref_verbete(parameters) {
+  if (_insertRefVerbeteController) _insertRefVerbeteController.abort();
+  _insertRefVerbeteController = new AbortController();
+
+  let response = await fetch(apiBaseUrl + '/api/apps/insert-ref-verbete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(parameters),
+    signal: _insertRefVerbeteController.signal
+  });
+
+  if (canUseRelativeApiFallback() && !response.ok && (response.status === 404 || response.status === 405)) {
+    response = await fetch('/api/apps/insert-ref-verbete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(parameters),
+      signal: _insertRefVerbeteController.signal
+    });
+  }
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`HTTP ${response.status} ${err}`);
+  }
+
+  return response.json();
+}
+window.call_insert_ref_verbete = call_insert_ref_verbete;
+
 
 
 
@@ -304,6 +334,7 @@ function abortAllRequests() {
   try { _llmQueryController?.abort(); } catch {}
   try { _randomPensataController?.abort(); } catch {}
   try { _biblioWvController?.abort(); } catch {}
+  try { _insertRefVerbeteController?.abort(); } catch {}
   try { _downloadController?.abort(); } catch {}
 }
 

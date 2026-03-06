@@ -32,6 +32,7 @@ from functools import wraps
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
 from modules.bibliography.biblioRefW import build_biblio_wv, get_books_wv
+from modules.bibliography.biblioRefVerbete import build_ref_verbete
 from utils.config import (
     FILES_SEARCH_DIR,
     MODEL_LLM,
@@ -397,6 +398,30 @@ class BiblioWVBuildResource(Resource):
         except Exception as e:
             logger.error(f"Error building BiblioWV bibliography: {str(e)}", exc_info=True)
             return {"error": str(e)}, 500
+
+
+# ______________________________________________________________________
+# 5.1 Biblio Verbetes (Enciclopedia)
+# ______________________________________________________________________
+@app.route('/api/apps/insert-ref-verbete', methods=['POST'])
+def insert_ref_verbete():
+    try:
+        data = request.get_json(force=True) or {}
+        titles = safe_str(data.get("titles", ""))
+        style = safe_str(data.get("style", "simples")) or "simples"
+        if not titles:
+            return jsonify({"error": "Parametro 'titles' e obrigatorio."}), 400
+
+        result = build_ref_verbete(titles_raw=titles, style=style)
+        return jsonify({"ok": True, "result": result}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except FileNotFoundError as e:
+        logger.error(f"Error loading EC.xlsx for verbetes bibliography: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        logger.error(f"Error building verbetes bibliography: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Falha ao processar bibliografia de verbetes: {str(e)}"}), 500
 
 
 # ______________________________________________________________________
