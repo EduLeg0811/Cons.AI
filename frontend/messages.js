@@ -133,7 +133,7 @@ const TOOL_MESSAGES = {
 
   // Tool: BiblioWV
   'Bibliografia': {
-    short: '<em>Bibliografia de livros Waldo Vieira</em>',
+    short: '<em>Bibliografia de livros de Waldo Vieira</em>',
     extra: [
       '<br>',
       'Seleciona uma obra de Waldo Vieira e monta a referência bibliográfica em formato <strong>simples</strong> ou <strong>BEE</strong>.<br>',
@@ -196,6 +196,14 @@ const TOOL_MESSAGES = {
     short: '<em>Portal de periódicos da Conscienciologia</em>',
     extra: [
       'Procura e download de periódicos.',
+    ].join('\\n'),
+  },
+
+  // Tool: Livros Gratuitos Waldo Vieira (external)
+  'Livros em PDF': {
+    short: '<em>Acervo de obras de autoria de Waldo Vieira</em>',
+    extra: [
+      'Acesso aos livros de Waldo Vieira em PDF.',
     ].join('\\n'),
   }
 
