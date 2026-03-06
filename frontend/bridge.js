@@ -5,6 +5,17 @@ let _randomPensataController = null;
 let _biblioWvController = null;
 let _downloadController = null;  // Added download controller
 
+function canUseRelativeApiFallback() {
+  try {
+    if (!apiBaseUrl) return true;
+    if (String(apiBaseUrl).startsWith('/')) return true;
+    const target = new URL(apiBaseUrl, location.href);
+    return target.origin === location.origin;
+  } catch {
+    return false;
+  }
+}
+
 
 //_________________________________________________________
 // Lexical Search
@@ -188,8 +199,8 @@ async function call_biblio_wv_books() {
     signal: _biblioWvController.signal
   });
 
-  // Fallback: quando apiBaseUrl aponta para backend sem essa rota
-  if (!response.ok && (response.status === 404 || response.status === 405)) {
+  // Fallback relativo apenas quando a API é same-origin.
+  if (canUseRelativeApiFallback() && !response.ok && (response.status === 404 || response.status === 405)) {
     response = await fetch('/biblio_wv/books', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
@@ -217,8 +228,8 @@ async function call_biblio_wv_build(parameters) {
     signal: _biblioWvController.signal
   });
 
-  // Fallback: quando apiBaseUrl aponta para backend sem essa rota
-  if (!response.ok && (response.status === 404 || response.status === 405)) {
+  // Fallback relativo apenas quando a API é same-origin.
+  if (canUseRelativeApiFallback() && !response.ok && (response.status === 404 || response.status === 405)) {
     response = await fetch('/biblio_wv/build', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

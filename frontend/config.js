@@ -342,15 +342,35 @@ const PROD_BASE  = 'https://cons-ai-server.onrender.com';       // backend Rende
 // ===== Clean DEV/PROD block rebuilt =====
 if (VERSION_DEVELOPMENT) {
   function resolveApiBaseUrl() {
+    const isLocalLikeApi = (value) => {
+      try {
+        const parsed = new URL(value, location.href);
+        const h = (parsed.hostname || '').toLowerCase();
+        return h === 'localhost' || h === '127.0.0.1' || h.endsWith('.local');
+      } catch {
+        return false;
+      }
+    };
+
     const qs = new URLSearchParams(location.search).get('api');
     if (qs) return { base: qs, mode: 'custom' };
-    try {
-      const saved = localStorage.getItem('apiBaseUrl');
-      if (saved) return { base: saved, mode: 'custom' };
-    } catch {}
+
     const isFile = location.protocol === 'file:';
     const host = location.hostname || '';
     const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+
+    try {
+      const saved = localStorage.getItem('apiBaseUrl');
+      if (saved) {
+        // Em produção, ignora bases locais salvas no navegador (evita quebrar deploy web).
+        if (!isLocalHost && !isFile && isLocalLikeApi(saved)) {
+          localStorage.removeItem('apiBaseUrl');
+        } else {
+          return { base: saved, mode: 'custom' };
+        }
+      }
+    } catch {}
+
     if (isFile || isLocalHost) return { base: LOCAL_BASE, mode: 'development' };
     return { base: PROD_BASE, mode: 'production' };
   }
