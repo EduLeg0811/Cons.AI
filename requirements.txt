@@ -14,7 +14,8 @@ openai>=1.30,<2.0
 # Document processing
 python-docx>=1.1.0,<2.0
 # lxml 5.x possui wheels para Python 3.13 (evita compilação)
-lxml>=5.2,<6.0
+lxml>=5.2,<6.0; python_version < "3.14"
+lxml>=6.0,<7.0; python_version >= "3.14"
 
 
 # Windows COM — apenas no Windows

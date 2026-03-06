@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>BiblioWV ● Cons-AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/png" href="/Icon.png">
+    <style>
+      .biblio-form {
+        display: grid;
+        gap: 12px;
+        margin: 0 auto 16px;
+        justify-items: center;
+      }
+      .biblio-field-label { font-size: var(--text-xs); font-weight: 600; color: var(--gray-700); }
+      .biblio-pages-label {
+        display: block;
+        width: 40ch;
+        max-width: 100%;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .biblio-types { display: flex; gap: 4px; flex-wrap: wrap; }
+      #styleContainer .search-type-pill.active {
+        background: #a5a5a5;
+        color: rgb(255, 255, 155);
+      }
+      .biblio-action { margin-top: 4px; }
+      .biblio-pages-input {
+        width: 46ch;
+        max-width: 100%;
+        min-height: 0;
+        border-radius: 8px;
+        border: 1px solid var(--gray-200);
+        padding: 10px 12px;
+        font-size: var(--text-sm);
+        resize: none;
+        overflow-y: hidden;
+        background: var(--white);
+        color: var(--gray-900);
+      }
+      [data-theme="dark"] .biblio-pages-input {
+        background: var(--gray-800);
+        color: var(--gray-50);
+        border-color: var(--gray-600);
+      }
+      .biblio-status { font-size: var(--text-xs); color: var(--gray-600); }
+      #booksContainer {
+        column-count: 2;
+        column-gap: 10px;
+        width: fit-content;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+      #booksContainer .book-pill {
+        display: block;
+        width: 40ch;
+        max-width: 100%;
+        margin: 0 0 2px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        break-inside: avoid;
+      }
+      #biblioStatus { text-align: center; }
+    </style>
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9C5503JC6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);} 
+  gtag('js', new Date());
+  gtag('config', 'G-Z9C5503JC6');
+</script>
+
+<body class="theme-apps">
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-controls">
+                <a href="index.html" class="back-button" title="Back to Home">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+
+            <div class="navbar-center">
+                <div class="navbar-text">
+                    <div class="navbar-title-modules">BiblioWV</div>
+                    <div class="navbar-subtitle-modules">Obras Waldo Vieira</div>
+                </div>
+            </div>
+
+            <div class="navbar-controls">
+                <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="action-container">
+            <button id="mountBiblioButton" class="pensata-button" type="button">
+              <i class="fas fa-list"></i>
+              Bibliografia
+            </button>
+            <p class="action-hint">
+              Monta a bilbiografia para o livro selecionado
+              <br>
+              (obras de Waldo Vieira)
+            </p>
+        </div>
+
+        <div class="biblio-form">
+          <div>
+            <div id="booksContainer" class="book-checkboxes" data-module="biblio_wv" data-mode="single">
+              <div class="book-pill active" data-sigla="CCG" data-title="Conscienciograma">Conscienciograma</div>
+              <div class="book-pill" data-sigla="T100" data-title="100 Testes da Conscienciometria">100 Testes da Conscienciometria</div>
+              <div class="book-pill" data-sigla="T200" data-title="200 Teáticas da Conscienciologia">200 Teáticas da Conscienciologia</div>
+              <div class="book-pill" data-sigla="TC" data-title="Temas da Conscienciologia">Temas da Conscienciologia</div>
+              <div class="book-pill" data-sigla="MRC" data-title="Manual de Redação da Conscienciologia">Manual de Redação da Conscienciologia</div>
+              <div class="book-pill" data-sigla="HSR" data-title="Homo sapiens reurbanisatus">Homo sapiens reurbanisatus</div>
+              <div class="book-pill" data-sigla="HSP" data-title="Homo sapiens pacificus">Homo sapiens pacificus</div>
+              <div class="book-pill" data-sigla="MMT" data-title="Manual dos Megapensenes Trivocabulares">Manual dos Megapensenes Trivocabulares</div>
+              <div class="book-pill" data-sigla="PROJ" data-title="Projeciologia">Projeciologia</div>
+              <div class="book-pill" data-sigla="NE" data-title="Nossa Evolução">Nossa Evolução</div>
+              <div class="book-pill" data-sigla="MP" data-title="Manual da Proéxis">Manual da Proéxis</div>
+              <div class="book-pill" data-sigla="TNP" data-title="Manual da Tenepes">Manual da Tenepes</div>
+              <div class="book-pill" data-sigla="MDE" data-title="Manual da Dupla Evolutiva">Manual da Dupla Evolutiva</div>
+              <div class="book-pill" data-sigla="EXP" data-title="700 Experimentos da Conscienciologia">700 Experimentos da Conscienciologia</div>
+              <div class="book-pill" data-sigla="PC" data-title="Projeções da Consciência">Projeções da Consciência</div>
+              <div class="book-pill" data-sigla="DAC" data-title="Dicionário de Argumentos da Conscienciologia">Dicionário de Argumentos da Conscienciologia</div>
+              <div class="book-pill" data-sigla="DNC" data-title="Dicionário de Neologismos da Conscienciologia">Dicionário de Neologismos da Conscienciologia</div>
+              <div class="book-pill" data-sigla="LO1" data-title="Léxico de Ortopensatas (1a ed.)">Léxico de Ortopensatas (1a ed.)</div>
+              <div class="book-pill" data-sigla="LO2" data-title="Léxico de Ortopensatas (2a ed.)">Léxico de Ortopensatas (2a ed.)</div>
+              <div class="book-pill" data-sigla="EC10" data-title="Enciclopédia da Conscienciologia (10 ed.)">Enciclopédia da Conscienciologia (10 ed.)</div>
+              <div class="book-pill" data-sigla="ECNEW" data-title="Enciclopédia da Conscienciologia (novos)">Enciclopédia da Conscienciologia (novos)</div>
+            </div>
+          </div>
+
+          <div>
+            <label class="biblio-field-label biblio-pages-label" for="pagesInput">Páginas</label>
+            <textarea id="pagesInput" class="biblio-pages-input" rows="1" placeholder=""></textarea>
+          </div>
+
+          <div>
+            <!-- <div class="biblio-field-label">Tipo de bibliografia</div> -->
+            <div class="biblio-types" id="styleContainer">
+              <div class="search-type-pill active" data-style="simples">Simplificada</div>
+              <div class="search-type-pill" data-style="bee">BEE</div>
+            </div>
+          </div>
+
+          <div id="biblioStatus" class="biblio-status"></div>
+        </div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="display.js"></script>
+    <script src="bridge.js"></script>
+    <script src="script_biblio_wv.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', initTheme);
+    </script>
+</body>
+</html>

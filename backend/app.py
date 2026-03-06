@@ -31,6 +31,7 @@ from functools import wraps
 
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
+from modules.bibliography.biblioRefW import build_biblio_wv, get_books_wv
 from utils.config import (
     FILES_SEARCH_DIR,
     MODEL_LLM,
@@ -362,6 +363,43 @@ class RandomPensataResource(Resource):
 
 
 # ______________________________________________________________________
+# 5. BiblioWV (Obras Waldo Vieira)
+# ______________________________________________________________________
+class BiblioWVBooksResource(Resource):
+    def get(self):
+        try:
+            books = get_books_wv()
+            return {"books": books, "count": len(books)}, 200
+        except Exception as e:
+            logger.error(f"Error loading BiblioWV books: {str(e)}", exc_info=True)
+            return {"error": str(e)}, 500
+
+
+class BiblioWVBuildResource(Resource):
+    def post(self):
+        try:
+            data = request.get_json(force=True) or {}
+            book_title = safe_str(data.get("book_title", ""))
+            book_sigla = safe_str(data.get("book_sigla", ""))
+            style = safe_str(data.get("style", "simples")) or "simples"
+
+            result = build_biblio_wv(book_title=book_title, style=style, book_sigla=book_sigla)
+            return {
+                "text": result["bibliografia"],
+                "book_title": result["titulo"],
+                "sigla": result["sigla"],
+                "style": result["style"],
+                "type": "biblio_wv",
+            }, 200
+
+        except ValueError as e:
+            return {"error": str(e)}, 400
+        except Exception as e:
+            logger.error(f"Error building BiblioWV bibliography: {str(e)}", exc_info=True)
+            return {"error": str(e)}, 500
+
+
+# ______________________________________________________________________
 # 6. Reset Conversation Memory (RAGbot)
 # ______________________________________________________________________
 class RAGbotResetResource(Resource):
@@ -473,6 +511,8 @@ def get_search_headers(search_type: str) -> Dict[str, str]:
 api.add_resource(LlmQueryResource, '/llm_query')
 api.add_resource(LexicalSearchResource, '/lexical_search')
 api.add_resource(RandomPensataResource, '/random_pensata')
+api.add_resource(BiblioWVBooksResource, '/biblio_wv/books')
+api.add_resource(BiblioWVBuildResource, '/biblio_wv/build')
 api.add_resource(DownloadResource, '/download')
 api.add_resource(RAGbotResetResource, '/ragbot_reset')
 

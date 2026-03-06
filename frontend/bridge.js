@@ -2,6 +2,7 @@
 let _lexicalController = null;
 let _llmQueryController = null;
 let _randomPensataController = null;
+let _biblioWvController = null;
 let _downloadController = null;  // Added download controller
 
 
@@ -174,6 +175,68 @@ return responseData;
 }
 
 
+//_________________________________________________________
+// BiblioWV
+//_________________________________________________________
+async function call_biblio_wv_books() {
+  if (_biblioWvController) _biblioWvController.abort();
+  _biblioWvController = new AbortController();
+
+  let response = await fetch(apiBaseUrl + '/biblio_wv/books', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    signal: _biblioWvController.signal
+  });
+
+  // Fallback: quando apiBaseUrl aponta para backend sem essa rota
+  if (!response.ok && (response.status === 404 || response.status === 405)) {
+    response = await fetch('/biblio_wv/books', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      signal: _biblioWvController.signal
+    });
+  }
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`HTTP ${response.status} ${err}`);
+  }
+
+  return response.json();
+}
+window.call_biblio_wv_books = call_biblio_wv_books;
+
+async function call_biblio_wv_build(parameters) {
+  if (_biblioWvController) _biblioWvController.abort();
+  _biblioWvController = new AbortController();
+
+  let response = await fetch(apiBaseUrl + '/biblio_wv/build', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(parameters),
+    signal: _biblioWvController.signal
+  });
+
+  // Fallback: quando apiBaseUrl aponta para backend sem essa rota
+  if (!response.ok && (response.status === 404 || response.status === 405)) {
+    response = await fetch('/biblio_wv/build', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(parameters),
+      signal: _biblioWvController.signal
+    });
+  }
+
+  if (!response.ok) {
+    const err = await response.text().catch(() => '');
+    throw new Error(`HTTP ${response.status} ${err}`);
+  }
+
+  return response.json();
+}
+window.call_biblio_wv_build = call_biblio_wv_build;
+
+
 
 
 
@@ -229,6 +292,7 @@ function abortAllRequests() {
   try { _lexicalController?.abort(); } catch {}
   try { _llmQueryController?.abort(); } catch {}
   try { _randomPensataController?.abort(); } catch {}
+  try { _biblioWvController?.abort(); } catch {}
   try { _downloadController?.abort(); } catch {}
 }
 

@@ -131,6 +131,16 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
+  // Tool: BiblioWV
+  'BiblioWV': {
+    short: '<em>Bibliografia das Obras de Waldo Vieira</em>',
+    extra: [
+      '<br>',
+      'Seleciona uma obra de Waldo Vieira e monta a referência bibliográfica em formato <strong>simples</strong> ou <strong>BEE</strong>.<br>',
+      'Permite informar as páginas e gera o resultado com a marcação de páginas em ordem crescente.',
+    ].join('\n')
+  },
+
   /* 
   // Tool: Quiz Conscienciológico
   'Quiz Conscienciológico': {
@@ -193,6 +203,7 @@ const TOOL_ALIASES = {
   'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
   'Bibliomancia Digital': 'Bibliomancia Digital',
+  'BiblioWV': 'BiblioWV',
 };
 
 // Apply messages to the DOM
@@ -246,6 +257,8 @@ function applyMessages() {
           canonical = 'Questões do Conscienciograma';
         } else if (href.includes('index_mancia.html')) {
           canonical = 'Bibliomancia Digital';
+        } else if (href.includes('index_biblio_wv.html')) {
+          canonical = 'BiblioWV';
         } else if (href.includes('index_quiz.html')) {
           canonical = 'Quiz Conscienciológico';
         } else if (href.includes('index_deepdive.html')) {
@@ -273,6 +286,9 @@ function applyMessages() {
         }
         if (!msg && href2.includes('index_mancia.html')) {
           msg = TOOL_MESSAGES['Bibliomancia Digital'] || msg;
+        }
+        if (!msg && href2.includes('index_biblio_wv.html')) {
+          msg = TOOL_MESSAGES['BiblioWV'] || msg;
         }
         if (!msg && href2.includes('index_quiz.html')) {
           msg = TOOL_MESSAGES['Quiz Conscienciológico'] || msg;
