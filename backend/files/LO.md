@@ -1,4 +1,4 @@
-﻿Dados da Fonte
+Dados da Fonte
 TÍTULO. Léxico de Ortopensatas
 Autor. Waldo Vieira
 EDITORA. Editares

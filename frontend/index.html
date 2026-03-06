@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cons-AI â— Toolbox de IA da Conscienciologia</title>
+    <title>Cons-AI ● Toolbox de IA da Conscienciologia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/styles/style.css">
@@ -99,12 +99,12 @@
     <nav class="navbar">
         <div class="navbar-container">
           
-          <!-- BotÃ£o esquerdo -->
-          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descriÃ§Ãµes" onclick="toggleInfo()">
+          <!-- Botão esquerdo -->
+          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
             <img class="navbar-logo" src="/Icon.png" alt="Books in the Parabrain" />
           </button>
       
-          <!-- TÃ­tulo central -->
+          <!-- Título central -->
           <div class="navbar-center">
             <a href="#" class="navbar-brand">
 
@@ -444,7 +444,7 @@
       </div>
     </div>
 
-    <!-- Overlay de animaÃ§Ã£o do logo -->
+    <!-- Overlay de animação do logo -->
     <div id="logo-intro-overlay" aria-hidden="true">
       <img class="logo-intro-img" src="/Icon.png" alt="Logo" />
     </div>
@@ -538,20 +538,20 @@
                 // prepara
                 overlay.classList.remove('fade');
                 img.classList.remove('animate');
-                // forÃ§a reflow antes de iniciar animaÃ§Ã£o (overlay e imagem)
+                // força reflow antes de iniciar animação (overlay e imagem)
                 void overlay.offsetWidth;
                 void img.offsetWidth;
                 // bloqueia rolagem
                 document.documentElement.classList.add('no-scroll');
                 document.body.classList.add('no-scroll');
-                // Esconde o conteÃºdo de informaÃ§Ãµes no inÃ­cio
+                // Esconde o conteúdo de informações no início
                 document.documentElement.removeAttribute('data-show-info');
                 
-                // fade-out do conteÃºdo ao fundo por 1s
+                // fade-out do conteúdo ao fundo por 1s
                 document.documentElement.classList.add('fade-out-main');
                 overlay.classList.add('show');
                 
-                // ativa o crossfade em prÃ³ximo frame (evita salto ao trocar display)
+                // ativa o crossfade em próximo frame (evita salto ao trocar display)
                 requestAnimationFrame(() => {
                   requestAnimationFrame(() => {
                     overlay.classList.add('visible');
@@ -559,7 +559,7 @@
                   });
                 });
                 
-                // apÃ³s 4s de zoom + 1s estÃ¡vel, dispara fade de 1s do logo
+                // após 4s de zoom + 1s estável, dispara fade de 1s do logo
                 setTimeout(() => {
                   overlay.classList.add('fade');
                 }, 4000);
@@ -571,7 +571,7 @@
                   document.documentElement.classList.remove('no-scroll');
                   document.body.classList.remove('no-scroll');
                   
-                  // Remove o fade do conteÃºdo principal
+                  // Remove o fade do conteúdo principal
                   document.documentElement.classList.remove('fade-out-main');
                   
                   // Chama o callback
@@ -593,10 +593,10 @@
                 document.documentElement.setAttribute('data-info-pulse', 'off');
 
                 if (turningOn) {
-                  // JÃ¡ aplica o estado de informaÃ§Ãµes antes da animaÃ§Ã£o,
+                  // Já aplica o estado de informações antes da animação,
                   // para evitar flash do estado anterior quando o overlay some
                   document.documentElement.setAttribute('data-show-info', 'true');
-                  // NÃ£o aciona mais animaÃ§Ã£o de logo ao clicar no Ã­cone de info
+                  // Não aciona mais animação de logo ao clicar no ícone de info
                 } else {
                   // Desliga imediatamente
                   document.documentElement.setAttribute('data-show-info', 'false');
@@ -661,7 +661,7 @@
                 const $ = (id) => document.getElementById(id);
 
                 // =============================================================
-                // 1. Ler configuraÃ§Ãµes salvas do localStorage (ou usar padrÃ£o)
+                // 1. Ler configurações salvas do localStorage (ou usar padrão)
                 // =============================================================
                 let config = {};
                 try {
@@ -670,7 +670,7 @@
                   config = {};
                 }
 
-                // Se ainda nÃ£o existir, usa valores padrÃ£o mÃ­nimos
+                // Se ainda não existir, usa valores padrão mínimos
                 config.MODEL_LLM = config.MODEL_LLM || MODEL_LLM;
                 config.MODEL_RAGBOT = config.MODEL_RAGBOT || MODEL_RAGBOT;
                 config.TEMPERATURE = config.TEMPERATURE ?? TEMPERATURE;
@@ -698,7 +698,7 @@
                 if ($('cfg-model-llm')) $('cfg-model-llm').value = config.MODEL_LLM;
                 if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = config.MODEL_RAGBOT;
 
-                // Temperatura (slider Ãºnico)
+                // Temperatura (slider único)
                 const range = $('cfg-temperature');
                 const label = document.getElementById('cfg-temperature-label');
                 if (range && label) {
@@ -730,7 +730,7 @@
                 if ($('cfg-descritivos')) $('cfg-descritivos').checked = !!config.DESCRITIVOS;
 
               } catch (e) {
-                console.error("Erro ao carregar configuraÃ§Ãµes:", e);
+                console.error("Erro ao carregar configurações:", e);
               }
             }
 
@@ -775,7 +775,7 @@
                 
               } catch (e) {
                 console.error('Error saving configuration:', e);
-                alert('Erro ao salvar configuraÃ§Ãµes. Verifique o console para mais detalhes.');
+                alert('Erro ao salvar configurações. Verifique o console para mais detalhes.');
               }
             }
 

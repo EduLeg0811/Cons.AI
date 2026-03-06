@@ -201,7 +201,7 @@ const TOOL_MESSAGES = {
 
   // Tool: Livros Gratuitos Waldo Vieira (external)
   'Livros em PDF': {
-    short: '<em>Acervo de obras de autoria de Waldo Vieira</em>',
+    short: '<em>Acervo de obras de Waldo Vieira</em>',
     extra: [
       'Acesso aos livros de Waldo Vieira em PDF.',
     ].join('\\n'),

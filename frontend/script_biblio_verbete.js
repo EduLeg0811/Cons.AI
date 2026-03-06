@@ -1,4 +1,4 @@
-﻿let insertVerbeteController = null;
+let insertVerbeteController = null;
 
 function setStatus(message, type = 'info') {
   const el = document.getElementById('biblioStatus');

@@ -1,4 +1,4 @@
-﻿let biblioWvController = null;
+let biblioWvController = null;
 
 function parsePagesInput(rawInput) {
   const raw = String(rawInput || '');
