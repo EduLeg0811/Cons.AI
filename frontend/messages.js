@@ -133,7 +133,7 @@ const TOOL_MESSAGES = {
 
   // Tool: BiblioWV
   'Bibliografia': {
-    short: '<em>Bibliografia das Obras de Waldo Vieira</em>',
+    short: '<em>Monta bibliografia de livros</em>',
     extra: [
       '<br>',
       'Seleciona uma obra de Waldo Vieira e monta a referência bibliográfica em formato <strong>simples</strong> ou <strong>BEE</strong>.<br>',
