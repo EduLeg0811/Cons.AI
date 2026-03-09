@@ -8,6 +8,8 @@
 
 .theme-apps { --module-accent: var(--apps-primary); --module-accent-secondary: var(--apps-secondary, var(--apps-primary)); }
 
+.theme-biblio { --module-accent: var(--biblio-primary); --module-accent-secondary: var(--biblio-secondary, var(--biblio-primary)); }
+
 .theme-bots { --module-accent: var(--bots-primary); --module-accent-secondary: var(--bots-secondary, var(--bots-primary)); }
 
 .back-button {
@@ -86,6 +88,14 @@
         rgba(255, 255, 255, 0) 100%);
 }
 
+.tool-panel.biblio::before {
+    background: linear-gradient(to right,
+        rgba(255, 255, 255, 0) 0%,
+        var(--biblio-primary) 20%,
+        var(--biblio-primary) 80%,
+        rgba(255, 255, 255, 0) 100%);
+}
+
 .tool-panel.sem::before {
     background: linear-gradient(to right, 
         rgba(255, 255, 255, 0) 0%, 
@@ -138,6 +148,10 @@
 .tool-icon.mancia,
 .tool-icon.quiz {
     background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
+}
+
+.tool-icon.biblio {
+    background: linear-gradient(135deg, var(--biblio-primary) 0%, var(--biblio-secondary) 100%);
 }
 
 .tool-icon.deep {
@@ -317,6 +331,23 @@ body.dark .tool-icon.openai img {
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15); /* violet glow to match group */
 }
 
+.theme-biblio .search-button {
+    background: var(--white);
+    color: var(--biblio-primary);
+    border: 1px solid var(--biblio-primary);
+}
+
+.theme-biblio .search-button:hover:not(:disabled) {
+    background: var(--biblio-primary);
+    color: var(--white);
+    border-color: var(--biblio-primary);
+}
+
+.theme-biblio .search-input-wrapper:focus-within {
+    border-color: var(--biblio-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--biblio-primary) 18%, transparent);
+}
+
 .theme-bots .search-button { background: var(--bots-primary); }
 
 .theme-bots .search-button:hover:not(:disabled) { background: var(--bots-secondary); }
@@ -453,8 +484,8 @@ body.dark .tool-icon.openai img {
       align-items: center;
       gap: var(--space-3);
       padding: var(--space-5) var(--space-8);
-      background: var(--apps-primary);
-      color: var(--white);
+      background: var(--module-accent, var(--apps-primary));
+      color: var(--module-accent-contrast, var(--white));
       border: none;
       border-radius: var(--radius-xl);
       font-size: var(--text-lg);
@@ -465,7 +496,7 @@ body.dark .tool-icon.openai img {
   }
 
 .pensata-button:hover:not(:disabled) {
-      background: var(--apps-secondary);
+      background: var(--module-accent-secondary, var(--apps-secondary));
       transform: translateY(-2px);
   }
 
@@ -928,6 +959,40 @@ background: var(--module-accent-secondary, var(--primary-600));
     border-radius: 8px;
   }
 
+.search-message-actions {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.search-message-btn {
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 1px solid var(--module-accent, var(--primary-500));
+    background: var(--white);
+    color: var(--module-accent, var(--primary-500));
+    cursor: pointer;
+    font-size: 14px;
+    transition: all var(--transition-fast);
+}
+
+.search-message-btn:hover {
+    background: var(--module-accent, var(--primary-500));
+    color: var(--module-accent-contrast, #fff);
+}
+
+.search-message-btn.search-message-btn-primary {
+    background: var(--module-accent, var(--primary-500));
+    color: var(--module-accent-contrast, #fff);
+}
+
+.search-message-btn.search-message-btn-primary:hover {
+    background: var(--module-accent-secondary, var(--primary-600));
+    border-color: var(--module-accent-secondary, var(--primary-600));
+}
+
 .msg-error {
     background: #fee2e2;
     color: #991b1b;
@@ -1378,3 +1443,4 @@ html[data-theme="dark"] #fbInput {
   color: var(--gray-100);
   border-color: var(--gray-700);
 }
+

@@ -36,6 +36,10 @@
     background: linear-gradient(135deg, var(--apps-primary) 0%, var(--apps-secondary) 100%);
 }
 
+.theme-biblio .navbar-icon {
+    background: linear-gradient(135deg, var(--biblio-primary) 0%, var(--biblio-secondary) 100%);
+}
+
 .navbar-text {
     display: flex;
     flex-direction: column;

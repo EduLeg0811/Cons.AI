@@ -264,13 +264,13 @@ function showMessageWithButtons(container, message, type = 'info') {
    container.innerHTML = `
     <div class="search-message ${classes[type] || ''}">
         <div>${message}</div>
-        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+        <div class="search-message-actions">
 
-            <button onclick="window.location.href='index.html'" class="search-button" style="background: #10b981; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
+            <button onclick="window.location.href='index.html'" class="search-button search-message-btn">
                 Conversar com a IA
             </button>
 
-            <button onclick="proceedWithSearch()" class="search-button" style="background: #0ea5e9; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
+            <button onclick="proceedWithSearch()" class="search-button search-message-btn search-message-btn-primary">
                 Continuar com a pesquisa nos livros
             </button>
        

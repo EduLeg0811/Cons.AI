@@ -40,12 +40,12 @@
     --search-secondary: #38bdf8;
     --bots-primary: #10b981;
     --bots-secondary: #34d399;
+    --biblio-primary: #edc93a;
+    --biblio-secondary: #f6da5b;
     
     /* Swapped palettes: Apps <-> Utils */
-    --apps-primary: #edc93a;
-    --apps-secondary: #f6da5b;
-    --utils-primary: #7c3aed;
-    --utils-secondary: #a855f7;
+    --apps-primary: #7c3aed;
+    --apps-secondary: #a855f7;
     --deep-primary: #e9e774;
     --deep-secondary: #eae9a9;
     --module-accent: var(--primary-500);
@@ -1150,7 +1150,8 @@ transition: background var(--transition-fast);
   /* Module-themed toggle ON colors (override) */
   .theme-search .switch input:checked + .slider,
   .theme-sem .switch input:checked + .slider,
-  .theme-apps .switch input:checked + .slider {
+  .theme-apps .switch input:checked + .slider,
+  .theme-biblio .switch input:checked + .slider {
     background-color: var(--module-accent, var(--primary-500));
   }
 
@@ -1161,7 +1162,8 @@ transition: background var(--transition-fast);
 .theme-search .navbar .navbar-controls,
 .theme-bots .navbar .navbar-controls,
 .theme-apps .navbar .navbar-controls,
-.theme-sem .navbar .navbar-controls {
+.theme-sem .navbar .navbar-controls,
+.theme-biblio .navbar .navbar-controls {
   width: auto !important;
   justify-content: initial !important;
 }
@@ -1334,6 +1336,3 @@ select {
   font-size: var(--text-xs);
   line-height: 1.2;
 }
-
-
-

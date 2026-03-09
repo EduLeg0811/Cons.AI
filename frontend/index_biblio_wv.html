@@ -45,6 +45,12 @@
         background: var(--white);
         color: var(--gray-900);
       }
+      .biblio-pages-input:focus,
+      .biblio-pages-input:focus-visible {
+        outline: none;
+        border-color: var(--module-accent, var(--biblio-primary));
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--module-accent, var(--biblio-primary)) 18%, transparent);
+      }
       [data-theme="dark"] .biblio-pages-input {
         background: var(--gray-800);
         color: var(--gray-50);
@@ -80,7 +86,7 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-apps">
+<body class="theme-biblio">
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-controls">

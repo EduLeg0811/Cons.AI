@@ -70,14 +70,17 @@ const COLOR6 = 'red';
 window.MODULE_COLORS = { COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6 };
 
 // ========================= Group Color Strategy =========================
-// Central mapping of group -> colors (primary/secondary). Changing here updates UI theme.
-window.GROUP_COLORS = window.GROUP_COLORS || {
+// Single source of truth for panel/module palettes.
+// Edit only this object to change panel colors centrally.
+const PANEL_COLORS = {
   search: { primary: '#0ea5e9', secondary: '#38bdf8' }, // light blue
-  //semantic:   { primary: '#7c3aed', secondary: '#a855f7' }, // violet (IA Apps)
-  apps: { primary: '#f59e0b', secondary: '#fbbf24' }, // orange (IA Busca Semântica)
-  bots:   { primary: '#10b981', secondary: '#34d399' }, // green
-  utils:  { primary: '#f87171', secondary: '#fca5a5' }, // light red (Links Externos)
+  apps: { primary: '#7c3aed', secondary: '#a855f7' },   // violet
+  biblio: { primary: '#edc93a', secondary: '#f6da5b' }, // violet
+  bots: { primary: '#10b981', secondary: '#34d399' },   // green
+  utils: { primary: '#f87171', secondary: '#fca5a5' },  // light red
 };
+
+window.GROUP_COLORS = window.GROUP_COLORS || PANEL_COLORS;
 
 // Map module type identifiers -> group keys
 // Types come from display.js renderers (e.g., 'lexical', 'semantic', 'verbetopedia', 'ccg', 'ragbot', 'quiz', 'lexverb').
@@ -100,21 +103,10 @@ window.MODULE_GROUPS = window.MODULE_GROUPS || {
   try {
     const root = document.documentElement;
     const C = window.GROUP_COLORS || {};
-    if (C.search) {
-      root.style.setProperty('--search-primary', C.search.primary);
-      root.style.setProperty('--search-secondary', C.search.secondary || C.search.primary);
-    }
-    if (C.apps) {
-      root.style.setProperty('--apps-primary', C.apps.primary);
-      root.style.setProperty('--apps-secondary', C.apps.secondary || C.apps.primary);
-    }
-    if (C.bots) {
-      root.style.setProperty('--bots-primary', C.bots.primary);
-      root.style.setProperty('--bots-secondary', C.bots.secondary || C.bots.primary);
-    }
-    if (C.utils) {
-      root.style.setProperty('--utils-primary', C.utils.primary);
-      root.style.setProperty('--utils-secondary', C.utils.secondary || C.utils.primary);
+    for (const [groupName, palette] of Object.entries(C)) {
+      if (!palette || !palette.primary) continue;
+      root.style.setProperty(`--${groupName}-primary`, palette.primary);
+      root.style.setProperty(`--${groupName}-secondary`, palette.secondary || palette.primary);
     }
   } catch (e) { /* noop */ }
 })();
