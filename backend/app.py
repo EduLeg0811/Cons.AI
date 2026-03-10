@@ -225,6 +225,8 @@ class LlmQueryResource(Resource):
 
             model = data.get("model", MODEL_LLM)
             temperature = float(data.get("temperature", 0.3))
+            llm_max_results = int(data.get("llm_max_results", 3))
+            max_output_tokens = int(data.get("max_output_tokens", 500))
             instructions = data.get("instructions", "")
             use_session = bool(data.get("use_session", True))
             reasoning_effort = data.get("reasoning_effort", "none")
@@ -291,6 +293,8 @@ class LlmQueryResource(Resource):
                 "model": model,
                 "vector_store_names": vector_store_names,
                 "temperature": temperature,
+                "llm_max_results": llm_max_results,
+                "max_output_tokens": max_output_tokens,
                 "instructions": instructions,
                 "use_session": use_session,
                 "chat_id": chat_id,
@@ -317,6 +321,8 @@ class LlmQueryResource(Resource):
                 "type": "ragbot",
                 "model": model,
                 "temperature": temperature,
+                "llm_max_results": llm_max_results,
+                "max_output_tokens": max_output_tokens,
                 "reasoning_effort": reasoning_effort,
                 "verbosity": verbosity,
                 "timeout_s": timeout_s,

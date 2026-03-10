@@ -166,9 +166,9 @@
                                 <div class="tool-info-extra"></div>
                             </div>
 
-                              <span>
+                              <!-- <span>
                                 <img src="/styles/star3d.png" alt="Icon" class="icon-star">
-                            </span>
+                            </span> -->
                         </a>
 
                     </div>
@@ -691,6 +691,8 @@
                 config.MODEL_LLM = config.MODEL_LLM || MODEL_LLM;
                 config.MODEL_RAGBOT = config.MODEL_RAGBOT || MODEL_RAGBOT;
                 config.TEMPERATURE = config.TEMPERATURE ?? TEMPERATURE;
+                config.LLM_MAX_RESULTS = Number(config.LLM_MAX_RESULTS ?? LLM_MAX_RESULTS) || 3;
+                config.MAX_OUTPUT_TOKENS = Number(config.MAX_OUTPUT_TOKENS ?? MAX_OUTPUT_TOKENS) || 500;
                 config.MAX_RESULTS_DISPLAY = config.MAX_RESULTS_DISPLAY || MAX_RESULTS_DISPLAY;
                 config.OPENAI_RAGBOT = config.OPENAI_RAGBOT || OPENAI_RAGBOT;
                 config.FULL_BADGES = !!config.FULL_BADGES;
@@ -738,6 +740,20 @@
                   );
                 }
 
+                // LLM internal controls
+                const llmMaxResultsInput = $('cfg-llm-max-results');
+                if (llmMaxResultsInput) {
+                  llmMaxResultsInput.value = String(
+                    Math.max(1, Number(config.LLM_MAX_RESULTS) || 3)
+                  );
+                }
+                const maxOutputTokensInput = $('cfg-max-output-tokens');
+                if (maxOutputTokensInput) {
+                  maxOutputTokensInput.value = String(
+                    Math.max(1, Number(config.MAX_OUTPUT_TOKENS) || 500)
+                  );
+                }
+
                 // RAGBOT
                 if ($('cfg-openai-ragbot')) $('cfg-openai-ragbot').value = config.OPENAI_RAGBOT;
 
@@ -765,6 +781,8 @@
                     Number($('cfg-temperature')?.value || TEMPERATURE),
                     0.1
                   ), 1.0),
+                  LLM_MAX_RESULTS: Math.max(1, Number($('cfg-llm-max-results')?.value || window.CONFIG.LLM_MAX_RESULTS || LLM_MAX_RESULTS || 3)),
+                  MAX_OUTPUT_TOKENS: Math.max(1, Number($('cfg-max-output-tokens')?.value || window.CONFIG.MAX_OUTPUT_TOKENS || MAX_OUTPUT_TOKENS || 500)),
 
 
                   MAX_RESULTS_DISPLAY: normalizeMaxResults(
@@ -787,12 +805,49 @@
                 // Update legacy variables
                 window.USER_MAX_RESULTS = window.CONFIG.MAX_RESULTS_DISPLAY;
                 window.USER_TEMPERATURE = window.CONFIG.TEMPERATURE;
+                window.USER_LLM_MAX_RESULTS = window.CONFIG.LLM_MAX_RESULTS;
+                window.USER_MAX_OUTPUT_TOKENS = window.CONFIG.MAX_OUTPUT_TOKENS;
                 
                 closeConfigModal();
                 
               } catch (e) {
                 console.error('Error saving configuration:', e);
                 alert('Erro ao salvar configurações. Verifique o console para mais detalhes.');
+              }
+            }
+
+            function resetConfigToDefault() {
+              try {
+                const defModelLlm = (typeof MODEL_LLM !== 'undefined') ? MODEL_LLM : 'gpt-4.1-mini';
+                const defModelRagbot = (typeof MODEL_RAGBOT !== 'undefined') ? MODEL_RAGBOT : 'gpt-5.4';
+                const defTemperature = (typeof TEMPERATURE !== 'undefined') ? TEMPERATURE : 0.3;
+                const defLlmMaxResults = (typeof LLM_MAX_RESULTS !== 'undefined') ? LLM_MAX_RESULTS : 3;
+                const defMaxOutputTokens = (typeof MAX_OUTPUT_TOKENS !== 'undefined') ? MAX_OUTPUT_TOKENS : 500;
+                const defMaxResultsDisplay = (typeof MAX_RESULTS_DISPLAY !== 'undefined') ? MAX_RESULTS_DISPLAY : 100;
+                const defOpenaiRagbot = (typeof OPENAI_RAGBOT !== 'undefined') ? OPENAI_RAGBOT : 'ALLWV';
+                const defaults = {
+                  MODEL_LLM: defModelLlm,
+                  MODEL_RAGBOT: defModelRagbot,
+                  TEMPERATURE: defTemperature,
+                  LLM_MAX_RESULTS: defLlmMaxResults,
+                  MAX_OUTPUT_TOKENS: defMaxOutputTokens,
+                  MAX_RESULTS_DISPLAY: defMaxResultsDisplay,
+                  OPENAI_RAGBOT: defOpenaiRagbot,
+                  FULL_BADGES: false,
+                  MINITERTULIA: false,
+                  DESCRITIVOS: (window.CONFIG && typeof window.CONFIG.DESCRITIVOS !== 'undefined')
+                    ? !!window.CONFIG.DESCRITIVOS
+                    : true,
+                };
+                localStorage.setItem('appConfig_main', JSON.stringify(defaults));
+                window.CONFIG = { ...window.CONFIG, ...defaults };
+                window.USER_MAX_RESULTS = window.CONFIG.MAX_RESULTS_DISPLAY;
+                window.USER_TEMPERATURE = window.CONFIG.TEMPERATURE;
+                window.USER_LLM_MAX_RESULTS = window.CONFIG.LLM_MAX_RESULTS;
+                window.USER_MAX_OUTPUT_TOKENS = window.CONFIG.MAX_OUTPUT_TOKENS;
+                loadConfigForm();
+              } catch (e) {
+                console.error('Error resetting configuration:', e);
               }
             }
 
@@ -825,6 +880,7 @@
             <div class="config-field">
               <label for="cfg-model-llm">MODEL_LLM</label>
               <select id="cfg-model-llm">
+                <option value="gpt-5.4">gpt-5.4</option>
                 <option value="gpt-5.2">gpt-5.2</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
                 <option value="gpt-4.1-mini">gpt-4.1-mini</option>
@@ -833,6 +889,7 @@
             <div class="config-field">
               <label for="cfg-model-ragbot">MODEL_RAGBOT</label>
               <select id="cfg-model-ragbot">
+                <option value="gpt-5.4">gpt-5.4</option>
                 <option value="gpt-5.2">gpt-5.2</option>
                 <option value="gpt-4.1-nano">gpt-4.1-nano</option>
                 <option value="gpt-4.1-mini">gpt-4.1-mini</option>
@@ -852,6 +909,14 @@
             <div class="config-field">
               <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help" data-max-results-range></span></label>
               <input id="cfg-max-results" type="number" data-max-config="true" step="10" value="100" />
+            </div>
+            <div class="config-field">
+              <label for="cfg-llm-max-results">LLM_MAX_RESULTS</label>
+              <input id="cfg-llm-max-results" type="number" min="1" step="1" value="3" />
+            </div>
+            <div class="config-field">
+              <label for="cfg-max-output-tokens">MAX_OUTPUT_TOKENS</label>
+              <input id="cfg-max-output-tokens" type="number" min="1" step="50" value="500" />
             </div>
             <div class="config-field">
               <label for="cfg-openai-ragbot">OPENAI_RAGBOT</label>
@@ -877,6 +942,7 @@
           </div>
         </div>
         <div class="config-actions">
+          <button class="btn" type="button" onclick="resetConfigToDefault()">Reset</button>
           <button class="btn" type="button" onclick="closeConfigModal()">Cancelar</button>
           <button class="btn primary" type="button" onclick="saveConfigAndClose()">Salvar</button>
         </div>

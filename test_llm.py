@@ -288,7 +288,8 @@ with col_left:
         model = st.selectbox(
             "Modelo",
             options=[
-                "gpt-5.1",
+                "gpt-5.4",
+                "gpt-5.2",
                 "gpt-5-nano",
                 "gpt-4.1-mini",
                 "gpt-4.1-nano",

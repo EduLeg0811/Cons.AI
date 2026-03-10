@@ -93,6 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             query: "Comente a seguinte Pensata: " + pensataText,
             model: (window.CONFIG?.MODEL_LLM ?? MODEL_LLM),
             temperature: (window.CONFIG?.TEMPERATURE ?? TEMPERATURE),
+            llm_max_results: Number(window.CONFIG?.LLM_MAX_RESULTS ?? LLM_MAX_RESULTS ?? 3),
+            max_output_tokens: Number(window.CONFIG?.MAX_OUTPUT_TOKENS ?? MAX_OUTPUT_TOKENS ?? 500),
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
             instructions: COMMENTARY_INSTRUCTIONS               
         };
