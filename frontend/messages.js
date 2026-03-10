@@ -131,6 +131,26 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
+  //Tool: Quiz Conscienciológico
+  'Quiz Conscienciológico': {
+    short: '<em>Quiz de Perguntas & Respostas</em>',
+    extra: [
+      '<br>',
+      'Quiz de perguntas e respostas sobre temas da Conscienciologia.',
+      'Artifact do NotebookLM.',
+    ].join('\n')
+  },
+
+  //Tool: Flashcard
+  'Flashcard de Temas': {
+    short: '<em>Temas da Conscienciologia em cards</em>',
+    extra: [
+      '<br>',
+      'Flashcard de temas da Conscienciologia.',
+      'Artifact do NotebookLM.',
+    ].join('\n')
+  },
+
   // Tool: BiblioWV
   'Bibliografia': {
     short: '<em>Bibliografia de livros de Waldo Vieira</em>',
@@ -151,21 +171,7 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
-  /* 
-  // Tool: Quiz Conscienciológico
-  'Quiz Conscienciológico': {
-    short: '<em>Quiz de perguntas & respostas</em>',
-    extra: [
-      '<br>',
-      'Formula perguntas sobre temas da Conscienciologia. ',
-      'Você responde às perguntas e a IA avalia a resposta.<br>',
-      '<strong>Dicas:</strong><br>',
-      '<strong>1.</strong> Use-o para testar o seu conhecimento da Conscienciologia.<br>',
-      '<strong>2.</strong> Útil também para estudo e aprofundamento dos temas conscienciológicos.',
-    ].join('\n')
-  },
- */
-
+  
   // Tool: ICGE (external)
     'ICGE': {
       short: '<em>Site do ICGE</em>',
@@ -220,6 +226,8 @@ const TOOL_ALIASES = {
   'Definologia de Verbetes': 'Definologia de Verbetes',
   'Questões do Conscienciograma': 'Questões do Conscienciograma',
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
+  'Flashcards de Temas': 'Flashcard de Temas',
+  'Flashcard de Temas': 'Flashcard de Temas',
   'Bibliomancia Digital': 'Bibliomancia Digital',
   'Bibliografia': 'BiblioWV',
 };
@@ -262,6 +270,11 @@ function applyMessages() {
       if (!titleEl) return;
       const key = titleEl.textContent.trim();
       let canonical = (typeof TOOL_ALIASES === 'object' && TOOL_ALIASES[key]) || key;
+      const keyNorm = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      if (keyNorm.includes('quiz conscienciologico')) canonical = 'Quiz Conscienciológico';
+      if (keyNorm.includes('flashcard de temas') || keyNorm.includes('flashcards de temas')) {
+        canonical = 'Flashcard de Temas';
+      }
 
       // Disambiguate by href when titles are reused (e.g., "Livros & Tratados")
       try {
