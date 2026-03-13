@@ -76,6 +76,10 @@
       // Pré-aplica tela em branco e bloqueio de rolagem no PRIMEIRO acesso da sessão
       // Executa o mais cedo possível para evitar flash de conteúdo
       try {
+        if (sessionStorage.getItem('skipLogoIntro') === 'true') {
+          sessionStorage.setItem('logoIntroShown', 'true');
+          sessionStorage.removeItem('skipLogoIntro');
+        }
         if (!sessionStorage.getItem('logoIntroShown')) {
           document.documentElement.classList.add('no-scroll', 'fade-out-main');
         }
@@ -666,6 +670,10 @@
              // Play logo intro once per session (first visit only)
             document.addEventListener('DOMContentLoaded', function () {
               try {
+                if (sessionStorage.getItem('skipLogoIntro') === 'true') {
+                  sessionStorage.setItem('logoIntroShown', 'true');
+                  sessionStorage.removeItem('skipLogoIntro');
+                }
                 if (!sessionStorage.getItem('logoIntroShown')) {
                   sessionStorage.setItem('logoIntroShown', 'true');
                   playLogoIntro();

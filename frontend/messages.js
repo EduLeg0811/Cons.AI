@@ -136,7 +136,7 @@ const TOOL_MESSAGES = {
     short: '<em>Quiz de Perguntas & Respostas</em>',
     extra: [
       '<br>',
-      'Quiz de perguntas e respostas sobre temas da Conscienciologia.',
+      'Quiz de perguntas e respostas sobre temas da Conscienciologia.<br>',
       'Artifact do NotebookLM.',
     ].join('\n')
   },
@@ -146,7 +146,7 @@ const TOOL_MESSAGES = {
     short: '<em>Temas da Conscienciologia em cards</em>',
     extra: [
       '<br>',
-      'Flashcard de temas da Conscienciologia.',
+      'Flashcard de temas da Conscienciologia.<br>',
       'Artifact do NotebookLM.',
     ].join('\n')
   },
