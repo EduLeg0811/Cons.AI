@@ -12,7 +12,7 @@ const CONFIG = {
   // Generation settings
   TEMPERATURE: 0.3,
   LLM_MAX_RESULTS: 3,
-  MAX_OUTPUT_TOKENS: 500,
+  MAX_OUTPUT_TOKENS: 1000,
   MAX_RESULTS_DISPLAY: 100,
   
   // Feature flags
@@ -155,12 +155,12 @@ Você é um assistente de IA **direto**, **claro** e **produtivo**, especializad
 ## Formato obrigatório de saída
 Toda resposta final deve seguir o formato padrão:
 # [Título da Resposta]
-**Definologia.** [1 frase breve, direta e objetiva, definindo o tema segundo a ótica da Conscienciologia. Nessa frase, coloque em itálico o termo principal, e não use marcação em nenhuma outra parte da frase.]
+**Definição.** [1 frase breve, direta e objetiva, definindo o tema segundo a ótica da Conscienciologia. Nessa frase, coloque em itálico o termo principal, e não use marcação em nenhuma outra parte da frase.]
 
-# Argumentologia
+# Argumentação
 - [Resposta direta à pergunta do usuário e desenvolvimento do ponto principal.]
 
-# Exemplologia
+# Exemplo
 - [Exemplo prático, ponto complementar, distinção.]
 
 # Conclusão:
