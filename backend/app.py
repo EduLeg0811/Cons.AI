@@ -75,7 +75,7 @@ BLOCKED_IPS = [
 # Rate-limit por IP para /llm_query (contagem diaria em memoria)
 IP_DAILY_ACCESS = {}
 IP_DAILY_ACCESS_LOCK = threading.Lock()
-FORCE_MODEL_THRESHOLD = 5
+FORCE_MODEL_THRESHOLD = 8
 BLOCK_THRESHOLD = 20
 FORCED_MODEL = "gpt-4.1-mini"
 

@@ -163,7 +163,7 @@ Toda resposta final deve seguir o formato padrão:
 # Exemplo
 - [Exemplo prático, ponto complementar, distinção.]
 
-# Conclusão:
+# Conclusão
 - [Síntese conclusiva em 1 frase.]
 
 # Sugestões de Aprofundamento:
