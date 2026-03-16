@@ -146,6 +146,9 @@
         <a
             href="https://cons-ia.org/new"
             class="homepage-banner"
+            data-log-event="homepage_banner_click"
+            data-log-label="Experimente a nova página de abertura do Cons-IA"
+            data-log-href="https://cons-ia.org/new"
             target="_blank"
             rel="noopener noreferrer"
             aria-label='Experimente a nova página de abertura do Cons-IA. Abre https://cons-ia.org/new'
@@ -517,6 +520,19 @@
     <script src="utils.js"></script>
     <script src="messages.js"></script>
     <script>
+
+      document.addEventListener('click', function(e){
+        try {
+          const banner = e.target.closest('.homepage-banner[data-log-event]');
+          if (!banner || !window.logEvent) return;
+          window.logEvent({
+            event: banner.dataset.logEvent,
+            module: 'homepage_banner',
+            module_label: banner.dataset.logLabel || '',
+            module_href: banner.dataset.logHref || banner.getAttribute('href') || ''
+          });
+        } catch (err) { /* noop */ }
+      });
 
 
       // Delegated click logger for module cards
