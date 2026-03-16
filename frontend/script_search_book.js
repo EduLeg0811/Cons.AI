@@ -266,7 +266,7 @@ function showMessageWithButtons(container, message, type = 'info') {
         <div>${message}</div>
         <div class="search-message-actions">
 
-            <button onclick="window.location.href='index.html'" class="search-button search-message-btn">
+            <button onclick="window.location.href='internal.html'" class="search-button search-message-btn">
                 Conversar com a IA
             </button>
 
