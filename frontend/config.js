@@ -401,107 +401,95 @@ if (VERSION_DEVELOPMENT) {
       } catch { return undefined; }
     };
 
+    const trim = (value, fallback = '') => {
+      if (value === undefined || value === null) return fallback;
+      return String(value).trim();
+    };
+
+    const pageLabelFromDocument = () => {
+      try {
+        const explicit = trim(document.body?.dataset?.pageLabel);
+        if (explicit) return explicit;
+        const title = trim(document.title);
+        if (!title) return '';
+        return title.split(/●|â—/)[0].trim() || title;
+      } catch {
+        return '';
+      }
+    };
+
+    const cleanMeta = (meta, depth = 0) => {
+      if (meta === undefined || meta === null) return null;
+      if (depth >= 2) return trim(meta);
+      if (Array.isArray(meta)) return meta.slice(0, 10).map(item => cleanMeta(item, depth + 1));
+      if (typeof meta === 'object') {
+        const out = {};
+        Object.entries(meta).slice(0, 10).forEach(([key, value]) => {
+          const cleaned = cleanMeta(value, depth + 1);
+          if (cleaned !== null && cleaned !== '') out[trim(key)] = cleaned;
+        });
+        return Object.keys(out).length ? out : null;
+      }
+      const text = trim(meta);
+      return text || null;
+    };
+
     window.logEvent = function logEvent(data) {
       try {
         const base = window.apiBaseUrl || apiBaseUrl;
         const url = `${base}/log`;
         const enriched = {
-          ...data,
-          page: data?.page || (location && location.pathname) || undefined,
-          origin: origin,
-          referrer: document.referrer || '',
-          mode: mode,
-          ts: new Date().toISOString(),
+          event: trim(data?.event, 'feature_access'),
+          category: trim(data?.category),
+          module: trim(data?.module),
+          action: trim(data?.action),
+          label: trim(data?.label || data?.module_label),
+          page: trim(data?.page || (location && location.pathname) || ''),
+          page_label: trim(data?.page_label || pageLabelFromDocument()),
           session_id: getSessionId(),
+          chat_id: trim(data?.chat_id),
+          value: trim(data?.value),
+          meta: cleanMeta(data?.meta),
         };
         const body = JSON.stringify(enriched);
         if (navigator.sendBeacon) {
           const blob = new Blob([body], { type: 'application/json' });
           return navigator.sendBeacon(url, blob);
-        } else {
-          return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
         }
+        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).catch(() => {});
       } catch {}
+    };
+
+    window.logFeatureAccess = function logFeatureAccess(data = {}) {
+      return window.logEvent({
+        event: 'feature_access',
+        category: 'feature',
+        ...data,
+      });
+    };
+
+    window.logModuleAccess = function logModuleAccess(data = {}) {
+      return window.logEvent({
+        event: 'module_access',
+        category: 'navigation',
+        action: data.action || 'open',
+        ...data,
+      });
     };
   })();
 
   document.addEventListener('DOMContentLoaded', function(){
-    try { window.logEvent({ event: 'page_view' }); } catch {}
+    try {
+      const path = (location && location.pathname) || '';
+      if (path === '/' || path.endsWith('/index.html')) return;
+      window.logEvent({
+        event: 'page_view',
+        category: 'navigation',
+        action: 'view',
+        label: document.body?.dataset?.pageLabel || '',
+      });
+    } catch {}
   });
-
-  (function initGlobalInputLogging(){
-    try { if (window && typeof window === 'object') { if (window.__disableGlobalInputLog !== undefined ? window.__disableGlobalInputLog : true) return; } } catch {}
-    const THROTTLE_MS = 800;
-    const lastTs = new Map();
-    const shouldSkip = (el) => {
-      if (!el) return true;
-      const tag = (el.tagName||'').toLowerCase();
-      if (tag !== 'input' && tag !== 'textarea') return true;
-      const type = (el.type||'').toLowerCase();
-      if (type === 'password' || type === 'hidden') return true;
-      return false;
-    };
-    const getFieldMeta = (el) => ({
-      id: el.id || undefined,
-      name: el.name || undefined,
-      placeholder: el.placeholder || undefined,
-      classes: (el.className||'').toString().slice(0,200) || undefined,
-      dataset_module: el.dataset ? el.dataset.module : undefined,
-    });
-    const now = () => Date.now();
-    const keyFor = (el) => el.__logk || (el.__logk = (el.id||el.name||el.placeholder||'input') + ':' + Math.random().toString(36).slice(2));
-
-  /* input listener disabled: we only log on submit/enter now */
-
-    document.addEventListener('keydown', function(e){
-      try {
-        const el = e.target;
-        if (shouldSkip(el) || !window.logEvent) return;
-        
-        // EXCLUIR inputs de busca para evitar logs duplicados
-        if (el.id && (el.id.includes('searchInput') || el.id.includes('Input'))) return;
-        if (el.className && el.className.includes('search')) return;
-        
-        if (e.key === 'Enter' && !e.shiftKey) {
-          if (window.__suppressInputSubmitTs && (Date.now() - window.__suppressInputSubmitTs < 600)) { window.__suppressInputSubmitTs = 0; return; }
-          const val = (el.value||'').slice(0,200);
-          window.logEvent({ event: 'input_submit', trigger: 'enter', field: getFieldMeta(el), value: val, length: val.length });
-        }
-      } catch {}
-    }, true);
-
-    // Log on explicit Send/Click of the search button (when not using a form submit)
-    document.addEventListener('click', function(e){
-      try {
-        const el = e.target;
-        if (!el || shouldSkip(el)) return;
-        
-        // EXCLUIR botões de busca para evitar logs duplicados
-        if (el.id && (el.id.includes('searchButton') || el.id.includes('Button'))) return;
-        if (el.className && el.className.includes('search')) return;
-        
-        const val = (el.value||'').slice(0,200);
-        const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
-        window.logEvent({ event: 'input_submit', trigger: 'click', field: getFieldMeta(el), value: val, length: val.length });
-      } catch {}
-    }, true);
-
-    // Log on form submit: capture first non-empty text input/textarea
-    document.addEventListener('submit', function(e){
-      try {
-        if (!window.logEvent) return;
-        const form = e.target;
-        if (!form || !form.querySelector) return;
-        const fields = form.querySelectorAll('input[type=text], input:not([type]), textarea');
-        let el = null;
-        for (const f of fields) { if ((f.value||'').trim()) { el = f; break; } }
-        if (!el) return;
-        const getFieldMeta = (el) => ({ id: el.id||undefined, name: el.name||undefined, placeholder: el.placeholder||undefined, classes: (el.className||'').toString().slice(0,200)||undefined, dataset_module: el.dataset ? el.dataset.module : undefined });
-        const val = (el.value||'').slice(0,200);
-        window.logEvent({ event: 'input_submit', trigger: 'submit', field: getFieldMeta(el), value: val, length: val.length });
-      } catch {}
-    }, true);
-  })();
 }
 
 // Configuração de timeout

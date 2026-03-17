@@ -23,7 +23,7 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-search">
+<body class="theme-search" data-page-label="Busca em Livros">
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- Navbar -->
@@ -401,6 +401,24 @@
     
                 const settings = { books, maxResults, groupResults };
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
+
+                try {
+                    if (window.logFeatureAccess) {
+                        window.logFeatureAccess({
+                            module: 'search_book',
+                            action: 'save_config',
+                            label: 'Configuracao da busca em livros',
+                            meta: {
+                                books,
+                                books_count: books.length,
+                                max_results: maxResults,
+                                group_results: groupResults
+                            }
+                        });
+                    }
+                } catch (logError) {
+                    console.error('Falha ao registrar configuracao da busca em livros', logError);
+                }
 
                 
                 // feedback visual de salvando (500ms), depois fecha painel

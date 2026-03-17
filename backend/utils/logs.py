@@ -6,6 +6,7 @@ from typing import Dict, Any, Iterable, List, Optional, Tuple
 import threading
 import urllib.request
 import urllib.error
+from collections import Counter
 
 # Configuration
 _DEFAULT_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", "3") or 3)
@@ -21,6 +22,7 @@ _FALLBACK_DIRS = [
 _LOG_SUBDIR = "access"
 _FILENAME_FMT = "access-%Y-%m-%d.log"
 _MAX_VALUE_LEN = 2000
+_MAX_META_ITEMS = 12
 
 _geoip_cache_lock = threading.Lock()
 _geoip_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
@@ -85,6 +87,29 @@ def _truncate_value(value: Any) -> Any:
     if len(s) > _MAX_VALUE_LEN:
         return s[:_MAX_VALUE_LEN] + "…"
     return value
+
+
+def _trim_string(value: Any, default: str = "") -> str:
+    if value is None:
+        return default
+    return str(_truncate_value(value)).strip()
+
+
+def _clean_meta(meta: Any, depth: int = 0) -> Any:
+    if meta is None:
+        return None
+    if depth >= 2:
+        return _trim_string(meta)
+    if isinstance(meta, dict):
+        cleaned = {}
+        for idx, (key, value) in enumerate(meta.items()):
+            if idx >= _MAX_META_ITEMS:
+                break
+            cleaned[_trim_string(key)[:80]] = _clean_meta(value, depth + 1)
+        return cleaned or None
+    if isinstance(meta, list):
+        return [_clean_meta(item, depth + 1) for item in meta[:_MAX_META_ITEMS]]
+    return _trim_string(meta)
 
 
 def clean_old_logs(retention_days: Optional[int] = None) -> int:
@@ -154,47 +179,6 @@ def _tail_lines(path: str, limit: int) -> List[str]:
         return []
 
 
-def read_all_raw(limit: Optional[int] = None) -> str:
-    """Return raw NDJSON text from all log files.
-    
-    Args:
-        limit: Maximum number of lines to return across all files. If None, returns all lines.
-    """
-    log_dir = resolve_log_dir()
-    all_lines = []
-    
-    try:
-        # Get all log files sorted by modification time (newest first)
-        log_files = []
-        for fname in os.listdir(log_dir):
-            if fname.startswith("access-") and fname.endswith(".log"):
-                fpath = os.path.join(log_dir, fname)
-                mtime = os.path.getmtime(fpath)
-                log_files.append((mtime, fpath))
-        
-        # Sort by modification time (newest first)
-        log_files.sort(reverse=True, key=lambda x: x[0])
-        
-        # Read all lines from all files
-        for _, fpath in log_files:
-            try:
-                with open(fpath, "r", encoding="utf-8") as f:
-                    file_lines = f.readlines()
-                    all_lines.extend(file_lines)
-            except (IOError, OSError):
-                continue
-        
-        # Apply limit if specified
-        if limit and limit > 0:
-            all_lines = all_lines[-limit:]
-            
-        return "".join(all_lines)
-        
-    except Exception as e:
-        print(f"Error reading log files: {str(e)}")
-        return ""
-
-
 def parse_ndjson_lines(text: str) -> List[Dict[str, Any]]:
     out: List[Dict[str, Any]] = []
     for line in text.splitlines():
@@ -209,35 +193,67 @@ def parse_ndjson_lines(text: str) -> List[Dict[str, Any]]:
     return out
 
 
+def _normalize_legacy_event(payload: Dict[str, Any], event: str) -> Tuple[str, str, str]:
+    category = _trim_string(payload.get("category"))
+    module = _trim_string(payload.get("module"))
+    action = _trim_string(payload.get("action"))
+
+    if event == "module_click":
+        return "module_access", category or "navigation", action or "open"
+    if event == "homepage_banner_click":
+        return "module_access", category or "navigation", action or "open"
+    if event == "search_performed":
+        return "feature_access", category or "feature", action or "search"
+    if event in {"download_completed", "download_initiated", "download_failed"}:
+        action_map = {
+            "download_completed": "download",
+            "download_initiated": "download_start",
+            "download_failed": "download_failed",
+        }
+        return "feature_access", category or "feature", action or action_map[event]
+    if event == "feedback_message":
+        return "feedback", category or "feedback", action or "send"
+    if event == "page_view":
+        return "page_view", category or "navigation", action or "view"
+    return event or "generic", category or "feature", action
+
+
 def normalize_event(payload: Dict[str, Any]) -> Dict[str, Any]:
     """Normalize arbitrary payload into standard event structure."""
-    def s(key: str, default: str = "") -> str:
-        val = payload.get(key, default)
-        return str(val) if val is not None else default
+    raw_event = _trim_string(payload.get("event") or payload.get("type") or "generic", "generic")
+    event, category, action = _normalize_legacy_event(payload, raw_event)
+    page = _trim_string(payload.get("page") or payload.get("path") or payload.get("url"))
+    page_label = _trim_string(payload.get("page_label") or payload.get("pageLabel") or payload.get("title"))
+    module = _trim_string(payload.get("module") or payload.get("mod") or payload.get("module_group"))
+    label = _trim_string(
+        payload.get("label")
+        or payload.get("module_label")
+        or payload.get("moduleLabel")
+        or payload.get("module_href")
+    )
+    session_id = _trim_string(payload.get("session_id") or payload.get("sessionId") or payload.get("sid"))
+    chat_id = _trim_string(payload.get("chat_id") or payload.get("chatId"))
+    value = _trim_string(payload.get("value"))
+    meta = _clean_meta(payload.get("meta"))
 
-    event = s("event") or s("type") or "generic"
-    module = s("module") or s("mod") or ""
-    module_label = s("module_label") or s("moduleLabel") or ""
-    page = s("page") or s("path") or s("url") or ""
-    origin = s("origin") or s("referrer") or ""
-    session_id = s("session_id") or s("sessionId") or s("sid") or ""
-    chat_id = s("chat_id") or s("chatId") or ""
-    value = _truncate_value(payload.get("value"))
-    meta = payload.get("meta")
-
-    if isinstance(meta, (dict, list)):
-        pass
-    elif meta is None:
-        meta = None
-    else:
-        meta = str(meta)
+    if not page_label:
+        page_label = page.rsplit("/", 1)[-1].replace(".html", "").replace("_", " ").strip().title() if page else ""
+    if not label:
+        if event == "page_view":
+            label = page_label or page
+        elif module:
+            label = module.replace("_", " ").strip().title()
+        else:
+            label = event.replace("_", " ").strip().title()
 
     return {
         "event": event,
+        "category": category,
         "module": module,
-        "module_label": module_label,
+        "action": action,
+        "label": label,
         "page": page,
-        "origin": origin,
+        "page_label": page_label,
         "session_id": session_id,
         "chat_id": chat_id,
         "value": value,
@@ -257,10 +273,7 @@ def add_enrichment(record: Dict[str, Any], headers: Dict[str, str], remote_addr:
     now_iso = datetime.now(timezone.utc).isoformat()
     record["_server_ts"] = now_iso
     record["_client_ip"] = extract_client_ip(headers, remote_addr)
-    if user_agent:
-        record["_user_agent"] = user_agent
-    else:
-        record["_user_agent"] = ""
+    record["_user_agent"] = user_agent or ""
     # optional geoip
     try:
         geo = geoip_lookup(record["_client_ip"]) if record["_client_ip"] else None
@@ -313,7 +326,7 @@ def pretty_lines(records: Iterable[Dict[str, Any]]) -> str:
         ts = r.get("_server_ts", "")
         mod = r.get("module", "")
         page = r.get("page", "")
-        val = r.get("value", "")
+        val = r.get("label", "")
         ip = r.get("_client_ip", "")
         geo = r.get("_geo", {}) or {}
         geo_str = ", ".join([str(geo.get("city") or ""), str(geo.get("region") or ""), str(geo.get("country") or "")]).strip(", ")
@@ -359,3 +372,111 @@ def clear_all() -> int:
         pass
     return deleted
 
+
+def _list_log_files_desc() -> List[str]:
+    folder = resolve_log_dir()
+    files: List[str] = []
+    try:
+        for name in os.listdir(folder):
+            if name.startswith("access-") and name.endswith(".log"):
+                files.append(os.path.join(folder, name))
+    except Exception:
+        return []
+    return sorted(files, reverse=True)
+
+
+def read_recent_lines(limit: Optional[int] = None) -> List[str]:
+    if limit is not None and limit <= 0:
+        limit = None
+
+    log_files = _list_log_files_desc()
+    if not log_files:
+        return []
+
+    if limit is None:
+        ordered = list(reversed(log_files))
+        lines: List[str] = []
+        for fpath in ordered:
+            try:
+                with open(fpath, "r", encoding="utf-8") as f:
+                    lines.extend(f.readlines())
+            except (IOError, OSError):
+                continue
+        return lines
+
+    remaining = limit
+    chunks: List[List[str]] = []
+    for fpath in log_files:
+        if remaining <= 0:
+            break
+        lines = _tail_lines(fpath, remaining)
+        if not lines:
+            continue
+        chunks.append([line + "\n" for line in lines])
+        remaining -= len(lines)
+
+    collected: List[str] = []
+    for chunk in reversed(chunks):
+        collected.extend(chunk)
+    return collected
+
+
+def read_all_raw(limit: Optional[int] = None) -> str:
+    return "".join(read_recent_lines(limit=limit))
+
+
+def read_records(limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    return parse_ndjson_lines(read_all_raw(limit=limit))
+
+
+def summarize_records(records: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
+    total = 0
+    page_views = 0
+    accesses = 0
+    unique_ips = set()
+    locations = set()
+    page_counter: Counter[str] = Counter()
+    module_counter: Counter[str] = Counter()
+    recent_locations: Counter[str] = Counter()
+
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        total += 1
+        event = _trim_string(record.get("event"))
+        label = _trim_string(record.get("label"))
+        page_label = _trim_string(record.get("page_label"))
+        module = _trim_string(record.get("module"))
+        ip = _trim_string(record.get("_client_ip"))
+        geo = record.get("_geo") or {}
+        location = ", ".join(
+            part for part in [
+                _trim_string(geo.get("city")),
+                _trim_string(geo.get("region")),
+                _trim_string(geo.get("country")),
+            ] if part
+        )
+
+        if ip:
+            unique_ips.add(ip)
+        if location:
+            locations.add(location)
+            recent_locations[location] += 1
+
+        if event == "page_view":
+            page_views += 1
+            page_counter[page_label or label or _trim_string(record.get("page"))] += 1
+        else:
+            accesses += 1
+            module_counter[label or module or event] += 1
+
+    return {
+        "total": total,
+        "page_views": page_views,
+        "accesses": accesses,
+        "unique_ips": len(unique_ips),
+        "locations": len(locations),
+        "top_pages": [{"label": key, "count": count} for key, count in page_counter.most_common(4)],
+        "top_accesses": [{"label": key, "count": count} for key, count in module_counter.most_common(5)],
+        "top_locations": [{"label": key, "count": count} for key, count in recent_locations.most_common(4)],
+    }

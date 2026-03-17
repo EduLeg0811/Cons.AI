@@ -115,6 +115,28 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage(resultsDiv, 'Nenhum resultado foi retornado para os verbetes informados.', 'info');
       }
 
+      try {
+        if (window.logFeatureAccess) {
+          const titles = rawInput
+            .split(/[\n,;]+/)
+            .map(item => item.trim())
+            .filter(Boolean);
+          window.logFeatureAccess({
+            module: 'biblio_verbete',
+            action: 'generate',
+            label: 'Bibliografia de verbetes',
+            value: rawInput,
+            meta: {
+              style: getSelectedStyle(),
+              titles_count: titles.length,
+              titles: titles,
+            }
+          });
+        }
+      } catch (logError) {
+        console.error('Failed to log verbete bibliography access:', logError);
+      }
+
       setStatus('');
     } catch (error) {
       removeLoading(resultsDiv);

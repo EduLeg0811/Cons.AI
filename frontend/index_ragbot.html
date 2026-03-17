@@ -22,7 +22,7 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-bots">
+<body class="theme-bots" data-page-label="ConsBOT">
 
 
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -408,6 +408,23 @@
                 }
                 const settings = { books };
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
+
+                try {
+                    if (window.logFeatureAccess) {
+                        window.logFeatureAccess({
+                            module: 'ragbot',
+                            action: 'save_config',
+                            label: 'Configuracao do ConsBOT',
+                            meta: {
+                                books,
+                                books_count: books.length,
+                                selected_sources: books
+                            }
+                        });
+                    }
+                } catch (logError) {
+                    console.error('Falha ao registrar configuracao do RagBOT', logError);
+                }
 
                 // Marca que o usuário já configurou o RagBOT pelo menos uma vez
                 try {

@@ -122,6 +122,25 @@ document.addEventListener('DOMContentLoaded', () => {
         ref: '',
       });
 
+      try {
+        if (window.logFeatureAccess) {
+          window.logFeatureAccess({
+            module: 'biblio_wv',
+            action: 'generate',
+            label: selectedBookTitle || 'Bibliografia de livros',
+            value: selectedBookTitle,
+            meta: {
+              book_sigla: selectedBookSigla,
+              style: selectedStyle,
+              pages: pages,
+              pages_count: pages.length,
+            }
+          });
+        }
+      } catch (logError) {
+        console.error('Failed to log bibliography access:', logError);
+      }
+
       setStatus('');
     } catch (error) {
       removeLoading(resultsDiv);

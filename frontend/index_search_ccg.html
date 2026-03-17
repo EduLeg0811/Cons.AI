@@ -24,7 +24,7 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-search">
+<body class="theme-search" data-page-label="Busca no Conscienciograma">
 
 
 
@@ -304,6 +304,23 @@
                 });
                 
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(newSettings));
+
+                try {
+                    if (window.logFeatureAccess) {
+                        window.logFeatureAccess({
+                            module: 'search_ccg',
+                            action: 'save_config',
+                            label: 'Configuracao da busca no Conscienciograma',
+                            meta: {
+                                books,
+                                max_results: maxResults,
+                                group_results: groupResults
+                            }
+                        });
+                    }
+                } catch (logError) {
+                    console.error('Falha ao registrar configuracao da busca no Conscienciograma', logError);
+                }
 
                 // feedback visual de salvando (500ms), depois fecha painel
                 try { saveBtn.classList.add('saving'); } catch {}

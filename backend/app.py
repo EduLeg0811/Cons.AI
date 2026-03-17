@@ -43,8 +43,10 @@ from utils.logs import (
     normalize_event,
     add_enrichment,
     read_all_raw,
+    read_records,
     parse_ndjson_lines,
     pretty_lines,
+    summarize_records,
     clear_today,
     clear_all,
 )
@@ -115,6 +117,13 @@ app.static_folder = frontend_path
 def serve_frontend():
     return send_from_directory(frontend_path, 'index.html')
 
+@app.route('/logs/view')
+def logs_view_page():
+    try:
+        return send_from_directory(os.path.join(frontend_path, 'logs'), 'view.html')
+    except Exception:
+        return "File not found", 404
+
 @app.route('/<path:path>')
 def serve_static(path):
     if os.path.exists(os.path.join(frontend_path, path)):
@@ -128,15 +137,6 @@ def favicon():
         return send_from_directory(frontend_path, 'Icon.png', mimetype='image/png')
     except Exception:
         return "", 404
-
-# Friendly alias: /logs/view -> frontend/logs/view.html
-@app.route('/logs/view')
-def logs_view_page():
-    try:
-        return send_from_directory(frontend_path, os.path.join('logs', 'view.html'))
-    except Exception:
-        return "File not found", 404
-
 
 # Restrinja origens em produção; inclua localhost para dev
 CORS_ALLOWED_ORIGINS = "*"
@@ -578,17 +578,16 @@ def get_logs():
     except ValueError:
         limit = 0
 
-    raw_text = read_all_raw(limit=limit)
+    effective_limit = limit if limit > 0 else None
+    raw_text = read_all_raw(limit=effective_limit)
     if fmt == 'raw':
         return Response(raw_text, mimetype='text/plain; charset=utf-8')
 
-    records = parse_ndjson_lines(raw_text)
+    records = read_records(limit=effective_limit)
     if fmt == 'ndjson':
-        # Normalize each record to standard fields, preserving enrichments
         normalized = []
         for r in records:
             base = normalize_event(r if isinstance(r, dict) else {})
-            # keep enrichment if present
             for k in ['_server_ts', '_client_ip', '_user_agent', '_geo', 'chat_id', 'session_id']:
                 if isinstance(r, dict) and k in r:
                     base[k] = r[k]
@@ -598,8 +597,21 @@ def get_logs():
             text += "\n"
         return Response(text, mimetype='application/x-ndjson; charset=utf-8')
 
+    if fmt == 'json':
+        normalized = []
+        for r in records:
+            base = normalize_event(r if isinstance(r, dict) else {})
+            for k in ['_server_ts', '_client_ip', '_geo']:
+                if isinstance(r, dict) and k in r:
+                    base[k] = r[k]
+            normalized.append(base)
+        return jsonify({
+            "records": normalized,
+            "summary": summarize_records(normalized),
+        })
+
     if fmt == 'pretty':
-        pretty = pretty_lines(records)
+        pretty = pretty_lines(parse_ndjson_lines(raw_text))
         return Response(pretty, mimetype='text/plain; charset=utf-8')
 
     # default to raw

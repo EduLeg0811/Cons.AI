@@ -49,13 +49,13 @@ function initDownloadButtons(searchType, searchTerm = '') {
 async function handleDocxDownload() {
     // LOG de download iniciado
     try {
-        if (window.logEvent) {
-            window.logEvent({
-                event: 'download_initiated',
+        if (window.logFeatureAccess) {
+            window.logFeatureAccess({
                 module: currentSearchType || 'unknown',
-                format: 'docx',
-                term: currentSearchTerm || '',
+                action: 'download_start',
+                label: 'Download DOCX',
                 meta: {
+                    format: 'docx',
                     results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
                 }
             });
@@ -78,13 +78,13 @@ async function handleDocxDownload() {
         
         // LOG de download concluído com sucesso
         try {
-            if (window.logEvent) {
-                window.logEvent({
-                    event: 'download_completed',
+            if (window.logFeatureAccess) {
+                window.logFeatureAccess({
                     module: currentSearchType || 'unknown',
-                    format: 'docx',
-                    term: currentSearchTerm || '',
+                    action: 'download',
+                    label: 'Download DOCX',
                     meta: {
+                        format: 'docx',
                         results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
                     }
                 });
@@ -97,14 +97,13 @@ async function handleDocxDownload() {
         
         // LOG de download falhou
         try {
-            if (window.logEvent) {
-                window.logEvent({
-                    event: 'download_failed',
+            if (window.logFeatureAccess) {
+                window.logFeatureAccess({
                     module: currentSearchType || 'unknown',
-                    format: 'docx',
-                    term: currentSearchTerm || '',
+                    action: 'download_failed',
+                    label: 'Falha no download DOCX',
                     meta: {
-                        error: error.message || 'Unknown error',
+                        format: 'docx',
                         results_count: lastResults ? (lastResults.lexical ? lastResults.lexical.length : 0) : 0
                     }
                 });

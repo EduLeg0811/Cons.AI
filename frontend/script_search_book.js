@@ -2,6 +2,15 @@
 
 let controller = null;
 
+function buildResultCountsBySource(results) {
+    const counts = {};
+    for (const item of (Array.isArray(results) ? results : [])) {
+        const source = item?.source || 'Unknown';
+        counts[source] = (counts[source] || 0) + 1;
+    }
+    return counts;
+}
+
   
 // registra os listeners UMA única vez
 document.addEventListener('DOMContentLoaded', () => {
@@ -215,20 +224,23 @@ async function search_book() {
          // LOGS
          // =======================================================================================
          try {
-          // Determinar trigger (enter ou click)
-          const trigger = (event && event.type === 'click') ? 'click' : 'enter';
-          
-          window.logEvent({
-            event: 'search_performed',
-            module: 'book',
-            trigger: trigger,
-            value: term.trim(),
-            meta: {
+          if (window.logFeatureAccess) {
+            const countsBySource = buildResultCountsBySource(respHistory.lexical);
+            window.logFeatureAccess({
+              module: module || 'search_book',
+              action: 'search',
+              label: 'Busca em livros',
+              value: term.trim(),
+              meta: {
                 sources: source,
-                max_results: maxResults,
-                grouping: flag_grouping
-            }
+                source_count: source.length,
+                results_count: uniqueData.length,
+                counts_by_source: countsBySource,
+                group_results: flag_grouping,
+                max_results: maxResults
+              }
             });
+          }
          } catch (e) {
             console.error('Failed to log search_performed event:', e);
          }

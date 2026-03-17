@@ -117,6 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
             window.downloadUtils.updateResults(downloadData, "Bibliomancia", 'mancia');
         }
 
+        try {
+            if (window.logFeatureAccess) {
+                const commentaryText = commentaryData?.text ?? commentaryData?.response ?? '';
+                window.logFeatureAccess({
+                    module: 'mancia',
+                    action: 'draw',
+                    label: 'Bibliomancia',
+                    value: pensataText,
+                    meta: {
+                        commentary_response: commentaryText
+                    }
+                });
+            }
+        } catch (logError) {
+            console.error('Failed to log mancia access:', logError);
+        }
+
     } catch (error) {
         console.error('Error in mancia:', error);
         resultsDiv.innerHTML = `<div class="error"><p>${error.message || 'An unexpected error occurred'}</p></div>`;

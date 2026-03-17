@@ -23,7 +23,7 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-search">
+<body class="theme-search" data-page-label="Busca em Verbetes">
 
 
 
@@ -309,6 +309,24 @@
                 });
 
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(newSettings));
+
+                try {
+                    if (window.logFeatureAccess) {
+                        window.logFeatureAccess({
+                            module: 'search_verb',
+                            action: 'save_config',
+                            label: 'Configuracao da busca em verbetes',
+                            meta: {
+                                books,
+                                max_results: maxResults,
+                                search_type: searchType,
+                                group_results: groupResults
+                            }
+                        });
+                    }
+                } catch (logError) {
+                    console.error('Falha ao registrar configuracao da busca em verbetes', logError);
+                }
 
                 // feedback visual de salvando (500ms), depois fecha painel
                 try { saveBtn.classList.add('saving'); } catch {}

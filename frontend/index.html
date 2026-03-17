@@ -98,7 +98,7 @@
 </script>
 
 
-<body>
+<body data-page-label="Página Inicial">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -521,44 +521,6 @@
     <script src="messages.js"></script>
     <script>
 
-      document.addEventListener('click', function(e){
-        try {
-          const banner = e.target.closest('.homepage-banner[data-log-event]');
-          if (!banner || !window.logEvent) return;
-          window.logEvent({
-            event: banner.dataset.logEvent,
-            module: 'homepage_banner',
-            module_label: banner.dataset.logLabel || '',
-            module_href: banner.dataset.logHref || banner.getAttribute('href') || ''
-          });
-        } catch (err) { /* noop */ }
-      });
-
-
-      // Delegated click logger for module cards
-      document.addEventListener('click', function(e){
-        try {
-          const card = e.target.closest('.tools-list a.tool-card');
-          if (!card) return;
-          const panel = card.closest('.tool-panel');
-          const panelClasses = panel ? Array.from(panel.classList) : [];
-          const groups = ['bots','search','apps','utils'];
-          const module_group = panelClasses.find(c => groups.includes(c));
-          const module_label = (card.querySelector('h3')?.textContent || card.getAttribute('aria-label') || card.textContent || '').trim();
-          const module_href = card.getAttribute('href') || '';
-          if (window.logEvent) {
-            window.logEvent({
-              event: 'module_click',
-              module_label,
-              module_href,
-              module_group
-            });
-          }
-        } catch (err) { /* noop */ }
-      });
-
-
-
       // Feedback pill interactions
       (function setupFeedback(){
         const pill = document.getElementById('feedbackPill');
@@ -579,18 +541,23 @@
           const msg = (input.value || '').trim();
           if (!msg) { status.textContent = 'Digite uma mensagem.'; input.focus(); return; }
           try {
-            if (window.logEvent) {
-              window.logEvent({ event: 'feedback_message', module: 'feedback', value: msg });
+            if (window.logFeatureAccess) {
+              window.logFeatureAccess({
+                module: 'feedback',
+                action: 'send',
+                label: 'Feedback enviado',
+                value: msg
+              });
               status.textContent = 'Feedback enviado! Agradecemos sua mensagem.';
             } else {
             // fallback direta ao endpoint
             const payload = {
-              event: 'feedback_message',
+              event: 'feedback',
+              category: 'feature',
               module: 'feedback',
-              value: msg,
-              page: (location && location.pathname) || undefined,
-              origin: (location && location.origin) || (location.protocol + '//' + location.host),
-              referrer: document.referrer || ''
+              action: 'send',
+              label: 'Feedback enviado',
+              page: (location && location.pathname) || undefined
             };
             fetch((window.apiBaseUrl||'') + '/log', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
               .then(() => status.textContent = 'Feedback enviado! Agradecemos sua mensagem.')
@@ -874,6 +841,30 @@
                 window.USER_TEMPERATURE = window.CONFIG.TEMPERATURE;
                 window.USER_LLM_MAX_RESULTS = window.CONFIG.LLM_MAX_RESULTS;
                 window.USER_MAX_OUTPUT_TOKENS = window.CONFIG.MAX_OUTPUT_TOKENS;
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'main_config',
+                      action: 'save_config',
+                      label: 'Configuracao geral salva',
+                      meta: {
+                        model_llm: newConfig.MODEL_LLM,
+                        model_ragbot: newConfig.MODEL_RAGBOT,
+                        temperature: newConfig.TEMPERATURE,
+                        llm_max_results: newConfig.LLM_MAX_RESULTS,
+                        max_output_tokens: newConfig.MAX_OUTPUT_TOKENS,
+                        max_results_display: newConfig.MAX_RESULTS_DISPLAY,
+                        openai_ragbot: newConfig.OPENAI_RAGBOT,
+                        full_badges: newConfig.FULL_BADGES,
+                        minitertulia: newConfig.MINITERTULIA,
+                        descritivos: newConfig.DESCRITIVOS
+                      }
+                    });
+                  }
+                } catch (logError) {
+                  console.error('Error logging main configuration:', logError);
+                }
                 
                 closeConfigModal();
                 

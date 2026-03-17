@@ -287,6 +287,26 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: new Date().toISOString()
           });
 
+          try {
+            if (window.logFeatureAccess) {
+              window.logFeatureAccess({
+                module: 'ragbot',
+                action: 'ask',
+                label: 'Consulta ao ConsBOT',
+                chat_id: chat_id,
+                value: term,
+                meta: {
+                  selected_sources: Array.isArray(vectorStores) ? vectorStores : [vectorStores],
+                  source_count: Array.isArray(vectorStores) ? vectorStores.length : 1,
+                  limit_status: response.limit_status || 'normal',
+                  response_text: botText,
+                }
+              });
+            }
+          } catch (logError) {
+            console.error('Failed to log ragbot access:', logError);
+          }
+
 
         } catch (error) {
             console.error('Error in ragbot:', error);
@@ -579,6 +599,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------------------------
     async function initialQuests(quest_type) {
   
+        const existingInitialQuests = document.getElementById('initial-quests');
+        if (existingInitialQuests) {
+          existingInitialQuests.remove();
+        }
+
         if (chatMessages && chatMessages.children && chatMessages.children.length > 0) return;
 
         let suggestions = [];
@@ -690,6 +715,31 @@ Regras:
 - Evite duplicatas e quase-duplicatas.
 - Cada pergunta com no máximo 160 caracteres.
 - Não numere os itens.`;
+
+      const existingInitialQuests = document.getElementById('initial-quests');
+      if (existingInitialQuests) {
+        existingInitialQuests.remove();
+      }
+
+      if (chatMessages) {
+        const wrap = document.createElement('div');
+        wrap.id = 'initial-quests';
+        wrap.className = 'initial-quests';
+
+        const title = document.createElement('div');
+        title.textContent = 'Gerando novas perguntas...';
+        title.className = 'initial-quests-title';
+
+        wrap.appendChild(title);
+
+        if (chatMessages.firstChild) {
+          chatMessages.insertBefore(wrap, chatMessages.firstChild);
+        } else {
+          chatMessages.appendChild(wrap);
+        }
+      }
+
+
 
       console.log('generateInitialQuestionsLLM: Usando prompt em', isEnglish ? 'inglês' : 'português');
 
@@ -814,6 +864,18 @@ function resetLLM(scope = 'default') {
 // - Reseta o LLM e mostra novas sugestões geradas por LLM na tela inicial
 // ----------------------------------------------------------------------------
 async function resetRagbot () {
+
+  try {
+    if (window.logFeatureAccess) {
+      window.logFeatureAccess({
+        module: 'ragbot',
+        action: 'new_conversation',
+        label: 'New Conversation',
+      });
+    }
+  } catch (logError) {
+    console.warn('resetRagbot: falha ao registrar nova conversa', logError);
+  }
 
   resetLLM('ragbot');
 
