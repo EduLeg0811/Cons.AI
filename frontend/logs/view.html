@@ -512,6 +512,7 @@
       filter: '',
       type: 'all',
       selectedRecordId: '',
+      openVisitIds: new Set(),
     };
 
     const el = {
@@ -695,7 +696,7 @@
         }
 
         visits.push({
-          id: `${userKey}-${ts}-${visits.length}`,
+          id: `${userKey}-${ts}`,
           userKey,
           records: [record],
           firstTs: ts,
@@ -726,7 +727,7 @@
 
       return {
         ...visit,
-        openByDefault,
+        openByDefault: state.openVisitIds.has(visit.id) || (!state.openVisitIds.size && openByDefault),
         records,
         chronologicalRecords,
         first,
@@ -814,14 +815,15 @@
         `).join('');
 
         return `
-          <details class="visit" ${visit.openByDefault ? 'open' : ''}>
+          <details class="visit" data-visit-id="${escapeHtml(visit.id)}" ${visit.openByDefault ? 'open' : ''}>
             <summary>
               <div class="visit-header">
                 <div class="visit-title">
                   <span class="badge">${index + 1}</span>
                     <div>
                       <div class="visit-name">${escapeHtml(normalizeUserLabel(visit.first))}</div>
-                    <div class="visit-sub">${escapeHtml(formatDate(visit.last._server_ts, true))} ate ${escapeHtml(formatDate(visit.first._server_ts, true))}</div>
+                      <div class="visit-sub">${escapeHtml(formatDate(visit.last._server_ts, true))} ate ${escapeHtml(formatDate(visit.first._server_ts, true))}</div>
+                      <div class="visit-sub">Localizacao: ${escapeHtml(visit.location || '-')}</div>
                     </div>
                 </div>
                 <div class="visit-meta">
@@ -874,6 +876,8 @@
 
     function render() {
       const visits = buildVisits(filteredRecords());
+      const visibleVisitIds = new Set(visits.map(visit => visit.id));
+      state.openVisitIds = new Set([...state.openVisitIds].filter(id => visibleVisitIds.has(id)));
       renderMetrics(visits);
       renderVisits(visits);
       el.listCopy.textContent = `${visits.length} visitas agrupadas a partir de ${state.records.length} registros carregados.`;
@@ -935,6 +939,14 @@
       state.selectedRecordId = state.selectedRecordId === id ? '' : id;
       render();
     });
+    el.visitWrap.addEventListener('toggle', event => {
+      const details = event.target;
+      if (!(details instanceof HTMLDetailsElement) || !details.classList.contains('visit')) return;
+      const visitId = details.getAttribute('data-visit-id') || '';
+      if (!visitId) return;
+      if (details.open) state.openVisitIds.add(visitId);
+      else state.openVisitIds.delete(visitId);
+    }, true);
 
     fetchLogs();
     setInterval(fetchLogs, 15000);

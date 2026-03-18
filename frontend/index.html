@@ -574,6 +574,29 @@
         overlay?.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
       })();
 
+      (function setupHomepageBannerLogging() {
+        const banner = document.querySelector('.homepage-banner[data-log-event]');
+        if (!banner) return;
+
+        banner.addEventListener('click', () => {
+          try {
+            if (!window.logFeatureAccess) return;
+            window.logFeatureAccess({
+              event: banner.dataset.logEvent || 'homepage_banner_click',
+              module: 'homepage_banner',
+              action: 'click',
+              label: banner.dataset.logLabel || 'Banner nova experiencia',
+              meta: {
+                href: banner.dataset.logHref || banner.getAttribute('href') || '',
+                target: banner.getAttribute('target') || '',
+              }
+            });
+          } catch (error) {
+            console.error('Error logging homepage banner click:', error);
+          }
+        });
+      })();
+
 
 
             // Info toggle (expand/collapse badge descriptions)
