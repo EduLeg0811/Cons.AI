@@ -480,7 +480,7 @@
       <select id="typeFilter" class="field">
         <option value="all">Tudo</option>
         <option value="page_view">Paginas vistas</option>
-        <option value="feature_access">Acessos a funcionalidade</option>
+        <option value="feature_access" selected>Acessos a funcionalidade</option>
         <option value="module_access">Cliques de modulo</option>
       </select>
       <select id="limitFilter" class="field">
@@ -518,7 +518,7 @@
       limit: 800,
       gapMinutes: 30,
       filter: '',
-      type: 'all',
+      type: 'feature_access',
       selectedRecordId: '',
       openVisitIds: new Set(),
     };
@@ -563,6 +563,11 @@
     function locationText(record) {
       const geo = record._geo || {};
       return [geo.city, geo.region, geo.country].filter(Boolean).join(', ');
+    }
+
+    function shortLocationText(record) {
+      const geo = record._geo || {};
+      return [geo.city, geo.region].filter(Boolean).join(', ');
     }
 
     function eventLabel(record) {
@@ -731,7 +736,7 @@
       const pages = uniqueValues(records.map(record => record.page_label || record.page));
       const modules = uniqueValues(records.map(record => record.module || eventLabel(record)));
       const inputs = uniqueValues(records.map(record => record.value).filter(Boolean));
-      const location = locationText(first) || '-';
+      const location = shortLocationText(first) || locationText(first) || '-';
 
       return {
         ...visit,
@@ -831,7 +836,7 @@
                     <div>
                       <div class="visit-name">${escapeHtml(normalizeUserLabel(visit.first))}</div>
                       <div class="visit-sub">${escapeHtml(formatDate(visit.last._server_ts, true))} ate ${escapeHtml(formatDate(visit.first._server_ts, true))}</div>
-                      <div class="visit-sub">Localizacao: ${escapeHtml(visit.location || '-')}</div>
+                      <div class="visit-sub">${escapeHtml(visit.location || '-')}</div>
                     </div>
                 </div>
                 <div class="visit-meta">
@@ -882,7 +887,16 @@
       }).join('');
     }
 
+    function syncOpenVisitIdsFromDom() {
+      const openDetails = el.visitWrap.querySelectorAll('details.visit[open][data-visit-id]');
+      for (const details of openDetails) {
+        const visitId = details.getAttribute('data-visit-id') || '';
+        if (visitId) state.openVisitIds.add(visitId);
+      }
+    }
+
     function render() {
+      syncOpenVisitIdsFromDom();
       const visits = buildVisits(filteredRecords());
       const visibleVisitIds = new Set(visits.map(visit => visit.id));
       state.openVisitIds = new Set([...state.openVisitIds].filter(id => visibleVisitIds.has(id)));

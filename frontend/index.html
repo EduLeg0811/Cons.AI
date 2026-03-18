@@ -581,13 +581,15 @@
         banner.addEventListener('click', () => {
           try {
             if (!window.logFeatureAccess) return;
+            const href = banner.dataset.logHref || banner.getAttribute('href') || '';
             window.logFeatureAccess({
               event: banner.dataset.logEvent || 'homepage_banner_click',
               module: 'homepage_banner',
               action: 'click',
               label: banner.dataset.logLabel || 'Banner nova experiencia',
+              value: href,
               meta: {
-                href: banner.dataset.logHref || banner.getAttribute('href') || '',
+                href,
                 target: banner.getAttribute('target') || '',
               }
             });
