@@ -4,9 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url=https://consia-new.onrender.com/">
     <script>
-        window.location.replace("https://consia-new.onrender.com/");
+        (function () {
+            const TARGET_URL = 'https://consia-new.onrender.com/';
+            const LOCAL_BASE = 'http://localhost:5000';
+            const PROD_BASE = 'https://cons-ai-server.onrender.com';
+
+            function resolveApiBaseUrl() {
+                const host = window.location.hostname || '';
+                const isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+                return isLocal ? LOCAL_BASE : PROD_BASE;
+            }
+
+            function getSessionId() {
+                try {
+                    let sessionId = localStorage.getItem('cons_ai_session_id');
+                    if (!sessionId) {
+                        sessionId = 'sid-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+                        localStorage.setItem('cons_ai_session_id', sessionId);
+                    }
+                    return sessionId;
+                } catch {
+                    return '';
+                }
+            }
+
+            function redirect() {
+                window.location.replace(TARGET_URL);
+            }
+
+            const payload = {
+                event: 'feature_access',
+                category: 'feature',
+                module: 'homepage_banner',
+                action: 'click',
+                label: 'New',
+                value: 'https://cons-ia.org/new.html',
+                page: '/new.html',
+                page_label: 'Nova Experiencia',
+                session_id: getSessionId(),
+                meta: {
+                    href: 'https://cons-ia.org/new.html',
+                    target_url: TARGET_URL
+                }
+            };
+
+            const body = JSON.stringify(payload);
+            const url = resolveApiBaseUrl() + '/log';
+
+            try {
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([body], { type: 'application/json' });
+                    navigator.sendBeacon(url, blob);
+                    setTimeout(redirect, 80);
+                    return;
+                }
+            } catch {}
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body,
+                keepalive: true
+            })
+                .catch(() => {})
+                .finally(() => setTimeout(redirect, 80));
+        })();
     </script>
 </head>
 <body>
