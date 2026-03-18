@@ -146,8 +146,7 @@
         <a
             href="https://cons-ia.org/new.html"
             class="homepage-banner"
-            data-log-event="homepage_banner_click"
-            data-log-label="Experimente a nova página de abertura do Cons-IA"
+            data-log-label="New"
             data-log-href="https://cons-ia.org/new.html"
             target="_blank"
             rel="noopener noreferrer"
@@ -583,10 +582,9 @@
             if (!window.logFeatureAccess) return;
             const href = banner.dataset.logHref || banner.getAttribute('href') || '';
             window.logFeatureAccess({
-              event: banner.dataset.logEvent || 'homepage_banner_click',
               module: 'homepage_banner',
               action: 'click',
-              label: banner.dataset.logLabel || 'Banner nova experiencia',
+              label: banner.dataset.logLabel || 'New',
               value: href,
               meta: {
                 href,
@@ -673,12 +671,54 @@
                   // Desliga imediatamente
                   document.documentElement.setAttribute('data-show-info', 'false');
                 }
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'homepage_controls',
+                      action: 'toggle_info',
+                      label: 'Mostrar/ocultar descricoes',
+                      value: turningOn ? 'on' : 'off',
+                      meta: { enabled: turningOn }
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error logging info toggle:', error);
+                }
             }
 
            
 
             // Initialize theme when DOM is loaded
             document.addEventListener('DOMContentLoaded', initTheme);
+
+            (function wrapThemeToggleLogging() {
+              const originalToggleTheme = window.toggleTheme;
+              if (typeof originalToggleTheme !== 'function' || originalToggleTheme.__logsWrapped) return;
+
+              const wrappedToggleTheme = function wrappedToggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                originalToggleTheme();
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'homepage_controls',
+                      action: 'toggle_theme',
+                      label: 'Light / dark mode',
+                      value: nextTheme,
+                      meta: { theme: nextTheme }
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error logging theme toggle:', error);
+                }
+              };
+
+              wrappedToggleTheme.__logsWrapped = true;
+              window.toggleTheme = wrappedToggleTheme;
+            })();
 
             // Disable pulse if user has already interacted before
             document.addEventListener('DOMContentLoaded', function() {
