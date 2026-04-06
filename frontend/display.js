@@ -231,6 +231,7 @@ const format_paragraphs_source = (item, sourceName, query) => {
 const format_paragraph_LO = (item, query) => {
 
     const title = item.title || '';
+    const pagina = item.pagina || item.page || '';
     const paragraph_number = item.number || '';
     const score = 0.00;
     const text = item.markdown || item.content_text || item.text || '';
@@ -253,6 +254,7 @@ const format_paragraph_LO = (item, query) => {
     let badgeParts = [];
     if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
     if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+    if (pagina) badgeParts.push(`<span class="metadata-badge badge-page">pág. ${escapeHtml(pagina)}</span>`);
 
     if (FLAG_FULL_BADGES) {
       if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
@@ -274,6 +276,7 @@ const format_paragraph_LO = (item, query) => {
 const format_paragraph_DAC = (item, query) => {
 
     const title = item.title || '';
+    const pagina = item.pagina || item.page || '';
     const score = item.score || 0.00;
     const paragraph_number = item.number || '';
     const text = item.markdown || item.content_text || item.text || '';
@@ -295,10 +298,12 @@ const format_paragraph_DAC = (item, query) => {
     let badgeParts = [];
     if (source)   badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
     if (title)    badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
-    if (argumento)badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(argumento)}</span>`);
-    if (section)  badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(section)}</em></span>`);
+    
+    if (pagina)   badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
       
     if (FLAG_FULL_BADGES) {
+      if (argumento)badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(argumento)}</span>`);
+      if (section)  badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(section)}</em></span>`);
       if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
@@ -321,6 +326,7 @@ const format_paragraph_DAC = (item, query) => {
 const format_paragraph_CCG = (item, query) => {
 
   const title = item.title || '';
+  const pagina = item.pagina || item.page || '';
   const score = item.score || 0.00;
   const text = item.markdown || item.content?.text || item.text || '';
   const folha = item.folha || '';
@@ -358,6 +364,7 @@ const format_paragraph_CCG = (item, query) => {
   let badgeParts = [];
 
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
+  if (pagina) badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
 
    if (FLAG_HEADER) {
     if (title)           badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
@@ -397,6 +404,7 @@ const format_paragraph_CCG = (item, query) => {
 const format_paragraph_EC = (item, query) => {
 
   const title = item.title || '';
+  const pagina = item.pagina || item.page || '';
   const verbete_number = item.number || '';
   const score = item.score || 0.00;
   const text = item.markdown || item.content?.text || item.text || '';
@@ -440,6 +448,7 @@ const format_paragraph_EC = (item, query) => {
 
   if (FLAG_HEADER) {
     if (title)            badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+    if (pagina)           badgeParts.push(`<span class="metadata-badge badge-page">pág. ${escapeHtml(pagina)}</span>`);
     if (area)             badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(area)}</em></span>`);
     if (verbete_number)   badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(verbete_number)}</span>`);
     if (theme)            badgeParts.push(`<span class="metadata-badge estilo2"> ${escapeHtml(theme)}</span>`);
@@ -490,6 +499,7 @@ const format_paragraph_QUEST = (item, query) => {
 
 
   const title = item.title || '';
+  const pagina = item.pagina || item.page || '';
   const paragraph_number = item.number || '';
   const score = item.score || 0.00;
   const raw_text =  item.raw_text || '';
@@ -520,6 +530,8 @@ const format_paragraph_QUEST = (item, query) => {
   let badgeParts = [];
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
   if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+  //if (pagina) badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
+  
   if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
   if (formattedDate)   badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(formattedDate)}</span>`);
   if (author) badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(author)}</span>`);
@@ -562,6 +574,7 @@ const format_paragraph_Default = (item, query) => {
 
 
   const title = item.title || '';
+  const pagina = item.pagina || item.page || '';
   const paragraph_number = item.number || '';
   const score = item.score || 0.00;
   const text = item.markdown || item.content_text || item.text || '';
@@ -584,6 +597,7 @@ const format_paragraph_Default = (item, query) => {
   let badgeParts = [];
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
   if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
+  if (pagina) badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
 
   if (FLAG_FULL_BADGES) {
     if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
@@ -1260,6 +1274,3 @@ function escapeHtml(text) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
-
-
-

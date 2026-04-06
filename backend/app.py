@@ -349,16 +349,17 @@ class RandomPensataResource(Resource):
     def post(self):
         data = request.get_json(force=True)
         term = safe_str(data.get("term", ""))
-        source = safe_str(data.get("source", "LO"))
+        source = safe_str(data.get("source") or data.get("book") or "LO")
 
         try:
-            pensata_result = get_random_paragraph(source + ".md", term)
+            pensata_result = get_random_paragraph(source + ".xlsx", term)
 
             output_result = {
                 "text": pensata_result.get("paragraph", ""),
                 "paragraph_number": pensata_result.get("paragraph_number", ""),
                 "total_paragraphs": pensata_result.get("total_paragraphs", ""),
-                "source": pensata_result.get("source", f"{source}.md"),
+                "pagina": pensata_result.get("pagina", ""),
+                "source": pensata_result.get("source", f"{source}.xlsx"),
                 "type": "mancia"
             }
 

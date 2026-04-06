@@ -63,11 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const paramPensata = {
                 term: "none", 
                 book: "LO" 
-            }
+            };
             const pensJson = await call_random_pensata(paramPensata);
             //*****************************************************************************************
-        
-            pensJson.ref = "Léxico de Ortopensatas, 2019"
+
+            const paginaLO = String(pensJson?.pagina || '').trim();
+            pensJson.ref = paginaLO
+                ? `Léxico de Ortopensatas, 2019, pág. ${paginaLO}`
+                : "Léxico de Ortopensatas, 2019";
 
             removeLoading(resultsDiv);
             //showTitle(resultsDiv, "Pensata Sorteada");

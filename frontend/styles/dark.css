@@ -139,6 +139,8 @@
 
 [data-theme="dark"] .metadata-badge.estilo4 { background: rgba(115, 115, 115, 0.332); color: #ffffff; border-color: rgba(181, 114, 0, 0.35); }
 
+[data-theme="dark"] .metadata-badge.badge-page { background: rgba(251, 191, 36, 0.18); color: #fcd9a3; border-color: rgba(251, 191, 36, 0.28); }
+
 [data-theme="dark"] .loading-container {
     background: rgba(17, 24, 39, 0.6); /* dark translucent surface */
 }

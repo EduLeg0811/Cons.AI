@@ -56,6 +56,7 @@ function flattenDataEntries(data) {
       argument: getField('argumento') || getField('argument'),
       section: getField('section'),
       folha: getField('folha'),
+      pagina: getField('pagina') || getField('page'),
       date: getField('date'),
       link: getField('link'),
       area: getField('area'),

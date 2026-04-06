@@ -500,6 +500,7 @@ def createMetaInfo(it, src):
 
     mt_book   = bookName(src) + " | "
     mt_number = it.get("number") or meta.get("number") or ""
+    mt_pagina = it.get("pagina") or meta.get("pagina") or ""
     mt_title  = it.get("title") or meta.get("title") or ""
     mt_score  = it.get("score") or meta.get("score") or ""
     mt_author = it.get("author") or meta.get("author") or ""
@@ -513,6 +514,7 @@ def createMetaInfo(it, src):
     def fmt(val): return f"{val} | " if val else ""
 
     mt_number = fmt(mt_number)
+    mt_pagina = fmt(mt_pagina)
     mt_title  = fmt(mt_title)
     mt_score  = fmt(mt_score)
     mt_author = fmt(mt_author)
@@ -535,8 +537,10 @@ def createMetaInfo(it, src):
     else:
         metaInfo_list.append(mt_title)
 
-    # number e score sempre no final
-    if mt_number:
+    # pagina e score sempre no final
+    if mt_pagina:
+        metaInfo_list.append("pág. " + mt_pagina)
+    elif mt_number:
         metaInfo_list.append("#" + mt_number)
     if mt_score:
         metaInfo_list.append("@" + mt_score)

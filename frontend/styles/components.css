@@ -887,37 +887,43 @@ body.dark .tool-icon.openai img {
 .metadata-badge.estilo1 {
     /* info-like */
     background: #e3ecff;
-    color:var(--gray-800);
-    border-color: var(--gray-300);
+    color: #000000;
+    border-color: #c8e6c9;
 }
 
 .metadata-badge.estilo2 {
     /* neutral */
-    background: var(--gray-100);
-    color: var(--gray-800);
-    border-color: var(--gray-300);
+    background: #fef3db;
+    color: #000000;
+    border-color: #f5d9a3;
 }
 
 .metadata-badge.estilo3 {
     /* success */
     background: #ddffda;
-    color: var(--gray-800);
-    border-color: var(--gray-300);
+    color: #000000;
+    border-color: #c8e6c9;
 }
 
 .metadata-badge.estilo4 {
     /* warning */
-    background: #fff6dc;
-    color: var(--gray-800);
-    border-color: var(--gray-300);
+    background: #f0dcff;
+    color: #000000;
+    border-color: #d8b8e8;
+}
+
+.metadata-badge.badge-page {
+    background: #e6ffe0;
+    color: #216205;
+    border-color: #c8e6c9;
 }
 
 
 .metadata-badge.estilo5 {
     /* warning */
     background: #dcffff;
-    color: var(--gray-800);
-    border-color: var(--gray-300);
+    color: #000000;
+    border-color: #c8e6c9;
 }
 
 /* Title box used by showTitle() */
@@ -1640,4 +1646,3 @@ html[data-theme="dark"] #fbInput {
   color: var(--gray-100);
   border-color: var(--gray-700);
 }
-
