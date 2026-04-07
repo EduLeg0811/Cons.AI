@@ -12,7 +12,6 @@ const htmlEntries = fs
   }, {});
 
 const staticFiles = [
-  'icon.png',
   'config.js',
   'utils.js',
   'messages.js',
@@ -29,7 +28,7 @@ const staticFiles = [
 function syncStaticFiles() {
   return {
     name: 'sync-static-files',
-    writeBundle() {
+    closeBundle() {
       const outDir = path.resolve(rootDir, 'dist');
 
       for (const file of staticFiles) {
@@ -57,6 +56,7 @@ function syncStaticFiles() {
 }
 
 export default defineConfig({
+  publicDir: 'public',
   build: {
     rollupOptions: {
       input: htmlEntries,
