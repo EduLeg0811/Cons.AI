@@ -31,7 +31,7 @@ DEFAULT_VECTOR_STORE_OPENAI = [OPENAI_ID_ALLWV]
 # Base directory = .../backend  (2 níveis acima do arquivo utils/config.py)
 BASE_DIR = Path(__file__).parent.parent.resolve()
 
-FILES_SEARCH_DIR = Path(os.getenv("FILES_SEARCH_DIR", BASE_DIR / "files")).resolve()
+FILES_SEARCH_DIR = Path(os.getenv("FILES_SEARCH_DIR", BASE_DIR / "files" / "Lexical")).resolve()
 
 INSTRUCTIONS_LLM_BACKEND = "Você é um assistente da Conscienciologia no estilo ChatGPT."
 

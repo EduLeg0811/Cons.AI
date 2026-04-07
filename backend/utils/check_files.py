@@ -4,7 +4,7 @@ from pathlib import Path
 # ------------------------------------------------------------
 # CONFIGURAÇÕES
 # ------------------------------------------------------------
-FILES_SEARCH_DIR = Path(r"D:\APPS\SIMPLE\Simple_v81\backend\files")
+FILES_SEARCH_DIR = Path(r"D:\APPS\SIMPLE\Exact_v105\backend\files\Lexical")
 
 # Lista oficial dos "books" esperados
 EXPECTED_BOOKS = [
