@@ -26,17 +26,31 @@ const staticFiles = [
   'script_search_book.js',
 ];
 
-function copyStaticScripts() {
+function syncStaticFiles() {
   return {
-    name: 'copy-static-scripts',
-    closeBundle() {
+    name: 'sync-static-files',
+    writeBundle() {
       const outDir = path.resolve(rootDir, 'dist');
+
       for (const file of staticFiles) {
         const source = path.resolve(rootDir, file);
         const target = path.resolve(outDir, file);
 
         if (!fs.existsSync(source)) continue;
         fs.copyFileSync(source, target);
+      }
+
+      const htmlFiles = fs
+        .readdirSync(outDir)
+        .filter((file) => file.endsWith('.html'));
+
+      for (const file of htmlFiles) {
+        const target = path.resolve(outDir, file);
+        const html = fs.readFileSync(target, 'utf8');
+        const normalized = html.replace(/\/assets\/icon-[^"']+\.png/gi, '/icon.png');
+        if (normalized !== html) {
+          fs.writeFileSync(target, normalized, 'utf8');
+        }
       }
     },
   };
@@ -48,5 +62,5 @@ export default defineConfig({
       input: htmlEntries,
     },
   },
-  plugins: [copyStaticScripts()],
+  plugins: [syncStaticFiles()],
 });
