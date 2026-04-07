@@ -6,11 +6,12 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>ConsBOT ● Cons-AI</title>
+    <title>Pesquisa de Livros ● Cons-AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="/styles/style.css">
-    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="icon" type="image/png" href="/assets/icon-jSVM7GMi.png">
+    
+  <link rel="stylesheet" crossorigin href="/assets/style-BC2u5Ihh.css">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9C5503JC6"></script>
@@ -22,12 +23,8 @@
   gtag('config', 'G-Z9C5503JC6');
 </script>
 
-<body class="theme-bots" data-page-label="ConsBOT">
-
-
+<body class="theme-search" data-page-label="Busca em Livros">
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-
-   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -40,8 +37,8 @@
 
             <div class="navbar-center">
                 <div class="navbar-text">
-                    <div class="navbar-title-modules">ConsBOT</div>
-                    <div class="navbar-subtitle-modules">IA da Conscienciologia</div>
+                    <div class="navbar-title-modules">Livros & Tratados</div>
+                    <div class="navbar-subtitle-modules">Busca Léxica</div>
                 </div>
             </div>
 
@@ -69,20 +66,18 @@
                 <button class="options-trigger pulsing" id="optionsTrigger" title="Search options">
                     <i class="fas fa-sliders-h"></i>
                 </button>
-
-                <button class="navbar-control-btn new-convo-btn" title="New Conversation" onclick="resetRagbot()">
-                    <i class="fa-regular fa-file"></i>
+                <button id="downloadDocx" class="download-trigger hidden" title="Download as Word" style="margin-left:auto">
+                    <i class="fas fa-file-word fa-2x"></i>
                 </button>
-        
             </div>
 
             <!-- Search Container -->
             <div class="search-container">
                 <div class="search-row">
                     <div class="search-input-wrapper">
-                        <textarea id="searchInput" placeholder="Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
+                        <textarea id="searchInput" placeholder="Termo para buscar nos livros..." class="search-input" rows="1"></textarea>
                         <button id="searchButton" class="search-button" aria-label="Search">
-                            <i class="fas fa-paper-plane"></i>
+                            <i class="fas fa-search"></i>
                         </button>
                     </div>
                 </div>
@@ -93,51 +88,47 @@
             <div id="searchHint" class="search-hint">
                 <span>
 
-                    <span style="font-size: 0.9rem;">
-                    <strong>Chatbot de <strong><em>conversação</em></strong> com os textos da Conscienciologia (estilo chatGPT).</strong><br>
+                    <span style="font-size: 0.9rem !important;">
+                    <strong>Busca de <strong><em>palavras</em></strong> ou <strong><em>termos</em></strong> nas fontes selecionadas</strong><br>
                     <br>
-
-                    <strong>Instruções:</strong>
+                 
+                    
+                    <strong>Dicas de Pesquisa:</strong><br>
+                    1.  Clique no ícone de <em>configurações</em> acima para escolher os <strong>livros</strong> para pesquisa.<br>
+                    2.  Máximo de 5 livros simultâneos por pesquisa.<br>
+                    3.  Entre com a palavra ou frase <em>exata</em> para buscar nos textos.<br>
+                    4.  Use termos curtos e específicos para resultados mais precisos.<br>
+                    5.  Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
                     <br>
-                    •  Clique no ícone de <em>configurações</em> acima para selecionar a <strong>base de dados</strong> do chat.<br>
-                    •  Clique no ícone de <em>nova conversa</em> acima para <strong>limpar o chat</strong> e iniciar um assunto ou tema diferente.
+                    <strong>Observações sobre os resultados:</strong><br>
+                    1.  <strong>Cosmovisão.</strong> Consulte sempre o livro ou tratado para ver o texto no entorno, a fim de ter uma melhor <em>visão de conjunto</em> do contexto.<br>
+                    2.  <strong>Páginas.</strong> No momento, a busca não traz o número das páginas. Para isso, localize o trecho exato na fonte original.<br>
+                    3.  <strong>Relatório.</strong> Ao final, clique no botão de <em>download</em> para salvar os resultados em um arquivo .docx.
                 </span>
-
-
             </div>
 
-        <!-- Chat Messages -->
-        <div class="chat-messages" id="chatMessages"></div>
 
 
             <div class="options-panel" id="optionsPanel">
 
-                <div class="options-header" onclick="toggleOptions()">
-                    <h3 class="options-title">Opções do ConsBOT</h3>
-                    <button class="options-toggle" id="optionsToggle">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
-
+               
                 <div class="options-content" id="optionsContent">
 
 
                     <!-- Config do Modulo (pills + opções) -->
                     <div class="book-checkboxes" data-module="search_book" data-mode="multi">
-                        <div class="book-option">
-                            <div class="book-pill" data-value="ALLWV">Bibliografia Waldo Vieira</div>
-                            <div class="book-desc">Livros & Tratados de autoria de Waldo Vieira</div>
-                        </div>
-                        <div class="book-option">
-                            <div class="book-pill" data-value="AUTORES">Autores Diversos</div>
-                            <div class="book-desc">Livros de outros autores da Conscienciologia</div>
-                        </div>
-                        <div class="book-option">
-                            <div class="book-pill" data-value="ENGLISH"><em>Bibliography in English</em></div>
-                            <div class="book-desc">Fontes conscienciológicas em língua inglesa</div>
-                        </div>
-                    </div>
-                        
+                        <div class="book-pill" data-value="LO">Léxico de Ortopensatas</div>
+                        <div class="book-pill" data-value="DAC">Dicionário de Argumentos da Conscienciologia</div>
+                        <div class="book-pill" data-value="TNP">Manual da Tenepes</div>
+                        <div class="book-pill" data-value="DUPLA">Manual da Dupla Evolutiva</div>
+                        <div class="book-pill" data-value="PROEXIS">Manual da Proéxis</div>
+                        <div class="book-pill" data-value="700EXP">700 Experimentos</div>
+                        <div class="book-pill" data-value="200TEAT">200 Teáticas da Conscienciologia</div>
+                        <div class="book-pill" data-value="TEMAS">Temas da Conscienciologia</div>
+                        <div class="book-pill" data-value="HSR">Homo sapiens reurbanisatus</div>
+                        <div class="book-pill" data-value="HSP">Homo sapiens pacificus</div>
+                        <div class="book-pill" data-value="PROJ">Projeciologia</div>
+                        <!--<div class="book-pill" data-value="QUEST">Questões Mini</div>-->
 
                         <!-- ============================================================
                             Controle de exibição do pill "Questões Mini"
@@ -156,33 +147,45 @@
 
                         // Se o flag for true, cria o pill dinamicamente logo após o último book-pill (PROJ)
                         if (minitertuliaFlag) {
-                            const lastPill = container.querySelector('.book-pill[data-value="ENGLISH"]');
+                            const lastPill = container.querySelector('.book-pill[data-value="PROJ"]');
                             if (lastPill) {
                             const div = document.createElement("div");
-                            div.className = "book-option";
-
-                            const pill = document.createElement("div");
-                            pill.className = "book-pill";
-                            pill.dataset.value = "MINI";
-                            pill.textContent = "Registros Minitertúlia";
-
-                            const desc = document.createElement("div");
-                            desc.className = "book-desc";
-                            desc.textContent = "Anotações diversas das minitertúlias conscienciológicas.";
-
-                            div.appendChild(pill);
-                            div.appendChild(desc);
-
-                            lastPill.parentElement.insertAdjacentElement("afterend", div);
+                            div.className = "book-pill";
+                            div.dataset.value = "QUEST";
+                            div.textContent = "Questões Mini";
+                            lastPill.insertAdjacentElement("afterend", div);
                             }
                         }
                         });
                         </script>
 
-                    
+
+
+
+
+                        <br>
 
 
                         <div class="config-container">
+                            <div class="config-options">
+
+                                <!-- Max Results -->
+                                <div class="row max-results">
+                                    <label for="maxResults">Resultados (máximo por livro)</label>
+                                    <input type="number" id="maxResults" min="1" data-max-config="true" value="10">
+                                </div>
+
+                                <!-- Toggle -->
+                                <div class="row toggle-option">
+                                    <label class="switch">
+                                        <input type="checkbox" id="groupResults" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <label class="toggle-label" for="groupResults">Agrupa por livro</label>
+                                </div>
+
+                            </div>
+
                             <div class="config-actions">
                                 <!-- Botão salvar -->
                                 <button class="save-btn" aria-label="Salvar ajustes" title="Salvar ajustes">
@@ -190,11 +193,6 @@
                                 </button>
                             </div>
                         </div>
-
-
-
-
-
                     </div>
                 </div>
             </div>
@@ -218,7 +216,8 @@
     <script src="utils.js"></script>
     <script src="display.js"></script>
     <script src="bridge.js"></script>
-    <script src="script_ragbot.js"></script>
+    <script src="download.js"></script>
+    <script src="script_search_book.js"></script>
 
 
 
@@ -232,7 +231,7 @@
         
         // Pulse do botão de configurações apenas na primeira visita
         try {
-            if (localStorage.getItem('configPulseSeen_ragbot')) {
+            if (localStorage.getItem('configPulseSeen_search_book')) {
                 document.documentElement.setAttribute('data-config-pulse', 'off');
                 document.getElementById('optionsTrigger')?.classList.remove('pulsing');
             } else {
@@ -253,16 +252,8 @@
             try { el.style.display = 'none'; } catch {}
         }
         
-        // Se o usuário já configurou o RagBOT pelo menos uma vez, não mostrar
-        // mais o bloco de instruções ao abrir a página.
-        try {
-            if (localStorage.getItem('appConfig_ragbot_used') === 'true') {
-                hideSearchHint();
-            }
-        } catch (e) {}
-        
         // Set global STORAGE_KEY for this module
-        window.STORAGE_KEY = 'appConfig_ragbot';
+        window.STORAGE_KEY = 'appConfig_searchBook';
         
 
 
@@ -272,7 +263,10 @@
         // 1. Definição da configuração inicial padrão
         // ================================================================
         const DEFAULT_SETTINGS = {
-            books: ['ALLWV'],      
+            books: ['LO', 'DAC'],        // Apenas LO e DAC
+            searchType: ['lexical'],     // Léxica marcada
+            maxResults: 10,
+            groupResults: true
         };
     
         // Só define se não houver configuração anterior
@@ -284,11 +278,12 @@
     
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
-        //    Regra: no máximo 2 book-pill ativos simultaneamente.
-        //    Novo comportamento: ao atingir 2 ativos, o usuário precisa
+        //    Regra: no máximo 5 book-pill ativos simultaneamente.
+        //    Novo comportamento: ao atingir 5 ativos, o usuário precisa
         //    desselecionar manualmente um deles para escolher outro.
         // ================================================================
         document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
+            // Verifica se o clique foi em um .book-pill ou em um de seus filhos
             const pill = e.target.closest('.book-pill');
             if (pill) {
                 const container = pill.closest('.book-checkboxes');
@@ -303,13 +298,13 @@
                     return;
                 }
 
-                // Se já existem 2 ativos e o usuário tentar ativar um terceiro,
+                // Se já houver 5 ativos e o usuário clicar em um 6º,
                 // não faz nada: é preciso primeiro desselecionar manualmente.
-                if (activePills.length >= 2) {
+                if (activePills.length >= 5) {
                     return;
                 }
 
-                // Ativa o novo pill (ainda abaixo do limite de 2)
+                // Ativa o novo pill (ainda abaixo do limite de 5)
                 pill.classList.add('active');
             }
         });
@@ -319,39 +314,30 @@
             pill.style.cursor = 'pointer'; // Garante que o cursor mude para pointer
         });
     
-          
+       
         // ================================================================
         // 4. Abrir/fechar painel
         // ================================================================
         if (trigger && panel) {
             trigger.addEventListener('click', function(e) {
                 e.stopPropagation();
-                // O botão de configurações APENAS ABRE o painel, se ele estiver fechado.
-                // O fechamento é feito exclusivamente pelo botão Salvar.
-                const isOpen = panel.classList.contains('open');
-                if (!isOpen) {
-                    panel.classList.add('open');
+                const isOpen = panel.classList.toggle('open');
+                if (isOpen) {
                     document.documentElement.setAttribute('data-module-config-open', 'true');
-                    // Ao abrir a janela de configuração do ConsBOT, limpamos a tela
-                    // (conversas e sugestões), mantendo apenas a caixa de entrada visível.
-                    try {
-                        if (window.resetLLM) {
-                            resetLLM('ragbot');
-                        }
-                    } catch (err) {}
+                } else {
+                    document.documentElement.removeAttribute('data-module-config-open');
                 }
                 try {
-                    if (!localStorage.getItem('configPulseSeen_ragbot')) {
-                        localStorage.setItem('configPulseSeen_ragbot', 'true');
+                    if (!localStorage.getItem('configPulseSeen_search_book')) {
+                        localStorage.setItem('configPulseSeen_search_book', 'true');
                     }
                 } catch (err) {}
                 document.documentElement.setAttribute('data-config-pulse', 'off');
                 try { hideSearchHint(); } catch {}
             });
-
+    
+            
         }
-    
-    
     
         // ================================================================
         // 5. Aplicar configurações salvas (ou padrão)
@@ -363,10 +349,10 @@
                 const saved = JSON.parse(raw);
 
                 // Tipo de Modulo
-                saved.module = 'ragbot';
+                saved.module = 'book';
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
-                // Livros (clamp: garantir no máximo 2 ativos ao aplicar config + timestamps)
+                // Livros (clamp: garantir no máximo 5 ativos ao aplicar config + timestamps)
                 if (Array.isArray(saved.books)) {
                     const set = new Set(saved.books);
                     const pills = Array.from(document.querySelectorAll('.book-pill'));
@@ -374,7 +360,7 @@
                     let baseTs = Date.now();
 
                     pills.forEach(pill => {
-                        const shouldActivate = set.has(pill.dataset.value) && activeCount < 2;
+                        const shouldActivate = set.has(pill.dataset.value) && activeCount < 5;
                         pill.classList.toggle('active', shouldActivate);
                         if (shouldActivate) {
                             activeCount++;
@@ -384,7 +370,18 @@
                         }
                     });
                 }
+        
+                // Max Results
+                if (typeof saved.maxResults === 'number') {
+                    const inp = document.getElementById('maxResults');
+                    if (inp) inp.value = saved.maxResults;
+                }
     
+                // Agrupar
+                if (typeof saved.groupResults === 'boolean') {
+                    const chk = document.getElementById('groupResults');
+                    if (chk) chk.checked = saved.groupResults;
+                }
             } catch (e) {
                 console.warn('Failed to apply saved settings', e);
             }
@@ -395,65 +392,41 @@
         // ================================================================
         if (saveBtn) {
             saveBtn.addEventListener('click', function() {
-                let books = Array.from(document.querySelectorAll('.book-pill.active'))
+                const books = Array.from(document.querySelectorAll('.book-pill.active'))
                     .map(p => p.dataset.value);
-
-                // Se nenhum modo estiver selecionado, força o modo padrão "Waldo" (ALLWV)
-                if (!books || books.length === 0) {
-                    books = ['ALLWV'];
-                    try {
-                        const waldoPill = document.querySelector('.book-pill[data-value="ALLWV"]');
-                        if (waldoPill) waldoPill.classList.add('active');
-                    } catch (e) {}
-                }
-                const settings = { books };
+                const maxInput = document.getElementById('maxResults');
+                const rawMax = maxInput?.value ?? 10;
+                const maxResults = normalizeMaxResults(rawMax);
+                const groupResults = !!document.getElementById('groupResults')?.checked;
+    
+                const settings = { books, maxResults, groupResults };
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(settings));
 
                 try {
                     if (window.logFeatureAccess) {
                         window.logFeatureAccess({
-                            module: 'ragbot',
+                            module: 'search_book',
                             action: 'save_config',
-                            label: 'Configuracao do ConsBOT',
+                            label: 'Configuracao da busca em livros',
                             meta: {
                                 books,
                                 books_count: books.length,
-                                selected_sources: books
+                                max_results: maxResults,
+                                group_results: groupResults
                             }
                         });
                     }
                 } catch (logError) {
-                    console.error('Falha ao registrar configuracao do RagBOT', logError);
+                    console.error('Falha ao registrar configuracao da busca em livros', logError);
                 }
 
-                // Marca que o usuário já configurou o RagBOT pelo menos uma vez
-                try {
-                    localStorage.setItem('appConfig_ragbot_used', 'true');
-                } catch (e) {}
-
-                // Limpa a tela (chat + resultados) para alinhar com a nova configuração
-                try {
-                    if (window.resetLLM) {
-                        resetLLM('ragbot');
-                    }
-                } catch (e) {}
-
+                
                 // feedback visual de salvando (500ms), depois fecha painel
                 try { saveBtn.classList.add('saving'); } catch {}
                 setTimeout(() => {
-                    try { saveBtn.classList.remove('saving'); } catch {}
-                    if (panel) panel.classList.remove('open');
-                    document.documentElement.removeAttribute('data-module-config-open');
-
-                    // Após o painel fechar (mesmo delay de 500ms), reaplica a configuração
-                    // no RagBOT para desenhar badges e sugestões sem sobrepor a animação.
-                    try {
-                        if (window.ragbotApplyConfig) {
-                            window.ragbotApplyConfig();
-                        }
-                    } catch (e) {
-                        console.warn('Falha ao reaplicar config do RagBOT após salvar', e);
-                    }
+                try { saveBtn.classList.remove('saving'); } catch {}
+                if (panel) panel.classList.remove('open');
+                document.documentElement.removeAttribute('data-module-config-open');
                 }, 500);
                 
             });
@@ -470,23 +443,15 @@
                 // Enter -> search_submit (sem Shift)
                 searchEl.addEventListener('keydown', (e)=>{
                     if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault(); // evita quebra de linha no textarea
-                        const raw = searchEl.dataset?.lastQuery || searchEl.value || '';
-                        const val = raw;
+                        const val = searchEl.value || '';
                         try { window.__suppressInputSubmitTs = Date.now(); } catch {}
                         hideSearchHint();
-                        // Dispara o mesmo fluxo do botão de envio
-                        if (submitBtn) {
-                            submitBtn.click();
-                        }
                     }
                 });
             }
             if (submitBtn){
                 submitBtn.addEventListener('click', ()=>{
-                    const el = document.getElementById('searchInput');
-                    const raw = el && el.dataset ? (el.dataset.lastQuery || el.value || '') : ((el && el.value) || '');
-                    const val = raw;
+                    const val = (document.getElementById('searchInput')?.value) || '';
                     try { window.__suppressInputSubmitTs = Date.now(); } catch {}
                     hideSearchHint();
                 });

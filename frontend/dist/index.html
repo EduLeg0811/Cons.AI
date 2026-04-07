@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cons-AI ● Toolbox de IA da Conscienciologia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/assets/icon-jSVM7GMi.png">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+
+    <!-- style.overrides.css merged into style.bundle.css -->
+    <style>
+      /* Overlay do zoom do logo */
+      #logo-intro-overlay {
+        position: fixed;
+        left: 0; right: 0; top: 0; bottom: 0; /* cobre inclusive a navbar */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff; /* Fundo branco para não contrastar com o logo */
+        z-index: 9999;
+        opacity: 0; /* inicia transparente para permitir fade-in */
+        transition: opacity 1s ease; /* transição suave na entrada */
+      }
+      #logo-intro-overlay.show { display: flex; opacity: 0; }
+      #logo-intro-overlay.visible { opacity: 1; }
+      #logo-intro-overlay.fade { animation: logoFadeOut 1s ease-in-out forwards; }
+
+      .logo-intro-img {
+        width: 160px; height: 160px;
+        object-fit: contain;
+        will-change: transform, opacity;
+      }
+      /* 3s: zoom do centro até preencher */
+      .logo-intro-img.animate { animation: logoFadeIn 2s ease-out forwards, logoZoom 3s ease-in-out forwards; }
+
+      @keyframes logoZoom {
+        0% {
+          transform: scale(0.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(6);
+          opacity: 1;
+        }
+      }
+      @keyframes logoFadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+      @keyframes logoFadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      /* Preferência reduzida de movimento */
+      @media (prefers-reduced-motion: reduce) {
+        .logo-intro-img.animate { animation-duration: 0.01ms; animation-iteration-count: 1; }
+        #logo-intro-overlay.fade { animation-duration: 0.01ms; }
+      }
+      /* Bloqueio de rolagem durante o efeito */
+      html.no-scroll, body.no-scroll { overflow: hidden; }
+      /* Fade-out do conteúdo de fundo durante a intro */
+      .navbar, .main-content, .footer { transition: opacity 1s ease; }
+      html.fade-out-main .navbar,
+      html.fade-out-main .main-content,
+      html.fade-out-main .footer { opacity: 0; }
+    </style>
+    <script>
+      // Pré-aplica tela em branco e bloqueio de rolagem no PRIMEIRO acesso da sessão
+      // Executa o mais cedo possível para evitar flash de conteúdo
+      try {
+        if (sessionStorage.getItem('skipLogoIntro') === 'true') {
+          sessionStorage.setItem('logoIntroShown', 'true');
+          sessionStorage.removeItem('skipLogoIntro');
+        }
+        if (!sessionStorage.getItem('logoIntroShown')) {
+          document.documentElement.classList.add('no-scroll', 'fade-out-main');
+        }
+      } catch (e) { /* ignore */ }
+    </script>
+  <link rel="stylesheet" crossorigin href="/assets/style-BC2u5Ihh.css">
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9C5503JC6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z9C5503JC6');
+</script>
+
+
+<body data-page-label="Página Inicial">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+          
+          <!-- Botão esquerdo -->
+          <button class="navbar-control-btn info-toggle" title="Mostrar/ocultar descrições" onclick="toggleInfo()">
+            <img class="navbar-logo" src="/assets/icon-jSVM7GMi.png" alt="Books in the Parabrain" />
+          </button>
+      
+          <!-- Título central -->
+          <div class="navbar-center">
+            <a href="#" class="navbar-brand">
+
+
+              <div class="navbar-text">
+                <!--<img class="navbar-logo" src="/Icon.png" alt="Books in the Parabrain" />-->
+                <div class="navbar-heading">
+                  <div class="navbar-title">Cons-IA</div>
+                  <div class="navbar-subtitle">Toolbox de IA da Conscienciologia</div>
+                </div>
+              </div>
+
+
+
+            </a>
+          </div>
+
+          <!-- Botão de Configuração
+          <button class="navbar-control-btn config-toggle" title="Configurações" onclick="toggleConfig()">
+            <i class="fas fa-cog"></i>
+          </button> -->
+      
+          <!-- Botão direito -->
+          <button class="navbar-control-btn theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+      
+        </div>
+      </nav>
+      
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <a
+            href="https://cons-ia.org/new.html"
+            class="homepage-banner"
+            data-log-label="New"
+            data-log-href="https://cons-ia.org/new.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label='Experimente a nova página de abertura do Cons-IA. Abre https://cons-ia.org/new'
+        >
+            <div class="homepage-banner__content">
+                <span class="homepage-banner__eyebrow">Nova experiência</span>
+                <h1 class="homepage-banner__title">Experimente a nova página de abertura do Cons-IA</h1>
+                <p class="homepage-banner__subtitle">https://cons-ia.org/new.html</p>
+            </div>
+            <div class="homepage-banner__cta" aria-hidden="true">
+                <span>Abrir</span>
+                <i class="fas fa-arrow-up-right-from-square"></i>
+            </div>
+        </a>
+        <div class="tools-section">
+            <div class="tools-grid">
+
+
+              
+                <!-- Playground Panel -->
+                <div class="tool-panel apps">
+                    <div class="panel-header">
+                        <div class="panel-info">
+                            <h2>Apps IA</h2>
+                            <em>Aplicativos Diversos</em>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+
+                        
+                        <a href="index_mancia.html" class="tool-card compact" style="position:relative; overflow:visible;">
+                            <div class="tool-icon mancia">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Bibliomancia Digital</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+
+                              <!-- <span>
+                                <img src="/styles/star3d.png" alt="Icon" class="icon-star">
+                            </span> -->
+                        </a>
+
+
+                        
+                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=8f6fc286-021f-4184-b572-7f17c8561539" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                           <div class="tool-icon mancia">
+                                <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24px'%20viewBox='0%20-960%20960%20960'%20width='24px'%20fill='%23FFFFFF'%3e%3cpath%20d='M589.5-372.5Q602-385%20602-402t-12.5-29.5Q577-444%20560-444t-29.5%2012.5Q518-419%20518-402t12.5%2029.5Q543-360%20560-360t29.5-12.5ZM530-488h60q0-29%206-42.5t28-35.5q30-30%2040-48.5t10-43.5q0-45-31.5-73.5T560-760q-41%200-71.5%2023T446-676l54%2022q9-25%2024.5-37.5T560-704q24%200%2039%2013.5t15%2036.5q0%2014-8%2026.5T578-596q-33%2029-40.5%2045.5T530-488ZM320-240q-33%200-56.5-23.5T240-320v-480q0-33%2023.5-56.5T320-880h480q33%200%2056.5%2023.5T880-800v480q0%2033-23.5%2056.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33%200-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z'/%3e%3c/svg%3e" alt="Quiz" class="icon-26" />
+                            </div>
+                            <div class="tool-info">
+                                <h3>Quiz Conscienciológico</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=2da2f57f-996c-4efd-b24c-c2f49ba8b452" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                           <div class="tool-icon mancia">
+                                <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24px'%20viewBox='0%20-960%20960%20960'%20width='24px'%20fill='%23FFFFFF'%3e%3cpath%20d='m489-460%2091-55%2091%2055-24-104%2080-69-105-9-42-98-42%2098-105%209%2080%2069-24%20104Zm19%20260h224q-7%2026-24%2042t-44%2020L228-85q-33%205-59.5-15.5T138-154L85-591q-4-33%2016-59t53-30l46-6v80l-36%205%2054%20437%20290-36Zm-148-80q-33%200-56.5-23.5T280-360v-440q0-33%2023.5-56.5T360-880h440q33%200%2056.5%2023.5T880-800v440q0%2033-23.5%2056.5T800-280H360Zm0-80h440v-440H360v440Zm220-220ZM218-164Z'/%3e%3c/svg%3e" alt="Flashcards" class="icon-26" />
+                            </div>
+                            <div class="tool-info">
+                                <h3>Flashcards de Temas</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+
+
+                    </div>
+                </div>
+
+
+
+               <!-- Bibliografia Panel -->
+                <div class="tool-panel biblio">
+                    <div class="panel-header">
+                        <div class="panel-info">
+                            <h2>Bibliografia IA</h2>
+                            <em>Referências de Livros, Artigos e Verbetes</em>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+
+
+                        <a href="index_biblio_wv.html" class="tool-card compact">
+                            <div class="tool-icon biblio">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Bibliografia de Livros</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+
+                            <span>
+                                <img src="/assets/star3d-Bot_S_PG.png" alt="Icon" class="icon-star">
+                            </span>
+                        </a>
+
+                        <a href="index_biblio_verbete.html" class="tool-card compact">
+                            <div class="tool-icon biblio">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Bibliografia de Verbetes</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+
+                            <span>
+                                <img src="/assets/star3d-Bot_S_PG.png" alt="Icon" class="icon-star">
+                            </span>
+                        </a>
+
+
+                       <!--  <a href="index_quiz.html" class="tool-card compact">
+                            <div class="tool-icon quiz">
+                                <i class="fa-regular fa-lightbulb"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Quiz Conscienciológico</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a> -->
+
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- Bots Panel -->
+                <div class="tool-panel bots">
+
+                    <!-- Panel Header -->
+                    <div class="panel-header">
+                        <div class="panel-info">
+                            <h2>Bots IA</h2>
+                            <em>Assistentes de Conversação</em>
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <div class="tools-list">
+
+
+                        <a href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                           <div class="tool-icon openai">
+                                <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20640'%3e%3c!--!Font%20Awesome%20Free%207.1.0%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202025%20Fonticons,%20Inc.--%3e%3cpath%20d='M260.4%20249.8L260.4%20201.2C260.4%20197.1%20261.9%20194%20265.5%20192L363.3%20135.7C376.6%20128%20392.5%20124.4%20408.9%20124.4C470.3%20124.4%20509.3%20172%20509.3%20222.7C509.3%20226.3%20509.3%20230.4%20508.8%20234.5L407.3%20175.1C401.2%20171.5%20395%20171.5%20388.9%20175.1L260.4%20249.8zM488.7%20439.2L488.7%20323C488.7%20315.8%20485.6%20310.7%20479.5%20307.1L351%20232.4L393%20208.3C396.6%20206.3%20399.7%20206.3%20403.2%20208.3L501%20264.7C529.2%20281.1%20548.1%20315.9%20548.1%20349.7C548.1%20388.6%20525.1%20424.5%20488.7%20439.3L488.7%20439.3zM230.2%20336.8L188.2%20312.2C184.6%20310.2%20183.1%20307.1%20183.1%20303L183.1%20190.4C183.1%20135.6%20225.1%2094.1%20281.9%2094.1C303.4%2094.1%20323.4%20101.3%20340.3%20114.1L239.4%20172.5C233.3%20176.1%20230.2%20181.2%20230.2%20188.4L230.2%20336.9L230.2%20336.9zM320.6%20389L260.4%20355.2L260.4%20283.5L320.6%20249.7L380.8%20283.5L380.8%20355.2L320.6%20389zM359.3%20544.7C337.8%20544.7%20317.8%20537.5%20300.9%20524.7L401.8%20466.3C407.9%20462.7%20411%20457.6%20411%20450.4L411%20301.9L453.5%20326.5C457.1%20328.5%20458.6%20331.6%20458.6%20335.7L458.6%20448.3C458.6%20503.1%20416.1%20544.6%20359.3%20544.6L359.3%20544.6zM237.8%20430.5L140.1%20374.2C111.9%20357.8%2093%20323%2093%20289.2C93%20249.8%20116.6%20214.4%20152.9%20199.6L152.9%20316.3C152.9%20323.5%20156%20328.6%20162.1%20332.2L290.1%20406.4L248.1%20430.5C244.5%20432.5%20241.4%20432.5%20237.9%20430.5zM232.2%20514.5C174.3%20514.5%20131.8%20471%20131.8%20417.2C131.8%20413.1%20132.3%20409%20132.8%20404.9L233.7%20463.3C239.8%20466.9%20246%20466.9%20252.1%20463.3L380.6%20389.1L380.6%20437.7C380.6%20441.8%20379.1%20444.9%20375.5%20446.9L277.7%20503.2C264.4%20510.9%20248.5%20514.5%20232.1%20514.5L232.1%20514.5zM359.2%20575.4C421.2%20575.4%20472.9%20531.4%20484.6%20473C541.9%20458.1%20578.8%20404.4%20578.8%20349.6C578.8%20313.8%20563.4%20278.9%20535.8%20253.9C538.4%20243.1%20539.9%20232.4%20539.9%20221.6C539.9%20148.4%20480.5%2093.6%20411.9%2093.6C398.1%2093.6%20384.8%2095.6%20371.5%20100.3C348.5%2077.8%20316.7%2063.4%20281.9%2063.4C219.9%2063.4%20168.2%20107.4%20156.5%20165.8C99.2%20180.6%2062.3%20234.4%2062.3%20289.2C62.3%20325%2077.7%20359.9%20105.3%20384.9C102.7%20395.7%20101.2%20406.4%20101.2%20417.2C101.2%20490.4%20160.6%20545.2%20229.2%20545.2C243%20545.2%20256.3%20543.2%20269.6%20538.5C292.6%20561%20324.4%20575.4%20359.2%20575.4z'/%3e%3c/svg%3e" alt="OpenAI" class="icon-26" />
+                            </div>
+                            <div class="tool-info">
+                                <h3>ConsGPT</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+                        <a href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon google">
+                                <i class="fa-brands fa-google"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>ConsLM</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+                        <a href="index_ragbot.html" class="tool-card compact" style="position:relative; overflow:visible;">
+                            <div class="tool-icon ragbot">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>ConsBOT</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                            <span>
+                                <img src="/assets/flagUK-BGAF2r2P.png" alt="Icon" class="icon-uk">
+                            </span>
+
+                             <span>
+                                <img src="/assets/star3d-Bot_S_PG.png" alt="Icon" class="icon-star">
+                            </span>
+
+                            <!--
+                            <span class="badge-new">
+                                New
+                            </span>
+                            -->
+                            
+                        </a>
+
+
+                    </div>
+                </div>
+
+
+
+                <!-- Lexical Panel -->
+                <div class="tool-panel search">
+                    <div class="panel-header">
+                        <div class="panel-info">
+                            <h2>Busca IA</h2>
+                            <em>Busca de Palavras em Livros</em>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="tools-list">
+
+                        <a href="index_search_book.html" class="tool-card lexical-compact compact" style="position:relative; overflow:visible;">
+                            <div class="tool-icon lexical">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Livros & Tratados</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+
+                              <span>
+                                <img src="/assets/star3d-Bot_S_PG.png" alt="Icon" class="icon-star">
+                            </span>
+                        </a>
+
+                        <a href="index_search_verb.html" class="tool-card lexical-compact compact" style="position:relative; overflow:visible;">
+                            <div class="tool-icon lexical">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Definologia de Verbetes</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+
+                            <!-- <span class="badge-hot">
+                                Hot 
+                            </span> -->
+
+                             <span>
+                                <img src="/assets/star3d-Bot_S_PG.png" alt="Icon" class="icon-star">
+                            </span>
+            
+                        </a>
+
+                        <a href="index_search_ccg.html" class="tool-card lexical-compact compact">
+                            <div class="tool-icon lexical">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Questões do Conscienciograma</h3>
+                                <p></p>
+                                <div class="tool-info-extra"></div>
+                            </div>
+                        </a>
+
+                        
+                    </div>
+                </div>
+
+                <!-- Utils Panel -->
+                <div class="tool-panel utils">
+                    <div class="panel-header">
+                        <div class="panel-info">
+                            <h2>Links Externos</h2>
+                            <em>Páginas Úteis da Conscienciologia</em>
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <div class="tools-list">
+                        <a href="https://www.icge.org.br/" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>ICGE</h3>
+                                <p></p>
+                            </div>
+                        </a>
+
+                        <a href="https://enciclopediadaconscienciologia.org/" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Enciclopédia da Conscienciologia</h3>
+                                <p></p>
+                            </div>
+                        </a>
+
+                      
+                        <a href="https://periodicos.conscienciologia.org.br/" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Portal de Periódicos</h3>
+                                <p></p>
+                            </div>
+                        </a>
+                        
+                        <a href="https://drive.google.com/drive/folders/1Mp6Zfhq-peIYlo9Js0wYRX2DnRjFYyUj?usp=sharing" class="tool-card compact" target="_blank" rel="noopener noreferrer">
+                            <div class="tool-icon encyclopedia">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="tool-info">
+                                <h3>Livros em PDF</h3>
+                                <p></p>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+
+                <div class="footer-feedback">
+                    <button id="feedbackPill" class="pill pill-action" type="button" aria-haspopup="dialog" aria-controls="feedbackOverlay">Envie seu feedback</button>
+                </div>
+
+                <div class="footer-text">
+                    ©2026 Cons-IA.org
+                </div>
+                
+                <div class="footer-contact">
+                    <span>Fale com o Diretor:</span>
+                    <a href="mailto:legadologia@gmail.com">
+                        <i class="fas fa-envelope"></i>
+                        <span class="email"><em>transmentor@interludium.ccce</em></span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Feedback Overlay -->
+    <div id="feedbackOverlay" class="fb-overlay" role="dialog" aria-modal="true" aria-labelledby="fbTitle" hidden>
+      <div class="fb-dialog">
+        <h3 id="fbTitle">Enviar Feedback</h3>
+        <p class="fb-help">Sua mensagem será enviada aos desenvolvedores.</p>
+        <textarea id="fbInput" rows="4" placeholder="Escreva aqui sua mensagem..."></textarea>
+        <div class="fb-actions">
+          <button id="fbSend" class="btn primary" type="button">Enviar</button>
+          <button id="fbCancel" class="btn" type="button">Cancelar</button>
+        </div>
+        <div id="fbStatus" class="fb-status" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- Overlay de animação do logo -->
+    <div id="logo-intro-overlay" aria-hidden="true">
+      <img class="logo-intro-img" src="/assets/icon-jSVM7GMi.png" alt="Logo" />
+    </div>
+
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="messages.js"></script>
+    <script>
+
+      // Feedback pill interactions
+      (function setupFeedback(){
+        const pill = document.getElementById('feedbackPill');
+        const overlay = document.getElementById('feedbackOverlay');
+        const input = document.getElementById('fbInput');
+        const sendBtn = document.getElementById('fbSend');
+        const cancelBtn = document.getElementById('fbCancel');
+        const status = document.getElementById('fbStatus');
+
+        function openOverlay(){
+          try { status.textContent = ''; } catch {}
+          overlay.hidden = false;
+          input.value = '';
+          input.focus();
+        }
+        function closeOverlay(){ overlay.hidden = true; }
+        function send(){
+          const msg = (input.value || '').trim();
+          if (!msg) { status.textContent = 'Digite uma mensagem.'; input.focus(); return; }
+          try {
+            if (window.logFeatureAccess) {
+              window.logFeatureAccess({
+                module: 'feedback',
+                action: 'send',
+                label: 'Feedback enviado',
+                value: msg
+              });
+              status.textContent = 'Feedback enviado! Agradecemos sua mensagem.';
+            } else {
+            // fallback direta ao endpoint
+            const payload = {
+              event: 'feedback',
+              category: 'feature',
+              module: 'feedback',
+              action: 'send',
+              label: 'Feedback enviado',
+              page: (location && location.pathname) || undefined
+            };
+            fetch((window.apiBaseUrl||'') + '/log', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+              .then(() => status.textContent = 'Feedback enviado! Agradecemos sua mensagem.')
+              .catch(() => status.textContent = 'Falha ao enviar. Tente novamente.');
+          }
+          } catch { status.textContent = 'Falha ao enviar. Tente novamente.'; }
+          setTimeout(closeOverlay, 1000);
+        }
+
+        pill?.addEventListener('click', openOverlay);
+        cancelBtn?.addEventListener('click', closeOverlay);
+        sendBtn?.addEventListener('click', send);
+        input?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) send(); });
+        overlay?.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+      })();
+
+      (function setupHomepageBannerLogging() {
+        const banner = document.querySelector('.homepage-banner');
+        if (!banner) return;
+
+        banner.addEventListener('click', () => {
+          try {
+            if (!window.logFeatureAccess) return;
+            const href = banner.dataset.logHref || banner.getAttribute('href') || '';
+            window.logFeatureAccess({
+              module: 'homepage_banner',
+              action: 'click',
+              label: banner.dataset.logLabel || 'New',
+              value: href,
+              meta: {
+                href,
+                target: banner.getAttribute('target') || '',
+              }
+            });
+          } catch (error) {
+            console.error('Error logging homepage banner click:', error);
+          }
+        });
+      })();
+
+
+
+            // Info toggle (expand/collapse badge descriptions)
+            function playLogoIntro(callback){
+              try {
+                const overlay = document.getElementById('logo-intro-overlay');
+                const img = overlay ? overlay.querySelector('.logo-intro-img') : null;
+                if (!overlay || !img) { if (callback) callback(); return; }
+                // prepara
+                overlay.classList.remove('fade');
+                img.classList.remove('animate');
+                // força reflow antes de iniciar animação (overlay e imagem)
+                void overlay.offsetWidth;
+                void img.offsetWidth;
+                // bloqueia rolagem
+                document.documentElement.classList.add('no-scroll');
+                document.body.classList.add('no-scroll');
+                // Esconde o conteúdo de informações no início
+                document.documentElement.removeAttribute('data-show-info');
+                
+                // fade-out do conteúdo ao fundo por 1s
+                document.documentElement.classList.add('fade-out-main');
+                overlay.classList.add('show');
+                
+                // ativa o crossfade em próximo frame (evita salto ao trocar display)
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    overlay.classList.add('visible');
+                    img.classList.add('animate');
+                  });
+                });
+                
+                // após 4s de zoom + 1s estável, dispara fade de 1s do logo
+                setTimeout(() => {
+                  overlay.classList.add('fade');
+                }, 4000);
+                
+                // ao final (4s + 1s + 1s), oculta overlay e chama callback
+                setTimeout(() => {
+                  // Remove o overlay e libera a rolagem
+                  overlay.classList.remove('visible', 'show', 'fade');
+                  document.documentElement.classList.remove('no-scroll');
+                  document.body.classList.remove('no-scroll');
+                  
+                  // Remove o fade do conteúdo principal
+                  document.documentElement.classList.remove('fade-out-main');
+                  
+                  // Chama o callback
+                  if (callback) callback();
+                }, 5000);
+              } catch (e) { if (callback) callback(); }
+            }
+
+            function toggleInfo() {
+                const current = document.documentElement.getAttribute('data-show-info') === 'true';
+                const turningOn = !current;
+
+                // On first user interaction, stop the pulsing permanently
+                try {
+                  if (!localStorage.getItem('infoPulseSeen')) {
+                      localStorage.setItem('infoPulseSeen', 'true');
+                  }
+                } catch (e) { /* ignore */ }
+                document.documentElement.setAttribute('data-info-pulse', 'off');
+
+                if (turningOn) {
+                  // Já aplica o estado de informações antes da animação,
+                  // para evitar flash do estado anterior quando o overlay some
+                  document.documentElement.setAttribute('data-show-info', 'true');
+                  // Não aciona mais animação de logo ao clicar no ícone de info
+                } else {
+                  // Desliga imediatamente
+                  document.documentElement.setAttribute('data-show-info', 'false');
+                }
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'homepage_controls',
+                      action: 'toggle_info',
+                      label: 'Mostrar/ocultar descricoes',
+                      value: turningOn ? 'on' : 'off',
+                      meta: { enabled: turningOn }
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error logging info toggle:', error);
+                }
+            }
+
+           
+
+            // Initialize theme when DOM is loaded
+            document.addEventListener('DOMContentLoaded', initTheme);
+
+            (function wrapThemeToggleLogging() {
+              const originalToggleTheme = window.toggleTheme;
+              if (typeof originalToggleTheme !== 'function' || originalToggleTheme.__logsWrapped) return;
+
+              const wrappedToggleTheme = function wrappedToggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                originalToggleTheme();
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'homepage_controls',
+                      action: 'toggle_theme',
+                      label: 'Light / dark mode',
+                      value: nextTheme,
+                      meta: { theme: nextTheme }
+                    });
+                  }
+                } catch (error) {
+                  console.error('Error logging theme toggle:', error);
+                }
+              };
+
+              wrappedToggleTheme.__logsWrapped = true;
+              window.toggleTheme = wrappedToggleTheme;
+            })();
+
+            // Disable pulse if user has already interacted before
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    if (localStorage.getItem('infoPulseSeen') === 'true') {
+                        document.documentElement.setAttribute('data-info-pulse', 'off');
+                    }
+                } catch (e) {
+                    // If localStorage unavailable, ignore
+                }
+            });
+
+
+             // Play logo intro once per session (first visit only)
+            document.addEventListener('DOMContentLoaded', function () {
+              try {
+                if (sessionStorage.getItem('skipLogoIntro') === 'true') {
+                  sessionStorage.setItem('logoIntroShown', 'true');
+                  sessionStorage.removeItem('skipLogoIntro');
+                }
+                if (!sessionStorage.getItem('logoIntroShown')) {
+                  sessionStorage.setItem('logoIntroShown', 'true');
+                  playLogoIntro();
+                }
+              } catch (e) { /* ignore */ }
+            });
+
+
+            
+            // ==================== Config Modal Logic ====================
+            function openConfigModal() {
+              const el = document.getElementById('config-backdrop');
+              if (!el) return;
+              try { loadConfigForm(); } catch {}
+              el.style.display = 'flex';
+              el.setAttribute('aria-hidden', 'false');
+              // mark page as having modal open (for CSS blur)
+              document.documentElement.setAttribute('data-config-open', 'true');
+            }
+            function closeConfigModal() {
+              const el = document.getElementById('config-backdrop');
+              if (!el) return;
+              el.style.display = 'none';
+              el.setAttribute('aria-hidden', 'true');
+              // remove modal-open marker
+              document.documentElement.removeAttribute('data-config-open');
+            }
+            function toggleConfig(){ openConfigModal(); }
+
+
+
+
+            // ==================== Config Modal Logic ====================
+            function loadConfigForm() {
+              try {
+                const $ = (id) => document.getElementById(id);
+
+                // =============================================================
+                // 1. Ler configurações salvas do localStorage (ou usar padrão)
+                // =============================================================
+                let config = {};
+                try {
+                  config = JSON.parse(localStorage.getItem("appConfig_main") || "{}");
+                } catch {
+                  config = {};
+                }
+
+                // Se ainda não existir, usa valores padrão mínimos
+                config.MODEL_LLM = config.MODEL_LLM || MODEL_LLM;
+                config.MODEL_RAGBOT = config.MODEL_RAGBOT || MODEL_RAGBOT;
+                config.TEMPERATURE = config.TEMPERATURE ?? TEMPERATURE;
+                config.LLM_MAX_RESULTS = Number(config.LLM_MAX_RESULTS ?? LLM_MAX_RESULTS) || 3;
+                config.MAX_OUTPUT_TOKENS = Number(config.MAX_OUTPUT_TOKENS ?? MAX_OUTPUT_TOKENS) || 500;
+                config.MAX_RESULTS_DISPLAY = config.MAX_RESULTS_DISPLAY || MAX_RESULTS_DISPLAY;
+                config.OPENAI_RAGBOT = config.OPENAI_RAGBOT || OPENAI_RAGBOT;
+                config.FULL_BADGES = !!config.FULL_BADGES;
+                config.MINITERTULIA = !!config.MINITERTULIA;
+                // Novo flag: DESCRITIVOS (usa default de window.CONFIG, se existir)
+                const defaultDescr = (window.CONFIG && typeof window.CONFIG.DESCRITIVOS !== 'undefined')
+                  ? !!window.CONFIG.DESCRITIVOS
+                  : false;
+                if (typeof config.DESCRITIVOS === 'undefined' || config.DESCRITIVOS === null || config.DESCRITIVOS === '') {
+                  config.DESCRITIVOS = defaultDescr;
+                } else {
+                  config.DESCRITIVOS = !!config.DESCRITIVOS;
+                }
+
+                // Atualiza o objeto global
+                window.CONFIG = config;
+
+                // =============================================================
+                // 2. Preenche os campos da interface
+                // =============================================================
+
+                if ($('cfg-model-llm')) $('cfg-model-llm').value = config.MODEL_LLM;
+                if ($('cfg-model-ragbot')) $('cfg-model-ragbot').value = config.MODEL_RAGBOT;
+
+                // Temperatura (slider único)
+                const range = $('cfg-temperature');
+                const label = document.getElementById('cfg-temperature-label');
+                if (range && label) {
+                  range.value = Math.min(Math.max(Number(config.TEMPERATURE), 0.1), 1.0);
+                  label.textContent = `(${Number(range.value).toFixed(1)})`;
+                  range.addEventListener('input', () => {
+                    label.textContent = `(${Number(range.value).toFixed(1)})`;
+                  });
+                }
+
+                // Max results
+                const cap = getMaxResultsCap ? getMaxResultsCap() : 500;
+                const floor = getMinResultsFloor ? getMinResultsFloor() : 1;
+                const maxInput = $('cfg-max-results');
+                if (maxInput) {
+                  maxInput.setAttribute('min', String(floor));
+                  maxInput.setAttribute('max', String(cap));
+                  maxInput.value = String(
+                    Math.min(Math.max(Number(config.MAX_RESULTS_DISPLAY), floor), cap)
+                  );
+                }
+
+                // LLM internal controls
+                const llmMaxResultsInput = $('cfg-llm-max-results');
+                if (llmMaxResultsInput) {
+                  llmMaxResultsInput.value = String(
+                    Math.max(1, Number(config.LLM_MAX_RESULTS) || 3)
+                  );
+                }
+                const maxOutputTokensInput = $('cfg-max-output-tokens');
+                if (maxOutputTokensInput) {
+                  maxOutputTokensInput.value = String(
+                    Math.max(1, Number(config.MAX_OUTPUT_TOKENS) || 500)
+                  );
+                }
+
+                // RAGBOT
+                if ($('cfg-openai-ragbot')) $('cfg-openai-ragbot').value = config.OPENAI_RAGBOT;
+
+                // Checkboxes
+                if ($('cfg-full-badges')) $('cfg-full-badges').checked = !!config.FULL_BADGES;
+                if ($('cfg-minitertulia')) $('cfg-minitertulia').checked = !!config.MINITERTULIA;
+                if ($('cfg-descritivos')) $('cfg-descritivos').checked = !!config.DESCRITIVOS;
+
+              } catch (e) {
+                console.error("Erro ao carregar configurações:", e);
+              }
+            }
+
+
+            // ==================== Save Config Modal Logic ====================
+            function saveConfigAndClose() {
+              try {
+                const $ = (id) => document.getElementById(id);
+                const newConfig = {
+                  // Model settings
+                  MODEL_LLM: $('cfg-model-llm')?.value || window.CONFIG.MODEL_LLM,
+                  MODEL_RAGBOT: $('cfg-model-ragbot')?.value || window.CONFIG.MODEL_RAGBOT,
+                  
+                  TEMPERATURE: Math.min(Math.max(
+                    Number($('cfg-temperature')?.value || TEMPERATURE),
+                    0.1
+                  ), 1.0),
+                  LLM_MAX_RESULTS: Math.max(1, Number($('cfg-llm-max-results')?.value || window.CONFIG.LLM_MAX_RESULTS || LLM_MAX_RESULTS || 3)),
+                  MAX_OUTPUT_TOKENS: Math.max(1, Number($('cfg-max-output-tokens')?.value || window.CONFIG.MAX_OUTPUT_TOKENS || MAX_OUTPUT_TOKENS || 500)),
+
+
+                  MAX_RESULTS_DISPLAY: normalizeMaxResults(
+                    $('cfg-max-results')?.value || window.CONFIG.MAX_RESULTS_DISPLAY
+                  ),
+                  
+                  // Feature flags
+                  OPENAI_RAGBOT: $('cfg-openai-ragbot')?.value || OPENAI_RAGBOT,
+                  FULL_BADGES: !!$('cfg-full-badges')?.checked,
+                  MINITERTULIA: !!$('cfg-minitertulia')?.checked,
+                  DESCRITIVOS: !!$('cfg-descritivos')?.checked,
+                };
+
+                // Save to localStorage and update runtime config
+                localStorage.setItem('appConfig_main', JSON.stringify(newConfig));
+                
+                // Update global config
+                Object.assign(window.CONFIG, newConfig);
+                
+                // Update legacy variables
+                window.USER_MAX_RESULTS = window.CONFIG.MAX_RESULTS_DISPLAY;
+                window.USER_TEMPERATURE = window.CONFIG.TEMPERATURE;
+                window.USER_LLM_MAX_RESULTS = window.CONFIG.LLM_MAX_RESULTS;
+                window.USER_MAX_OUTPUT_TOKENS = window.CONFIG.MAX_OUTPUT_TOKENS;
+
+                try {
+                  if (window.logFeatureAccess) {
+                    window.logFeatureAccess({
+                      module: 'main_config',
+                      action: 'save_config',
+                      label: 'Configuracao geral salva',
+                      meta: {
+                        model_llm: newConfig.MODEL_LLM,
+                        model_ragbot: newConfig.MODEL_RAGBOT,
+                        temperature: newConfig.TEMPERATURE,
+                        llm_max_results: newConfig.LLM_MAX_RESULTS,
+                        max_output_tokens: newConfig.MAX_OUTPUT_TOKENS,
+                        max_results_display: newConfig.MAX_RESULTS_DISPLAY,
+                        openai_ragbot: newConfig.OPENAI_RAGBOT,
+                        full_badges: newConfig.FULL_BADGES,
+                        minitertulia: newConfig.MINITERTULIA,
+                        descritivos: newConfig.DESCRITIVOS
+                      }
+                    });
+                  }
+                } catch (logError) {
+                  console.error('Error logging main configuration:', logError);
+                }
+                
+                closeConfigModal();
+                
+              } catch (e) {
+                console.error('Error saving configuration:', e);
+                alert('Erro ao salvar configurações. Verifique o console para mais detalhes.');
+              }
+            }
+
+            function resetConfigToDefault() {
+              try {
+                const defModelLlm = (typeof MODEL_LLM !== 'undefined') ? MODEL_LLM : 'gpt-4.1-mini';
+                const defModelRagbot = (typeof MODEL_RAGBOT !== 'undefined') ? MODEL_RAGBOT : 'gpt-5.4';
+                const defTemperature = (typeof TEMPERATURE !== 'undefined') ? TEMPERATURE : 0.3;
+                const defLlmMaxResults = (typeof LLM_MAX_RESULTS !== 'undefined') ? LLM_MAX_RESULTS : 3;
+                const defMaxOutputTokens = (typeof MAX_OUTPUT_TOKENS !== 'undefined') ? MAX_OUTPUT_TOKENS : 500;
+                const defMaxResultsDisplay = (typeof MAX_RESULTS_DISPLAY !== 'undefined') ? MAX_RESULTS_DISPLAY : 100;
+                const defOpenaiRagbot = (typeof OPENAI_RAGBOT !== 'undefined') ? OPENAI_RAGBOT : 'ALLWV';
+                const defaults = {
+                  MODEL_LLM: defModelLlm,
+                  MODEL_RAGBOT: defModelRagbot,
+                  TEMPERATURE: defTemperature,
+                  LLM_MAX_RESULTS: defLlmMaxResults,
+                  MAX_OUTPUT_TOKENS: defMaxOutputTokens,
+                  MAX_RESULTS_DISPLAY: defMaxResultsDisplay,
+                  OPENAI_RAGBOT: defOpenaiRagbot,
+                  FULL_BADGES: false,
+                  MINITERTULIA: false,
+                  DESCRITIVOS: (window.CONFIG && typeof window.CONFIG.DESCRITIVOS !== 'undefined')
+                    ? !!window.CONFIG.DESCRITIVOS
+                    : true,
+                };
+                localStorage.setItem('appConfig_main', JSON.stringify(defaults));
+                window.CONFIG = { ...window.CONFIG, ...defaults };
+                window.USER_MAX_RESULTS = window.CONFIG.MAX_RESULTS_DISPLAY;
+                window.USER_TEMPERATURE = window.CONFIG.TEMPERATURE;
+                window.USER_LLM_MAX_RESULTS = window.CONFIG.LLM_MAX_RESULTS;
+                window.USER_MAX_OUTPUT_TOKENS = window.CONFIG.MAX_OUTPUT_TOKENS;
+                loadConfigForm();
+              } catch (e) {
+                console.error('Error resetting configuration:', e);
+              }
+            }
+
+            // Open via config button, and long-press on info icon (5s)
+            document.addEventListener('DOMContentLoaded', function() {
+              const infoBtn = document.querySelector('.info-toggle');
+              let pressTimer = null; let longPressed = false;
+              const start = () => { longPressed = false; clearTimeout(pressTimer); pressTimer = setTimeout(() => { longPressed = true; openConfigModal(); }, 5000); };
+              const cancel = (e) => { clearTimeout(pressTimer); if (longPressed && e) { e.preventDefault(); e.stopPropagation(); } };
+              if (infoBtn) {
+                infoBtn.addEventListener('mousedown', start);
+                infoBtn.addEventListener('touchstart', start, { passive: true });
+                ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => infoBtn.addEventListener(ev, cancel, { passive: false }));
+                infoBtn.addEventListener('click', function(e){ if (longPressed) { e.preventDefault(); e.stopPropagation(); } });
+              }
+              const backdrop = document.getElementById('config-backdrop');
+              if (backdrop) { backdrop.addEventListener('click', function(e){ if (e.target === backdrop) closeConfigModal(); }); }
+            });
+
+        </script>
+
+    <!-- Config Modal Styles and Markup --><div id="config-backdrop" class="config-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="config-modal" role="document">
+        <header>
+          <span>System Settings</span>
+          <button class="btn" type="button" onclick="closeConfigModal()" aria-label="Fechar">Close</button>
+        </header>
+        <div class="content">
+          <div class="config-grid">
+            <div class="config-field">
+              <label for="cfg-model-llm">MODEL_LLM</label>
+              <select id="cfg-model-llm">
+                <option value="gpt-5.4">gpt-5.4</option>
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+              </select>
+            </div>
+            <div class="config-field">
+              <label for="cfg-model-ragbot">MODEL_RAGBOT</label>
+              <select id="cfg-model-ragbot">
+                <option value="gpt-5.4">gpt-5.4</option>
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+              </select>
+            </div>
+            
+            <div class="config-field">
+              <label for="cfg-temperature">
+                TEMPERATURE
+                <span id="cfg-temperature-label" class="config-help"></span>
+              </label>
+              <div class="config-inline">
+                <input id="cfg-temperature" type="range" min="0.1" max="1" step="0.1" value="0.3" />
+              </div>
+            </div>
+
+            <div class="config-field">
+              <label for="cfg-max-results">MAX_RESULTS_DISPLAY <span class="config-help" data-max-results-range></span></label>
+              <input id="cfg-max-results" type="number" data-max-config="true" step="10" value="100" />
+            </div>
+            <div class="config-field">
+              <label for="cfg-llm-max-results">LLM_MAX_RESULTS</label>
+              <input id="cfg-llm-max-results" type="number" min="1" step="1" value="3" />
+            </div>
+            <div class="config-field">
+              <label for="cfg-max-output-tokens">MAX_OUTPUT_TOKENS</label>
+              <input id="cfg-max-output-tokens" type="number" min="1" step="50" value="500" />
+            </div>
+            <div class="config-field">
+              <label for="cfg-openai-ragbot">OPENAI_RAGBOT</label>
+              <select id="cfg-openai-ragbot">
+                <option value="ALLWV">ALLWV</option>
+                <option value="EDUNOTES">EDUNOTES</option>
+              </select>
+            </div>
+            <div class="config-field full">
+              <label for="cfg-full-badges">FULL_BADGES</label>
+              <div class="config-inline">
+                <input id="cfg-full-badges" type="checkbox" />
+                <span class="config-help">Exibe badges completos nas respostas</span>
+              </div>
+            </div>
+            <div class="config-field full">
+              <label for="cfg-minitertulia">MINITERTULIA</label>
+              <div class="config-inline">
+                <input id="cfg-minitertulia" type="checkbox" />
+                <span class="config-help">Registros da Minitertulia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="config-actions">
+          <button class="btn" type="button" onclick="resetConfigToDefault()">Reset</button>
+          <button class="btn" type="button" onclick="closeConfigModal()">Cancelar</button>
+          <button class="btn primary" type="button" onclick="saveConfigAndClose()">Salvar</button>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
