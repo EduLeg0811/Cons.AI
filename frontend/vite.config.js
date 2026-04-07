@@ -12,6 +12,7 @@ const htmlEntries = fs
   }, {});
 
 const staticFiles = [
+  'icon.png',
   'config.js',
   'utils.js',
   'messages.js',
